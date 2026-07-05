@@ -42,25 +42,36 @@ class Ajax extends QUI\QDOM
 {
     /**
      * Available ajax functions
+     *
+     * @var array<string, array<array-key, mixed>>
      */
     protected static array $functions = [];
 
     /**
      * Available ajax lambda functions
+     *
+     * @var array<string, array{callable: callable, params: array<array-key, mixed>}>
      */
     protected static array $callables = [];
 
     /**
      * registered permissions from available ajax functions
+     *
+     * @var array<string, mixed>
      */
     protected static array $permissions = [];
 
     /**
      * JavaScript functions to be executed by after a request
      * These functions are registered via Ajax.registerCallback('functionName', callable);
+     *
+     * @var array<string, array<array-key, mixed>>
      */
     protected array $jsCallbacks = [];
 
+    /**
+     * @param array<array-key, mixed> $params
+     */
     public function __construct(array $params = [])
     {
         self::setAttributes($params);
@@ -79,7 +90,7 @@ class Ajax extends QUI\QDOM
      * Registered a function which is available via ajax
      *
      * @param string $reg_function - Function which is callable via ajax
-     * @param boolean|array $reg_vars - Variables of the function
+     * @param boolean|array<array-key, mixed> $reg_vars - Variables of the function
      * @param bool|string $user_perm - rights, optional
      *
      * @return bool
@@ -107,8 +118,8 @@ class Ajax extends QUI\QDOM
      *
      * @param string $name - Name of the function
      * @param callable $function - Function
-     * @param bool|array $reg_vars - Variables of the function
-     * @param bool|array|string $user_perm - (optional) permissions / rights
+     * @param bool|array<array-key, mixed> $reg_vars - Variables of the function
+     * @param bool|array<array-key, mixed>|string $user_perm - (optional) permissions / rights
      *
      * @return bool
      */
@@ -134,11 +145,17 @@ class Ajax extends QUI\QDOM
         return true;
     }
 
+    /**
+     * @return array<string, array<array-key, mixed>>
+     */
     public static function getRegisteredFunctions(): array
     {
         return self::$functions;
     }
 
+    /**
+     * @return array<string, array{callable: callable, params: array<array-key, mixed>}>
+     */
     public static function getRegisteredCallables(): array
     {
         return self::$callables;
@@ -147,7 +164,7 @@ class Ajax extends QUI\QDOM
     /**
      * ajax processing
      *
-     * @return string|array - quiqqer XML
+     * @return string|array<array-key, mixed> - quiqqer XML
      * @throws Exception
      */
     public function call(): array|string
@@ -244,6 +261,8 @@ class Ajax extends QUI\QDOM
 
     /**
      * Exceptions xml / json return
+     *
+     * @return array<string, mixed>
      */
     public function writeException(PDOException|\Exception|Exception $Exception): array
     {
@@ -359,6 +378,8 @@ class Ajax extends QUI\QDOM
 
     /**
      * Internal call of an ajax function
+     *
+     * @return array<string, mixed>
      */
     public function callRequestFunction(string $_rf, mixed $values = false): array
     {
@@ -518,7 +539,7 @@ class Ajax extends QUI\QDOM
      * Add a JavaScript callback function to the request
      *
      * @param string $javascriptFunctionName - name of the javascript callback function
-     * @param array $params - optional, params for the javascript callback function
+     * @param array<array-key, mixed> $params - optional, params for the javascript callback function
      */
     public function triggerGlobalJavaScriptCallback(string $javascriptFunctionName, array $params = []): void
     {
@@ -542,6 +563,9 @@ class Ajax extends QUI\QDOM
         }
     }
 
+    /**
+     * @return array<string, array<array-key, mixed>>
+     */
     public function getJsCallbacks(): array
     {
         return $this->jsCallbacks;
