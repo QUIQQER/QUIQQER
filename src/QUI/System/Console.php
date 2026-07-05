@@ -70,6 +70,8 @@ class Console
 
     /**
      * All available text colors
+     *
+     * @var array<string, string>
      */
     protected array $colors = [
         'black' => '0;30',
@@ -100,6 +102,8 @@ class Console
 
     /**
      * All available background colors
+     *
+     * @var array<string, string>
      */
     protected array $bg = [
         'black' => '40',
@@ -114,6 +118,8 @@ class Console
 
     /**
      * CLI arguments
+     *
+     * @var array<string, mixed>
      */
     protected array $arguments = [];
 
@@ -121,17 +127,21 @@ class Console
 
     /**
      * All available console tools
+     *
+     * @var array<string, Console\Tool>
      */
     private array $tools = [];
 
     /**
-     * @var array All available tools, but grouped
+     * @var array<string, array<string, Console\Tool>> All available tools, but grouped
      */
     private array $groupedTools = [];
 
     /**
      * List of system tools
      * - Tools which are called with the SystemUser
+     *
+     * @var array<int, string>
      */
     private array $systemTools = [
         'clear-all-quiqqer-cache',
@@ -153,6 +163,8 @@ class Console
 
     /**
      * Console parameter
+     *
+     * @var array<string, mixed>
      */
     private readonly array $argv;
 
@@ -360,6 +372,8 @@ class Console
 
     /**
      * Read the argv params
+     *
+     * @return array<string, mixed>
      */
     protected function readArgv(): array
     {
@@ -458,6 +472,8 @@ class Console
 
     /**
      * Return the CLI arguments
+     *
+     * @return array<string, mixed>
      */
     public function getArguments(): array
     {
@@ -620,7 +636,7 @@ class Console
      *
      * @param boolean|string $tool - boolean true = all Tools | string = specific tool
      *
-     * @return array|Console\Tool|bool
+     * @return array<string, Console\Tool>|Console\Tool|bool
      */
     public function get(bool | string $tool): bool | array | Console\Tool
     {
@@ -1056,6 +1072,9 @@ class Console
         $Climate->out('');
     }
 
+    /**
+     * @param string $group
+     */
     protected function displayToolsForGroups($group): void
     {
         if (empty($this->groupedTools[$group])) {
