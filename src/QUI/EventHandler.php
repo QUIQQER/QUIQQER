@@ -198,6 +198,8 @@ class EventHandler
     /**
      * Remove stale permission keys from user/group permission blobs.
      *
+     * @param array<int, string> $permissionNames
+     *
      * @throws QUI\Database\Exception
      */
     protected static function cleanupLegacyAssetPackagePermissionAssignments(
