@@ -62,6 +62,8 @@ class Manager
 
     /**
      * loaded projects
+     *
+     * @var array<string, array<string, Project>>
      */
     public static array $projects = [];
 
@@ -80,6 +82,8 @@ class Manager
 
     /**
      * set configuration for a project
+     *
+     * @param array<string, mixed> $params
      *
      * @throws QUI\Exception
      * @throws Exception
@@ -334,6 +338,9 @@ class Manager
         return QUI::getConfig('etc/projects.ini');
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function getProjectConfigList(Project $Project): array
     {
         $cache = $Project->getCachePath() . '/configList';
@@ -503,6 +510,8 @@ class Manager
     /**
      * Return all settings.xml which are related to the project
      * eq: all settings.xml from templates
+     *
+     * @return array<int, string>
      */
     public static function getRelatedSettingsXML(Project $Project): array
     {
@@ -574,6 +583,8 @@ class Manager
     /**
      * Return all templates which are related to the project
      * the vhost templates are included
+     *
+     * @return array<int, string>
      */
     public static function getRelatedTemplates(Project $Project): array
     {
@@ -633,7 +644,7 @@ class Manager
      * Decode project data
      * Decode a project json string to a Project or decode a project array to a Project
      *
-     * @param array|string $project - project data
+     * @param array<string, mixed>|string $project - project data
      *
      * @return Project
      *
@@ -711,6 +722,8 @@ class Manager
     }
 
     /**
+     * @param array<int, string> $languages
+     *
      * @throws QUI\Exception
      * @throws Exception
      * @todo noch einmal anschauen und übersichtlicher schreiben
@@ -971,7 +984,7 @@ class Manager
      * if you want a complete project list with every project language, please use getProjectList()
      *
      * @param bool $asObject - default = false, true = projects as objects
-     * @return array
+     * @return array<array-key, mixed>
      */
     public static function getProjects(bool $asObject = false): array
     {
@@ -1275,12 +1288,12 @@ class Manager
     /**
      * Search a project
      *
-     * @param array $params - Search params
+     * @param array<string, mixed> $params - Search params
      *                      'search' => 'search string',
      *                      'limit'  => 5,
      *                      'page'   => 1
      *
-     * @return array
+     * @return array<int, array<string, string>>
      *
      * @throws QUI\Exception
      */
