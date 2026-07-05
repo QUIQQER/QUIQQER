@@ -844,10 +844,6 @@ class MigrationV2 extends QUI\System\Console\Tool
         }
 
         foreach (array_chunk(array_values(array_unique($numericUserIds)), 1000) as $idChunk) {
-            if (empty($idChunk)) {
-                continue;
-            }
-
             $QueryBuilder = $conn->createQueryBuilder();
             $result = $QueryBuilder
                 ->select(
@@ -883,10 +879,6 @@ class MigrationV2 extends QUI\System\Console\Tool
         }
 
         foreach (array_chunk(array_values(array_unique($uuidUserIds)), 1000) as $uuidChunk) {
-            if (empty($uuidChunk)) {
-                continue;
-            }
-
             $QueryBuilder = $conn->createQueryBuilder();
             $result = $QueryBuilder
                 ->select(
