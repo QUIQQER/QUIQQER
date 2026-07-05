@@ -78,11 +78,16 @@ class Utils
      */
     const CACHE_KEY_TIMESTAMP_MEDIA_CACHE_FOLDER_SIZE_PREFIX = "timestamp_media_cache_folder_size_";
 
+    /**
+     * @var array<string, QUI\Interfaces\Projects\Media\File>
+     */
     protected static array $urlItemCache = [];
 
     /**
      * Returns the item array
      * the array is specially adapted for the media center
+     *
+     * @return array<string, mixed>
      */
     public static function parseForMediaCenter(QUI\Interfaces\Projects\Media\File $Item): array
     {
@@ -300,6 +305,8 @@ class Utils
     /**
      * Return <picture><img /></picture> from image attributes
      * considered responsive images, too
+     *
+     * @param array<string, mixed> $attributes
      */
     public static function getImageHTML(string $src, array $attributes = [], bool $withHost = false): string
     {
@@ -540,6 +547,9 @@ class Utils
 
     /**
      * Return only the source for an <img /> tag from image attributes
+     *
+     * @param string $src
+     * @param array<string, mixed> $attributes
      */
     public static function getImageSource($src, array $attributes = []): string
     {
@@ -714,6 +724,10 @@ class Utils
     }
 
     /**
+     * @param string $url
+     *
+     * @return array{project: string, filePath: string}
+     *
      * @throws QUI\Exception
      */
     public static function getRealFileDataFromCacheUrl($url): array
@@ -775,6 +789,8 @@ class Utils
 
     /**
      * Return the rewritten url from an image.php? url
+     *
+     * @param array<string, mixed> $size
      *
      * @throws QUI\Exception
      */
@@ -1025,7 +1041,7 @@ class Utils
      *
      * @param QUI\Projects\Media $Media
      * @param integer $fileId - The File which will be replaced
-     * @param array $uploadParams - Array with file information array('name' => '', 'type' => '')
+     * @param array<string, mixed> $uploadParams - Array with file information array('name' => '', 'type' => '')
      *
      * @throws QUI\Exception
      */
@@ -1205,7 +1221,7 @@ class Utils
      *
      * @param QUI\Projects\Project $Project
      *
-     * @return array - the array's keys are the file types and their values are their amounts
+     * @return array<string, int> - the array's keys are the file types and their values are their amounts
      */
     public static function countFiletypesForProject(QUI\Projects\Project $Project): array
     {
@@ -1242,6 +1258,9 @@ class Utils
         return $return;
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     public static function getExtraAttributeListForMediaItems(Item $Item): array
     {
         $cache = $Item->getMedia()->getProject()->getCachePath() . '/xml-media-attributes/';
@@ -1293,7 +1312,7 @@ class Utils
      * Returns the whitelist of file extensions that are exempt from media caching.
      * If the noMediaCache.ini.php file does not exist, a default whitelist is created and saved to the file.
      *
-     * @return array - Array of file extensions
+     * @return array<int, string> - Array of file extensions
      */
     public static function getWhiteListForNoMediaCache(): array
     {
