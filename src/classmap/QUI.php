@@ -89,6 +89,8 @@ class QUI
 
     /**
      * QUI vhosts, use \QUI::vhosts();
+     *
+     * @var array<string, mixed>|null
      */
     public static ?array $vhosts = null;
 
@@ -166,6 +168,8 @@ class QUI
 
     /**
      * internal config objects, array list of configs
+     *
+     * @var array<string, Config>
      */
     public static array $Configs = [];
 
@@ -556,6 +560,9 @@ class QUI
         QUI\Setup::all();
     }
 
+    /**
+     * @return array<string, array<string, mixed>>
+     */
     public static function backendGuiConfigs(): array
     {
         $config = [];
@@ -585,6 +592,8 @@ class QUI
 
     /**
      * Get registered vhosts
+     *
+     * @return array<string, mixed>
      */
     public static function vhosts(): array
     {
@@ -716,7 +725,7 @@ class QUI
      *
      * You can also use \QUI\Projects\Manager::getProject()
      *
-     * @param array|string $project - Project name | array('name' => , 'lang' => , 'template' => )
+     * @param array<string, mixed>|string $project - Project name | array('name' => , 'lang' => , 'template' => )
      * @param boolean|string $lang - Project lang (optional)
      * @param boolean|string $template - Project template (optional)
      *
@@ -808,6 +817,8 @@ class QUI
 
     /**
      * Returns all available languages
+     *
+     * @return string[]
      */
     public static function availableLanguages(): array
     {
@@ -1066,6 +1077,8 @@ class QUI
 
     /**
      * Returns a doctrine schema manager
+     *
+     * @return AbstractSchemaManager<\Doctrine\DBAL\Platforms\AbstractPlatform>
      *
      * @throws \Doctrine\DBAL\Exception
      */
