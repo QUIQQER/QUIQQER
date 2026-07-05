@@ -79,8 +79,14 @@ class Package extends QUI\QDOM
 
     protected string $packageDir = '';
 
+    /**
+     * @var array<string, mixed>|null
+     */
     protected ?array $packageXML = null;
 
+    /**
+     * @var array<string, mixed>|bool
+     */
     protected array|bool $composerData = false;
 
     protected ?string $configPath = null;
@@ -143,7 +149,7 @@ class Package extends QUI\QDOM
      * Return all providers
      *
      * @param bool|string $providerName - optional, Name of the wanted providers
-     * @return array
+     * @return array<array-key, mixed>
      *
      * @todo cache that
      */
@@ -171,6 +177,9 @@ class Package extends QUI\QDOM
         return $provider[$providerName];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getPackageXMLData(): array
     {
         if ($this->packageXML !== null) {
@@ -476,6 +485,8 @@ class Package extends QUI\QDOM
     /**
      * Return all preview images
      * Not the main image
+     *
+     * @return array<array-key, mixed>
      */
     public function getPreviewImages(): array
     {
@@ -514,6 +525,8 @@ class Package extends QUI\QDOM
 
     /**
      * Return the package lock data
+     *
+     * @return array<string, mixed>
      */
     public function getLock(): array
     {
@@ -530,6 +543,8 @@ class Package extends QUI\QDOM
 
     /**
      * Return the requirements / dependencies of the package
+     *
+     * @return array<string, mixed>
      */
     public function getDependencies(): array
     {
@@ -630,7 +645,8 @@ class Package extends QUI\QDOM
     /**
      * Execute the package setup
      *
-     * @param array $params - optional ['localePublish' => true, 'localeImport' => true, 'forceImport' => false]
+     * @param array<string, mixed> $params - optional ['localePublish' => true, 'localeImport' => true, 'forceImport' => false]
+     *
      * @throws QUI\Exception
      */
     public function setup(array $params = []): void
