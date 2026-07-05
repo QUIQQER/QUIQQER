@@ -38,10 +38,16 @@ use function trim;
  */
 class DBCheck extends QUI\System\Test
 {
+    /**
+     * @var array<string, Table>
+     */
     protected array $tables = [];
 
     protected bool $error = false;
 
+    /**
+     * @var array<int, array{table: string, dbTable: string, error: string}>
+     */
     protected array $errors = [];
 
     /**
@@ -195,10 +201,10 @@ class DBCheck extends QUI\System\Test
     /**
      * Extracts check relevant data from XML table information
      *
-     * @param array $info
+     * @param array<string, mixed> $info
      * @param boolean $isGlobal (optional) - is a global table
      *
-     * @return array
+     * @return array<string, mixed>
      */
     protected function extractTableData(array $info, bool $isGlobal = false): array
     {
@@ -287,7 +293,7 @@ class DBCheck extends QUI\System\Test
      * Compares xml data with database table data
      *
      * @param string $table - name of the table in the database
-     * @param array $tblData - the data extracted form the database.xml
+     * @param array<string, mixed> $tblData - the data extracted form the database.xml
      */
     protected function checkTableIntegrity(string $table, array $tblData): void
     {
@@ -515,6 +521,9 @@ class DBCheck extends QUI\System\Test
         return $this->tables[$table];
     }
 
+    /**
+     * @return array<int, string>
+     */
     private static function getPrimaryKeyColumns(Table $Table): array
     {
         try {
@@ -544,6 +553,9 @@ class DBCheck extends QUI\System\Test
         return $PrimaryKey->getColumns();
     }
 
+    /**
+     * @return array<int, array{Key_name: string, Column_name: string}>
+     */
     private function getTableKeys(string $table): array
     {
         $Table = $this->getTable($table);
@@ -565,6 +577,9 @@ class DBCheck extends QUI\System\Test
         return $keys;
     }
 
+    /**
+     * @return array<int, array{Field: string, Type: string, Null: string, Extra: string}>
+     */
     private function getTableFieldsInfos(string $table): array
     {
         $fields = [];
@@ -576,6 +591,9 @@ class DBCheck extends QUI\System\Test
         return $fields;
     }
 
+    /**
+     * @return array{Field: string, Type: string, Null: string, Extra: string}
+     */
     private function createFieldInfo(Column $Column): array
     {
         $typeName = strtolower(DoctrineType::lookupName($Column->getType()));
