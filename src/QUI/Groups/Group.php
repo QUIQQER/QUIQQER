@@ -166,6 +166,7 @@ class Group extends QUI\QDOM
                 );
             }
 
+            // @phpstan-ignore-next-line Legacy fallback kept for defensive group repair.
             if (!isset($result[0]) && $id === Manager::EVERYONE_ID) {
                 QUI::getDataBaseConnection()->insert(QUI\Utils\Doctrine::quoteIdentifier(Manager::table()), [
                     'id' => Manager::EVERYONE_ID,
@@ -173,6 +174,7 @@ class Group extends QUI\QDOM
                 ]);
 
                 $result = QUI::getGroups()->getGroupData($id);
+            // @phpstan-ignore-next-line Legacy fallback kept for defensive group repair.
             } elseif (!isset($result[0]) && $id === Manager::GUEST_ID) {
                 QUI::getDataBaseConnection()->insert(QUI\Utils\Doctrine::quoteIdentifier(Manager::table()), [
                     'id' => Manager::GUEST_ID,
@@ -188,6 +190,7 @@ class Group extends QUI\QDOM
             );
         }
 
+        // @phpstan-ignore-next-line Legacy guard kept for defensive group repair.
         if (!isset($result[0])) {
             throw new QUI\Exception(
                 ['quiqqer/core', 'exception.lib.qui.group.doesnt.exist'],
