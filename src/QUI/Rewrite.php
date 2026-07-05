@@ -299,8 +299,7 @@ class Rewrite
 
             // project
             if (
-                isset($_url[0])
-                && substr($_url[0], 0, 1) === self::URL_PROJECT_CHARACTER
+                substr($_url[0], 0, 1) === self::URL_PROJECT_CHARACTER
             ) {
                 $this->project_str = str_replace(
                     $defaultSuffix,
@@ -428,9 +427,7 @@ class Rewrite
                         $imageNotError = true;
                     }
 
-                    if (isset($part_size[0])) {
-                        $width = (int)$part_size[0];
-                    }
+                    $width = (int)$part_size[0];
 
                     if (isset($part_size[1])) {
                         $height = (int)$part_size[1];
@@ -960,7 +957,7 @@ class Rewrite
             $error = explode(',', $error);
 
             try {
-                if (!isset($error[0]) || !isset($error[1]) || !isset($error[2])) {
+                if (!isset($error[1]) || !isset($error[2])) {
                     $Standard = QUI::getProjectManager()->getStandard();
 
                     $error[0] = $Standard->getName();
