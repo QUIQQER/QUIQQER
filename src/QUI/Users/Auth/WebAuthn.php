@@ -20,6 +20,9 @@ class WebAuthn extends AbstractAuthenticator
     protected ?User $User = null;
     protected ?string $user = null;
 
+    /**
+     * @param array<array-key, mixed>|int|string|User|null $user
+     */
     public function __construct(null | array | int | string | User $user = null)
     {
         if (empty($user)) {
@@ -133,6 +136,9 @@ class WebAuthn extends AbstractAuthenticator
         );
     }
 
+    /**
+     * @param string|int|array<string, mixed> $authParams
+     */
     public function auth(string | int | array $authParams): bool
     {
         if (is_string($authParams)) {
