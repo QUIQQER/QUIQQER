@@ -36,26 +36,36 @@ class Template extends QUI\QDOM
 {
     /**
      * Registered template engines
+     *
+     * @var array<string, string>
      */
     protected array $engines = [];
 
     /**
      * Header extensions
+     *
+     * @var array<int, string>
      */
     protected array $header = [];
 
     /**
      * Footer extensions
+     *
+     * @var array<int, string>
      */
     protected array $footer = [];
 
     /**
      * assigned vars
+     *
+     * @var array<string, mixed>
      */
     protected array $assigned = [];
 
     /**
      * modules that loaded after the onload event
+     *
+     * @var array<int, string>
      */
     protected array $onLoadModules = [];
 
@@ -67,6 +77,8 @@ class Template extends QUI\QDOM
 
     /**
      * Project template list
+     *
+     * @var array<string, array<int, string>|false>
      */
     protected array $templates = [];
 
@@ -117,6 +129,8 @@ class Template extends QUI\QDOM
 
     /**
      * Return the current header extensions
+     *
+     * @return array<int, string>
      */
     public function getExtendHeader(): array
     {
@@ -208,6 +222,8 @@ class Template extends QUI\QDOM
 
     /**
      * Return the current footer extensions
+     *
+     * @return array<int, string>
      */
     public function getExtendFooter(): array
     {
@@ -225,6 +241,8 @@ class Template extends QUI\QDOM
     /**
      * Returns the url for a file
      * - also considers template inheritance - template parent
+     *
+     * @param string $path
      */
     public function getTemplateUrl($path): string
     {
@@ -266,7 +284,7 @@ class Template extends QUI\QDOM
      * Return a template output
      *
      * @param string $template - Path to a template
-     * @param array $params (optional) - Engine params
+     * @param array<string, mixed> $params (optional) - Engine params
      * @return string
      *
      * @throws QUI\Exception
@@ -804,7 +822,7 @@ class Template extends QUI\QDOM
      * Return the layout of the template
      * If a template is set to the project
      *
-     * @param array $params - body params
+     * @param array<string, mixed> $params - body params
      *
      * @return string
      */
@@ -891,6 +909,8 @@ class Template extends QUI\QDOM
     /**
      * Return all project templates that have a site.xml
      * -> consider template inheritance
+     *
+     * @return array<int, string>|false
      */
     protected function getProjectTemplates(Projects\Project $Project): bool|array
     {
@@ -936,7 +956,7 @@ class Template extends QUI\QDOM
      * Return the Body of the Template
      * -> body.html
      *
-     * @param array $params - body params
+     * @param array<string, mixed> $params - body params
      *
      * @return string
      */
