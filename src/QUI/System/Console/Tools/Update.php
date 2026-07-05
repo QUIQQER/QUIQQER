@@ -417,11 +417,7 @@ class Update extends QUI\System\Console\Tool
                 try {
                     $Packages->update(false, false, $PackageOutput);
                 } finally {
-                    $buffer = ob_get_clean();
-
-                    if ($buffer !== false) {
-                        $this->writeBufferedPackageOutput($buffer, $PackageOutput);
-                    }
+                    $this->writeBufferedPackageOutput((string)ob_get_clean(), $PackageOutput);
                 }
 
                 $Output->success('Composer update completed');
