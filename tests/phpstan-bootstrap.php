@@ -19,4 +19,5 @@ require_once __DIR__ . '/stubs/QUI/AI/MCP/ToolHelper.php';
 require_once __DIR__ . '/stubs/QUI/AI/MCP/Skill/SkillProviderInterface.php';
 require_once __DIR__ . '/stubs/QUI/AI/MCP/Skill/SkillRepository.php';
 require_once __DIR__ . '/stubs/QUI/FrontendUsers/Exception.php';
+require_once __DIR__ . '/stubs/QUI/FrontendUsers/InvalidFormField.php';
 require_once __DIR__ . '/stubs/QUI/FrontendUsers/AbstractRegistrar.php';
