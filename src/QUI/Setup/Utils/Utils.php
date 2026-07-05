@@ -147,7 +147,7 @@ class Utils
             $version = shell_exec('apache2 -v 2> /dev/null');
             $regex = "/Apache\\/([0-9\\.]*)/i";
             $res = preg_match($regex, $version, $matches);
-            if ($res && isset($matches[1])) {
+            if ($res) {
                 $version = $matches[1];
 
                 $versionParts = explode('.', $version);
@@ -168,7 +168,7 @@ class Utils
             $regex = "/Apache\\/([0-9\\.]*)/i";
             $res = preg_match($regex, $version, $matches);
 
-            if ($res && isset($matches[1])) {
+            if ($res) {
                 $version = $matches[1];
                 $versionParts = explode('.', $version);
 
@@ -191,7 +191,7 @@ class Utils
             $version = shell_exec('nginx -v 2>&1 ');
             $regex = '~nginx/([0-9]+\.[0-9]+\.[0-9])+~i';
             $res = preg_match($regex, $version, $matches);
-            if ($res && isset($matches[1])) {
+            if ($res) {
                 $nginx = true;
             }
         }
