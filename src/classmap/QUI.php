@@ -90,7 +90,7 @@ class QUI
     /**
      * QUI vhosts, use \QUI::vhosts();
      *
-     * @var array<string, mixed>|null
+     * @var array<array-key, mixed>|null
      */
     public static ?array $vhosts = null;
 
@@ -593,7 +593,7 @@ class QUI
     /**
      * Get registered vhosts
      *
-     * @return array<string, mixed>
+     * @return array<array-key, mixed>
      */
     public static function vhosts(): array
     {
