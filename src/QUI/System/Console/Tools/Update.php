@@ -30,6 +30,7 @@ use function preg_split;
 use function proc_close;
 use function proc_get_status;
 use function proc_open;
+use function rtrim;
 use function flush;
 use function str_pad;
 use function str_replace;
@@ -58,7 +59,7 @@ class Update extends QUI\System\Console\Tool
     /**
      * @var array<string, bool>
      */
-    private array $composerChangeSummaries = [];
+    private array $composerChangesWritten = [];
 
     private int $updateOutputSectionOffset = 0;
 
@@ -405,7 +406,7 @@ class Update extends QUI\System\Console\Tool
                 $Packages->getComposer()->setOutput($CLIOutput);
                 $this->setupPackageCount = 0;
                 $this->composerUpdateHeaderWritten = false;
-                $this->composerChangeSummaries = [];
+                $this->composerChangesWritten = [];
                 $PackageOutput = new UpdatePackageOutput(
                     $Output,
                     $this->getVerbosityLevel(),
@@ -742,31 +743,19 @@ class Update extends QUI\System\Console\Tool
                 $Instance->writeComposerChangeHeader();
 
                 if ($verbosity === 0) {
-                    if ($upgrade || $installing || $remove) {
-                        foreach ($changedPackages as $package) {
-                            $package = trim(strip_tags($package));
+                    foreach ($changedPackages as $package) {
+                        $package = $Instance->normalizeComposerChange($package);
 
-                            if ($package === '') {
-                                continue;
-                            }
-
-                            $Instance->getUpdateOutput()->listItem($package);
+                        if ($package === '') {
+                            continue;
                         }
 
-                        return;
-                    }
+                        if ($Instance->composerChangesWritten[$package] ?? false) {
+                            continue;
+                        }
 
-                    $label = 'Updates planned';
-
-                    if ($install || $installs) {
-                        $label = 'Installs planned';
-                    } elseif ($removals) {
-                        $label = 'Removals planned';
-                    }
-
-                    if (!($Instance->composerChangeSummaries[$label] ?? false)) {
-                        $Instance->getUpdateOutput()->info($label . ': ' . count($changedPackages));
-                        $Instance->composerChangeSummaries[$label] = true;
+                        $Instance->getUpdateOutput()->listItem($package);
+                        $Instance->composerChangesWritten[$package] = true;
                     }
 
                     return;
@@ -1168,6 +1157,14 @@ class Update extends QUI\System\Console\Tool
 
         $this->getUpdateOutput()->info($message);
         $this->composerUpdateHeaderWritten = true;
+    }
+
+    private function normalizeComposerChange(string $package): string
+    {
+        $package = trim(strip_tags($package));
+        $package = (string)preg_replace('/:\s.*$/', '', $package);
+
+        return rtrim(trim($package), ':');
     }
 
     /**

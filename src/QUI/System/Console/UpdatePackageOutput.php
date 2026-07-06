@@ -11,6 +11,7 @@ use QUI\Interfaces\System\SystemOutput;
 
 use function explode;
 use function preg_replace;
+use function rtrim;
 use function str_replace;
 use function str_contains;
 use function str_starts_with;
@@ -25,6 +26,11 @@ class UpdatePackageOutput implements SystemOutput
     private bool $requirementsHeadlineWritten = false;
 
     private bool $packageChangesHeadlineWritten = false;
+
+    /**
+     * @var array<string, bool>
+     */
+    private array $writtenComposerChanges = [];
 
     public function __construct(
         private UpdateConsoleOutput $Output,
@@ -105,7 +111,7 @@ class UpdatePackageOutput implements SystemOutput
             return;
         }
 
-        $this->Output->quote($message, $this->verbosity > 0 ? false : 'red');
+        $this->Output->quote($message);
     }
 
     private function writeComposerChange(string $message): bool
@@ -155,16 +161,29 @@ class UpdatePackageOutput implements SystemOutput
         }
 
         foreach ($changedPackages as $package) {
-            $package = trim(strip_tags($package));
+            $package = $this->normalizeComposerChange($package);
 
             if ($package === '') {
                 continue;
             }
 
+            if ($this->writtenComposerChanges[$package] ?? false) {
+                continue;
+            }
+
             $this->Output->listItem($package);
+            $this->writtenComposerChanges[$package] = true;
         }
 
         return true;
+    }
+
+    private function normalizeComposerChange(string $package): string
+    {
+        $package = trim(strip_tags($package));
+        $package = (string)preg_replace('/:\s.*$/', '', $package);
+
+        return rtrim(trim($package), ':');
     }
 
     private function sanitize(string $message): string
