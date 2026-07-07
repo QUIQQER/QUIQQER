@@ -22,15 +22,22 @@ class Handler
 {
     protected static ?Handler $Instance = null;
 
+    /**
+     * @var array<int, string>
+     */
     protected array $list = [];
 
     /**
      * list of needed css files
+     *
+     * @var array<int, string>
      */
     protected array $files = [];
 
     /**
      * optional extended icon metadata: label, categories, aliases, searchTerms
+     *
+     * @var array<int, array<string, mixed>>
      */
     protected array $iconData = [];
 
@@ -62,6 +69,9 @@ class Handler
         $this->files[] = $file;
     }
 
+    /**
+     * @return array<int, string>
+     */
     public function getCSSFiles(): array
     {
         return $this->files;
@@ -72,6 +82,9 @@ class Handler
         $this->files = [];
     }
 
+    /**
+     * @param array<int, string> $icons
+     */
     public function addIcons(array $icons): void
     {
         foreach ($icons as $icon) {
@@ -80,13 +93,16 @@ class Handler
     }
 
     /**
-     * @param $iconClass
+     * @param string $iconClass
      */
     public function addIcon($iconClass): void
     {
         $this->list[] = trim($iconClass);
     }
 
+    /**
+     * @param string $value
+     */
     public function isIcon($value): bool
     {
         $classes = array_flip($this->list);
@@ -107,6 +123,8 @@ class Handler
      * class list.
      *
      * Recognised keys per entry: class, label, categories, aliases, searchTerms.
+     *
+     * @param array<int, mixed> $entries
      */
     public function addIconData(array $entries): void
     {
@@ -120,6 +138,9 @@ class Handler
         }
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function getIconData(): array
     {
         return $this->iconData;
@@ -139,6 +160,9 @@ class Handler
         return json_encode($this->toArray());
     }
 
+    /**
+     * @return array<int, string>
+     */
     public function toArray(): array
     {
         return $this->list;

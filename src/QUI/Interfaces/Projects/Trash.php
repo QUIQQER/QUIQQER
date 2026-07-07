@@ -20,9 +20,9 @@ interface Trash
     /**
      * Return the trash list
      *
-     * @param array $params - \QUI\Utils\Grid params
+     * @param array<string, mixed> $params - \QUI\Utils\Grid params
      *
-     * @return array
+     * @return array<array-key, mixed>
      */
     public function getList(array $params = []): array;
 }

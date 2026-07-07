@@ -29,6 +29,9 @@ class QUIQQER extends AbstractAuthenticator
     protected ?string $user = null;
     protected bool $authenticated = false;
 
+    /**
+     * @param array<array-key, mixed>|int|string|User|null $user
+     */
     public function __construct(null | array | int | string | User $user = null)
     {
         if (empty($user)) {
@@ -152,6 +155,8 @@ class QUIQQER extends AbstractAuthenticator
 
     /**
      * Authenticate the user
+     *
+     * @param string|int|array<string, mixed> $authParams
      *
      * @throws Exception
      * @throws QUI\Database\Exception

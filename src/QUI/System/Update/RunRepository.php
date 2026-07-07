@@ -16,6 +16,9 @@ class RunRepository
     ) {
     }
 
+    /**
+     * @param array<string, mixed> $metadata
+     */
     public function create(?int $now = null, array $metadata = []): Run
     {
         $now ??= time();
@@ -112,6 +115,9 @@ class RunRepository
         }
     }
 
+    /**
+     * @return resource
+     */
     public function acquireLock(string $id)
     {
         RunState::assertValidIdentifier($id);
@@ -131,6 +137,9 @@ class RunRepository
         return $handle;
     }
 
+    /**
+     * @param resource $handle
+     */
     public function releaseLock($handle): void
     {
         if (!is_resource($handle)) {
@@ -172,6 +181,9 @@ class RunRepository
         return $state;
     }
 
+    /**
+     * @return array<int, string>
+     */
     public function deleteExpired(int $now): array
     {
         if (!is_dir($this->root)) {

@@ -158,6 +158,8 @@ class Utils
      * Return data table array for the Site Object
      * a list of the extra database and extra attributes for saving the site
      * the extra attributes are all from database.xml files
+     *
+     * @return array<array-key, mixed>
      */
     public static function getDataListForSite(Projects\Site $Site): array
     {
@@ -253,6 +255,8 @@ class Utils
 
     /**
      * Return database.xml list for the Site Object
+     *
+     * @return array<int, array<string, string>>
      */
     public static function getDataBaseXMLListForSite(Projects\Site $Site): array
     {
@@ -329,6 +333,8 @@ class Utils
 
     /**
      * Return database.xml list for the Site Object
+     *
+     * @return array<array-key, mixed>
      */
     public static function getExtraAttributeListForSite(Projects\Site $Site): array
     {
@@ -534,6 +540,8 @@ class Utils
 
     /**
      * Return the admin site modules from site.xml`s
+     *
+     * @return bool|array<string, mixed>
      */
     public static function getAdminSiteModulesFromSite(Edit | Projects\Site $Site): bool | array
     {
@@ -682,6 +690,8 @@ class Utils
     /**
      * Return a site by an url (relative url)
      *
+     * @param string $link
+     *
      * @throws Exception
      */
     public static function getSiteByUrl(Project $Project, $link): Projects\Site
@@ -707,10 +717,10 @@ class Utils
      * site list from controls/projects/project/site/Select
      *
      * @param Project $Project - Project of the sites
-     * @param array|string $list - list from controls/projects/project/site/Select
-     * @param array $params - order / sort params
+     * @param array<array-key, mixed>|string $list - list from controls/projects/project/site/Select
+     * @param array<string, mixed> $params - order / sort params
      *
-     * @return array
+     * @return array<int, mixed>
      *
      * @throws QUI\Database\Exception
      */

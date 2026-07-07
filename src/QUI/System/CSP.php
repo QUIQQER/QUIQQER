@@ -33,12 +33,16 @@ class CSP
 
     /**
      * List of csp directives
+     *
+     * @var array<int, string>
      */
     protected array $allowedIni = [];
 
     /**
      * List of csp directives
      * - default directives
+     *
+     * @var array<string, string>
      */
     protected array $cspDirective = [
         'base' => 'base-uri',
@@ -61,6 +65,8 @@ class CSP
 
     /**
      * csp written out
+     *
+     * @var array<string, string>
      */
     protected array $cspSource = [
         'none' => "'none'",
@@ -141,6 +147,8 @@ class CSP
     }
 
     /**
+     * @return array<string, string>
+     *
      * @throws Exception
      */
     public function getCSPDirectiveConfig(): array
@@ -186,6 +194,8 @@ class CSP
 
     /**
      * Returns all available CSP sources
+     *
+     * @return array<string, string>
      */
     public function getCSPSources(): array
     {
@@ -194,6 +204,8 @@ class CSP
 
     /**
      * Returns all allowed csp directives
+     *
+     * @return array<int, string>
      */
     public function getAllowedCSPList(): array
     {
@@ -208,6 +220,8 @@ class CSP
 
     /**
      * Return all available CSP directives
+     *
+     * @return array<string, string>
      */
     public function getCSPDirectives(): array
     {
@@ -217,8 +231,8 @@ class CSP
     /**
      * Save the directive
      *
-     * @param $directive
-     * @param $value
+     * @param string $directive
+     * @param string $value
      *
      * @throws QUI\Exception
      */

@@ -14,6 +14,9 @@ abstract class AbstractInstallationWizardStep extends QUI\Control implements Ins
     {
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(?Locale $Locale = null): array
     {
         return [

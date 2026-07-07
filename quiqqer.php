@@ -63,29 +63,29 @@ if ($isComposerMode) {
 
     $packagesDir = dirname(__FILE__, 3);
     $cmsDir = dirname($packagesDir);
+    $composerPhar = $cmsDir . '/var/composer/composer.phar';
+    $composerPackageBin = $packagesDir . '/composer/composer/bin/composer';
 
     $argv = array_values($_SERVER['argv']);
 
-    $_SERVER['argv'] = array_merge(
-        [$packagesDir . '/composer/composer/bin/composer'],
-        $argv
-    );
+    // Prefer the PHAR so composer/composer can be updated without executing itself.
+    $_SERVER['argv'] = array_merge([$composerPhar], $argv);
 
     $_SERVER['argv'][] = '--working-dir=' . $cmsDir . '/var/composer';
 
-    if (file_exists(dirname(__FILE__, 3) . '/composer/composer/bin/composer')) {
-        require dirname(__FILE__, 3) . '/composer/composer/bin/composer';
+    if (file_exists($composerPhar)) {
+        array_shift($_SERVER['argv']);
+        $argString = implode(' ', array_map('escapeshellarg', $_SERVER['argv']));
+
+        system(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($composerPhar) . ' self-update');
+        system(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($composerPhar) . ' ' . $argString);
         exit;
     }
 
-    $composerPhar = $cmsDir . '/var/composer/composer.phar';
+    $_SERVER['argv'][0] = $composerPackageBin;
 
-    if (file_exists($composerPhar)) {
-        array_shift($_SERVER['argv']);
-        $argString = implode(' ', $_SERVER['argv']);
-
-        system(PHP_BINARY . ' ' . $composerPhar . ' self-update');
-        system(PHP_BINARY . ' ' . $composerPhar . ' ' . $argString);
+    if (file_exists($composerPackageBin)) {
+        require $composerPackageBin;
         exit;
     }
 

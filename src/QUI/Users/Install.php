@@ -188,6 +188,8 @@ class Install
     }
 
     /**
+     * @param array<string, mixed> $options
+     *
      * @throws \Doctrine\DBAL\Exception
      */
     private static function ensureColumnDefinition(

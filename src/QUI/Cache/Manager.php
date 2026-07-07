@@ -60,9 +60,14 @@ class Manager
 
     /**
      * all stash cache objects
+     *
+     * @var array<int, Stash\Interfaces\DriverInterface>|null
      */
     public static ?array $handlers = null;
 
+    /**
+     * @var array<array-key, mixed>
+     */
     protected static array $drivers = [];
 
     protected static string | int | null $currentDriver = null;
@@ -247,6 +252,9 @@ class Manager
         return self::$Stash->getItem($key);
     }
 
+    /**
+     * @return array<int, Stash\Interfaces\DriverInterface>
+     */
     public static function getHandlers(): array
     {
         $Config = self::getConfig();
@@ -318,6 +326,8 @@ class Manager
 
     /**
      * Return the current cache driver.
+     *
+     * @param array<string, mixed> $options
      *
      * @throws Stash\Exception\RuntimeException
      */

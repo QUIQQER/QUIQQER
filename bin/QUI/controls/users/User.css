@@ -18,6 +18,31 @@
     float: none;
 }
 
+.quiqqer-user-authenticator-status,
+.quiqqer-user-authenticator-settings {
+    align-items: center;
+    display: inline-flex;
+    height: 34px;
+    justify-content: center;
+    line-height: 1;
+    min-height: 34px;
+    padding-bottom: 0;
+    padding-top: 0;
+    vertical-align: middle;
+}
+
+.quiqqer-user-authenticator-status {
+    min-width: 104px;
+}
+
+.quiqqer-user-authenticator-settings {
+    min-width: 42px;
+    width: 42px;
+}
+
+.quiqqer-user-authenticator-settings .fa {
+    line-height: 1;
+}
 
 .user-delete-window-list-entry {
     margin-bottom: 0.5rem;

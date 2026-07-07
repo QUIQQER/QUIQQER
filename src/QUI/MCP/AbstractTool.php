@@ -42,6 +42,9 @@ abstract class AbstractTool implements ToolInterface
         return new Edit(self::getProject($project, $lang), $siteId);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected static function parseProject(Project $Project): array
     {
         return [
@@ -53,6 +56,9 @@ abstract class AbstractTool implements ToolInterface
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected static function parseSite(Site $Site, bool $withAttributes = false): array
     {
         $Project = $Site->getProject();
@@ -78,6 +84,9 @@ abstract class AbstractTool implements ToolInterface
         return $result;
     }
 
+    /**
+     * @return array<string, array<string, mixed>>
+     */
     protected static function parseSiteLanguageLinks(Site $Site): array
     {
         $Project = $Site->getProject();
@@ -142,6 +151,9 @@ abstract class AbstractTool implements ToolInterface
         return $result;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected static function parseMediaItem(MediaFile $Item, bool $withAttributes = false): array
     {
         $Project = $Item->getProject();

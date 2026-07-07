@@ -40,6 +40,8 @@ class Health
     /**
      * System health check
      * Return the result of the system health check
+     *
+     * @return array<string, int>
      */
     public static function systemCheck(): array
     {
@@ -76,10 +78,10 @@ class Health
      * compare the folder with a file list array
      *
      * @param string $md5CheckFile - path to the md5 check file
-     * @param array $fileList - file list array
+     * @param array<int, string> $fileList - file list array
      * @param string $dir - directory
      *
-     * @return array
+     * @return array<string, int>
      */
     public static function checkArray(string $md5CheckFile, array $fileList, string $dir): array
     {
@@ -130,6 +132,8 @@ class Health
      * Package health check
      * Return the result of the package health check
      *
+     * @return array<string, int>
+     *
      * @throws Exception
      */
     public static function packageCheck(string $plugin): array
@@ -146,7 +150,8 @@ class Health
      * @param string $md5CheckFile - path to the md5 check file
      * @param string $dir - dir name, path to the dir
      *
-     * @return array
+     * @return array<string, int>
+     *
      * @throws Exception
      */
     public static function check(string $md5CheckFile, string $dir): array

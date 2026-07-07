@@ -22,12 +22,16 @@ use function is_dir;
 use function is_resource;
 use function method_exists;
 use function ob_get_clean;
+use function ob_get_level;
+use function ob_flush;
 use function ob_start;
 use function preg_replace;
 use function preg_split;
 use function proc_close;
 use function proc_get_status;
 use function proc_open;
+use function rtrim;
+use function flush;
 use function str_pad;
 use function str_replace;
 use function strip_tags;
@@ -55,7 +59,7 @@ class Update extends QUI\System\Console\Tool
     /**
      * @var array<string, bool>
      */
-    private array $composerChangeSummaries = [];
+    private array $composerChangesWritten = [];
 
     private int $updateOutputSectionOffset = 0;
 
@@ -213,6 +217,7 @@ class Update extends QUI\System\Console\Tool
                 }
 
                 self::onCliOutput($line, $this);
+                $this->flushOutputBuffer();
             }
         });
 
@@ -401,7 +406,7 @@ class Update extends QUI\System\Console\Tool
                 $Packages->getComposer()->setOutput($CLIOutput);
                 $this->setupPackageCount = 0;
                 $this->composerUpdateHeaderWritten = false;
-                $this->composerChangeSummaries = [];
+                $this->composerChangesWritten = [];
                 $PackageOutput = new UpdatePackageOutput(
                     $Output,
                     $this->getVerbosityLevel(),
@@ -413,11 +418,7 @@ class Update extends QUI\System\Console\Tool
                 try {
                     $Packages->update(false, false, $PackageOutput);
                 } finally {
-                    $buffer = ob_get_clean();
-
-                    if ($buffer !== false) {
-                        $this->writeBufferedPackageOutput($buffer, $PackageOutput);
-                    }
+                    $this->writeBufferedPackageOutput((string)ob_get_clean(), $PackageOutput);
                 }
 
                 $Output->success('Composer update completed');
@@ -742,31 +743,19 @@ class Update extends QUI\System\Console\Tool
                 $Instance->writeComposerChangeHeader();
 
                 if ($verbosity === 0) {
-                    if ($upgrade || $installing || $remove) {
-                        foreach ($changedPackages as $package) {
-                            $package = trim(strip_tags($package));
+                    foreach ($changedPackages as $package) {
+                        $package = $Instance->normalizeComposerChange($package);
 
-                            if ($package === '') {
-                                continue;
-                            }
-
-                            $Instance->getUpdateOutput()->listItem($package);
+                        if ($package === '') {
+                            continue;
                         }
 
-                        return;
-                    }
+                        if ($Instance->composerChangesWritten[$package] ?? false) {
+                            continue;
+                        }
 
-                    $label = 'Updates planned';
-
-                    if ($install || $installs) {
-                        $label = 'Installs planned';
-                    } elseif ($removals) {
-                        $label = 'Removals planned';
-                    }
-
-                    if (!($Instance->composerChangeSummaries[$label] ?? false)) {
-                        $Instance->getUpdateOutput()->info($label . ': ' . count($changedPackages));
-                        $Instance->composerChangeSummaries[$label] = true;
+                        $Instance->getUpdateOutput()->listItem($package);
+                        $Instance->composerChangesWritten[$package] = true;
                     }
 
                     return;
@@ -967,14 +956,13 @@ class Update extends QUI\System\Console\Tool
                 }
 
                 $this->writeLn();
-                $this->writeLn('You have changes in the following dependencies:', 'light_green');
+                $this->getUpdateOutput()->quote('You have changes in the following dependencies:');
 
                 foreach ($changesList as $path => $files) {
-                    $this->writeLn($path, 'yellow');
-                    $this->resetColor();
+                    $this->getUpdateOutput()->quote($path);
 
                     foreach ($files as $file) {
-                        $this->writeLn('- ' . $file);
+                        $this->getUpdateOutput()->quote($file);
                     }
                 }
             }
@@ -1024,6 +1012,9 @@ class Update extends QUI\System\Console\Tool
             || $this->hasVerbosityArgument(['--yes', '-y', 'yes', 'y']);
     }
 
+    /**
+     * @return array<string, bool>
+     */
     private function getComposerVerbosityOptions(): array
     {
         $level = $this->getVerbosityLevel();
@@ -1126,6 +1117,15 @@ class Update extends QUI\System\Console\Tool
         return false;
     }
 
+    private function flushOutputBuffer(): void
+    {
+        if (ob_get_level() > 0) {
+            ob_flush();
+        }
+
+        flush();
+    }
+
     private function writeBufferedPackageOutput(string $buffer, UpdatePackageOutput $Output): void
     {
         $lines = preg_split('/\r\n|\r|\n/', $buffer);
@@ -1157,6 +1157,14 @@ class Update extends QUI\System\Console\Tool
 
         $this->getUpdateOutput()->info($message);
         $this->composerUpdateHeaderWritten = true;
+    }
+
+    private function normalizeComposerChange(string $package): string
+    {
+        $package = trim(strip_tags($package));
+        $package = (string)preg_replace('/:\s.*$/', '', $package);
+
+        return rtrim(trim($package), ':');
     }
 
     /**

@@ -34,10 +34,10 @@ class Search
      * Returns full details
      *
      * @param string $searchTerm - search term
-     * @param array $searchParams - search parameters
+     * @param array<string, mixed> $searchParams - search parameters
      * @param bool $count (optional) - return count only
      *
-     * @return array
+     * @return array<string, mixed>
      *
      * @throws QUI\Exception
      */
@@ -198,10 +198,10 @@ class Search
      * Search in user table
      *
      * @param string $searchTerm - search term
-     * @param array $searchParams - search parameters
+     * @param array<string, mixed> $searchParams - search parameters
      * @param bool $count (optional) - return count only
      *
-     * @return array|int - user ids or count of user ids
+     * @return string[]|int - user ids or count of user ids
      */
     protected static function searchUsers(string $searchTerm, array $searchParams, bool $count = false): int|array
     {
@@ -335,10 +335,10 @@ class Search
      * Search in group table
      *
      * @param string $searchTerm - search term
-     * @param array $searchParams - search parameters
+     * @param array<string, mixed> $searchParams - search parameters
      * @param bool $count (optional) - return count only
      *
-     * @return array|int - group ids or count of group ids
+     * @return string[]|int - group ids or count of group ids
      */
     protected static function searchGroups(string $searchTerm, array $searchParams, bool $count = false): int|array
     {
@@ -436,6 +436,12 @@ class Search
         return $ids;
     }
 
+    /**
+     * @param string[] $selectFields
+     * @param string[] $uuids
+     *
+     * @return array<int, array<string, mixed>>
+     */
     private static function fetchRowsByUuids(string $table, array $selectFields, array $uuids): array
     {
         if (empty($uuids)) {
@@ -463,6 +469,9 @@ class Search
      * Search users and groups
      *
      * Returns only username, user ID and user Avatar
+     *
+     * @param array<string, mixed> $searchParams
+     * @return array<int, array<string, mixed>>
      *
      * @throws QUI\Exception
      */

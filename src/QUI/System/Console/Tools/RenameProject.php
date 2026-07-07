@@ -96,7 +96,7 @@ class RenameProject extends Tool
     /**
      * Removes forbidden characters from the project name
      *
-     * @param $name
+     * @param string $name
      *
      * @return array|string|string[]
      */

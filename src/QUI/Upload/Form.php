@@ -13,6 +13,9 @@ use function str_replace;
  */
 class Form extends QUI\QDOM
 {
+    /**
+     * @param array<string, mixed> $params
+     */
     public function __construct(array $params = [])
     {
         // defaults
@@ -101,6 +104,8 @@ class Form extends QUI\QDOM
 
     /**
      * Return a php bool var for js bool
+     *
+     * @param mixed $var
      */
     public function phpBool2JsBool($var): string
     {
@@ -112,8 +117,10 @@ class Form extends QUI\QDOM
     /**
      * Can be overwritten - will be called if the upload is finished
      *
-     * @param $file
-     * @param $params
+     * @param mixed $file
+     * @param mixed $params
+     *
+     * @return void
      */
     public function onFileFinish($file, $params)
     {

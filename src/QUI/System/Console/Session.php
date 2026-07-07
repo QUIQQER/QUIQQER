@@ -16,6 +16,9 @@ use Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorage;
  */
 class Session
 {
+    /**
+     * @var array<string, mixed>
+     */
     protected array $params = [];
 
     protected string $id;
@@ -36,14 +39,17 @@ class Session
     }
 
     /**
-     * @param $name
-     * @param $value
+     * @param string $name
+     * @param mixed $value
      */
     public function set($name, $value): void
     {
         $this->params[$name] = $value;
     }
 
+    /**
+     * @param string $name
+     */
     public function get($name): mixed
     {
         return $this->params[$name] ?? false;
@@ -81,6 +87,9 @@ class Session
         $this->params = [];
     }
 
+    /**
+     * @param string $sid
+     */
     public function getLastRefreshFrom($sid): int
     {
         return time();
@@ -96,6 +105,9 @@ class Session
 
     //region Session API placeholder
 
+    /**
+     * @return void
+     */
     public function start()
     {
     }
@@ -108,6 +120,9 @@ class Session
         QUI\Session::setup();
     }
 
+    /**
+     * @return void
+     */
     public function refresh()
     {
     }

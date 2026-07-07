@@ -115,6 +115,9 @@ class Queue
             ->from(self::quotedTable());
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     protected static function fetchById(int $id): ?array
     {
         $QueryBuilder = self::queryBuilder();
@@ -129,6 +132,9 @@ class Queue
         return $result ?: null;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     protected static function fetchNextQueuedMail(): ?array
     {
         $QueryBuilder = self::queryBuilder();
@@ -146,6 +152,9 @@ class Queue
         return $result ?: null;
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     protected static function fetchQueuedMailIds(): array
     {
         $QueryBuilder = self::queryBuilder();
@@ -296,7 +305,7 @@ class Queue
     /**
      * Send the mail
      *
-     * @param array $params - mail data
+     * @param array<string, mixed> $params - mail data
      * @return boolean
      *
      * @throws QUI\Exception
@@ -648,6 +657,8 @@ class Queue
     }
 
     /**
+     * @return array<int, array<string, mixed>>
+     *
      * @throws QUI\Database\Exception
      */
     public function getList(): array
@@ -659,6 +670,8 @@ class Queue
     }
 
     /**
+     * @param array<string, mixed> $params
+     *
      * @throws QUI\Database\Exception
      */
     protected function markAsSendingAndIncreaseRetry(array $params): int
@@ -693,6 +706,8 @@ class Queue
     }
 
     /**
+     * @param array<string, mixed> $params
+     *
      * @throws QUI\Database\Exception
      */
     protected function cancelIfReachedMaxRetries(array $params, int $retry): bool
@@ -737,6 +752,9 @@ class Queue
         );
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     protected function notifyAdminAboutCanceledMail(array $params, int $retryCount): void
     {
         $adminMail = trim((string)QUI::conf('mail', 'admin_mail'));
@@ -802,6 +820,9 @@ class Queue
         }
     }
 
+    /**
+     * @return array<int, string>
+     */
     protected function extractMailAddresses(mixed $mails): array
     {
         if (is_string($mails)) {

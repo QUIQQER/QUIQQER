@@ -40,7 +40,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
     /**
      * Returns the items in the trash
      *
-     * @param array $params - QUI\Utils\Grid parameters
+     * @param array<string, mixed> $params - QUI\Utils\Grid parameters
      */
     public function getList(array $params = []): array
     {

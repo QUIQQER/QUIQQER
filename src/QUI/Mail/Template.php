@@ -17,6 +17,9 @@ use function file_exists;
  */
 class Template extends QUI\QDOM
 {
+    /**
+     * @param array<array-key, mixed> $params
+     */
     public function __construct(array $params = [])
     {
         $this->setAttributes([

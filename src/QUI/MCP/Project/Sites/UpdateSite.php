@@ -105,6 +105,9 @@ class UpdateSite extends AbstractTool
         );
     }
 
+    /**
+     * @return array<int, string>
+     */
     protected static function getUpdateAttributes(Edit $Site): array
     {
         /** @var array<int|string, mixed> $attributes */

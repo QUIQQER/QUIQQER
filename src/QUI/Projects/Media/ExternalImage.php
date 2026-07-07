@@ -194,7 +194,7 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
     /**
      * Return the Image specific max resize params
      *
-     * @return array - array('width' => 100, 'height' => 100)
+     * @return array{width: bool, height: bool} - array('width' => 100, 'height' => 100)
      */
     public function getResizeSize(bool $maxWidth = false, bool $maxHeight = false): array
     {
@@ -295,6 +295,8 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
 
     /**
      * Delete the admin cache
+     *
+     * @return void
      */
     public function deleteAdminCache()
     {
@@ -320,6 +322,8 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
 
     /**
      * Generate the MD5 file hash and set it to the Database and to the Object
+     *
+     * @return void
      */
     public function generateMD5()
     {
@@ -328,6 +332,8 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
 
     /**
      * Generate the SHA1 file hash and set it to the Database and to the Object
+     *
+     * @return void
      */
     public function generateSHA1()
     {

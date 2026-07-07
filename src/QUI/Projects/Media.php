@@ -44,6 +44,8 @@ class Media extends QUI\QDOM
 
     /**
      * internal child cache
+     *
+     * @var array<int, QUI\Interfaces\Projects\Media\File>
      */
     protected array $children = [];
 
@@ -313,7 +315,7 @@ class Media extends QUI\QDOM
             }
 
             $addedColumns[] = new \Doctrine\DBAL\Schema\Column(
-                $name,
+                self::getMediaSchemaColumnName($name),
                 \Doctrine\DBAL\Types\Type::getType($definition["type"]),
                 $definition["options"]
             );
@@ -393,8 +395,17 @@ class Media extends QUI\QDOM
     private static function addMediaColumns(\Doctrine\DBAL\Schema\Table $Table): void
     {
         foreach (self::getMediaColumnDefinitions() as $name => $definition) {
-            $Table->addColumn($name, $definition["type"], $definition["options"]);
+            $Table->addColumn(self::getMediaSchemaColumnName($name), $definition["type"], $definition["options"]);
         }
+    }
+
+    private static function getMediaSchemaColumnName(string $name): string
+    {
+        if ($name === "external") {
+            return '"' . str_replace('"', '""', $name) . '"';
+        }
+
+        return $name;
     }
 
     private static function addMediaIndexes(\Doctrine\DBAL\Schema\Table $Table): void
@@ -404,6 +415,9 @@ class Media extends QUI\QDOM
         }
     }
 
+    /**
+     * @return array<string, array<string, mixed>>
+     */
     private static function getMediaColumnDefinitions(): array
     {
         return [
@@ -446,6 +460,9 @@ class Media extends QUI\QDOM
     }
 
 
+    /**
+     * @param array<string, mixed> $conditions
+     */
     private static function applyMediaConditions(\Doctrine\DBAL\Query\QueryBuilder $QueryBuilder, array $conditions, string $method): void
     {
         $Platform = QUI::getDataBaseConnection()->getDatabasePlatform();
@@ -617,6 +634,8 @@ class Media extends QUI\QDOM
      */
     /**
      * Parse a database entry to a media object
+     *
+     * @param array<string, mixed> $result
      */
     public function parseResultToItem(array $result): QUI\Interfaces\Projects\Media\File
     {
@@ -631,9 +650,9 @@ class Media extends QUI\QDOM
     /**
      * Return the wanted children ids
      *
-     * @param array $params - DataBase params
+     * @param array<string, mixed> $params - DataBase params
      *
-     * @return array id list
+     * @return array<int, mixed> id list
      */
     public function getChildrenIds(array $params = []): array
     {

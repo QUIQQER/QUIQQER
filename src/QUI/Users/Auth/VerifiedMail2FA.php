@@ -25,6 +25,9 @@ class VerifiedMail2FA extends AbstractAuthenticator
     protected mixed $user = null;
     protected bool $authenticated = false;
 
+    /**
+     * @param array<array-key, mixed>|int|string|User|null $user
+     */
     public function __construct(null | array | int | string | User $user = null)
     {
         if (empty($user)) {
@@ -157,6 +160,9 @@ class VerifiedMail2FA extends AbstractAuthenticator
         );
     }
 
+    /**
+     * @param string|int|array<string, mixed> $authParams
+     */
     public function auth(string | int | array $authParams): bool
     {
         $uid = QUI::getSession()->get('uid');
@@ -349,6 +355,8 @@ class VerifiedMail2FA extends AbstractAuthenticator
     }
 
     /**
+     * @param mixed $code
+     *
      * @throws Exception
      */
     public static function enableByUser($code): bool

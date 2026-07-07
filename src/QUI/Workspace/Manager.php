@@ -198,6 +198,8 @@ class Manager
     }
 
     /**
+     * @return string[]
+     *
      * @throws QUI\Database\Exception
      * @throws QUI\Exception
      */
@@ -215,6 +217,8 @@ class Manager
 
     /**
      * Return the workspaces list from a user
+     *
+     * @return array<int, array<string, mixed>>
      *
      * @throws QUI\Database\Exception
      * @throws QUI\Exception
@@ -237,6 +241,9 @@ class Manager
         return $result;
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     protected static function fetchWorkspacesByUser(User $User): array
     {
         $QueryBuilder = QUI::getQueryBuilder();
@@ -252,6 +259,8 @@ class Manager
 
     /**
      * Saves a workspace
+     *
+     * @param array<string, mixed> $data
      *
      * @throws QUI\Exception
      */
@@ -303,6 +312,8 @@ class Manager
     }
 
     /**
+     * @return array<string, mixed>
+     *
      * @throws QUI\Exception
      */
     public static function getWorkspaceById(int $id, QUI\Users\User $User): array
@@ -371,6 +382,8 @@ class Manager
 
     /**
      * Return the available panels
+     *
+     * @return array<int, array<string, mixed>>
      */
     public static function getAvailablePanels(): array
     {

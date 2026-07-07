@@ -1,0 +1,23 @@
+<div class="quiqqer-webauthn-registration-control">
+    <label>
+        <span>{locale group="quiqqer/core" var="quiqqer.webauthn.registration.username.label"}</span>
+        <input type="text" name="username" autocomplete="username" required/>
+    </label>
+
+    <label>
+        <span>{locale group="quiqqer/core" var="quiqqer.webauthn.settings.name.label"}</span>
+        <input type="text"
+               name="credentialName"
+               placeholder="{locale group='quiqqer/core' var='quiqqer.webauthn.settings.name.placeholder'}"
+        />
+    </label>
+
+    <input type="hidden" name="attestation" value=""/>
+
+    <button type="button" name="register-passkey" class="btn btn-primary w-full">
+        <span class="fa fa-fingerprint"></span>
+        <span>{locale group="quiqqer/core" var="quiqqer.webauthn.registration.button"}</span>
+    </button>
+
+    <div data-name="message" class="quiqqer-webauthn-registration-message"></div>
+</div>

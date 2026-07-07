@@ -52,6 +52,8 @@ class MyDB implements \Stringable
 
     /**
      * Schließe die MySQL Verbindung
+     *
+     * @return void
      */
     public function close()
     {
@@ -81,9 +83,9 @@ class MyDB implements \Stringable
     /**
      * MASKIERTE QUERY
      *
-     * @param string $query
+     * @param mixed $query
      *
-     * @return array
+     * @return array<int, array<int|string, mixed>>
      *
      * @throws \QUI\Exception
      *
@@ -106,7 +108,7 @@ class MyDB implements \Stringable
     /**
      * MySQL Select
      *
-     * @param array $params
+     * @param array<string, mixed> $params
      *                      from => string table
      *                      select => string table
      *                      count => count | true oder AS Angabe
@@ -117,7 +119,7 @@ class MyDB implements \Stringable
      * @param string $type - BOTH, NUM, ASSOC, OBJ
      * @param string $type2 - ARRAY, ROW
      *
-     * @return array
+     * @return array<int|string, mixed>|object
      */
     public function select(array $params, $type = "ARRAY", $type2 = 'ARRAY')
     {
@@ -127,11 +129,11 @@ class MyDB implements \Stringable
     /**
      * Liefert Daten aus der Datenbank im Typ ARRAY oder ROW oder OBJEKT
      *
-     * @param array $params
+     * @param array<string, mixed> $params
      * @param string $type = BOTH, NUM, ASSOC, OBJ
      * @param string $qtype = BOTH, NUM, ASSOC
      *
-     * @return object|array
+     * @return object|array<int|string, mixed>
      */
     public function getData($params, $type = 'ARRAY', $qtype = "NUM")
     {
@@ -154,7 +156,7 @@ class MyDB implements \Stringable
     /**
      * Unmaskierte Query
      *
-     * @param array $params
+     * @param array<string, mixed> $params
      *
      * @return \PDOStatement
      */
@@ -168,7 +170,7 @@ class MyDB implements \Stringable
      *
      * @param string $table
      *
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     public function getFields($table)
     {
@@ -178,7 +180,7 @@ class MyDB implements \Stringable
     /**
      * Gibt die Tabellen zurück
      *
-     * @return array
+     * @return string[]
      */
     public function getTables()
     {
@@ -192,9 +194,9 @@ class MyDB implements \Stringable
      *
      * @param string $table
      * @param string $field
-     * @param string|array $fieldAndId
+     * @param string|array<string, mixed> $fieldAndId
      *
-     * @return array
+     * @return array<int|string, mixed>|object
      */
     public function getOneData($table, $field, $fieldAndId)
     {
@@ -211,8 +213,8 @@ class MyDB implements \Stringable
      * tabelle, array('name'=>'Horst', 'email'=>'horst@desgibbetnet.net'),"id=12 AND nachname = 'Meier'"
      *
      * @param string $table
-     * @param array $fieldValue
-     * @param string|array $fieldAndId
+     * @param array<string, mixed> $fieldValue
+     * @param string|array<string, mixed> $fieldAndId
      *
      * @return \PDOStatement
      */
@@ -225,6 +227,12 @@ class MyDB implements \Stringable
         ]);
     }
 
+    /**
+     * @param string $table
+     * @param array<string, mixed> $fieldValue
+     *
+     * @return int|string|false
+     */
     public function insertData($table, $fieldValue)
     {
         return $this->addData($table, $fieldValue);
@@ -234,7 +242,7 @@ class MyDB implements \Stringable
      * add a data row
      *
      * @param string $table
-     * @param array $FieldValue - [array('field1'=>'value1', 'field2'=>'value2', 'field3'=>'value3')]
+     * @param array<string, mixed> $FieldValue - [array('field1'=>'value1', 'field2'=>'value2', 'field3'=>'value3')]
      *
      * @return integer
      */
@@ -248,6 +256,10 @@ class MyDB implements \Stringable
 
     /**
      * Insert Query mit Rückgabe (lastInsertId)
+     *
+     * @param array<string, mixed> $params
+     *
+     * @return int|string|false
      */
     public function insert($params)
     {
@@ -260,7 +272,7 @@ class MyDB implements \Stringable
      * tabelle , array('id'=>1) oder string "id=1 AND name = 'Horst'"
      *
      * @param string $table
-     * @param string|array $fieldAndId
+     * @param string|array<string, mixed> $fieldAndId
      *
      * @return \PDOStatement
      * @throws Exception
@@ -277,7 +289,7 @@ class MyDB implements \Stringable
     /**
      * Optimiert Tabellen
      *
-     * @param string|array $tables
+     * @param string|string[] $tables
      */
     public function optimize($tables): void
     {
@@ -288,7 +300,7 @@ class MyDB implements \Stringable
      * Enter description here...
      *
      * @param string $table
-     * @param array $fields
+     * @param array<string, mixed> $fields
      */
     public function createTable($table, $fields): void
     {
@@ -300,7 +312,7 @@ class MyDB implements \Stringable
      * Wenn die Tabelle nicht existiert wird diese erstellt
      *
      * @param string $table
-     * @param array $fields
+     * @param array<string, mixed> $fields
      */
     public function createTableFields($table, $fields): void
     {
@@ -311,7 +323,7 @@ class MyDB implements \Stringable
      * Löscht die Felder einer Tabelle, wenn die Tabelle keine Felder mehr hätte wird diese gelöscht
      *
      * @param string $table - Tabelle
-     * @param array $fields - Felder welche gelöscht werden sollen
+     * @param string[] $fields - Felder welche gelöscht werden sollen
      */
     public function deleteTableFields($table, $fields): void
     {
@@ -358,7 +370,7 @@ class MyDB implements \Stringable
      *
      * @param string $table
      *
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     public function getRowsFromTable($table)
     {
@@ -381,7 +393,7 @@ class MyDB implements \Stringable
      *
      * @param string $table
      *
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     public function getKeys($table)
     {
@@ -392,7 +404,7 @@ class MyDB implements \Stringable
      * Prüft ob der PrimaryKey gesetzt ist
      *
      * @param string $table
-     * @param string|array $key
+     * @param string|array<string, mixed> $key
      *
      * @return boolean
      */
@@ -405,7 +417,7 @@ class MyDB implements \Stringable
      * Setzt ein PrimaryKey einer Tabelle
      *
      * @param string $table
-     * @param string|array $key
+     * @param string|array<string, mixed> $key
      *
      * @return boolean
      */
@@ -432,7 +444,7 @@ class MyDB implements \Stringable
      *
      * @param string $table
      *
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     public function getIndex($table)
     {
@@ -443,7 +455,7 @@ class MyDB implements \Stringable
      * Setzt einen Index
      *
      * @param string $table
-     * @param string|array $index
+     * @param string|array<string, mixed> $index
      *
      * @return boolean
      */
@@ -456,7 +468,7 @@ class MyDB implements \Stringable
      * Setzt einen Index
      *
      * @param string $table
-     * @param string|array $index
+     * @param string|array<string, mixed> $index
      *
      * @return boolean
      */
@@ -484,6 +496,8 @@ class MyDB implements \Stringable
      * @param string $table
      * @param string $file
      *
+     * @return void
+     *
      * @deprecated
      */
     public function backup($table, $file)
@@ -495,6 +509,8 @@ class MyDB implements \Stringable
      *
      * @param string $file
      * @param string $table
+     *
+     * @return void
      *
      * @deprecated
      */

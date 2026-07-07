@@ -99,8 +99,14 @@ class User implements QUIUserInterface
      */
     protected bool $company = false;
 
+    /**
+     * @var class-string<AuthenticatorInterface>[]
+     */
     protected array $authenticator = [];
 
+    /**
+     * @var array<string, mixed>
+     */
     protected array $settings;
 
     /**
@@ -110,16 +116,22 @@ class User implements QUIUserInterface
 
     /**
      * Extra fields
+     *
+     * @var array<string, mixed>
      */
     protected array $extra = [];
 
     /**
      * user plugins
+     *
+     * @var array<string, mixed>
      */
     protected array $plugins = [];
 
     /**
      * User addresses
+     *
+     * @var array<int|string, Address>
      */
     protected array $address_list = [];
 
@@ -1006,6 +1018,8 @@ class User implements QUIUserInterface
      * Return the list which extra attributes exist
      * Plugins could extend the user attributes
      * look at https://dev.quiqqer.com/quiqqer/core/wikis/User-Xml
+     *
+     * @return array<int, array<string, mixed>>
      */
     public function getListOfExtraAttributes(): array
     {
@@ -1048,6 +1062,8 @@ class User implements QUIUserInterface
     /**
      * Read a user.xml and return the attributes,
      * if some extra attributes defined
+     *
+     * @return array<int, array<string, mixed>>
      */
     protected function readAttributesFromUserXML(string $file): array
     {
@@ -1156,7 +1172,7 @@ class User implements QUIUserInterface
 
     public function setGroups(null | array | string $groups): void
     {
-        if (empty($groups)) {
+        if (empty($groups) || (is_string($groups) && trim($groups, ',') === '')) {
             return;
         }
 
@@ -1578,6 +1594,8 @@ class User implements QUIUserInterface
 
     /**
      * @deprecated use getAttributes
+     *
+     * @return array<string, mixed>
      */
     public function getAllAttributes(): array
     {
@@ -2126,6 +2144,8 @@ class User implements QUIUserInterface
     }
 
     /**
+     * @param string $permission
+     *
      * @throws QUI\Permissions\Exception
      */
     public function checkPermission($permission): void
@@ -2462,6 +2482,7 @@ class User implements QUIUserInterface
 
         foreach ($attributes as $attribute) {
             if ($attribute->getValue() === $value) {
+                /** @var AbstractVerifiableUserAttribute $attribute */
                 return $attribute;
             }
         }
@@ -2513,6 +2534,9 @@ class User implements QUIUserInterface
         return $this->verifiableAttributes;
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     protected function parseVerifiedAttributesToArray(): array
     {
         $collection = $this->getVerifiedAttributes();

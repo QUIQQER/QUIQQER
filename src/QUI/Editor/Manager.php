@@ -76,12 +76,25 @@ class Manager
      */
     public static ?Config $Config = null;
 
+    /**
+     * @var array<int, string>|null
+     */
     protected static ?array $toolbars = null;
+
+    /**
+     * @var array<int, array<string, mixed>>|null
+     */
     protected static ?array $editorDefinitions = null;
+
+    /**
+     * @var array<string, array<string, mixed>>|null
+     */
     protected static ?array $toolbarDefinitions = null;
 
     /**
      * Editor plugins
+     *
+     * @var array<int, object>
      */
     protected array $plugins = [];
 
@@ -158,6 +171,8 @@ class Manager
     /**
      * Return all settings of the manager
      *
+     * @return array<string, mixed>
+     *
      * @throws QUI\Exception
      */
     public static function getConfig(): array
@@ -185,6 +200,8 @@ class Manager
 
     /**
      * Return all available toolbars
+     *
+     * @return array<int, string>|null
      */
     public static function getToolbars(): ?array
     {
@@ -207,6 +224,11 @@ class Manager
         return $availableToolbars;
     }
 
+    /**
+     * @param string $search
+     *
+     * @return array<int, string>
+     */
     public static function search($search): array
     {
         return array_filter(self::getToolbars(), static function ($toolbar) use ($search): bool {
@@ -216,6 +238,8 @@ class Manager
 
     /**
      * Return all known toolbar definitions.
+     *
+     * @return array<string, array<string, mixed>>
      */
     public static function getToolbarDefinitions(): array
     {
@@ -293,6 +317,8 @@ class Manager
 
     /**
      * Return known editor definitions from installed packages.
+     *
+     * @return array<int, array<string, mixed>>
      */
     protected static function getEditorDefinitions(): array
     {
@@ -385,6 +411,9 @@ class Manager
         QUIFile::mkdir(self::getToolbarsPath() . $module . '/');
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected static function getCustomToolbarFiles(): array
     {
         $result = [];
@@ -425,6 +454,9 @@ class Manager
         return $result;
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected static function getLegacyToolbarFiles(): array
     {
         $result = [];
@@ -511,6 +543,8 @@ class Manager
 
     /**
      * Return all available toolbars for a user
+     *
+     * @return array<int, string>
      */
     public static function getToolbarsFromUser(QUI\Interfaces\Users\User $User): array
     {
@@ -554,6 +588,8 @@ class Manager
 
     /**
      * Return all available toolbars for a group
+     *
+     * @return array<int, string>
      */
     public static function getToolbarsFromGroup(QUI\Groups\Group $Group): array
     {
@@ -586,6 +622,9 @@ class Manager
         return $result;
     }
 
+    /**
+     * @param mixed $toolbar
+     */
     public static function existsToolbar($toolbar): bool
     {
         $toolbar = self::normalizeToolbarIdentifier((string)$toolbar);
@@ -630,6 +669,8 @@ class Manager
 
     /**
      * Return toolbar data for an identifier.
+     *
+     * @return array<array-key, mixed>
      */
     public static function getToolbarData(string $toolbar): array
     {
@@ -644,6 +685,8 @@ class Manager
 
     /**
      * Return the Editor Settings for a specific Project
+     *
+     * @return array<string, mixed>
      *
      * @throws QUI\Exception
      */
@@ -808,6 +851,9 @@ class Manager
 
     /**
      * Append wysiwyg settings from a settings.xml file.
+     *
+     * @param array<array-key, mixed> $css
+     * @param array<array-key, mixed> $styles
      */
     private static function appendWysiwygSettingsFromXml(
         string $file,
@@ -976,6 +1022,8 @@ class Manager
     /**
      * Return the toolbar buttons for a user
      * Used the right user toolbar
+     *
+     * @return array<array-key, mixed>
      */
     public static function getToolbarButtonsFromUser(): array
     {
@@ -1044,6 +1092,8 @@ class Manager
      *
      * JSON is treated as the preferred editor-native format.
      * Legacy XML toolbars remain readable for compatibility.
+     *
+     * @return array<array-key, mixed>
      */
     public static function parseToolbarFile(string $file): array
     {
@@ -1079,6 +1129,8 @@ class Manager
      * Reads a toolbar xml and return and return it as array
      *
      * @param string $file - path to the file
+     *
+     * @return array<array-key, mixed>
      */
     public static function parseXmlFileToArray(string $file): array
     {
@@ -1122,6 +1174,8 @@ class Manager
 
     /**
      * Parse an XML <line> node
+     *
+     * @return bool|array<array-key, mixed>
      */
     public static function parseXMLLineNode(DOMNode $Node): bool | array
     {
@@ -1149,6 +1203,8 @@ class Manager
 
     /**
      * Parse an XML <group> node
+     *
+     * @return bool|array<array-key, mixed>
      */
     public static function parseXMLGroupNode(DOMNode $Node): bool | array
     {
@@ -1276,6 +1332,8 @@ class Manager
 
     /**
      * Cleanup image src
+     *
+     * @param array<int, string> $html
      */
     public function cleanSrc(array $html): string
     {
@@ -1291,6 +1349,8 @@ class Manager
 
     /**
      * Cleanup image href
+     *
+     * @param array<int, string> $html
      */
     public function cleanHref(array $html): string
     {
@@ -1312,6 +1372,8 @@ class Manager
 
     /**
      * Cleanup image.php? paths from the admin
+     *
+     * @param array<int, string> $html
      */
     public function cleanAdminSrc(array $html): string
     {
@@ -1326,6 +1388,8 @@ class Manager
 
     /**
      * Delete line breaks in html content
+     *
+     * @param array<int, string> $params
      */
     protected function deleteLineBreaksInHtml(array $params): string
     {

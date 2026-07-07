@@ -15,10 +15,15 @@ interface VerifiableUserAttributeInterface extends UserAttributeInterface
 
     public function getValue(): string;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array;
 
     /**
      * @throws \QUI\Exception
+     *
+     * @return void
      */
     public function verify();
 

@@ -11,6 +11,9 @@ class RunLauncher
     ) {
     }
 
+    /**
+     * @param array<string, mixed> $metadata
+     */
     public function create(?int $now = null, array $metadata = []): RunLaunch
     {
         $run = $this->repository->create($now, $metadata);

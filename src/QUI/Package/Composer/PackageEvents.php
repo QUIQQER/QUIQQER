@@ -18,6 +18,8 @@ class PackageEvents
 {
     /**
      * Occurs before a package is installed.
+     *
+     * @return void
      */
     public static function prePackageInstall(PackageEvent $Event)
     {
@@ -42,6 +44,8 @@ class PackageEvents
 
     /**
      * occurs before a package is updated.
+     *
+     * @return void
      */
     public static function prePackageUpdate(PackageEvent $Event)
     {

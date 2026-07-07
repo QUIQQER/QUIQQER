@@ -44,6 +44,9 @@ class Locale implements \Stringable
      */
     public bool $no_translation = false;
 
+    /**
+     * @var array<array-key, mixed>|bool
+     */
     protected array|bool $dateFormats = false;
 
     /**
@@ -53,11 +56,15 @@ class Locale implements \Stringable
 
     /**
      * ini file objects
+     *
+     * @var array<array-key, mixed>
      */
     protected array $inis = [];
 
     /**
      * List of internal locale list for setlocale()
+     *
+     * @var array<string, array<int, string>>
      */
     protected array $localeList = [];
 
@@ -121,6 +128,9 @@ class Locale implements \Stringable
         }
     }
 
+    /**
+     * @return array<array-key, mixed>|string
+     */
     public function getDecimalSeparator(): array|string
     {
         return $this->get('quiqqer/core', 'numberFormat.decimal_separator');
@@ -128,6 +138,8 @@ class Locale implements \Stringable
 
     /**
      * Get the translation
+     *
+     * @param bool|array<array-key, mixed> $replace
      */
     public function get(string $group, bool|string $value = false, bool|array $replace = false): string
     {
@@ -154,6 +166,8 @@ class Locale implements \Stringable
 
     /**
      * Translation helper method
+     *
+     * @return array<array-key, mixed>|string
      *
      * @see ->get()
      */
@@ -240,6 +254,8 @@ class Locale implements \Stringable
      * @deprecated
      *
      * Set translation
+     *
+     * @param array<string, mixed>|string $key
      */
     public function set(string $lang, string $group, array|string $key, bool|string $value = false): void
     {
@@ -279,6 +295,8 @@ class Locale implements \Stringable
     /**
      * Refresh the locale
      * Clears the locale
+     *
+     * @return void
      */
     public function refresh()
     {
@@ -329,7 +347,7 @@ class Locale implements \Stringable
      *
      * @param string $lang - Language code (de, en, fr ...)
      *
-     * @return array
+     * @return array<int, string>
      */
     public function getLocalesByLang(string $lang): array
     {
@@ -501,6 +519,8 @@ class Locale implements \Stringable
 
     /**
      * Exists the language in the locale?
+     *
+     * @param string $language
      */
     public function existsLang($language): bool
     {
@@ -509,6 +529,10 @@ class Locale implements \Stringable
 
     /**
      * Get the translation from a specific language
+     *
+     * @param bool|array<array-key, mixed> $replace
+     *
+     * @return array<array-key, mixed>|string
      */
     public function getByLang(
         string $lang,
@@ -540,6 +564,10 @@ class Locale implements \Stringable
     /**
      * Parse a locale string and translate it
      * a locale strings looks like: [group/group] var.var.var
+     *
+     * @param array<array-key, mixed>|string $title
+     *
+     * @return array<array-key, mixed>|string
      */
     public function parseLocaleString(array|string $title): array|string
     {
@@ -559,8 +587,8 @@ class Locale implements \Stringable
     /**
      * Parse a locale array and translate it
      *
-     * @param array $locale - with group, translation var and replacement vars (optional)
-     * @return array|string
+     * @param array<int, mixed> $locale - with group, translation var and replacement vars (optional)
+     * @return array<array-key, mixed>|string
      */
     public function parseLocaleArray(array $locale): array|string
     {
@@ -589,7 +617,7 @@ class Locale implements \Stringable
      * a locale strings looks like: [group/group] var.var.var
      *
      * @param string $str
-     * @return array -  [0=>group, 1=>var]
+     * @return array{0: string|null, 1: string|null} -  [0=>group, 1=>var]
      */
     public function getPartsOfLocaleString(string $str): array
     {
@@ -608,6 +636,8 @@ class Locale implements \Stringable
 
     /**
      * Return all available date formats
+     *
+     * @return array<array-key, mixed>|bool
      */
     protected function getDateFormats(): bool|array
     {

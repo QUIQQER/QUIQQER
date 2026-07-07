@@ -19,6 +19,9 @@ use function time;
  */
 class Message extends QUI\QDOM
 {
+    /**
+     * @param array<array-key, mixed> $params
+     */
     public function __construct(array $params = [])
     {
         // defaults

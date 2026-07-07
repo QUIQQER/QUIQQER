@@ -39,6 +39,9 @@ class ActivateSite extends AbstractTool
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected static function siteIdSchema(): array
     {
         return [

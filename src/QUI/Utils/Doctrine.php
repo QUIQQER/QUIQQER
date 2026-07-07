@@ -17,6 +17,9 @@ class Doctrine
             ->quoteSingleIdentifier($identifier);
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     public static function parseDbArrayToQueryBuilder(QueryBuilder $query, array $params): QueryBuilder
     {
         if (!empty($params['update'])) {

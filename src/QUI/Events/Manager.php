@@ -383,8 +383,8 @@ class Manager implements QUI\Interfaces\Events
             $this->Events->addEvent(
                 trim($params['event']),
                 trim($params['callback']),
-                (int)($params['priority'] ?? 0),
-                trim($params['package'] ?? '')
+                (int)$params['priority'],
+                trim($params['package'])
             );
         }
     }

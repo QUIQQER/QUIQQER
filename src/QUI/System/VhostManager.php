@@ -139,6 +139,8 @@ class VhostManager
     /**
      * Return the vhost list
      *
+     * @return array<string, array<string, mixed>>
+     *
      * @throws Exception
      */
     public function getList(): array
@@ -186,7 +188,7 @@ class VhostManager
      * Add or edit a vhost entry
      *
      * @param string $vhost - host name (eq: www.something.com)
-     * @param array $data - data of the host
+     * @param array<string, mixed> $data - data of the host
      *
      * @throws Exception
      */
@@ -304,6 +306,8 @@ class VhostManager
     /**
      * Return the vhost data
      *
+     * @return array<string, mixed>|bool
+     *
      * @throws Exception
      */
     public function getVhost(string $vhost): bool|array
@@ -313,6 +317,8 @@ class VhostManager
 
     /**
      * Return all hosts from the project
+     *
+     * @return array<int, string>
      *
      * @throws Exception
      */
@@ -357,7 +363,8 @@ class VhostManager
      *
      * @param bool $includeWWW - (optional) Should www. domains be added?
      *
-     * @return array
+     * @return array<int, string>
+     *
      * @throws Exception
      */
     public function getRegisteredDomains(bool $includeWWW = false): array

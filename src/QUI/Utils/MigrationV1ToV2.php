@@ -16,6 +16,8 @@ class MigrationV1ToV2
      * - default table identifier for the inset is ID
      * - you can overwrite the identifier with $indexId
      *
+     * @param string[] $userTableFields
+     *
      * @throws Exception
      */
     public static function migrateUsers(
@@ -72,6 +74,9 @@ class MigrationV1ToV2
     /**
      * migration helper for user fields in a db table
      * - table needs ID as identifier
+     *
+     * @param string[] $addressTableFields
+     *
      * @throws Exception
      */
     public static function migrateAddresses(string $table, array $addressTableFields = []): void

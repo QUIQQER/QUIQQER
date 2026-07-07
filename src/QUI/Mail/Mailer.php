@@ -46,30 +46,42 @@ class Mailer extends QUI\QDOM
 
     /**
      * list of recipients
+     *
+     * @var array<int, string|array<int, string>>
      */
     protected array $recipients = [];
 
     /**
      * list of reply
+     *
+     * @var array<int, string|array<int, string>>
      */
     protected array $reply = [];
 
     /**
      * list of cc
+     *
+     * @var array<int, string|array<int, string>>
      */
     protected array $cc = [];
 
     /**
      * list of bcc
+     *
+     * @var array<int, string|array<int, string>>
      */
     protected array $bcc = [];
 
     /**
      * list of attachments
+     *
+     * @var array<int, string>
      */
     protected array $attachments = [];
 
     /**
+     * @param array<string, mixed> $attributes
+     *
      * @throws QUI\Exception
      */
     public function __construct(array $attributes = [])
@@ -400,6 +412,9 @@ class Mailer extends QUI\QDOM
         return true;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return [
@@ -511,7 +526,7 @@ class Mailer extends QUI\QDOM
     /**
      * Add a files to the mail
      *
-     * @param array|string $files - array with file paths eq:
+     * @param array<int, string>|string $files - array with file paths eq:
      *                              addAttachments( array('path/file1.end', 'path/file2.end') )
      *                              addAttachments( 'path/file1.end' )
      * @throws QUI\Exception

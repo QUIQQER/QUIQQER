@@ -87,6 +87,8 @@ class Forwarding
     /**
      * Löscht ein forwarding eintrag
      *
+     * @param array<int, string>|string $from
+     *
      * @throws QUI\Exception
      */
     public static function delete(array|string $from): void
@@ -158,6 +160,8 @@ class Forwarding
 
     /**
      * Execute a redirection
+     *
+     * @param array<string, mixed> $data
      */
     protected static function redirect(array $data): never
     {
