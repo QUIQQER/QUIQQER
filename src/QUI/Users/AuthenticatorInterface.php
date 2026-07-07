@@ -20,7 +20,7 @@ use QUI\System\Console;
 interface AuthenticatorInterface
 {
     /**
-     * @param array|int|string|User|null $user - name of the user, or user id
+     * @param array<array-key, mixed>|int|string|User|null $user - name of the user, or user id
      */
     public function __construct(null | array | int | string | User $user = null);
 
@@ -35,6 +35,9 @@ interface AuthenticatorInterface
 
     /**
      * Authenticate the user
+     *
+     * @param string|array<string, mixed>|int $authParams
+     * @return bool
      *
      * @throws Exception
      */
@@ -61,6 +64,8 @@ interface AuthenticatorInterface
 
     /**
      * The CLI Authentication, only if isCLICompatible returns true
+     *
+     * @return void
      */
     public function cliAuthentication(Console $Console);
 
@@ -73,4 +78,9 @@ interface AuthenticatorInterface
      * @return bool - true, if the authenticator can be used as primary authentication
      */
     public function isSecondaryAuthentication(): bool;
+
+    /**
+     * @return bool - true, if this authenticator satisfies the secondary authentication step after primary login
+     */
+    public function satisfiesSecondaryAuthentication(): bool;
 }

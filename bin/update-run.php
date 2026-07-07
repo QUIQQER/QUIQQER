@@ -99,6 +99,9 @@ function handleJsonRequest(string $id, string $token, string $root, string $acti
     }
 }
 
+/**
+ * @param array<array-key, mixed> $payload
+ */
 function sendJson(array $payload, int $statusCode = 200): void
 {
     if (!headers_sent()) {
@@ -173,6 +176,9 @@ function handleSseRequest(string $id, string $token, string $root): void
     }
 }
 
+/**
+ * @param array<array-key, mixed> $payload
+ */
 function sendSseEvent(string $event, array $payload): void
 {
     echo 'event: ' . $event . "\n";

@@ -18,14 +18,25 @@ use const PHP_BINARY;
 
 class CommandEvents
 {
+    /**
+     * @var array<int, string>
+     */
     protected static array $install = [];
+
+    /**
+     * @var array<int, string>
+     */
     protected static array $uninstall = [];
+
+    /**
+     * @var array<int, string>
+     */
     protected static array $update = [];
 
     /**
      * Registered a package which has changed
      *
-     * @param $packageName
+     * @param string $packageName
      */
     public static function registerPackageUninstall($packageName): void
     {
@@ -33,12 +44,18 @@ class CommandEvents
         self::$uninstall = array_unique(self::$uninstall);
     }
 
+    /**
+     * @param string $packageName
+     */
     public static function registerPackageInstall($packageName): void
     {
         self::$install[] = $packageName;
         self::$install = array_unique(self::$install);
     }
 
+    /**
+     * @param string $packageName
+     */
     public static function registerPackageUpdate($packageName): void
     {
         self::$update[] = $packageName;

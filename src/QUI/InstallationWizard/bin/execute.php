@@ -15,6 +15,9 @@ header('Content-type: text/html; charset=utf-8');
 
 ob_start();
 
+/**
+ * @return void
+ */
 function flushIt()
 {
     if (!headers_sent()) {

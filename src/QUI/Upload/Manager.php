@@ -52,6 +52,8 @@ class Manager
     /**
      * Initialized the upload
      *
+     * @return bool|string|array<array-key, mixed>
+     *
      * @throws Exception
      */
     public function init(): bool | string | array
@@ -67,7 +69,7 @@ class Manager
      * call a function
      *
      * @param callable|string $function - Function
-     * @param array $params - function parameter
+     * @param array<string, mixed> $params - function parameter
      *
      * @return mixed
      * @throws Exception
@@ -121,6 +123,8 @@ class Manager
     /**
      * Upload the file data,
      * read the PUT data and write it to the filesystem or read the $_FILES
+     *
+     * @return bool|string|array<array-key, mixed>
      *
      * @throws Exception
      * @throws QUI\Permissions\Exception
@@ -608,6 +612,8 @@ class Manager
 
     /**
      * Flush a Message to the JavaScript UploadManager
+     *
+     * @param array<array-key, mixed>|string $message
      */
     public function flushMessage(array | string $message): void
     {
@@ -676,7 +682,7 @@ class Manager
      * Add a file to the Upload Manager
      *
      * @param string $filename - filename
-     * @param array $params - optional
+     * @param array<string, mixed> $params - optional
      *
      * @throws Exception
      */
@@ -762,7 +768,7 @@ class Manager
      * so, you can resume the upload
      *
      * @param QUI\Interfaces\Users\User|null $User - optional, if null = the session user
-     * @return array
+     * @return array<int, array<string, mixed>>
      *
      * @throws Exception
      * @throws QUI\Permissions\Exception

@@ -166,6 +166,9 @@ class Everyone extends QUI\Groups\Group
         return null;
     }
 
+    /**
+     * @return array<int, int|string>
+     */
     public function getParentIds(): array
     {
         return [];
@@ -179,9 +182,9 @@ class Everyone extends QUI\Groups\Group
     /**
      * Returns the subgroups
      *
-     * @param array $params - Where Parameter
+     * @param array<string, mixed> $params - Where Parameter
      *
-     * @return array
+     * @return array<int, Group>
      */
     public function getChildren(array $params = []): array
     {
@@ -192,9 +195,9 @@ class Everyone extends QUI\Groups\Group
      * return the subgroup ids
      *
      * @param bool $recursive
-     * @param array $params - SQL Params (limit, order)
+     * @param array<string, mixed> $params - SQL Params (limit, order)
      *
-     * @return array|null
+     * @return array<int, int|string>|null
      */
     public function getChildrenIds(bool $recursive = false, array $params = []): ?array
     {

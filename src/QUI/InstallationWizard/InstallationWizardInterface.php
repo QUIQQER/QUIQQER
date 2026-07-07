@@ -33,8 +33,16 @@ interface InstallationWizardInterface
      */
     public function getStep(int $step): InstallationWizardStepInterface;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(?Locale $Locale = null): array;
 
+    /**
+     * @param array<array-key, mixed> $data
+     *
+     * @return void
+     */
     public function execute(array $data = []);
 
     /**
@@ -44,8 +52,14 @@ interface InstallationWizardInterface
      */
     public function finish(): bool|string;
 
+    /**
+     * @return void
+     */
     public function write(string $line);
 
+    /**
+     * @return array<array-key, mixed>
+     */
     public function getExecuteSteps(): array;
 
     public function getExecuteContent(): string;
@@ -53,7 +67,7 @@ interface InstallationWizardInterface
     /**
      * is called when all provider lists are called via ajax
      *
-     * @param array $list
+     * @param array<array-key, mixed> $list
      */
     public function onListInit(array &$list): void;
 }

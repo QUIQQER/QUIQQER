@@ -16,6 +16,9 @@ class Breadcrumb extends QUI\Control
     private const DEFAULT_FONT_SIZE = '0.9em';
     private const DEFAULT_PADDING = '1rem';
 
+    /**
+     * @var array<string, string>
+     */
     protected array $allowedFontSizes = [
         'xs' => '0.75em',
         's' => '0.9em',
@@ -24,6 +27,9 @@ class Breadcrumb extends QUI\Control
         'xl' => '1.5em'
     ];
 
+    /**
+     * @var array<string, string>
+     */
     protected array $allowedPaddings = [
         'none' => '0px',
         'xs' => '0.25rem',
@@ -33,6 +39,9 @@ class Breadcrumb extends QUI\Control
         'xl' => '2rem'
     ];
 
+    /**
+     * @var array<int, string>
+     */
     protected array $allowedSeparators = [
         'angle-right',
         'chevron-right',
@@ -43,6 +52,9 @@ class Breadcrumb extends QUI\Control
         'pipe'
     ];
 
+    /**
+     * @var array<int, string>
+     */
     protected array $allowedLastItemStyles = [
         'none',
         'primary',

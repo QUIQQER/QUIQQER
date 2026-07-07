@@ -63,9 +63,13 @@ define('controls/users/auth/EnableSecondaryAuthenticatorWindow', [
             `;
 
             if (this.getAttribute('authenticator')) {
-                this.$showAuthenticatorSettings(this.getAttribute('authenticator')).then(() => {
-                    this.close();
+                this.$showAuthenticatorSettings(this.getAttribute('authenticator')).then((closeWindow) => {
+                    if (closeWindow === false) {
+                        return;
+                    }
+
                     this.Loader.hide();
+                    this.close();
                     this.fireEvent('completed');
                 });
 
@@ -96,7 +100,11 @@ define('controls/users/auth/EnableSecondaryAuthenticatorWindow', [
 
                             this.$showAuthenticatorSettings(
                                 button.getAttribute('data-authenticator')
-                            ).then(() => {
+                            ).then((closeWindow) => {
+                                if (closeWindow === false) {
+                                    return;
+                                }
+
                                 this.close();
                                 this.fireEvent('completed');
                             });
@@ -220,6 +228,14 @@ define('controls/users/auth/EnableSecondaryAuthenticatorWindow', [
                                 });
                             }
                         });
+
+                        if (
+                            typeof settingsInstance.showActivationNoticeIfReady === 'function'
+                            && settingsInstance.showActivationNoticeIfReady()
+                        ) {
+                            this.Loader.hide();
+                            this.fireEvent('completed');
+                        }
 
                         moofx(list).animate({
                             opacity: 0,

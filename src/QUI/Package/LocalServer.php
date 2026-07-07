@@ -76,7 +76,8 @@ class LocalServer extends QUI\Utils\Singleton
     /**
      * Move a file to the locale server
      *
-     * @param $file
+     * @param string $file
+     *
      * @throws QUI\Exception
      */
     public function uploadPackage($file): void
@@ -141,6 +142,8 @@ class LocalServer extends QUI\Utils\Singleton
 
     /**
      * Return all not installed packages in the local server
+     *
+     * @return array<int, array<string, mixed>>
      */
     public function getNotInstalledPackage(): array
     {
@@ -160,6 +163,8 @@ class LocalServer extends QUI\Utils\Singleton
 
     /**
      * Return the package list in the locale server
+     *
+     * @return array<int, array<string, mixed>>
      */
     public function getPackageList(): array
     {

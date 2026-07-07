@@ -11,6 +11,8 @@ class CliOutput implements SystemOutput
 {
     /**
      * All available text colors
+     *
+     * @var array<string, string>
      */
     protected array $colors = [
         'black' => '0;30',
@@ -41,6 +43,8 @@ class CliOutput implements SystemOutput
 
     /**
      * All available background colors
+     *
+     * @var array<string, string>
      */
     protected array $bg = [
         'black' => '40',

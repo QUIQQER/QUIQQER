@@ -63,6 +63,8 @@ class Manager
      * Return a Mailer object
      * Easier send, uses the mailer queue
      *
+     * @param array<string, mixed> $attributes
+     *
      * @throws QUI\Exception
      */
     public function getMailer(array $attributes = []): Mailer

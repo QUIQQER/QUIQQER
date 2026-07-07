@@ -22,6 +22,8 @@ use const FILTER_VALIDATE_EMAIL;
 class Invite
 {
     /**
+     * @param int[] $groups
+     *
      * @throws QUI\Exception
      */
     public function invite(string $email, array $groups): QUIUserInterface

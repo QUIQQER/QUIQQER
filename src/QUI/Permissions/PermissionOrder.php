@@ -33,7 +33,7 @@ class PermissionOrder
      * Finds the maximum integer value of a specified permission from a list of objects.
      *
      * @param string $permission The permission to check.
-     * @param array $list An array of objects to check permissions against.
+     * @param array<int, Group|User> $list An array of objects to check permissions against.
      *
      * @return int|null The maximum integer value of the permission, or null if no objects have the permission.
      * @throws Exception
@@ -77,7 +77,7 @@ class PermissionOrder
      * Calculates the minimum integer result of checking a permission against a list of objects.
      *
      * @param string $permission The permission to check against.
-     * @param array $list The list of objects to check the permission against.
+     * @param array<int, Group|User> $list The list of objects to check the permission against.
      * @return int|null The minimum integer result. If no object has the permission, returns null.
      * @throws Exception
      */
@@ -115,7 +115,7 @@ class PermissionOrder
      * Checks if a permission is granted for any object in the given list.
      *
      * @param string $permission The permission to check for.
-     * @param array $list The list of objects to check against.
+     * @param array<int, Group|User> $list The list of objects to check against.
      *
      * @return bool|int|string Returns true if the permission is granted by any object,
      *         the highest integer permission value if multiple objects have integer
@@ -164,6 +164,11 @@ class PermissionOrder
         return $result;
     }
 
+    /**
+     * @param array<int, mixed> $arguments
+     *
+     * @return void
+     */
     public static function __callStatic(string $name, array $arguments)
     {
         // TODO: Implement __callStatic() method.

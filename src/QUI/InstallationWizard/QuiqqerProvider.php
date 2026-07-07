@@ -13,6 +13,9 @@ use function mb_strtolower;
  */
 class QuiqqerProvider extends AbstractInstallationWizard
 {
+    /**
+     * @param \QUI\Locale|null $Locale
+     */
     public function getTitle($Locale = null): string
     {
         if ($Locale === null) {
@@ -22,6 +25,9 @@ class QuiqqerProvider extends AbstractInstallationWizard
         return $Locale->get('quiqqer/core', 'set.up.title');
     }
 
+    /**
+     * @param \QUI\Locale|null $Locale
+     */
     public function getDescription($Locale = null): string
     {
         if ($Locale === null) {

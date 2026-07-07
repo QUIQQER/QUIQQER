@@ -77,9 +77,14 @@ class Rewrite
 
     /**
      * site request parameter
+     *
+     * @var array<int, string>
      */
     public array $site_params = [];
 
+    /**
+     * @var array<array-key, mixed>|null
+     */
     protected ?array $registerPaths = null;
 
     protected Output $Output;
@@ -123,16 +128,22 @@ class Rewrite
 
     /**
      * current site path
+     *
+     * @var array<int, QUI\Interfaces\Projects\Site>
      */
     private array $path = [];
 
     /**
      * current site path - but only the ids
+     *
+     * @var array<int, int>
      */
     private array $ids_in_path = [];
 
     /**
      * loaded vhosts
+     *
+     * @var array<array-key, mixed>|bool
      */
     private array | bool $vhosts = false;
 
@@ -151,6 +162,9 @@ class Rewrite
      */
     private int $headerCode = 200;
 
+    /**
+     * @var array<string, mixed>|null
+     */
     private array | null $vhostData = null;
 
     /**
@@ -285,8 +299,7 @@ class Rewrite
 
             // project
             if (
-                isset($_url[0])
-                && substr($_url[0], 0, 1) === self::URL_PROJECT_CHARACTER
+                substr($_url[0], 0, 1) === self::URL_PROJECT_CHARACTER
             ) {
                 $this->project_str = str_replace(
                     $defaultSuffix,
@@ -414,9 +427,7 @@ class Rewrite
                         $imageNotError = true;
                     }
 
-                    if (isset($part_size[0])) {
-                        $width = (int)$part_size[0];
-                    }
+                    $width = (int)$part_size[0];
 
                     if (isset($part_size[1])) {
                         $height = (int)$part_size[1];
@@ -623,6 +634,10 @@ class Rewrite
         }
     }
 
+    /**
+     * @param string $file
+     * @param string $mimeType
+     */
     public static function sendFileWithRange($file, $mimeType): void
     {
         if (!is_file($file) || !is_readable($file)) {
@@ -673,6 +688,9 @@ class Rewrite
         exit;
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     public function getVHosts(): array
     {
         if (!empty($this->vhosts) || is_array($this->vhosts)) {
@@ -684,6 +702,9 @@ class Rewrite
         return $this->vhosts;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getCurrentVhostData(): array
     {
         if ($this->vhostData !== null) {
@@ -936,7 +957,7 @@ class Rewrite
             $error = explode(',', $error);
 
             try {
-                if (!isset($error[0]) || !isset($error[1]) || !isset($error[2])) {
+                if (!isset($error[1]) || !isset($error[2])) {
                     $Standard = QUI::getProjectManager()->getStandard();
 
                     $error[0] = $Standard->getName();
@@ -1357,6 +1378,8 @@ class Rewrite
 
     /**
      * Den aktuelle Pfad bekommen
+     *
+     * @return array<int, QUI\Interfaces\Projects\Site>
      */
     public function getPath(bool $start = true): array
     {
@@ -1375,6 +1398,8 @@ class Rewrite
 
     /**
      * Set the current path
+     *
+     * @param array<int, QUI\Interfaces\Projects\Site> $path
      */
     public function setPath(array $path): void
     {
@@ -1462,6 +1487,8 @@ class Rewrite
 
     /**
      * Return the url params as index array
+     *
+     * @return array<int, string>
      */
     public function getUrlParamsList(): array
     {
@@ -1480,6 +1507,8 @@ class Rewrite
 
     /**
      * Register a rewrite path
+     *
+     * @param array<int, string>|string $paths
      *
      * @throws QUI\Exception
      */
@@ -1605,6 +1634,9 @@ class Rewrite
      *    $params['id'] => (int) Id - Id der Seite
      *    $params['lang'] => (string) lang - Sprache der Seite
      *    $params['project'] => (string) project - Projektnamen
+     *
+     * @param array<array-key, mixed> $params
+     * @param array<array-key, mixed> $getParams
      *
      * @return string
      * @throws QUI\Exception

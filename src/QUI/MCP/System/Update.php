@@ -88,6 +88,9 @@ class Update extends AbstractTool
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private static function prepare(bool $start): array
     {
         $Repository = self::createRepository();
@@ -155,6 +158,9 @@ class Update extends AbstractTool
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private static function status(string $id): array
     {
         if ($id === '') {
@@ -171,6 +177,9 @@ class Update extends AbstractTool
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private static function active(): array
     {
         $runs = self::createRepository()->cleanupAndFindActive(time(), 86400);
@@ -186,6 +195,9 @@ class Update extends AbstractTool
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private static function history(?int $limit): array
     {
         $limit = min(100, max(1, $limit ?? 20));
@@ -200,6 +212,9 @@ class Update extends AbstractTool
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private static function cancel(string $id): array
     {
         if ($id === '') {
@@ -227,6 +242,9 @@ class Update extends AbstractTool
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private static function getMaintenanceInfo(): array
     {
         $enabled = file_exists(CMS_DIR . 'maintenance.html');
@@ -249,6 +267,9 @@ class Update extends AbstractTool
         return rtrim(VAR_DIR, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'update/runs/';
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     private static function withQuery(string $url, array $params): string
     {
         $separator = str_contains($url, '?') ? '&' : '?';

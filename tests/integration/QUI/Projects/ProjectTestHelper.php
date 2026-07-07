@@ -48,6 +48,7 @@ final class ProjectTestHelper
                 self::dropProjectTables($projectName);
                 self::deleteProjectPermissionRows($projectName);
                 self::deleteProjectConfig($projectName);
+                self::deleteProjectLocaleFiles($projectName);
                 self::moveProjectDirectoriesToTemp($projectName);
 
                 Manager::cleanup();
@@ -112,14 +113,20 @@ final class ProjectTestHelper
         } catch (Throwable) {
         }
 
-        if (!in_array(self::BASE_PROJECT_NAME, $existingProjects, true)) {
+        if (
+            !in_array(self::BASE_PROJECT_NAME, $existingProjects, true)
+            && !self::projectLocaleFilesExist(self::BASE_PROJECT_NAME)
+        ) {
             return self::BASE_PROJECT_NAME;
         }
 
         for ($i = 1; $i < 100; $i++) {
             $projectName = self::BASE_PROJECT_NAME . '_' . $i;
 
-            if (!in_array($projectName, $existingProjects, true)) {
+            if (
+                !in_array($projectName, $existingProjects, true)
+                && !self::projectLocaleFilesExist($projectName)
+            ) {
                 return $projectName;
             }
         }
@@ -192,6 +199,30 @@ final class ProjectTestHelper
             $Config->del($projectName);
             $Config->save();
         } catch (Throwable) {
+        }
+    }
+
+    private static function projectLocaleFilesExist(string $projectName): bool
+    {
+        $localeFiles = glob(VAR_DIR . 'locale/*/LC_MESSAGES/project_' . $projectName . '.ini.php');
+
+        if (!empty($localeFiles)) {
+            return true;
+        }
+
+        return is_dir(VAR_DIR . 'locale/bin/project/' . $projectName);
+    }
+
+    private static function deleteProjectLocaleFiles(string $projectName): void
+    {
+        foreach (glob(VAR_DIR . 'locale/*/LC_MESSAGES/project_' . $projectName . '.ini.php') ?: [] as $localeFile) {
+            unlink($localeFile);
+        }
+
+        $localeBinDirectory = VAR_DIR . 'locale/bin/project/' . $projectName;
+
+        if (is_dir($localeBinDirectory)) {
+            QUI::getTemp()->moveToTemp($localeBinDirectory);
         }
     }
 

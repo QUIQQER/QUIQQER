@@ -53,6 +53,9 @@ class Session
      */
     public int $lifetime = 1400;
 
+    /**
+     * @var array<string, mixed>
+     */
     protected array $vars = [];
 
     private mixed $Session = null;

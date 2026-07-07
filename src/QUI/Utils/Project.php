@@ -239,6 +239,8 @@ class Project
     }
 
     /**
+     * @param string $projectName
+     *
      * @throws QUI\Exception
      */
     public static function validateProjectName($projectName): bool

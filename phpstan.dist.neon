@@ -2,7 +2,7 @@ includes:
     - phpstan-baseline.neon
 
 parameters:
-    level: 5
+    level: 6
     paths:
         - .
     excludePaths:
@@ -14,7 +14,6 @@ parameters:
     bootstrapFiles:
         - tests/phpstan-bootstrap.php
     tipsOfTheDay: false
-    treatPhpDocTypesAsCertain: false
     dynamicConstantNames:
         - DEVELOPMENT
         - DEBUG_MODE
@@ -26,25 +25,3 @@ parameters:
         - QUIQQER_BACKEND
         - QUIQQER_CONSOLE
         - ADMIN
-    customRulesetUsed: true
-services:
-    -
-        class: \PHPStan\Rules\Properties\TypesAssignedToPropertiesRule
-        tags:
-            - phpstan.rules.rule
-    -
-        class: \PHPStan\Rules\Functions\ArrowFunctionReturnTypeRule
-        tags:
-            - phpstan.rules.rule
-    -
-        class: \PHPStan\Rules\Functions\ClosureReturnTypeRule
-        tags:
-            - phpstan.rules.rule
-    -
-        class: \PHPStan\Rules\Functions\ReturnTypeRule
-        tags:
-            - phpstan.rules.rule
-    -
-        class: \PHPStan\Rules\Methods\ReturnTypeRule
-        tags:
-            - phpstan.rules.rule

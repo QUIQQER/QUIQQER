@@ -33,6 +33,11 @@ class Log
         }
     }
 
+    /**
+     * @param array<int, array<int, string>> $addresses
+     *
+     * @return array<int, string>
+     */
     protected static function parseAddresses($addresses): array
     {
         return array_map(static function ($entry) {
@@ -40,6 +45,9 @@ class Log
         }, $addresses);
     }
 
+    /**
+     * @param string $message
+     */
     public static function write($message): void
     {
         if ((int)QUI::conf('mail', 'logging') !== 1) {
@@ -52,6 +60,9 @@ class Log
         error_log($message, 3, $file);
     }
 
+    /**
+     * @param PHPMailer $PhpMailer
+     */
     public static function logDone($PhpMailer): void
     {
         $addresses = self::parseAddresses($PhpMailer->getToAddresses());

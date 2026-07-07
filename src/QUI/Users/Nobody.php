@@ -60,7 +60,7 @@ class Nobody extends QUI\QDOM implements User
 
     /**
      * @param boolean $array - returns the groups as objects (true) or as an array (false)
-     * @return array
+     * @return array<int, Group|string>
      */
     public function getGroups(bool $array = true): array
     {
@@ -278,6 +278,7 @@ class Nobody extends QUI\QDOM implements User
     }
 
     /**
+     * @return string|\QUI\ERP\Currency\Currency|null
      */
     public function getCurrency()
     {

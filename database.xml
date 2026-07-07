@@ -72,6 +72,29 @@
             <comment>This table contains the workspaces of the QUIQQER users.</comment>
         </table>
 
+        <table name="users_webauthn_credentials">
+            <field type="integer" autoincrement="true" primary="true">id</field>
+            <field type="string" length="50">userUuid</field>
+            <field type="string" length="128">userHandle</field>
+            <field type="text">credentialId</field>
+            <field type="string" length="64">credentialIdHash</field>
+            <field type="text">publicKey</field>
+            <field type="integer" nullable="true" default="NULL">signCount</field>
+            <field type="string" length="64" nullable="true" default="NULL">aaguid</field>
+            <field type="string" length="255" default="">name</field>
+            <field type="json" nullable="true">transports</field>
+            <field type="boolean" default="0">backupEligible</field>
+            <field type="boolean" default="0">backedUp</field>
+            <field type="integer" default="0">created</field>
+            <field type="integer" nullable="true" default="NULL">lastUsed</field>
+
+            <index>userUuid</index>
+            <index>userHandle</index>
+            <unique>credentialIdHash</unique>
+
+            <comment>This table contains WebAuthn / passkey credentials of QUIQQER users.</comment>
+        </table>
+
         <table name="groups">
             <field type="INT(11) NOT NULL DEFAULT 0">id</field>
             <field type="VARCHAR(50) NOT NULL">uuid</field>

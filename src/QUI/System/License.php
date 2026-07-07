@@ -110,7 +110,7 @@ class License
     /**
      * Activate this QUIQQER system for the currently registered license.
      *
-     * @return array - Request response
+     * @return array<string, mixed> - Request response
      * @throws QUI\Exception
      * @throws Exception
      */
@@ -182,7 +182,7 @@ class License
     /**
      * Get data of license that is currently registered in this system.
      *
-     * @return array|false - License data or false if no license data available
+     * @return array<string, mixed>|false - License data or false if no license data available
      * @throws Exception
      */
     public static function getLicenseData(): bool|array
@@ -239,6 +239,8 @@ class License
 
     /**
      * Get system data for license server requests
+     *
+     * @return array<string, mixed>
      */
     protected static function getSystemData(): array
     {
@@ -252,7 +254,7 @@ class License
     /**
      * Deactivate this QUIQQER system for the currently registered license.
      *
-     * @return array - Request response
+     * @return array<string, mixed> - Request response
      * @throws QUI\Exception
      * @throws Exception
      */
@@ -304,7 +306,7 @@ class License
     /**
      * Get status of this QUIQQER system regarding the currently registered license
      *
-     * @return array|false - License data or false if no license available
+     * @return array<string, mixed>|false - License data or false if no license available
      * @throws QUI\Exception
      * @throws Exception
      */

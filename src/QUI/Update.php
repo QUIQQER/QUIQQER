@@ -35,7 +35,9 @@ if (!function_exists('glob_recursive')) {
      * polyfill for glob_recursive
      * Does not support flag GLOB_BRACE
      *
-     * @param $pattern
+     * @param string $pattern
+     *
+     * @return array<int, string>
      */
     function glob_recursive($pattern, int $flags = 0): array
     {
@@ -270,7 +272,7 @@ class Update
      * Reads the database.xml and create the tables
      *
      * @param string $xml_file - path to a database.xml
-     * @param $IO - Composer InputOutput
+     * @param \Composer\IO\IOInterface|null $IO - Composer InputOutput
      *
      * @throws QUI\Exception
      * @throws \Exception
@@ -380,7 +382,7 @@ class Update
      * Reads the locale.xml and import it
      *
      * @param string $xml_file - path to a locale.xml
-     * @param $IO - Composer InputOutput
+     * @param \Composer\IO\IOInterface|null $IO - Composer InputOutput
      *
      * @throws QUI\Exception
      */
@@ -399,7 +401,7 @@ class Update
      * Import / register the template engines in a xml file and register it
      *
      * @param string $xml_file - path to an engine.xml
-     * @param $IO - Composer InputOutput
+     * @param \Composer\IO\IOInterface|null $IO - Composer InputOutput
      *
      * @throws QUI\Exception
      */
@@ -437,7 +439,7 @@ class Update
      * Import / register the wysiwyg editors
      *
      * @param string $xml_file - path to an engine.xml
-     * @param $IO - Composer InputOutput
+     * @param \Composer\IO\IOInterface|null $IO - Composer InputOutput
      * @throws Exception
      */
     public static function importEditors(string $xml_file, $IO = null): void
@@ -467,7 +469,7 @@ class Update
      * it creates a cache file for the package
      *
      * @param string $xml_file - path to an engine.xml
-     * @param $IO - Composer InputOutput
+     * @param \Composer\IO\IOInterface|null $IO - Composer InputOutput
      */
     public static function importMenu(string $xml_file, $IO = null): void
     {
@@ -507,7 +509,7 @@ class Update
      *
      * @param string $xml_file - path to a locale.xml
      * @param string $src - Source for the permissions
-     * @param $IO - Composer InputOutput
+     * @param \Composer\IO\IOInterface|null $IO - Composer InputOutput
      */
     public static function importPermissions(string $xml_file, string $src = '', $IO = null): void
     {
@@ -567,7 +569,7 @@ class Update
      * Import / register quiqqer site events
      *
      * @param string $xml_file - path to an engine.xml
-     * @param $IO - (optional)  Composer InputOutput
+     * @param \Composer\IO\IOInterface|null $IO - (optional)  Composer InputOutput
      * @throws Exception
      */
     public static function importSiteEvents(string $xml_file, $IO = null): void

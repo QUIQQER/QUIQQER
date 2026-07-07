@@ -71,7 +71,7 @@ class Navigation extends QUI\Control
         // settings
         $levels = (int)$this->getAttribute('levels');
 
-        if ($levels <= 0 || $this->getAttribute('levels') === false) {
+        if ($levels <= 0) {
             $levels = false;
         }
 

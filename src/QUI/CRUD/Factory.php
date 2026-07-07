@@ -38,6 +38,8 @@ abstract class Factory extends QUI\Utils\Singleton
     /**
      * Return the number of the children
      *
+     * @param array<string, mixed> $queryParams
+     *
      * @throws QUI\Database\Exception
      */
     public function countChildren(array $queryParams = []): int
@@ -54,6 +56,8 @@ abstract class Factory extends QUI\Utils\Singleton
 
     /**
      * Create a new child
+     *
+     * @param array<string, mixed> $data
      *
      * @throws QUI\Exception
      */
@@ -88,6 +92,9 @@ abstract class Factory extends QUI\Utils\Singleton
         return $Child;
     }
 
+    /**
+     * @return array<int, string>
+     */
     abstract public function getChildAttributes(): array;
 
     /**
@@ -132,6 +139,9 @@ abstract class Factory extends QUI\Utils\Singleton
             ->from(QUI\Utils\Doctrine::quoteIdentifier($this->getDataBaseTableName()));
     }
 
+    /**
+     * @param array<string, mixed> $queryParams
+     */
     protected function applyQueryParameters(
         QueryBuilder $QueryBuilder,
         array $queryParams,
@@ -166,6 +176,9 @@ abstract class Factory extends QUI\Utils\Singleton
         }
     }
 
+    /**
+     * @param array<string, mixed> $where
+     */
     protected function applyWhere(QueryBuilder $QueryBuilder, array $where, bool $or = false): void
     {
         $expressions = [];
@@ -226,6 +239,10 @@ abstract class Factory extends QUI\Utils\Singleton
      * Return the children
      * If you want only the data, please use getChildrenData
      *
+     * @param array<string, mixed> $queryParams
+     *
+     * @return array<int, Child>
+     *
      * @throws QUI\Database\Exception
      */
     public function getChildren(array $queryParams = []): array
@@ -250,6 +267,10 @@ abstract class Factory extends QUI\Utils\Singleton
 
     /**
      * Return the children data
+     *
+     * @param array<string, mixed> $queryParams
+     *
+     * @return array<int, array<string, mixed>>
      *
      * @throws QUI\Database\Exception
      */

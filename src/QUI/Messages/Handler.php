@@ -12,6 +12,9 @@ use QUI;
  */
 class Handler
 {
+    /**
+     * @var array<string, Message>
+     */
     protected array $messages = [];
 
     /**
@@ -51,6 +54,9 @@ class Handler
         $this->messages = [];
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function getMessagesAsArray(QUI\Interfaces\Users\User $User): array
     {
         $result = [];
@@ -66,6 +72,8 @@ class Handler
 
     /**
      * Return all new messages for a user and delete it in the queue
+     *
+     * @return array<array-key, Message>
      */
     public function getNewMessages(QUI\Interfaces\Users\User $User): array
     {

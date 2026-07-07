@@ -37,6 +37,8 @@ class Menu
 
     /**
      * Return the menu für the session user
+     *
+     * @return array<int, array<string, mixed>>
      */
     public function getMenu(): array
     {
@@ -67,6 +69,8 @@ class Menu
     /**
      * Create the menu
      * no caches use
+     *
+     * @return array<int, array<string, mixed>>
      */
     public function createMenu(): array
     {
@@ -373,6 +377,10 @@ class Menu
 
     /**
      * Sort the menu items
+     *
+     * @param array<int, array<string, mixed>> $items
+     *
+     * @return array<int, array<string, mixed>>
      */
     protected function sortItems(array $items): array
     {
@@ -389,6 +397,9 @@ class Menu
 
     /**
      * usort helper function / method
+     *
+     * @param array<string, mixed> $a
+     * @param array<string, mixed> $b
      */
     protected function sortByTitle(array $a, array $b): int
     {

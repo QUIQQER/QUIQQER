@@ -270,6 +270,9 @@ class Spinner
         '(●     )'
     ];
 
+    /**
+     * @var array<int, string>
+     */
     protected array $frames = [];
 
     protected int $length;
@@ -293,6 +296,8 @@ class Spinner
 
     /**
      * Spinner constructor.
+     *
+     * @param array<int, string> $frames
      */
     public function __construct(array $frames, bool $use_keyboard_interrupts = true)
     {
@@ -307,7 +312,8 @@ class Spinner
      * Runs the spinner
      *
      * @param string $message
-     * @param $callback
+     * @param callable $callback
+     *
      * @return mixed|void
      */
     public function run(string $message, $callback)

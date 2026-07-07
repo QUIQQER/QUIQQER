@@ -17,9 +17,9 @@ header("Content-Type: text/html; charset=utf-8");
 
 // date_default_timezone_set( 'Europe/Zurich' );
 // Fallback only if no timezone is configured in PHP itself.
-$phpIniTimezone = ini_get('date.timezone');
+$phpIniTimezone = ini_get('date.timezone') ?: '';
 
-if ($phpIniTimezone === false || trim($phpIniTimezone) === '') {
+if (trim($phpIniTimezone) === '') {
     date_default_timezone_set('UTC');
 }
 

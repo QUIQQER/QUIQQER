@@ -59,6 +59,8 @@ class Project implements \Stringable
 {
     /**
      * caching files
+     *
+     * @var array<string, string>
      */
     protected array $cache_files = [];
 
@@ -81,6 +83,8 @@ class Project implements \Stringable
 
     /**
      * configuration
+     *
+     * @var array<string, mixed>
      */
     private array $config;
 
@@ -91,11 +95,15 @@ class Project implements \Stringable
 
     /**
      * All languages of the project
+     *
+     * @var array<int, string>
      */
     private array $langs;
 
     /**
      * loaded sites
+     *
+     * @var array<int, mixed>
      */
     private array $children = [];
 
@@ -200,16 +208,6 @@ class Project implements \Stringable
 
             $this->lang = $lang;
         } else {
-            if (!isset($this->config['default_lang'])) {
-                throw new QUI\Exception(
-                    QUI::getLocale()->get(
-                        'quiqqer/core',
-                        'exception.project.lang.no.default'
-                    ),
-                    805
-                );
-            }
-
             $this->lang = $this->config['default_lang'];
         }
 
@@ -270,6 +268,8 @@ class Project implements \Stringable
 
     /**
      * Project Array Notation
+     *
+     * @return array<string, mixed>
      */
     public function toArray(): array
     {
@@ -287,7 +287,7 @@ class Project implements \Stringable
      *                    lang = Aktuelle Sprache
      *                    db_table = Standard Datebanktabelle, please use this->table()
      *
-     * @return string|int|bool|array
+     * @return string|int|bool|array<array-key, mixed>
      */
     public function getAttribute(string $att): string|int|bool|array
     {
@@ -435,6 +435,8 @@ class Project implements \Stringable
 
     /**
      * Return all languages in the project
+     *
+     * @return array<int, string>
      */
     public function getLanguages(): array
     {
@@ -470,10 +472,10 @@ class Project implements \Stringable
      * Durchsucht das Projekt nach Seiten
      *
      * @param string $search - Suchwort
-     * @param boolean|array $select - (optional) in welchen Feldern gesucht werden soll
+     * @param boolean|array<int, string> $select - (optional) in welchen Feldern gesucht werden soll
      *                                array('name', 'title', 'short', 'content')
      *
-     * @return array
+     * @return array<int, mixed>
      */
     public function search(string $search, bool|array $select = false): array
     {
@@ -598,6 +600,8 @@ class Project implements \Stringable
 
     /**
      * Gibt alle Attribute vom Projekt zurück
+     *
+     * @return array<string, mixed>
      */
     public function getAllAttributes(): array
     {
@@ -672,6 +676,8 @@ class Project implements \Stringable
 
     /**
      * Return all available layouts
+     *
+     * @return array<array-key, mixed>
      */
     public function getLayouts(): array
     {
@@ -819,9 +825,9 @@ class Project implements \Stringable
      * Return the children ids from a site
      *
      * @param integer $parentid - The parent site ID
-     * @param array $params - extra db statements, like order, where, count, limit
+     * @param array<string, mixed> $params - extra db statements, like order, where, count, limit
      *
-     * @return array|integer
+     * @return array<int, mixed>|integer
      * @throws QUI\Database\Exception
      */
     public function getChildrenIdsFrom(int $parentid, array $params = []): array|int
@@ -977,6 +983,8 @@ class Project implements \Stringable
      * @param integer $id - child id
      * @param boolean $reverse - revers the result
      *
+     * @return array<int, int>
+     *
      * @throws QUI\Database\Exception
      */
     public function getParentIds(int $id, bool $reverse = false): array
@@ -1003,7 +1011,10 @@ class Project implements \Stringable
     /**
      * Alle Seiten bekommen
      *
-     * @return array|int - if count is given, return is an integer, otherwise an array
+     * @param array<string, mixed> $params
+     *
+     * @return array<int, mixed>|int - if count is given, return is an integer, otherwise an array
+     *
      * @throws QUI\Database\Exception
      */
     public function getSites(array $params = []): array|int
@@ -1039,6 +1050,10 @@ class Project implements \Stringable
 
     /**
      * Ids von bestimmten Seiten bekommen
+     *
+     * @param array<string, mixed> $params
+     *
+     * @return array<int, array<string, mixed>>
      *
      * @throws QUI\Database\Exception
      * @todo Muss mal echt überarbeitet werden, bad code
@@ -1145,6 +1160,10 @@ class Project implements \Stringable
         return $QueryBuilder->executeQuery()->fetchAllAssociative();
     }
 
+    /**
+     * @param array<string, mixed> $conditions
+     * @param array<string, string> $tableAliases
+     */
     private static function applySiteConditions(
         \Doctrine\DBAL\Query\QueryBuilder $QueryBuilder,
         array $conditions,
@@ -1282,6 +1301,9 @@ class Project implements \Stringable
         }
     }
 
+    /**
+     * @param array<array-key, mixed> $data
+     */
     private static function isListArray(array $data): bool
     {
         $index = 0;
@@ -1431,6 +1453,9 @@ class Project implements \Stringable
         }
     }
 
+    /**
+     * @return array<string, array<string, mixed>>
+     */
     private static function getSitesColumnDefinitions(): array
     {
         return [
@@ -1488,7 +1513,7 @@ class Project implements \Stringable
     /**
      * Execute the project setup
      *
-     * @param array $setupOptions - options for the package setup
+     * @param array<string, mixed> $setupOptions - options for the package setup
      *                              -> [executePackagesSetup => true]
      *
      * @throws Exception

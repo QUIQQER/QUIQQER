@@ -14,10 +14,10 @@ use QUI\System\License;
 use QUI\Utils\System\File as SystemFile;
 
 use function date;
+use function chmod;
 use function file_exists;
 use function file_put_contents;
 use function is_dir;
-use function system;
 use function unlink;
 
 /**
@@ -84,6 +84,9 @@ class Setup
         $Output->writeLn('> Execute package setups');
         self::executeEachPackageSetup([], $Output);
 
+        $Output->writeLn('> Publish locales');
+        self::publishLocales($Output);
+
         $Output->writeLn('> Import permissions');
         self::importPermissions();
 
@@ -92,6 +95,109 @@ class Setup
 
         QUI::getEvents()->fireEvent('setupAllEnd', [$Output]);
         $Output->writeLn('> Done');
+    }
+
+    /**
+     * Publish locale files after all package locale imports are finished.
+     */
+    protected static function publishLocales(?QUI\Interfaces\System\SystemOutput $Output = null): void
+    {
+        if (!$Output) {
+            $Output = new QUI\System\Output\VoidOutput();
+        }
+
+        $groups = ['quiqqer/core'];
+        $PackageManager = QUI::getPackageManager();
+        $packages = SystemFile::readDir(OPT_DIR);
+        sort($packages);
+
+        foreach ($packages as $package) {
+            if ($package == 'composer') {
+                continue;
+            }
+
+            if ($package == 'bin') {
+                continue;
+            }
+
+            if (!is_dir(OPT_DIR . $package)) {
+                continue;
+            }
+
+            $list = SystemFile::readDir(OPT_DIR . $package);
+            sort($list);
+
+            foreach ($list as $sub) {
+                $packageName = $package . '/' . $sub;
+
+                try {
+                    $Package = $PackageManager->getInstalledPackage($packageName);
+                } catch (QUI\Exception) {
+                    continue;
+                }
+
+                if (!$Package->isQuiqqerPackage()) {
+                    continue;
+                }
+
+                $groups = array_merge($groups, self::getPackageLocaleGroups($Package));
+            }
+        }
+
+        $groups = array_unique($groups);
+
+        foreach ($groups as $group) {
+            try {
+                QUI\Translator::publish($group);
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+                $Output->writeLn($Exception->getMessage());
+            }
+        }
+    }
+
+    /**
+     * Return all locale groups declared by a package.
+     *
+     * @return array<int, string>
+     */
+    protected static function getPackageLocaleGroups(QUI\Package\Package $Package): array
+    {
+        $groups = [
+            $Package->getName(),
+            'quiqqer/core'
+        ];
+
+        $dir = $Package->getDir();
+        $localeFile = $dir . QUI\Package\Package::LOCALE_XML;
+
+        if (!file_exists($localeFile)) {
+            return $groups;
+        }
+
+        try {
+            $files = [$localeFile];
+            $Dom = QUI\Utils\XML::getDomFromXml($localeFile);
+            $FileList = $Dom->getElementsByTagName('file');
+
+            foreach ($FileList as $File) {
+                $files[] = $dir . ltrim($File->getAttribute('file'), '/');
+            }
+
+            foreach ($files as $file) {
+                if (!file_exists($file)) {
+                    continue;
+                }
+
+                foreach (QUI\Utils\XML::getLocaleGroupsFromDom(QUI\Utils\XML::getDomFromXml($file)) as $data) {
+                    $groups[] = $data['group'];
+                }
+            }
+        } catch (Exception $Exception) {
+            QUI\System\Log::addWarning($Exception->getMessage());
+        }
+
+        return array_unique($groups);
     }
 
     /**
@@ -339,7 +445,7 @@ EOT;
             "require CMS_DIR . '{$relativeOptDir}quiqqer/core/quiqqer.php';\n";
 
         file_put_contents($console, $content);
-        system("chmod +x $console");
+        chmod($console, 0755);
     }
 
     /**
@@ -440,7 +546,7 @@ EOT;
     /**
      * Execute for each project the setup
      *
-     * @param array $setupOptions - options for the package setup [executePackageSetup]
+     * @param array<string, mixed> $setupOptions - options for the package setup [executePackageSetup]
      */
     public static function executeEachProjectSetup(array $setupOptions = []): void
     {
@@ -463,7 +569,7 @@ EOT;
     /**
      * Execute for each package the setup
      *
-     * @param array $setupOptions - options for the package setup
+     * @param array<string, mixed> $setupOptions - options for the package setup
      * @param QUI\Interfaces\System\SystemOutput|null $Output
      *
      * @throws QUI\Exception

@@ -28,6 +28,10 @@ interface EngineInterface
 
     /**
      * Assign a Variable to the engine
+     *
+     * @param array<string, mixed>|string $var
+     *
+     * @return void
      */
     public function assign(array|string $var, mixed $value = false);
 

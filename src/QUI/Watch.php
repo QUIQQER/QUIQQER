@@ -13,6 +13,9 @@ class Watch
 {
     /**
      * Write failed login attempts to watcher log
+     *
+     * @param mixed $event
+     * @param array<int, mixed> $params
      */
     public static function authenticatorLoginError($event, $params): string
     {

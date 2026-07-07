@@ -75,10 +75,13 @@ class Manager
     protected bool $multipleCallPrevention = false;
 
     /**
-     * @var array - list of users (cache)
+     * @var array<int|string, QUIUserInterface> - list of users (cache)
      */
     private array $users = [];
 
+    /**
+     * @var array<int|string, int|string>
+     */
     private array $usersUUIDs = [];
 
     private ?Nobody $Nobody = null;
@@ -776,6 +779,8 @@ class Manager
     /**
      * Create user with specific attributes
      *
+     * @param array<string, mixed> $attributes
+     *
      * @throws Exception
      * @throws QUI\Database\Exception
      * @throws QUI\Exception
@@ -938,7 +943,7 @@ class Manager
     /**
      * @param boolean $objects - as objects=true, as array=false
      *
-     * @return array
+     * @return array<int, QUIUserInterface|array<string, mixed>>
      */
     public function getAllUsers(bool $objects = false): array
     {
@@ -973,6 +978,9 @@ class Manager
         return $result;
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function getAllUserIds(): array
     {
         try {
@@ -994,7 +1002,7 @@ class Manager
     /**
      * Logged in a user
      *
-     * @param array|integer|string $authData - Authentication data, passwords, keys, hashes etc
+     * @param array<string, mixed>|integer|string $authData - Authentication data, passwords, keys, hashes etc
      *
      * @return QUIUserInterface|null
      * @throws QUI\Database\Exception
@@ -1270,6 +1278,8 @@ class Manager
     /**
      * Authenticate the user at one authenticator
      *
+     * @param array<string, mixed> $params
+     *
      * @throws QUI\Users\UserAuthException
      * @throws QUI\Exception
      * @throws QUI\ExceptionStack
@@ -1396,7 +1406,9 @@ class Manager
     /**
      * Get specific users
      *
-     * @param array $params -> SQL Array
+     * @param array<string, mixed> $params -> SQL Array
+     *
+     * @return QUIUserInterface[]
      */
     public function getUsers(array $params = []): array
     {
@@ -1422,7 +1434,9 @@ class Manager
     /**
      * Get specific users ids
      *
-     * @param array $params -> SQL Array
+     * @param array<string, mixed> $params -> SQL Array
+     *
+     * @return array<int, array<string, mixed>>
      */
     public function getUserIds(array $params = []): array
     {
@@ -1584,6 +1598,9 @@ class Manager
     }
 
     /**
+     * @param array<string, mixed> $params
+     * @return array<int, array<string, mixed>>|int
+     *
      * @throws Exception
      */
     public function search(array $params): array | int
@@ -1593,6 +1610,9 @@ class Manager
 
     /**
      * User search
+     *
+     * @param array<string, mixed> $params
+     * @return array<int, array<string, mixed>>|int
      *
      * @throws QUI\Database\Exception
      * @todo where params
@@ -1861,7 +1881,7 @@ class Manager
     /**
      * User count
      *
-     * @param array $params - Search parameter
+     * @param array<string, mixed> $params - Search parameter
      * @return integer
      *
      * @throws QUI\DataBase\Exception

@@ -28,6 +28,8 @@ class Bundler
 {
     /**
      * Files includes
+     *
+     * @var array<string, string|false>
      */
     protected array $includes = [];
 
@@ -80,6 +82,10 @@ class Bundler
     }
 
     /**
+     * @param array<string, mixed> $request
+     *
+     * @return array<string, mixed>
+     *
      * @throws QUI\Exception
      */
     protected function parseRequest(array $request): array
@@ -130,7 +136,7 @@ class Bundler
     /**
      * Include normal files
      *
-     * @param string|array $function - name of the function
+     * @param string|array<int, string> $function - name of the function
      */
     protected function includes(string|array $function): void
     {
@@ -176,8 +182,8 @@ class Bundler
     /**
      * Include package files
      *
-     * @param string|array $function - name of the function
-     * @param array $request - Request data
+     * @param string|array<int, string> $function - name of the function
+     * @param array<string, mixed> $request - Request data
      */
     protected function includesPackage(string|array $function, array $request): void
     {
@@ -217,8 +223,8 @@ class Bundler
     /**
      * Include projects files
      *
-     * @param string|array $function - name of the function
-     * @param array $request - Request data
+     * @param string|array<int, string> $function - name of the function
+     * @param array<string, mixed> $request - Request data
      *
      * @throws QUI\Exception
      */

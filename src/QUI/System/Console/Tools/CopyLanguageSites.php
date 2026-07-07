@@ -20,11 +20,16 @@ class CopyLanguageSites extends QUI\System\Console\Tool
 
     /**
      * Maps source brick id to target brick id.
+     *
+     * @var array<int|string, int|string>
      */
     protected array $bricksMapping = [];
 
     protected bool $copyBricks = false;
 
+    /**
+     * @var array<int, array<string, mixed>>
+     */
     protected array $sourceBrickAreas = [];
 
     protected bool $activateSites = true;

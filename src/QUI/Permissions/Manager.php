@@ -40,16 +40,22 @@ class Manager
 
     /**
      * internal right cache
+     *
+     * @var array<string, array<string, mixed>>
      */
     protected array $cache = [];
 
     /**
      * Permissions2 data cache
+     *
+     * @var array<string, array<array-key, mixed>>
      */
     protected array $dataCache = [];
 
     /**
      * internal ram cache for permissions
+     *
+     * @var array<string, array<string, mixed>>
      */
     protected array $permissionsCache = [];
 
@@ -139,6 +145,10 @@ class Manager
         }
     }
 
+    /**
+     * @param array<string, array<string, mixed>> $columns
+     * @param array<int, string> $indexes
+     */
     private static function ensureTableColumns(string $tableName, array $columns, array $indexes = []): void
     {
         $SchemaManager = QUI::getSchemaManager();
@@ -241,6 +251,8 @@ class Manager
     /**
      * Return the current permissions from a group, user, site, project or media
      * Returns the set permissions
+     *
+     * @return array<string, mixed>
      */
     public function getPermissions(mixed $Obj): array
     {
@@ -355,6 +367,8 @@ class Manager
 
     /**
      * Return the permissions from a site
+     *
+     * @return array<string, mixed>
      */
     public function getProjectPermissions(Project $Project): array
     {
@@ -376,6 +390,8 @@ class Manager
 
     /**
      * Return the permissions data of an object
+     *
+     * @return array<array-key, mixed>
      */
     protected function getData(mixed $Obj): array
     {
@@ -479,6 +495,12 @@ class Manager
         return [];
     }
 
+    /**
+     * @param array<string, mixed> $where
+     * @param array<int, string> $select
+     *
+     * @return array<int, array<string, mixed>>
+     */
     private static function fetchRows(string $table, array $where = [], int | null $limit = null, array $select = ["*"]): array
     {
         $Connection = QUI::getDataBaseConnection();
@@ -573,7 +595,7 @@ class Manager
      *
      * @param boolean|string $area - optional, specified the area of the permissions
      *
-     * @return array
+     * @return array<string, array<string, mixed>>
      */
     public function getPermissionList(bool | string $area = false): array
     {
@@ -612,6 +634,9 @@ class Manager
         return $result;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getSitePermissions(QUI\Interfaces\Projects\Site $Site): array
     {
         if (QUI\Projects\Site\Utils::isSiteObject($Site) === false) {
@@ -637,6 +662,10 @@ class Manager
 
     /**
      * Return the permissions from a media item
+     *
+     * @param QUI\Projects\Media\Item $MediaItem
+     *
+     * @return array<string, mixed>
      */
     public function getMediaPermissions($MediaItem): array
     {
@@ -665,7 +694,7 @@ class Manager
      * Set the permissions for an object
      *
      * @param User|Group|Project|Site|Edit|QUI\Projects\Media\Item $Obj
-     * @param array $permissions - Array of permissions
+     * @param array<string, mixed> $permissions - Array of permissions
      * @param QUI\Interfaces\Users\User|null $EditUser - Edit user
      *
      * @throws Exception
@@ -841,6 +870,8 @@ class Manager
     /**
      * Set the permissions for a project object
      *
+     * @param array<string, mixed> $permissions
+     *
      * @throws Exception|\QUI\Permissions\Exception
      */
     public function setProjectPermissions(
@@ -892,6 +923,10 @@ class Manager
 
     /**
      * Cleanup the value for the type
+     *
+     * @param array<array-key, mixed>|int|string $val
+     *
+     * @return array<array-key, mixed>|bool|int|string
      */
     protected function cleanValue(
         string $type,
@@ -1018,6 +1053,8 @@ class Manager
 
     /**
      * Set the permissions for a site object
+     *
+     * @param array<string, mixed> $permissions
      *
      * @throws QUI\Exception
      * @throws Exception
@@ -1161,6 +1198,8 @@ class Manager
 
     /**
      * Set the permissions for a site object
+     *
+     * @param array<string, mixed> $permissions
      *
      * @throws QUI\Exception
      * @throws Exception
@@ -1452,7 +1491,7 @@ class Manager
     /**
      * Add a permission
      *
-     * @param array $params - Permission params
+     * @param array<string, mixed> $params - Permission params
      *                            array(
      *                            name =>
      *                            desc =>
@@ -1528,6 +1567,9 @@ class Manager
         $this->cache[$params['name']] = $params;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     private static function updatePermissionRow(string $name, array $data): void
     {
         $Connection = QUI::getDataBaseConnection();
@@ -1550,6 +1592,9 @@ class Manager
         $QueryBuilder->executeStatement();
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     private static function insertPermissionRow(array $data): void
     {
         $Connection = QUI::getDataBaseConnection();
@@ -1634,7 +1679,8 @@ class Manager
      *
      * @param string $permission - Name of the permission
      *
-     * @return false|array
+     * @return false|array<string, mixed>
+     *
      * @throws QUI\Exception
      */
     public function getPermissionData(string $permission): bool | array
@@ -1654,6 +1700,8 @@ class Manager
      * Return all permissions from a group, user, site, project or media
      *
      * @param QUI\Groups\Group|User|Project|QUI\Projects\Site|QUI\Interfaces\Users\User $Obj
+     *
+     * @return array<string, mixed>
      */
     public function getCompletePermissionList(mixed $Obj): array
     {
@@ -1810,6 +1858,11 @@ class Manager
     }
 
     // region media
+    /**
+     * @param QUI\Interfaces\Users\User $User
+     *
+     * @return array<string, mixed>
+     */
     public function getUserPermissionData($User): array
     {
         $userPermissions = $this->getData($User);
@@ -1831,6 +1884,8 @@ class Manager
     /**
      * Rechte Array einer Gruppe aus den Attributen erstellen
      * Wird zum Beispiel zum Speichern einer Gruppe verwendet
+     *
+     * @return array<string, mixed>
      *
      * @todo das muss vielleicht überdacht werden
      */

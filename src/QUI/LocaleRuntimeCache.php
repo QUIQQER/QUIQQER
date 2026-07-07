@@ -11,9 +11,13 @@ class LocaleRuntimeCache
 {
     /**
      * @var array Holds all locale vars by language and package
+     * @phpstan-var array<string, array<string, array<string, mixed>>>
      */
     protected static array $languages = [];
 
+    /**
+     * @param array<string, mixed> $translations
+     */
     public static function set(string $lang, string $group, array $translations): void
     {
         if (!isset(self::$languages[$lang])) {
@@ -37,7 +41,7 @@ class LocaleRuntimeCache
      * @param string $group
      * @param string|bool $value - If the value is false, return the whole translation group
      *
-     * @return string|null|array
+     * @return string|null|array<string, mixed>
      */
     public static function get(string $lang, string $group, $value = false)
     {
