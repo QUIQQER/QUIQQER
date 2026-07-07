@@ -13,10 +13,13 @@ use QUI\MCP\Project\GetCustomCSS;
 use QUI\MCP\Project\GetCustomJavaScript;
 use QUI\MCP\Project\ListProjects;
 use QUI\MCP\Project\Media\ActivateMedia;
+use QUI\MCP\Project\Media\CreateUploadSession;
 use QUI\MCP\Project\Media\CreateFolder;
 use QUI\MCP\Project\Media\DeactivateMedia;
 use QUI\MCP\Project\Media\DeleteMedia;
+use QUI\MCP\Project\Media\FinalizeUpload;
 use QUI\MCP\Project\Media\GetMedia;
+use QUI\MCP\Project\Media\GetUploadSession;
 use QUI\MCP\Project\Media\ListMedia;
 use QUI\MCP\Project\Media\SearchMedia;
 use QUI\MCP\Project\Media\UpdateMedia;
@@ -83,6 +86,9 @@ class Provider implements ProviderInterface
             new SearchMedia(),
             new CreateFolder(),
             new UploadMedia(),
+            new CreateUploadSession(),
+            new GetUploadSession(),
+            new FinalizeUpload(),
             new UpdateMedia(),
             new ActivateMedia(),
             new DeactivateMedia(),
