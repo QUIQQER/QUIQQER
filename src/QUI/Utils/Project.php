@@ -9,7 +9,6 @@ namespace QUI\Utils;
 use QUI;
 use QUI\Demodata\Parser\DemoDataParser;
 
-use function file_exists;
 use function implode;
 use function preg_match;
 
@@ -216,15 +215,18 @@ class Project
     /**
      * @throws QUI\Exception
      */
-    public static function applyDemoDataToProject(QUI\Projects\Project $Project, string $templateName): void
-    {
+    public static function applyDemoDataToProject(
+        QUI\Projects\Project $Project,
+        string $templateName,
+        ?string $demoDataSet = null
+    ): void {
         $TemplatePackage = QUI::getPackageManager()->getInstalledPackage($templateName);
         $Parser = new DemoDataParser();
 
         $demoDataArray = [];
 
-        if (file_exists($TemplatePackage->getDir() . 'demodata.xml')) {
-            $demoDataArray = $Parser->parse($TemplatePackage, $Project);
+        if ($Parser->getSets($TemplatePackage) !== []) {
+            $demoDataArray = $Parser->parse($TemplatePackage, $Project, $demoDataSet);
         }
 
         if (empty($demoDataArray)) {
@@ -236,6 +238,18 @@ class Project
 
         $DemoData = new QUI\Demodata\DemoData();
         $DemoData->apply($Project, $demoDataArray);
+    }
+
+    /**
+     * @return array<string, array<string, string>>
+     * @throws QUI\Exception
+     */
+    public static function getDemoDataSetsForTemplate(string $templateName): array
+    {
+        $TemplatePackage = QUI::getPackageManager()->getInstalledPackage($templateName);
+        $Parser = new DemoDataParser();
+
+        return $Parser->getSets($TemplatePackage);
     }
 
     /**

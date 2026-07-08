@@ -227,6 +227,58 @@ define('controls/projects/Manager', [
                     }
                 });
 
+                var TemplateSelect = Form.elements.template;
+                var DemoDataSelect = Form.elements.demodata;
+
+                var resetDemoDataSelect = function () {
+                    DemoDataSelect.set('html', '');
+
+                    new Element('option', {
+                        value: '',
+                        html : Locale.get(lg, 'demodata.project.no.demodata')
+                    }).inject(DemoDataSelect);
+                };
+
+                var updateDemoDataSelect = function () {
+                    resetDemoDataSelect();
+                    DemoDataSelect.disabled = true;
+
+                    if (!TemplateSelect.value) {
+                        return;
+                    }
+
+                    var template = TemplateSelect.value;
+
+                    Projects.getDemoDataSets(template).then(function (sets) {
+                        if (TemplateSelect.value !== template) {
+                            return;
+                        }
+
+                        var hasSets = false;
+
+                        for (var setId in sets) {
+                            if (!sets.hasOwnProperty(setId)) {
+                                continue;
+                            }
+
+                            hasSets = true;
+
+                            new Element('option', {
+                                value: setId,
+                                html : sets[setId].title || setId
+                            }).inject(DemoDataSelect);
+                        }
+
+                        DemoDataSelect.disabled = !hasSets;
+                    }).catch(function () {
+                        resetDemoDataSelect();
+                        DemoDataSelect.disabled = true;
+                    });
+                };
+
+                TemplateSelect.addEvent('change', updateDemoDataSelect);
+                updateDemoDataSelect();
+
                 new QUIButton({
                     text  : Locale.get(lg, 'projects.project.manager.btn.create.project'),
                     events: {
@@ -258,7 +310,8 @@ define('controls/projects/Manager', [
                 Form.elements.project.value,
                 Form.elements.lang.value,
                 Form.elements.template.value,
-                Form.elements.demodata.checked
+                Form.elements.demodata.value !== '',
+                Form.elements.demodata.value
             ).then(function (result) {
                 self.Loader.hide();
 

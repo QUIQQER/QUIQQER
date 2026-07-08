@@ -4268,6 +4268,9 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         <locale name="demodata.project.label.template">
             <de><![CDATA[Demodaten installieren]]></de>
         </locale>
+        <locale name="demodata.project.no.demodata">
+            <de><![CDATA[Keine Demodaten installieren]]></de>
+        </locale>
         <locale name="projects.project.site.no.permissions">
             <de><![CDATA[Sie besitzen keine Rechte diese Seite anzuzeigen]]></de>
         </locale>

@@ -220,10 +220,16 @@ class Utils
 
         $templateData = $packages[$templateName][$version];
 
-        if (!isset($templateData['extra']['quiqqer']['demodata'])) {
+        $demoData = $templateData['extra']['quiqqer']['demodata'] ?? null;
+
+        if ($demoData === null) {
             return false;
         }
 
-        return $templateData['extra']['quiqqer']['demodata'];
+        if (is_bool($demoData)) {
+            return $demoData;
+        }
+
+        return is_array($demoData) && !empty($demoData);
     }
 }

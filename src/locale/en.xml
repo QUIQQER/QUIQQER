@@ -4131,6 +4131,9 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="demodata.project.label.template">
             <en><![CDATA[Install demodata]]></en>
         </locale>
+        <locale name="demodata.project.no.demodata">
+            <en><![CDATA[Do not install demodata]]></en>
+        </locale>
         <locale name="projects.project.site.no.permissions">
             <en><![CDATA[You do not have permission to access this page.]]></en>
         </locale>
