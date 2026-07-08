@@ -9,6 +9,7 @@ namespace QUI\Utils;
 use QUI;
 use QUI\Demodata\Parser\DemoDataParser;
 
+use function file_exists;
 use function implode;
 use function preg_match;
 
@@ -224,9 +225,21 @@ class Project
         $Parser = new DemoDataParser();
 
         $demoDataArray = [];
+        $getSetsMethod = 'getSets';
 
-        if ($Parser->getSets($TemplatePackage) !== []) {
-            $demoDataArray = $Parser->parse($TemplatePackage, $Project, $demoDataSet);
+        if (
+            method_exists($Parser, $getSetsMethod)
+            && $Parser->{$getSetsMethod}($TemplatePackage) !== []
+        ) {
+            $parseMethod = 'parse';
+            $demoDataArray = $Parser->{$parseMethod}($TemplatePackage, $Project, $demoDataSet);
+        }
+
+        if (
+            empty($demoDataArray)
+            && file_exists($TemplatePackage->getDir() . 'demodata.xml')
+        ) {
+            $demoDataArray = $Parser->parse($TemplatePackage, $Project);
         }
 
         if (empty($demoDataArray)) {
@@ -248,8 +261,23 @@ class Project
     {
         $TemplatePackage = QUI::getPackageManager()->getInstalledPackage($templateName);
         $Parser = new DemoDataParser();
+        $getSetsMethod = 'getSets';
 
-        return $Parser->getSets($TemplatePackage);
+        if (!method_exists($Parser, $getSetsMethod)) {
+            if (!file_exists($TemplatePackage->getDir() . 'demodata.xml')) {
+                return [];
+            }
+
+            return [
+                'default' => [
+                    'id' => 'default',
+                    'title' => 'Default',
+                    'description' => ''
+                ]
+            ];
+        }
+
+        return $Parser->{$getSetsMethod}($TemplatePackage);
     }
 
     /**
