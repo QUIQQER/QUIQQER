@@ -143,6 +143,16 @@ class User implements QUIUserInterface
     protected bool $isLoaded = true;
 
     /**
+     * Prevents recursive user saves while the standard address is created.
+     */
+    protected bool $suppressAddAddressUserSave = false;
+
+    /**
+     * Indicates that User::save() is currently resolving the standard address.
+     */
+    protected bool $standardAddressLookupDuringSave = false;
+
+    /**
      * verifiable status of the attributes
      */
     protected null | QUI\Users\Attribute\VerifiableUserAttributeCollection $verifiableAttributes = null;
@@ -295,6 +305,8 @@ class User implements QUIUserInterface
             );
         }
 
+        $this->isLoaded = false;
+
         // Eigenschaften setzen
         $this->uuid = $data['uuid'];
         $this->id = (int)$data['id'];
@@ -386,13 +398,13 @@ class User implements QUIUserInterface
 
         // load default address fields
         // syn main user address fields
-        $this->isLoaded = true;
         $this->setAttribute('firstname', $data['firstname']);
         $this->setAttribute('lastname', $data['lastname']);
         $this->setAttribute('email', $data['email']);
 
         $this->address_list = [];
         $this->StandardAddress = null;
+        $this->isLoaded = true;
 
         // Event
         QUI::getEvents()->fireEvent('userLoad', [$this]);
@@ -574,16 +586,26 @@ class User implements QUIUserInterface
             return $this->StandardAddress;
         }
 
-        $Address = $this->addAddress([
-            'firstname' => $this->getAttribute('firstname'),
-            'lastname' => $this->getAttribute('lastname')
-        ], QUI::getUsers()->getSystemUser());
+        $this->suppressAddAddressUserSave = true;
+
+        try {
+            $Address = $this->addAddress([
+                'firstname' => $this->getAttribute('firstname'),
+                'lastname' => $this->getAttribute('lastname')
+            ], QUI::getUsers()->getSystemUser());
+        } finally {
+            $this->suppressAddAddressUserSave = false;
+        }
 
         if (!empty($this->getAttribute('email'))) {
             $Address->addMail($this->getAttribute('email'));
         }
 
-        $Address->save(QUI::getUsers()->getSystemUser());
+        $this->StandardAddress = $Address;
+
+        if (!$this->standardAddressLookupDuringSave) {
+            $Address->save(QUI::getUsers()->getSystemUser());
+        }
 
         return $Address;
     }
@@ -745,12 +767,18 @@ class User implements QUIUserInterface
         if (empty($tmp_first) && empty($tmp_last)) {
             $this->setAttribute('firstname', $_params['firstname']);
             $this->setAttribute('lastname', $_params['lastname']);
-            $this->save($ParentUser);
+
+            if (!$this->suppressAddAddressUserSave) {
+                $this->save($ParentUser);
+            }
         }
 
         if (count($this->getAddressList()) === 1) {
             $this->setAttribute('address', $CreatedAddress->getUUID());
-            $this->save($ParentUser);
+
+            if (!$this->suppressAddAddressUserSave) {
+                $this->save($ParentUser);
+            }
         }
 
         return $CreatedAddress;
@@ -952,10 +980,16 @@ class User implements QUIUserInterface
 
         // default address filling
         $email = trim($this->getAttribute('email'));
-        $this->getStandardAddress();
+        $this->standardAddressLookupDuringSave = true;
+
+        try {
+            $StandardAddress = $this->getStandardAddress();
+        } finally {
+            $this->standardAddressLookupDuringSave = false;
+        }
 
         if (!$this->getAttribute('address')) {
-            $this->setAttribute('address', $this->getStandardAddress()->getUUID());
+            $this->setAttribute('address', $StandardAddress->getUUID());
         }
 
 
@@ -1004,7 +1038,7 @@ class User implements QUIUserInterface
             QUI\System\Log::addError($exception->getMessage());
         }
 
-        $this->getStandardAddress()->save($PermissionUser);
+        $StandardAddress->save($PermissionUser);
 
         QUI::getEvents()->fireEvent('userSaveEnd', [$this]);
 
