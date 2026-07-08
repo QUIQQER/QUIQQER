@@ -504,7 +504,9 @@ class Address extends QUI\QDOM
      */
     public function getCountry(): QUI\Countries\Country
     {
-        if ($this->getAttribute('country') === false) {
+        $country = $this->getAttribute('country');
+
+        if (!is_string($country) || trim($country) === '') {
             throw new Exception(
                 QUI::getLocale()->get(
                     'quiqqer/core',
@@ -515,7 +517,7 @@ class Address extends QUI\QDOM
 
         try {
             return QUI\Countries\Manager::get(
-                $this->getAttribute('country')
+                $country
             );
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
