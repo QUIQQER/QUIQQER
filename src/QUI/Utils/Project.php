@@ -230,8 +230,12 @@ class Project
             self::parserSupportsDemoDataSets($Parser)
             && self::getParserDemoDataSets($Parser, $TemplatePackage) !== []
         ) {
-            $parseMethod = 'parse';
-            $demoDataArray = $Parser->{$parseMethod}($TemplatePackage, $Project, $demoDataSet);
+            $demoDataArray = self::parseDemoDataSet(
+                $Parser,
+                $TemplatePackage,
+                $Project,
+                $demoDataSet
+            );
         }
 
         if (
@@ -288,10 +292,34 @@ class Project
      */
     protected static function getParserDemoDataSets(object $Parser, QUI\Package\Package $TemplatePackage): array
     {
-        $getSetsMethod = 'getSets';
-        $sets = $Parser->{$getSetsMethod}($TemplatePackage);
+        if (!method_exists($Parser, 'getSets')) {
+            return [];
+        }
+
+        $sets = call_user_func_array([$Parser, 'getSets'], [$TemplatePackage]);
 
         return is_array($sets) ? $sets : [];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected static function parseDemoDataSet(
+        object $Parser,
+        QUI\Package\Package $TemplatePackage,
+        QUI\Projects\Project $Project,
+        ?string $demoDataSet
+    ): array {
+        if (!method_exists($Parser, 'parse')) {
+            return [];
+        }
+
+        $demoDataArray = call_user_func_array(
+            [$Parser, 'parse'],
+            [$TemplatePackage, $Project, $demoDataSet]
+        );
+
+        return is_array($demoDataArray) ? $demoDataArray : [];
     }
 
     /**
