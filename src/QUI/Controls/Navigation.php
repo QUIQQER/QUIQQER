@@ -16,6 +16,9 @@ use QUI\Projects\Site\Utils;
  */
 class Navigation extends QUI\Control
 {
+    /**
+     * @param array<string, mixed> $attributes
+     */
     public function __construct(array $attributes = [])
     {
         // defaults values

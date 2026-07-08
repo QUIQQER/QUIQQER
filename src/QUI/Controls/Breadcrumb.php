@@ -62,6 +62,9 @@ class Breadcrumb extends QUI\Control
         'primary-bold'
     ];
 
+    /**
+     * @param array<string, mixed> $attributes
+     */
     public function __construct(array $attributes = [])
     {
         // default options

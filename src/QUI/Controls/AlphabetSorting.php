@@ -16,6 +16,9 @@ use function is_string;
  */
 class AlphabetSorting extends QUI\Control
 {
+    /**
+     * @param array<string, mixed> $attributes
+     */
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
