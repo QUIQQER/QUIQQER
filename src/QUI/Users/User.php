@@ -2214,6 +2214,27 @@ class User implements QUIUserInterface
     }
 
     /**
+     * @throws Exception|ExceptionStack
+     * @throws QUI\Exception
+     */
+    protected function deleteAddresses(): void
+    {
+        $addresses = $this->getAddressList();
+
+        /** @var Address $Address */
+        foreach ($addresses as $Address) {
+            $Address->delete();
+        }
+
+        $addresses = $this->getAddressList();
+
+        /** @var Address $Address */
+        foreach ($addresses as $Address) {
+            $Address->delete();
+        }
+    }
+
+    /**
      * @throws QUI\Exception
      */
     public function disable(null | QUIUserInterface $PermissionUser = null): bool
@@ -2224,19 +2245,7 @@ class User implements QUIUserInterface
         QUI::getEvents()->fireEvent('userDisable', [$this]);
 
         $SessionUser = QUI::getUserBySession();
-        $addresses = $this->getAddressList();
-
-        /** @var Address $Address */
-        foreach ($addresses as $Address) {
-            $Address->delete();
-        }
-
-        $addresses = $this->getAddressList();
-
-        /** @var Address $Address */
-        foreach ($addresses as $Address) {
-            $Address->delete();
-        }
+        $this->deleteAddresses();
 
         try {
             QUI::getDataBaseConnection()->update(
@@ -2306,6 +2315,8 @@ class User implements QUIUserInterface
 
         // API
         QUI::getEvents()->fireEvent('userDelete', [$this]);
+
+        $this->deleteAddresses();
 
         try {
             $Connection = QUI::getDataBaseConnection();

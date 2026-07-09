@@ -81,8 +81,18 @@ class UserDbalLifecycleTest extends TestCase
         $this->assertTrue($ReloadedUser->deactivate($SystemUser));
         $this->assertFalse($Users->get($ReloadedUser->getUUID())->isActive());
 
+        $ReloadedUser->addAddress([
+            'firstname' => 'DBAL',
+            'lastname' => 'Address',
+            'mail' => 'dbal-address@example.invalid',
+            'country' => 'DE'
+        ], $SystemUser);
+
+        $this->assertGreaterThan(0, self::countAddresses($ReloadedUser->getUUID()));
+
         $this->assertTrue($Users->deleteUser($ReloadedUser->getUUID()));
         $this->assertFalse($Users->usernameExists($username));
+        $this->assertSame(0, self::countAddresses($ReloadedUser->getUUID()));
     }
 
     private static function skipIfDatabaseIsUnavailable(): void
@@ -116,6 +126,18 @@ class UserDbalLifecycleTest extends TestCase
     private static function getConnection(): Connection
     {
         return QUI::getDataBaseConnection();
+    }
+
+    private static function countAddresses(string | int $userUuid): int
+    {
+        return (int)self::getConnection()
+            ->createQueryBuilder()
+            ->select('COUNT(id)')
+            ->from(QUI\Utils\Doctrine::quoteIdentifier(Manager::tableAddress()))
+            ->where('userUuid = :userUuid')
+            ->setParameter('userUuid', $userUuid)
+            ->executeQuery()
+            ->fetchOne();
     }
 
     private static function cleanupTestUsers(): void
