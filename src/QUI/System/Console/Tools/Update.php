@@ -11,6 +11,7 @@ use QUI;
 use QUI\System\Console\UpdateConsoleOutput;
 use QUI\System\Console\UpdatePackageOutput;
 
+use function array_merge;
 use function count;
 use function date;
 use function error_log;
@@ -875,7 +876,10 @@ class Update extends QUI\System\Console\Tool
         $Runner->setOutput($CLIOutput);
 
         try {
-            $Runner->executeComposer('status', $this->getComposerVerbosityOptions());
+            $Runner->executeComposer(
+                'status',
+                array_merge(['--no-interaction' => true], $this->getComposerVerbosityOptions())
+            );
         } catch (\QUI\Exception $exception) {
             if ($this->getVerbosityLevel() >= 3 && !$filesystemStatusOutputWritten) {
                 foreach ($result as $line) {

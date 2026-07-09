@@ -455,7 +455,8 @@ class Manager extends QUI\QDOM
         $allowedPlugins = [
             "composer/installers",
             "oomphinc/composer-installers-extender",
-            "kylekatarnls/update-helper"
+            "kylekatarnls/update-helper",
+            "php-http/discovery"
         ];
 
         if (!isset($composerJson->config->{'discard-changes'})) {
