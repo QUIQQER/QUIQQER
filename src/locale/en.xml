@@ -1163,6 +1163,9 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="user_id">
             <en><![CDATA[User ID]]></en>
         </locale>
+        <locale name="user_uuid">
+            <en><![CDATA[User UUID]]></en>
+        </locale>
         <locale name="user_ip_adress">
             <en><![CDATA[The user's IP address]]></en>
         </locale>

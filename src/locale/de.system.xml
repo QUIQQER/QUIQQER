@@ -95,6 +95,9 @@
         <locale name="user_id">
             <de><![CDATA[Benutzer-ID]]></de>
         </locale>
+        <locale name="user_uuid">
+            <de><![CDATA[Benutzer-UUID]]></de>
+        </locale>
         <locale name="user_ip_adress">
             <de><![CDATA[IP-Adresse des Benutzers]]></de>
         </locale>
