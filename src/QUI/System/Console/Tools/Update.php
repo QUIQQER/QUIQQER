@@ -306,10 +306,6 @@ class Update extends QUI\System\Console\Tool
             return true;
         }
 
-        $Maintenance = new Maintenance();
-        $Maintenance->setArgument('status', 'on');
-        $Maintenance->execute();
-
         $executeFileSystemCheck = true;
         if ($this->getArgument('skip-filesystem-check')) {
             $executeFileSystemCheck = false;
@@ -332,8 +328,6 @@ class Update extends QUI\System\Console\Tool
                 ]);
 
                 if ($this->executedAnywayQuestion() === false) {
-                    $Maintenance->setArgument('status', 'off');
-                    $Maintenance->execute();
                     return false;
                 }
 
@@ -344,8 +338,6 @@ class Update extends QUI\System\Console\Tool
                 $Output->warning('The update has found inconsistencies in the system.');
 
                 if ($this->executedAnywayQuestion() === false) {
-                    $Maintenance->setArgument('status', 'off');
-                    $Maintenance->execute();
                     return false;
                 }
             }
@@ -353,6 +345,10 @@ class Update extends QUI\System\Console\Tool
 
         // init backup
         $etcBackupFolder = QUI\System\Backup::createEtcBackup();
+
+        $Maintenance = new Maintenance();
+        $Maintenance->setArgument('status', 'on');
+        $Maintenance->execute();
 
         // start update routines
         $CLIOutput = new QUI\System\Console\Output();
