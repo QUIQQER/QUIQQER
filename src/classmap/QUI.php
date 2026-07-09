@@ -976,6 +976,14 @@ class QUI
     }
 
     /**
+     * Reset the cached current user.
+     */
+    public static function resetSessionUser(): void
+    {
+        self::getUsers()->resetSessionUser();
+    }
+
+    /**
      * Return the user manager
      */
     public static function getUsers(): UserManager
