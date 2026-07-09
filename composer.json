@@ -30,7 +30,7 @@
     "ext-zip": "*",
     "composer/semver": "^3",
     "martinvenus/knapsack": "^10",
-    "doctrine/dbal": "^4",
+    "doctrine/dbal": "^4.4",
     "html2text/html2text": "^4",
     "intervention/image": "^3.10",
     "league/climate": "^3",
