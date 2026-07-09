@@ -399,9 +399,11 @@ define('controls/grid/Grid', [
 
             // Setup header
             t.container.getElements('.th').each(function (el, i) {
-                const dataType = el.retrieve('dataType');
+                const dataType = el.retrieve('dataType'),
+                    columnModel = t.$columnModel[i] || {},
+                    sortFunction = columnModel.sortFunction;
 
-                if (!dataType) {
+                if (!dataType && typeOf(sortFunction) !== 'function') {
                     return;
                 }
 
@@ -464,6 +466,18 @@ define('controls/grid/Grid', [
                 };
 
                 el.compare = function (a, b) {
+                    if (typeOf(sortFunction) === 'function') {
+                        return sortFunction(
+                            t.$data[a.retrieve('row')],
+                            t.$data[b.retrieve('row')],
+                            el.sortBy || t.getAttribute('sortBy'),
+                            columnModel,
+                            t,
+                            a,
+                            b
+                        );
+                    }
+
                     // a i b su LI elementi
                     let var1 = a.getChildren()[i].innerHTML.trim(),
                         var2 = b.getChildren()[i].innerHTML.trim();
@@ -4027,7 +4041,28 @@ define('controls/grid/Grid', [
             if (typeof storage.column !== 'undefined' && storageHash === currentHash) {
                 try {
                     if (typeOf(storage.column) === 'array') {
-                        this.$columnModel = storage.column;
+                        this.$columnModel = storage.column.map(function (storedColumn) {
+                            let originalColumn = null;
+
+                            for (let i = 0, len = this.$originalColumns.length; i < len; i++) {
+                                if (this.$originalColumns[i].dataIndex === storedColumn.dataIndex) {
+                                    originalColumn = this.$originalColumns[i];
+                                    break;
+                                }
+                            }
+
+                            if (!originalColumn) {
+                                return storedColumn;
+                            }
+
+                            Object.keys(originalColumn).forEach(function (key) {
+                                if (typeOf(originalColumn[key]) === 'function') {
+                                    storedColumn[key] = originalColumn[key];
+                                }
+                            });
+
+                            return storedColumn;
+                        }, this);
                     }
                 } catch (e) {
                 }
