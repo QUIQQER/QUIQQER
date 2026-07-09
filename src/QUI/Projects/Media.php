@@ -840,6 +840,8 @@ class Media extends QUI\QDOM
             $info = QUI\Utils\System\File::getInfo($file);
         }
 
+        QUI::getEvents()->fireEvent('mediaReplaceBegin', [$this, $id, $data]);
+
         // delete the file
         if (!empty($data['file'])) {
             QUI\Utils\System\File::unlink(
