@@ -16,7 +16,12 @@ use function array_merge;
 use function file_exists;
 use function in_array;
 use function is_array;
+use function is_int;
 use function is_numeric;
+use function is_string;
+use function microtime;
+use function mt_rand;
+use function mt_srand;
 use function is_object;
 use function trim;
 
@@ -196,10 +201,67 @@ class Manager extends QUI\QDOM
 
     /**
      * Setup for groups
+     *
+     * @throws QUI\Database\Exception
      */
     public function setup(): void
     {
-        // moved to migration v2 script
+        $root = QUI::conf('globals', 'root');
+
+        if (!empty($root) && (is_int($root) || is_string($root))) {
+            try {
+                $this->get($root);
+                return;
+            } catch (QUI\Exception) {
+            }
+        }
+
+        $uuid = $root;
+
+        if (empty($uuid) || !is_string($uuid) || is_numeric($uuid)) {
+            $uuid = QUI\Utils\Uuid::get();
+        }
+
+        try {
+            $newId = false;
+
+            while ($newId === false) {
+                mt_srand((int)(microtime(true) * 1_000_000));
+                $id = mt_rand(10, 1_000_000_000);
+
+                $Platform = QUI::getDataBaseConnection()->getDatabasePlatform();
+                $row = QUI::getQueryBuilder()
+                    ->select('id')
+                    ->from($Platform->quoteSingleIdentifier(self::table()))
+                    ->where('id = :id')
+                    ->setParameter('id', $id)
+                    ->setMaxResults(1)
+                    ->executeQuery()
+                    ->fetchAssociative();
+
+                if (!$row || !$row['id']) {
+                    $newId = $id;
+                }
+            }
+
+            QUI::getDataBaseConnection()->insert(QUI\Utils\Doctrine::quoteIdentifier(self::table()), [
+                'id' => $newId,
+                'uuid' => $uuid,
+                'name' => 'Root',
+                'parent' => 0,
+                'active' => 1,
+                'toolbar' => ''
+            ]);
+        } catch (\Doctrine\DBAL\Exception $DBALException) {
+            throw new QUI\Database\Exception(
+                $DBALException->getMessage(),
+                (int)$DBALException->getCode()
+            );
+        }
+
+        $Config = QUI::getConfig('etc/conf.ini.php');
+        $Config->setValue('globals', 'root', $uuid);
+        $Config->save();
     }
 
     public static function table(): string
