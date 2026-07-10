@@ -91,6 +91,10 @@ Fix root causes: real parameter and return types, nullable paths, failed convers
 weaken production types or add blanket ignores. Replace legacy static access such as `QUI::$Ajax` with supported accessors
 such as `QUI::getAjax()`.
 
+Prefer PHP's nullsafe operator (`?->`) when `null` may naturally propagate and the surrounding condition, fallback, or
+return value already handles it correctly. Use an explicit null check only when `null` requires distinct control flow,
+logging, state changes, or an exception. Do not add a verbose guard when a nullsafe call expresses the same behavior.
+
 ### Optional Dependency Stubs
 
 CI installations may intentionally omit optional ERP, payment, PDF, or integration packages. If PHPStan must understand
