@@ -40,7 +40,7 @@ Every package needs valid Composer metadata:
   "description": "Short package description.",
   "license": "GPL-3.0-or-later",
   "require": {
-    "php": "^8.1",
+    "php": "^8.2",
     "quiqqer/core": "^2"
   },
   "autoload": {

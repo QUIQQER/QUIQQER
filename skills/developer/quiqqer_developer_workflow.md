@@ -79,7 +79,7 @@ fix(locale): handle missing translation fallback
 Mark breaking changes with `!` and a `BREAKING CHANGE` footer:
 
 ```text
-build!: bump minimum PHP version to 8.1
+build!: bump minimum PHP version to 8.2
 
 BREAKING CHANGE: Drop support for PHP 7.4
 ```
