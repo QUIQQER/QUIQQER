@@ -109,6 +109,8 @@ class MigrationV2 extends QUI\System\Console\Tool
 
                     try {
                         $Connection->executeStatement(
+                            // MigrationV2 intentionally converts legacy MyISAM tables to InnoDB.
+                            // nosemgrep: quiqqer.forbid-mysql-specific-sql
                             'ALTER TABLE ' . $Platform->quoteSingleIdentifier($tableName) . ' ENGINE=InnoDB'
                         );
                         $this->writeLn('-> Converted ' . $tableName . ' to InnoDB');
