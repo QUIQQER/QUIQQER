@@ -70,10 +70,22 @@ Run PHPStan without trusting an old result cache:
 Work in controlled stages:
 
 1. Make PHPStan 2 run with the existing configuration.
-2. Remove obsolete exclusions and ignores.
-3. Empty the baseline; do not regenerate it to hide findings.
-4. Set `level: 8` if the package is below level 8.
-5. Fix findings in related groups and commit each coherent group.
+2. Configure the supported PHP version range.
+3. Remove obsolete exclusions and ignores.
+4. Empty the baseline; do not regenerate it to hide findings.
+5. Set `level: 8` if the package is below level 8.
+6. Fix findings in related groups and commit each coherent group.
+
+Ensure the PHPStan configuration contains this version range below `parameters`:
+
+```neon
+parameters:
+    phpVersion:
+        min: 80200
+        max: 80509
+```
+
+Keep existing `parameters` entries and merge `phpVersion` into that block; do not create a second `parameters` section.
 
 Fix root causes: real parameter and return types, nullable paths, failed conversions, array shapes, and control flow. Do not
 weaken production types or add blanket ignores. Replace legacy static access such as `QUI::$Ajax` with supported accessors

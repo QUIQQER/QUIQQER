@@ -26,6 +26,8 @@ class SkillProviderTest extends TestCase
         $this->assertSame('developer', $Skill->getCategory()->value);
         $this->assertStringContainsString('PHPStan 2 at level 8', $Skill->getDescription());
         $this->assertStringContainsString('Do not switch branches', $Skill->getContent());
+        $this->assertStringContainsString('min: 80200', $Skill->getContent());
+        $this->assertStringContainsString('max: 80509', $Skill->getContent());
         $this->assertStringContainsString('QUI::getDataBaseConnection()', $Skill->getContent());
         $this->assertStringContainsString('./tools/phpunit', $Skill->getContent());
     }
