@@ -21,7 +21,8 @@ define('classes/request/Bundler', [
         initialize: function (options) {
             this.setAttributes({
                 timeframe     : 100,
-                requestTimeout: 10000
+                requestTimeout: 10000,
+                maxRequests   : 20
             });
 
             this.parent(options);
@@ -170,6 +171,20 @@ define('classes/request/Bundler', [
          * @param {Object} Params - request params
          */
         $request: function (method, Params) {
+            var maxRequests = this.getAttribute('maxRequests');
+
+            if (maxRequests > 0 && Params.length > maxRequests) {
+                var Requests = [];
+
+                for (var i = 0, len = Params.length; i < len; i += maxRequests) {
+                    Requests.push(
+                        this.$request(method, Params.slice(i, i + maxRequests))
+                    );
+                }
+
+                return Requests;
+            }
+
             var requestData = this.$parseStackForSend(Params);
 
             var R = new Request({
