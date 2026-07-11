@@ -1,6 +1,6 @@
 ---
 name: quiqqer_package_quality_upgrade
-description: Use when modernizing a QUIQQER package with current PHIVE tools, PHPStan 2 at level 8, DBAL and PostgreSQL-compatible database access, portable database.xml schemas, CI stubs for optional dependencies, and PHPUnit integration tests.
+description: Use when modernizing and completing a QUIQQER package with current PHIVE tools, PHPStan 2 at level 8, DBAL and PostgreSQL-compatible database access, portable database.xml schemas, CI stubs for optional dependencies, PHPUnit integration tests, package metadata, licensing, README documentation, and required visual assets.
 category: developer
 ---
 
@@ -195,7 +195,67 @@ narrow test stubs for optional classes when necessary; do not change production 
 Run the integration suite twice consecutively. The second run detects incomplete cleanup, fixed IDs, leaked global state,
 and ordering assumptions.
 
-## 7. Validate And Deliver
+## 7. Complete The Package
+
+Completion is mandatory for every full package quality upgrade. Inspect and improve the repository-local package metadata,
+licensing, documentation, and required visual assets instead of merely reporting omissions.
+
+### Composer Metadata
+
+Follow `https://quiqqer.com/docs/developer/package-development#composer-metadata`.
+
+- Use `quiqqer-module` for normal extension packages, `quiqqer-template` for project presentation packages, and
+  `quiqqer-asset` only for the corresponding generated browser asset packages.
+- Remove a `version` field. The QUIQQER update server derives and manages package versions.
+- Replace personal author entries with the company maintainer entry:
+
+```json
+"authors": [
+  {
+    "name": "PCSG - Computer & Internet Service OHG",
+    "email": "info@quiqqer.com",
+    "homepage": "https://www.pcsg.de",
+    "role": "Maintainer"
+  }
+]
+```
+
+- Verify package name, description, homepage, support email, source URL, issue URL, PHP constraint, Core constraint, required
+  PHP extensions, and package dependencies.
+- Run `composer validate`. Keep Composer, `package.xml`, locales, and README metadata consistent.
+
+### License And README
+
+- Preserve the package's intended licensing meaning and use a valid SPDX identifier where one exists.
+- Add or update the repository's `LICENSE` file and keep it consistent with Composer and `package.xml`.
+- If the intended license cannot be determined unambiguously from existing repository evidence, ask the developer instead
+  of inventing or changing a license.
+- Create or improve the README without waiting for a separate request. Write it at least in English and include a clear
+  title, description, installation, configuration when applicable, usage, relevant technical notes, license, and support.
+- Remove obsolete personal developer attribution and stale instructions. Keep useful package-specific documentation.
+
+### `package.xml`, Locales, And Images
+
+- Verify localized title and short description, package image reference, support information, copyright, license, and all
+  referenced locale variables. Ensure English locale text exists.
+- Reuse suitable existing images. Never regenerate or replace an existing suitable image merely to standardize its file
+  type, style, name, or location.
+- Required visual asset types are the README header, package logo/icon, and GitLab project avatar image. Screenshots are not
+  currently required.
+- Generate only missing asset types with `https://completion.quiqqer.com/`. Supply the package title, the appropriate type
+  (`QUIQQER`, `ERP`, `ecoyn`, or `Kimai`), and a Font Awesome icon. If the icon or type is ambiguous, ask the developer.
+- The generator outputs `Readme.png` at 1200x600, `Logo.png` at 400x300, and `Gitlab.png` at 100x100. Preserve an
+  established package image directory; otherwise place new assets under `bin/images/` and update repository references.
+- Codex cannot assume permission to change the external GitLab project avatar. Report the intended `Gitlab` image's exact
+  repository path so the developer can upload it manually.
+
+Completion does not include screenshots, CI status review, milestone creation, version creation, tags, releases, or a list
+of manual release steps.
+
+Keep completion changes reviewable. Prefer separate Conventional Commits for metadata/license/README changes and visual
+assets when both categories are changed.
+
+## 8. Validate And Deliver
 
 Run the complete package checks:
 
