@@ -767,18 +767,7 @@ define('controls/upload/Form', [
                 events: {
                     onClick: function (Btn, event) {
                         event.stop();
-
-                        const fid = Slick.uidOf(Input);
-
-                        if (self.$files[fid]) {
-                            delete self.$files[fid];
-                        }
-
-                        Btn.getAttribute('Container').destroy();
-
-                        self.$finished = false;
-                        self.fireEvent('inputDestroy');
-                        self.refreshDisplay();
+                        self.removeFile(Input);
                     }
                 }
             }).inject(Container);
@@ -1056,6 +1045,138 @@ define('controls/upload/Form', [
             }
 
             return null;
+        },
+
+        /**
+         * Remove a selected file from the upload form
+         *
+         * @method controls/upload/Form#removeFile
+         * @param {File|HTMLInputElement} File - File or its input element
+         * @return {Boolean} Whether the file was removed
+         */
+        removeFile: function (File) {
+            let fileId = null;
+            let Input = null;
+            const isSpecialView = this.getAttribute('typeOfLook') === 'Icon' ||
+                this.getAttribute('typeOfLook') === 'Single';
+
+            if (File && File.nodeName === 'INPUT') {
+                Input = File;
+                fileId = Slick.uidOf(Input);
+            } else {
+                for (const id in this.$files) {
+                    if (this.$files.hasOwnProperty(id) && this.$files[id] === File) {
+                        fileId = id;
+                        break;
+                    }
+                }
+            }
+
+            if (fileId === null || typeof this.$files[fileId] === 'undefined') {
+                return false;
+            }
+
+            if (isSpecialView) {
+                this.$files = {};
+            } else {
+                delete this.$files[fileId];
+            }
+
+            if (!Input && this.$Form) {
+                const Inputs = this.$Form.getElements('input[type="file"]');
+
+                for (let i = 0, len = Inputs.length; i < len; i++) {
+                    if (String(Slick.uidOf(Inputs[i])) === String(fileId)) {
+                        Input = Inputs[i];
+                        break;
+                    }
+                }
+            }
+
+            if (Input) {
+                const Container = Input.getParent('.qui-form-upload');
+
+                if (Container) {
+                    Container.destroy();
+                } else {
+                    Input.value = '';
+                }
+            } else {
+                this.$resetSpecialView();
+            }
+
+            this.$finished = false;
+            this.fireEvent('inputDestroy');
+            this.refreshDisplay();
+
+            return true;
+        },
+
+        /**
+         * Remove all selected files from the upload form
+         *
+         * @method controls/upload/Form#clear
+         * @return {controls/upload/Form}
+         */
+        clear: function () {
+            if (this.$Form) {
+                this.$Form.getElements('div.qui-form-upload').destroy();
+            }
+
+            this.$files = {};
+            this.$finished = false;
+            this.$resetSpecialView();
+            this.fireEvent('inputDestroy');
+            this.refreshDisplay();
+
+            return this;
+        },
+
+        /**
+         * Reset the input and display of the Icon and Single views
+         *
+         * @return {void}
+         */
+        $resetSpecialView: function () {
+            if (!this.$Elm) {
+                return;
+            }
+
+            const Input = this.$Elm.getElement(
+                '.controls-upload-form-icon input[type="file"], ' +
+                '.controls-upload-form-single input[type="file"]'
+            );
+
+            if (Input) {
+                Input.value = '';
+            }
+
+            const SubmitBtn = this.$Elm.getElement('.controls-upload-form-submit');
+
+            if (SubmitBtn) {
+                SubmitBtn.disabled = true;
+            }
+
+            const Preview = this.$Elm.getElement(
+                '.controls-upload-form-single-container-preview'
+            );
+
+            if (Preview) {
+                Preview.setStyle('background-image', '');
+            }
+
+            const Select = this.$Elm.getElement(
+                '.controls-upload-form-single-container-select'
+            );
+
+            if (Select) {
+                Select.set(
+                    'html',
+                    '<span class="controls-upload-form-single-container-select-placeholder">' +
+                    Locale.get(lg, 'control.upload.placeholder') +
+                    '</span>'
+                );
+            }
         },
 
         /**
