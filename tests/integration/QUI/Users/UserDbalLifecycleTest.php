@@ -95,6 +95,44 @@ class UserDbalLifecycleTest extends TestCase
         $this->assertSame(0, self::countAddresses($ReloadedUser->getUUID()));
     }
 
+    public function testSavingUnrelatedAttributeDoesNotOverwriteGroupsChangedInDatabase(): void
+    {
+        $Users = QUI::getUsers();
+        $SystemUser = $Users->getSystemUser();
+        $username = self::TEST_PREFIX . uniqid();
+
+        $User = $Users->createChildWithAttributes([
+            'username' => $username,
+            'email' => $username . '@example.invalid',
+            'firstname' => 'Stale',
+            'lastname' => 'Groups'
+        ], $SystemUser);
+
+        // Simulate another request assigning a group after this User instance
+        // was loaded. The UUID does not need a group fixture because this test
+        // verifies that an unrelated save leaves the database column untouched.
+        $groupsChangedByAnotherRequest = ',1,concurrent-group,';
+        self::getConnection()->update(
+            QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
+            ['usergroup' => $groupsChangedByAnotherRequest],
+            ['uuid' => $User->getUUID()]
+        );
+
+        $User->setAttribute('firstname', 'Changed without groups');
+        $User->save($SystemUser);
+
+        $groupsAfterSave = self::getConnection()
+            ->createQueryBuilder()
+            ->select('usergroup')
+            ->from(QUI\Utils\Doctrine::quoteIdentifier(Manager::table()))
+            ->where('uuid = :uuid')
+            ->setParameter('uuid', $User->getUUID())
+            ->executeQuery()
+            ->fetchOne();
+
+        $this->assertSame($groupsChangedByAnotherRequest, $groupsAfterSave);
+    }
+
     private static function skipIfDatabaseIsUnavailable(): void
     {
         try {
