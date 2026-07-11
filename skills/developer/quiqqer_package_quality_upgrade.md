@@ -214,7 +214,7 @@ Follow `https://quiqqer.com/docs/developer/package-development#composer-metadata
   {
     "name": "PCSG - Computer & Internet Service OHG",
     "email": "info@quiqqer.com",
-    "homepage": "https://www.pcsg.de",
+    "homepage": "https://www.quiqqer.com",
     "role": "Maintainer"
   }
 ]
