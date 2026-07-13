@@ -2053,7 +2053,7 @@ You can also ignore the console user permissions check with '--ignore-file-permi
             <en><![CDATA[Filter...]]></en>
         </locale>
         <locale name="projects.project.site.media.panel.title">
-            <en><![CDATA[ Media ({project})]]></en>
+            <en><![CDATA[ Media ([project])]]></en>
         </locale>
         <locale name="projects.project.site.media.panel.btn.missingMetaBadges.hide">
             <en><![CDATA[Hide hints]]></en>
@@ -2074,7 +2074,7 @@ You can also ignore the console user permissions check with '--ignore-file-permi
             <en><![CDATA[Alt text missing]]></en>
         </locale>
         <locale name="projects.project.site.media.panel.file.broken">
-            <en><![CDATA[File is broken #{id} {name}]]></en>
+            <en><![CDATA[File is broken #[id] [name]]]></en>
         </locale>
         <locale name="projects.project.site.media.panel.grid.alt">
             <en><![CDATA[Alt attribute]]></en>

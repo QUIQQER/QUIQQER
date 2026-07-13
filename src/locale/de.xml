@@ -2080,7 +2080,7 @@
             <de><![CDATA[Filter...]]></de>
         </locale>
         <locale name="projects.project.site.media.panel.title">
-            <de><![CDATA[ Media ({project})]]></de>
+            <de><![CDATA[ Media ([project])]]></de>
         </locale>
         <locale name="projects.project.site.media.panel.btn.missingMetaBadges.hide">
             <de><![CDATA[Hinweise aus]]></de>
@@ -2101,7 +2101,7 @@
             <de><![CDATA[Alt-Text fehlt]]></de>
         </locale>
         <locale name="projects.project.site.media.panel.file.broken">
-            <de><![CDATA[Datei ist beschädigt #{id} {name}]]></de>
+            <de><![CDATA[Datei ist beschädigt #[id] [name]]]></de>
         </locale>
         <locale name="projects.project.site.media.panel.grid.alt">
             <de><![CDATA[Alt-Attribut]]></de>
