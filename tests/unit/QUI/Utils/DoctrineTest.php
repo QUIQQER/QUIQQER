@@ -31,6 +31,47 @@ class DoctrineTest extends TestCase
         $this->assertSame(5, $QueryBuilder->getMaxResults());
     }
 
+    public function testApplyLimitAcceptsWhitespaceAroundOffsetAndLimit(): void
+    {
+        $QueryBuilder = QUI::getQueryBuilder();
+
+        Doctrine::applyLimit($QueryBuilder, ' 2, 5 ');
+
+        $this->assertSame(2, $QueryBuilder->getFirstResult());
+        $this->assertSame(5, $QueryBuilder->getMaxResults());
+    }
+
+    public function testApplyLimitIgnoresInvalidValues(): void
+    {
+        $invalidValues = [
+            null,
+            false,
+            true,
+            '',
+            0,
+            -1,
+            '0',
+            '-1',
+            '10foo',
+            '1.5',
+            '10,20,30',
+            '-1,10',
+            '0,0',
+            '0,-1',
+            [],
+            new \stdClass()
+        ];
+
+        foreach ($invalidValues as $invalidValue) {
+            $QueryBuilder = QUI::getQueryBuilder();
+
+            Doctrine::applyLimit($QueryBuilder, $invalidValue);
+
+            $this->assertSame(0, $QueryBuilder->getFirstResult());
+            $this->assertNull($QueryBuilder->getMaxResults());
+        }
+    }
+
     public function testArrayWhereConditionsAreCombinedAndSupportNot(): void
     {
         $QueryBuilder = QUI::getQueryBuilder()

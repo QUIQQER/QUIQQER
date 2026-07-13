@@ -678,16 +678,7 @@ class Media extends QUI\QDOM
             );
         }
 
-        if (!empty($params["limit"])) {
-            $limit = explode(",", (string)$params["limit"], 2);
-
-            if (isset($limit[1])) {
-                $QueryBuilder->setFirstResult((int)$limit[0]);
-                $QueryBuilder->setMaxResults((int)$limit[1]);
-            } else {
-                $QueryBuilder->setMaxResults((int)$limit[0]);
-            }
-        }
+        QUI\Utils\Doctrine::applyLimit($QueryBuilder, $params["limit"] ?? null);
 
         try {
             $result = $QueryBuilder->executeQuery()->fetchAllAssociative();
