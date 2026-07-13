@@ -91,9 +91,7 @@ final class ProjectTestHelper
         }
 
         self::$cleanupRegistered = true;
-        register_shutdown_function(static function (): void {
-            self::cleanup();
-        });
+        QUI\System\TestCleanup::register();
     }
 
     private static function skipIfDatabaseIsUnavailable(): void

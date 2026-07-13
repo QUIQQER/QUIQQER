@@ -110,6 +110,7 @@
       "@dev:phpunit"
     ],
     "dev:phpunit": "./tools/phpunit",
+    "dev:test:cleanup": "@php tests/cleanup.php",
     "dev:lint": [
       "@dev:lint:phpstan",
       "@dev:lint:style"
@@ -137,6 +138,7 @@
   "scripts-descriptions": {
     "test": "Runs linting, static analysis, and unit tests.",
     "dev:phpunit": "Run PHPUnit test suites",
+    "dev:test:cleanup": "Run test cleanup listeners and remove PHPUnit projects",
     "dev:lint": "Run PHPStan and code style check",
     "dev:lint:phpstan": "Run PHPStan",
     "dev:lint:style": "Run code style check (PHP_CodeSniffer)",
