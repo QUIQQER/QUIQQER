@@ -45,15 +45,16 @@ final class ProjectTestHelper
 
         try {
             self::withSystemUser(static function () use ($projectName): void {
-                self::dropProjectTables($projectName);
-                self::deleteProjectPermissionRows($projectName);
-                self::deleteProjectConfig($projectName);
-                self::deleteProjectLocaleFiles($projectName);
-                self::moveProjectDirectoriesToTemp($projectName);
-
-                Manager::cleanup();
-                Manager::$Standard = null;
-                QUI\Cache\Manager::clearProjectsCache();
+                self::runCleanupStep(static fn () => self::deleteProjectConfig($projectName));
+                self::runCleanupStep(static fn () => self::dropProjectTables($projectName));
+                self::runCleanupStep(static fn () => self::deleteProjectPermissionRows($projectName));
+                self::runCleanupStep(static fn () => self::deleteProjectLocaleFiles($projectName));
+                self::runCleanupStep(static fn () => self::moveProjectDirectoriesToTemp($projectName));
+                self::runCleanupStep(static function (): void {
+                    Manager::cleanup();
+                    Manager::$Standard = null;
+                    QUI\Cache\Manager::clearProjectsCache();
+                });
             });
         } catch (Throwable) {
             // Cleanup must not hide the actual PHPUnit result.
@@ -172,7 +173,16 @@ final class ProjectTestHelper
                 continue;
             }
 
-            $SchemaManager->dropTable($tableName);
+            self::runCleanupStep(static fn () => $SchemaManager->dropTable($tableName));
+        }
+    }
+
+    private static function runCleanupStep(callable $Callback): void
+    {
+        try {
+            $Callback();
+        } catch (Throwable) {
+            // Continue with the remaining cleanup steps.
         }
     }
 
