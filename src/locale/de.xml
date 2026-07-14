@@ -4225,6 +4225,9 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         <locale name="exception.site.save.error">
             <de><![CDATA[Es sind Fehler beim Speichern der Seite aufgetreten.]]></de>
         </locale>
+        <locale name="exception.site.content.unsupported.characters">
+            <de><![CDATA[Der Inhalt enthält Zeichen, die von der Datenbank nicht unterstützt werden. Bitte entfernen Sie Sonderzeichen wie Emojis und speichern Sie die Seite erneut.]]></de>
+        </locale>
         <locale name="permissions.message.save.success">
             <de><![CDATA[Zugriffsrechte erfolgreich gespeichert.]]></de>
         </locale>

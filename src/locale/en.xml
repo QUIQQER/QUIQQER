@@ -4093,6 +4093,9 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="exception.site.save.error">
             <en><![CDATA[Errors occurred while saving the page.]]></en>
         </locale>
+        <locale name="exception.site.content.unsupported.characters">
+            <en><![CDATA[The content contains characters that are not supported by the database. Please remove special characters such as emojis and save the page again.]]></en>
+        </locale>
         <locale name="permissions.message.save.success">
             <en><![CDATA[Permissions successfuly saved.]]></en>
         </locale>
