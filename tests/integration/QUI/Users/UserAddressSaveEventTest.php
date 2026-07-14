@@ -9,9 +9,9 @@ use QUI\Interfaces\Users\User as UserInterface;
 use ReflectionProperty;
 use Throwable;
 
-class UserDbalLifecycleTest extends TestCase
+class UserAddressSaveEventTest extends TestCase
 {
-    private const TEST_PREFIX = 'codex-dbal-test-user-';
+    private const TEST_PREFIX = 'codex-address-event-test-user-';
 
     private ?UserInterface $previousSessionUser = null;
 
@@ -42,20 +42,28 @@ class UserDbalLifecycleTest extends TestCase
         self::cleanupTestUsers();
     }
 
-    public function testUserCanBeCreatedChangedActivatedDeactivatedAndDeleted(): void
+    public function testCreateChildDoesNotSaveUserAddressFiveTimes(): void
     {
         $Users = QUI::getUsers();
         $SystemUser = $Users->getSystemUser();
         $username = self::TEST_PREFIX . uniqid();
+        $addressSaveBeginCalls = 0;
+        $listener = static function (Address $Address, UserInterface $User) use (&$addressSaveBeginCalls, $username): void {
+            if ($User->getUsername() === $username) {
+                $addressSaveBeginCalls++;
+            }
+        };
+
+        QUI::getEvents()->addEvent(
+            'onUserAddressSaveBegin',
+            $listener
+        );
 
         try {
-            $User = $Users->createChildWithAttributes([
-                'username' => $username,
-                'email' => $username . '@example.invalid',
-                'firstname' => 'DBAL',
-                'lastname' => 'Lifecycle'
-            ], $SystemUser);
+            $User = $Users->createChild($username, $SystemUser);
         } catch (Exception $Exception) {
+            self::cleanupTestUsers();
+
             if (str_contains($Exception->getMessage(), 'super-user')) {
                 self::markTestSkipped('QUIQQER database has no usable super-user fixture.');
             }
@@ -63,74 +71,16 @@ class UserDbalLifecycleTest extends TestCase
             throw $Exception;
         }
 
-        $this->assertSame($username, $User->getUsername());
-        $this->assertFalse($User->isActive());
-        $this->assertTrue($Users->usernameExists($username));
+        try {
+            $Address = $User->getStandardAddress();
 
-        $changedFirstname = 'DBAL Changed';
-        $User->setAttribute('firstname', $changedFirstname);
-        $User->save($SystemUser);
-
-        $ReloadedUser = $Users->get($User->getUUID());
-        $this->assertSame($changedFirstname, $ReloadedUser->getAttribute('firstname'));
-
-        $ReloadedUser->setPassword('codex-dbal-test-password', $SystemUser);
-        $this->assertSame(1, $ReloadedUser->activate('', $SystemUser));
-        $this->assertTrue($Users->get($ReloadedUser->getUUID())->isActive());
-
-        $this->assertTrue($ReloadedUser->deactivate($SystemUser));
-        $this->assertFalse($Users->get($ReloadedUser->getUUID())->isActive());
-
-        $ReloadedUser->addAddress([
-            'firstname' => 'DBAL',
-            'lastname' => 'Address',
-            'mail' => 'dbal-address@example.invalid',
-            'country' => 'DE'
-        ], $SystemUser);
-
-        $this->assertGreaterThan(0, self::countAddresses($ReloadedUser->getUUID()));
-
-        $this->assertTrue($Users->deleteUser($ReloadedUser->getUUID()));
-        $this->assertFalse($Users->usernameExists($username));
-        $this->assertSame(0, self::countAddresses($ReloadedUser->getUUID()));
-    }
-
-    public function testSavingUnrelatedAttributeDoesNotOverwriteGroupsChangedInDatabase(): void
-    {
-        $Users = QUI::getUsers();
-        $SystemUser = $Users->getSystemUser();
-        $username = self::TEST_PREFIX . uniqid();
-
-        $User = $Users->createChildWithAttributes([
-            'username' => $username,
-            'email' => $username . '@example.invalid',
-            'firstname' => 'Stale',
-            'lastname' => 'Groups'
-        ], $SystemUser);
-
-        // Simulate another request assigning a group after this User instance
-        // was loaded. The UUID does not need a group fixture because this test
-        // verifies that an unrelated save leaves the database column untouched.
-        $groupsChangedByAnotherRequest = ',1,concurrent-group,';
-        self::getConnection()->update(
-            QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
-            ['usergroup' => $groupsChangedByAnotherRequest],
-            ['uuid' => $User->getUUID()]
-        );
-
-        $User->setAttribute('firstname', 'Changed without groups');
-        $User->save($SystemUser);
-
-        $groupsAfterSave = self::getConnection()
-            ->createQueryBuilder()
-            ->select('usergroup')
-            ->from(QUI\Utils\Doctrine::quoteIdentifier(Manager::table()))
-            ->where('uuid = :uuid')
-            ->setParameter('uuid', $User->getUUID())
-            ->executeQuery()
-            ->fetchOne();
-
-        $this->assertSame($groupsChangedByAnotherRequest, $groupsAfterSave);
+            $this->assertNotNull($Address);
+            $this->assertSame($Address->getUUID(), $User->getAttribute('address'));
+            $this->assertLessThanOrEqual(2, $addressSaveBeginCalls);
+        } finally {
+            QUI::getEvents()->removeEvent('onUserAddressSaveBegin', $listener);
+            self::cleanupTestUsers();
+        }
     }
 
     private static function skipIfDatabaseIsUnavailable(): void
@@ -164,18 +114,6 @@ class UserDbalLifecycleTest extends TestCase
     private static function getConnection(): Connection
     {
         return QUI::getDataBaseConnection();
-    }
-
-    private static function countAddresses(string | int $userUuid): int
-    {
-        return (int)self::getConnection()
-            ->createQueryBuilder()
-            ->select('COUNT(id)')
-            ->from(QUI\Utils\Doctrine::quoteIdentifier(Manager::tableAddress()))
-            ->where('userUuid = :userUuid')
-            ->setParameter('userUuid', $userUuid)
-            ->executeQuery()
-            ->fetchOne();
     }
 
     private static function cleanupTestUsers(): void

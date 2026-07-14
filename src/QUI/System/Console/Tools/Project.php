@@ -10,6 +10,7 @@ use Exception;
 use QUI;
 use QUI\Projects\Manager as ProjectsManager;
 
+use function array_keys;
 use function count;
 use function explode;
 use function implode;
@@ -18,6 +19,7 @@ use function json_decode;
 use function json_encode;
 use function mb_strtolower;
 use function method_exists;
+use function trim;
 
 /**
  * Class Project
@@ -71,6 +73,11 @@ class Project extends QUI\System\Console\Tool
         $this->addArgument(
             'lang_to',
             'Copy project -> To language'
+        );
+
+        $this->addArgument(
+            'demodataset',
+            'Demodata set identifier'
         );
 
         $this->addExample(
@@ -201,13 +208,22 @@ class Project extends QUI\System\Console\Tool
             }
         }
 
-        // demodata
-        $this->write('Should demo data be used? [Y/n] :');
-        $demoData = true;
-        $useDemoData = $this->readInput();
+        $demoData = false;
+        $demoDataSet = $this->getArgument('demodataset') ?: null;
 
-        if ($useDemoData === 'n') {
-            $demoData = false;
+        // demodata
+        if (!empty($template)) {
+            $this->write('Should demo data be used? [Y/n] :');
+            $demoData = true;
+            $useDemoData = $this->readInput();
+
+            if ($useDemoData === 'n') {
+                $demoData = false;
+            }
+
+            if ($demoData && $demoDataSet === null) {
+                $demoDataSet = $this->selectDemoDataSet($template);
+            }
         }
 
         try {
@@ -224,7 +240,8 @@ class Project extends QUI\System\Console\Tool
             if ($demoData) {
                 QUI\Utils\Project::applyDemoDataToProject(
                     QUI::getProject($projectName),
-                    $template
+                    $template,
+                    $demoDataSet
                 );
             }
         } catch (Exception $Exception) {
@@ -235,6 +252,55 @@ class Project extends QUI\System\Console\Tool
 
         $this->writeLn('Project ' . $projectName . ' successfuly created.');
         $this->writeLn();
+    }
+
+    protected function selectDemoDataSet(string $template): ?string
+    {
+        try {
+            $sets = QUI\Utils\Project::getDemoDataSetsForTemplate($template);
+        } catch (Exception) {
+            return null;
+        }
+
+        if (count($sets) <= 1) {
+            $setIds = array_keys($sets);
+
+            return $setIds[0] ?? null;
+        }
+
+        $this->writeLn('Available demo data sets:');
+
+        $index = 1;
+        $selectionMap = [];
+
+        foreach ($sets as $setId => $set) {
+            $selectionMap[$index] = $setId;
+            $title = $set['title'] ?? $setId;
+            $description = $set['description'] ?? '';
+
+            if ($description !== '') {
+                $this->writeLn($index . ') ' . $title . ' - ' . $description);
+            } else {
+                $this->writeLn($index . ') ' . $title);
+            }
+
+            $index++;
+        }
+
+        $this->write('Select demo data set [1] :');
+        $selection = trim($this->readInput());
+
+        if ($selection === '') {
+            return $selectionMap[1] ?? null;
+        }
+
+        if (isset($sets[$selection])) {
+            return $selection;
+        }
+
+        $selection = (int)$selection;
+
+        return $selectionMap[$selection] ?? ($selectionMap[1] ?? null);
     }
 
     /**

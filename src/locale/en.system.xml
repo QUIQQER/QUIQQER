@@ -95,6 +95,9 @@
         <locale name="user_id">
             <en><![CDATA[User ID]]></en>
         </locale>
+        <locale name="user_uuid">
+            <en><![CDATA[User UUID]]></en>
+        </locale>
         <locale name="user_ip_adress">
             <en><![CDATA[The user's IP address]]></en>
         </locale>
@@ -2595,6 +2598,9 @@
         </locale>
         <locale name="demodata.project.label.template">
             <en><![CDATA[Install demodata]]></en>
+        </locale>
+        <locale name="demodata.project.no.demodata">
+            <en><![CDATA[Do not install demodata]]></en>
         </locale>
         <locale name="projects.project.site.no.permissions">
             <en><![CDATA[You do not have permission to access this page.]]></en>

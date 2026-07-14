@@ -3,6 +3,9 @@ includes:
 
 parameters:
     level: 6
+    phpVersion:
+        min: 80200 # 8.2.0
+        max: 80509 # 8.5.9
     paths:
         - .
     excludePaths:

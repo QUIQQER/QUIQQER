@@ -255,7 +255,7 @@ interface User
     public function getStandardAddress(): null | Address;
 
     /**
-     * @return array<int, Address>
+     * @return array<string, Address>
      */
     public function getAddressList(): array;
     //endregion

@@ -76,6 +76,15 @@ class User implements QUIUserInterface
 
     protected string $groups;
 
+    /**
+     * Indicates that the user's group assignments were explicitly changed.
+     *
+     * User::save() persists all user attributes at once. Without tracking group
+     * changes, a stale User instance can overwrite newer group assignments even
+     * if the caller only intended to save an unrelated attribute.
+     */
+    protected bool $groupsChanged = false;
+
     protected string $name;
 
     protected ?string $lang = null;
@@ -141,6 +150,16 @@ class User implements QUIUserInterface
      * construct loading flag
      */
     protected bool $isLoaded = true;
+
+    /**
+     * Prevents recursive user saves while the standard address is created.
+     */
+    protected bool $suppressAddAddressUserSave = false;
+
+    /**
+     * Indicates that User::save() is currently resolving the standard address.
+     */
+    protected bool $standardAddressLookupDuringSave = false;
 
     /**
      * verifiable status of the attributes
@@ -295,6 +314,8 @@ class User implements QUIUserInterface
             );
         }
 
+        $this->isLoaded = false;
+
         // Eigenschaften setzen
         $this->uuid = $data['uuid'];
         $this->id = (int)$data['id'];
@@ -386,13 +407,14 @@ class User implements QUIUserInterface
 
         // load default address fields
         // syn main user address fields
-        $this->isLoaded = true;
         $this->setAttribute('firstname', $data['firstname']);
         $this->setAttribute('lastname', $data['lastname']);
         $this->setAttribute('email', $data['email']);
 
         $this->address_list = [];
         $this->StandardAddress = null;
+        $this->groupsChanged = false;
+        $this->isLoaded = true;
 
         // Event
         QUI::getEvents()->fireEvent('userLoad', [$this]);
@@ -574,16 +596,26 @@ class User implements QUIUserInterface
             return $this->StandardAddress;
         }
 
-        $Address = $this->addAddress([
-            'firstname' => $this->getAttribute('firstname'),
-            'lastname' => $this->getAttribute('lastname')
-        ], QUI::getUsers()->getSystemUser());
+        $this->suppressAddAddressUserSave = true;
+
+        try {
+            $Address = $this->addAddress([
+                'firstname' => $this->getAttribute('firstname'),
+                'lastname' => $this->getAttribute('lastname')
+            ], QUI::getUsers()->getSystemUser());
+        } finally {
+            $this->suppressAddAddressUserSave = false;
+        }
 
         if (!empty($this->getAttribute('email'))) {
             $Address->addMail($this->getAttribute('email'));
         }
 
-        $Address->save(QUI::getUsers()->getSystemUser());
+        $this->StandardAddress = $Address;
+
+        if (!$this->standardAddressLookupDuringSave) {
+            $Address->save(QUI::getUsers()->getSystemUser());
+        }
 
         return $Address;
     }
@@ -745,12 +777,18 @@ class User implements QUIUserInterface
         if (empty($tmp_first) && empty($tmp_last)) {
             $this->setAttribute('firstname', $_params['firstname']);
             $this->setAttribute('lastname', $_params['lastname']);
-            $this->save($ParentUser);
+
+            if (!$this->suppressAddAddressUserSave) {
+                $this->save($ParentUser);
+            }
         }
 
         if (count($this->getAddressList()) === 1) {
             $this->setAttribute('address', $CreatedAddress->getUUID());
-            $this->save($ParentUser);
+
+            if (!$this->suppressAddAddressUserSave) {
+                $this->save($ParentUser);
+            }
         }
 
         return $CreatedAddress;
@@ -952,10 +990,16 @@ class User implements QUIUserInterface
 
         // default address filling
         $email = trim($this->getAttribute('email'));
-        $this->getStandardAddress();
+        $this->standardAddressLookupDuringSave = true;
+
+        try {
+            $StandardAddress = $this->getStandardAddress();
+        } finally {
+            $this->standardAddressLookupDuringSave = false;
+        }
 
         if (!$this->getAttribute('address')) {
-            $this->setAttribute('address', $this->getStandardAddress()->getUUID());
+            $this->setAttribute('address', $StandardAddress->getUUID());
         }
 
 
@@ -968,43 +1012,55 @@ class User implements QUIUserInterface
 
         $query = QUI::getQueryBuilder()->update(QUI\Utils\Doctrine::quoteIdentifier(Manager::table()));
 
+        $update = [
+            'username' => $this->getUsername(),
+            'firstname' => $this->getAttribute('firstname'),
+            'lastname' => $this->getAttribute('lastname'),
+            'usertitle' => $this->getAttribute('usertitle'),
+            'birthday' => $birthday,
+            'email' => $email,
+            'avatar' => $avatar,
+            'su' => $this->isSU() ? 1 : 0,
+            'extra' => json_encode($extra),
+            'lang' => $this->getAttribute('lang'),
+            'lastedit' => date("Y-m-d H:i:s"),
+            'expire' => $expire,
+            'shortcuts' => $this->getAttribute('shortcuts'),
+            'address' => !empty($this->getAttribute('address')) ? $this->getAttribute('address') : null,
+            'company' => $this->isCompany() ? 1 : 0,
+            'toolbar' => $toolbar,
+            'assigned_toolbar' => $assignedToolbars,
+            'authenticator' => json_encode($this->authenticator),
+            'lastLoginAttempt' => $this->getAttribute('lastLoginAttempt') ?: null,
+            'failedLogins' => $this->getAttribute('failedLogins') ?: 0,
+            'verifiableAttributes' => json_encode($this->parseVerifiedAttributesToArray())
+        ];
+
+        if ($this->groupsChanged) {
+            $update['usergroup'] = ',' . implode(',', $groupIds) . ',';
+        }
+
         QUI\Utils\Doctrine::parseDbArrayToQueryBuilder($query, [
-            'update' => [
-                'username' => $this->getUsername(),
-                'usergroup' => ',' . implode(',', $groupIds) . ',',
-                'firstname' => $this->getAttribute('firstname'),
-                'lastname' => $this->getAttribute('lastname'),
-                'usertitle' => $this->getAttribute('usertitle'),
-                'birthday' => $birthday,
-                'email' => $email,
-                'avatar' => $avatar,
-                'su' => $this->isSU() ? 1 : 0,
-                'extra' => json_encode($extra),
-                'lang' => $this->getAttribute('lang'),
-                'lastedit' => date("Y-m-d H:i:s"),
-                'expire' => $expire,
-                'shortcuts' => $this->getAttribute('shortcuts'),
-                'address' => !empty($this->getAttribute('address')) ? $this->getAttribute('address') : null,
-                'company' => $this->isCompany() ? 1 : 0,
-                'toolbar' => $toolbar,
-                'assigned_toolbar' => $assignedToolbars,
-                'authenticator' => json_encode($this->authenticator),
-                'lastLoginAttempt' => $this->getAttribute('lastLoginAttempt') ?: null,
-                'failedLogins' => $this->getAttribute('failedLogins') ?: 0,
-                'verifiableAttributes' => json_encode($this->parseVerifiedAttributesToArray())
-            ],
+            'update' => $update,
             'where' => [
                 'uuid' => $this->getUUID()
             ]
         ]);
 
+        $saved = false;
+
         try {
             $query->executeQuery();
+            $saved = true;
         } catch (\Doctrine\DBAL\Exception $exception) {
             QUI\System\Log::addError($exception->getMessage());
         }
 
-        $this->getStandardAddress()->save($PermissionUser);
+        if ($saved) {
+            $this->groupsChanged = false;
+        }
+
+        $StandardAddress->save($PermissionUser);
 
         QUI::getEvents()->fireEvent('userSaveEnd', [$this]);
 
@@ -1176,6 +1232,8 @@ class User implements QUIUserInterface
             return;
         }
 
+        $groupsBefore = $this->getGroups(false);
+
         $Groups = QUI::getGroups();
 
         $this->Group = [];
@@ -1197,6 +1255,7 @@ class User implements QUIUserInterface
             }
 
             $this->groups = ',' . implode(',', $aTmp) . ',';
+            $this->groupsChanged = $this->groupsChanged || $groupsBefore !== $this->getGroups(false);
             return;
         }
 
@@ -1219,6 +1278,7 @@ class User implements QUIUserInterface
             }
 
             $this->groups = ',' . implode(',', $aTmp) . ',';
+            $this->groupsChanged = $this->groupsChanged || $groupsBefore !== $this->getGroups(false);
             return;
         }
 
@@ -1227,8 +1287,10 @@ class User implements QUIUserInterface
             $Group = $Groups->get($groups);
             $this->Group[] = $Group;
             $this->groups = ',' . $groups . ',';
+            $this->groupsChanged = $this->groupsChanged || $groupsBefore !== $this->getGroups(false);
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
+            $this->groupsChanged = $this->groupsChanged || $groupsBefore !== $this->getGroups(false);
         }
     }
 
@@ -1535,6 +1597,7 @@ class User implements QUIUserInterface
 
     public function clearGroups(): void
     {
+        $this->groupsChanged = $this->groupsChanged || !empty($this->getGroups(false));
         $this->Group = [];
         $this->groups = '';
     }
@@ -2180,6 +2243,27 @@ class User implements QUIUserInterface
     }
 
     /**
+     * @throws Exception|ExceptionStack
+     * @throws QUI\Exception
+     */
+    protected function deleteAddresses(): void
+    {
+        $addresses = $this->getAddressList();
+
+        /** @var Address $Address */
+        foreach ($addresses as $Address) {
+            $Address->delete();
+        }
+
+        $addresses = $this->getAddressList();
+
+        /** @var Address $Address */
+        foreach ($addresses as $Address) {
+            $Address->delete();
+        }
+    }
+
+    /**
      * @throws QUI\Exception
      */
     public function disable(null | QUIUserInterface $PermissionUser = null): bool
@@ -2190,19 +2274,7 @@ class User implements QUIUserInterface
         QUI::getEvents()->fireEvent('userDisable', [$this]);
 
         $SessionUser = QUI::getUserBySession();
-        $addresses = $this->getAddressList();
-
-        /** @var Address $Address */
-        foreach ($addresses as $Address) {
-            $Address->delete();
-        }
-
-        $addresses = $this->getAddressList();
-
-        /** @var Address $Address */
-        foreach ($addresses as $Address) {
-            $Address->delete();
-        }
+        $this->deleteAddresses();
 
         try {
             QUI::getDataBaseConnection()->update(
@@ -2272,6 +2344,8 @@ class User implements QUIUserInterface
 
         // API
         QUI::getEvents()->fireEvent('userDelete', [$this]);
+
+        $this->deleteAddresses();
 
         try {
             $Connection = QUI::getDataBaseConnection();

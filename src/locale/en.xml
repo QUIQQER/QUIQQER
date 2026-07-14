@@ -1163,6 +1163,9 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="user_id">
             <en><![CDATA[User ID]]></en>
         </locale>
+        <locale name="user_uuid">
+            <en><![CDATA[User UUID]]></en>
+        </locale>
         <locale name="user_ip_adress">
             <en><![CDATA[The user's IP address]]></en>
         </locale>
@@ -2050,7 +2053,7 @@ You can also ignore the console user permissions check with '--ignore-file-permi
             <en><![CDATA[Filter...]]></en>
         </locale>
         <locale name="projects.project.site.media.panel.title">
-            <en><![CDATA[ Media ({project})]]></en>
+            <en><![CDATA[ Media ([project])]]></en>
         </locale>
         <locale name="projects.project.site.media.panel.btn.missingMetaBadges.hide">
             <en><![CDATA[Hide hints]]></en>
@@ -2071,7 +2074,7 @@ You can also ignore the console user permissions check with '--ignore-file-permi
             <en><![CDATA[Alt text missing]]></en>
         </locale>
         <locale name="projects.project.site.media.panel.file.broken">
-            <en><![CDATA[File is broken #{id} {name}]]></en>
+            <en><![CDATA[File is broken #[id] [name]]]></en>
         </locale>
         <locale name="projects.project.site.media.panel.grid.alt">
             <en><![CDATA[Alt attribute]]></en>
@@ -4130,6 +4133,9 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         </locale>
         <locale name="demodata.project.label.template">
             <en><![CDATA[Install demodata]]></en>
+        </locale>
+        <locale name="demodata.project.no.demodata">
+            <en><![CDATA[Do not install demodata]]></en>
         </locale>
         <locale name="projects.project.site.no.permissions">
             <en><![CDATA[You do not have permission to access this page.]]></en>

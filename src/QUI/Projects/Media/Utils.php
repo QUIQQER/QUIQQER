@@ -163,6 +163,38 @@ class Utils
     }
 
     /**
+     * Returns a small item array for media breadcrumbs.
+     *
+     * Breadcrumbs only need display data and the target id. The full media
+     * center parser also calculates child and subfolder counts for folders,
+     * which is unnecessary and expensive in large media trees.
+     *
+     * @return array<string, mixed>
+     */
+    public static function parseForMediaBreadcrumb(QUI\Interfaces\Projects\Media\File $Item): array
+    {
+        if ($Item instanceof Folder) {
+            return [
+                'icon' => $Item->getId() === 1 ? 'fa fa-home' : 'fa fa-folder-o',
+                'id' => $Item->getId(),
+                'name' => $Item->getAttribute('name'),
+                'title' => $Item->getAttribute('title'),
+                'type' => 'folder'
+            ];
+        }
+
+        $extension = self::getExtension($Item->getAttribute('file'));
+
+        return [
+            'icon' => self::getIconByExtension($extension),
+            'id' => $Item->getId(),
+            'name' => $Item->getAttribute('name'),
+            'title' => $Item->getAttribute('title'),
+            'type' => $Item->getType() === Image::class ? 'image' : 'file'
+        ];
+    }
+
+    /**
      * Return the extension of a file
      */
     public static function getExtension(string $filename): string

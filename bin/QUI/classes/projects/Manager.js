@@ -178,16 +178,52 @@ define('classes/projects/Manager', [
         },
 
         /**
+         * Return the available demodata sets for a template.
+         *
+         * @param {String} template
+         * @param {Function} [onFinish] - callback function
+         * @return {Promise}
+         */
+        getDemoDataSets: function (template, onFinish) {
+            if (!template) {
+                if (typeOf(onFinish) === 'function') {
+                    onFinish({});
+                }
+
+                return Promise.resolve({});
+            }
+
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_project_get_demodataSets', function (result) {
+                    if (typeOf(onFinish) === 'function') {
+                        onFinish(result);
+                    }
+
+                    resolve(result);
+                }, {
+                    template: template,
+                    onError : reject
+                });
+            });
+        },
+
+        /**
          * Create a new project
          *
          * @param {String} project
          * @param {String} lang
          * @param {String} template
          * @param demodata
+         * @param {String} [demoDataSet]
          * @param {Function} [onfinish]
          */
-        createNewProject: function (project, lang, template, demodata, onfinish) {
+        createNewProject: function (project, lang, template, demodata, demoDataSet, onfinish) {
             var self = this;
+
+            if (typeOf(demoDataSet) === 'function') {
+                onfinish = demoDataSet;
+                demoDataSet = '';
+            }
 
             this.$getList = null;
 
@@ -205,7 +241,8 @@ define('classes/projects/Manager', [
                         project: project,
                         lang: lang,
                         template: template,
-                        demodata: demodata
+                        demodata: demodata,
+                        demodataSet: demoDataSet || ''
                     }),
                     onError: reject
                 });

@@ -1151,6 +1151,9 @@
         <locale name="user_id">
             <de><![CDATA[Benutzer-ID]]></de>
         </locale>
+        <locale name="user_uuid">
+            <de><![CDATA[Benutzer-UUID]]></de>
+        </locale>
         <locale name="user_ip_adress">
             <de><![CDATA[IP-Adresse des Benutzers]]></de>
         </locale>
@@ -2077,7 +2080,7 @@
             <de><![CDATA[Filter...]]></de>
         </locale>
         <locale name="projects.project.site.media.panel.title">
-            <de><![CDATA[ Media ({project})]]></de>
+            <de><![CDATA[ Media ([project])]]></de>
         </locale>
         <locale name="projects.project.site.media.panel.btn.missingMetaBadges.hide">
             <de><![CDATA[Hinweise aus]]></de>
@@ -2098,7 +2101,7 @@
             <de><![CDATA[Alt-Text fehlt]]></de>
         </locale>
         <locale name="projects.project.site.media.panel.file.broken">
-            <de><![CDATA[Datei ist beschädigt #{id} {name}]]></de>
+            <de><![CDATA[Datei ist beschädigt #[id] [name]]]></de>
         </locale>
         <locale name="projects.project.site.media.panel.grid.alt">
             <de><![CDATA[Alt-Attribut]]></de>
@@ -4267,6 +4270,9 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         </locale>
         <locale name="demodata.project.label.template">
             <de><![CDATA[Demodaten installieren]]></de>
+        </locale>
+        <locale name="demodata.project.no.demodata">
+            <de><![CDATA[Keine Demodaten installieren]]></de>
         </locale>
         <locale name="projects.project.site.no.permissions">
             <de><![CDATA[Sie besitzen keine Rechte diese Seite anzuzeigen]]></de>

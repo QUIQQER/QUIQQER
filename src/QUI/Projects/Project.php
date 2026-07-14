@@ -903,16 +903,7 @@ class Project implements \Stringable
                 ->select($siteAlias . "." . $Platform->quoteSingleIdentifier("id"))
                 ->orderBy($orderAlias . "." . $Platform->quoteSingleIdentifier($orderFieldName), $orderDirection);
 
-            if (!empty($params["limit"])) {
-                $limit = explode(",", (string)$params["limit"], 2);
-
-                if (isset($limit[1])) {
-                    $QueryBuilder->setFirstResult((int)$limit[0]);
-                    $QueryBuilder->setMaxResults((int)$limit[1]);
-                } else {
-                    $QueryBuilder->setMaxResults((int)$limit[0]);
-                }
-            }
+            QUI\Utils\Doctrine::applyLimit($QueryBuilder, $params["limit"] ?? null);
         }
 
         $result = $QueryBuilder->executeQuery()->fetchAllAssociative();
@@ -1136,16 +1127,7 @@ class Project implements \Stringable
             self::applySiteConditions($QueryBuilder, $params["where_or"], "orWhere");
         }
 
-        if (isset($params["limit"])) {
-            $limit = explode(",", (string)$params["limit"], 2);
-
-            if (isset($limit[1])) {
-                $QueryBuilder->setFirstResult((int)$limit[0]);
-                $QueryBuilder->setMaxResults((int)$limit[1]);
-            } else {
-                $QueryBuilder->setMaxResults((int)$limit[0]);
-            }
-        }
+        QUI\Utils\Doctrine::applyLimit($QueryBuilder, $params["limit"] ?? null);
 
         if (!isset($params["count"])) {
             $orderParts = explode(" ", $order, 2);

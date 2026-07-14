@@ -216,14 +216,32 @@ class Project
     /**
      * @throws QUI\Exception
      */
-    public static function applyDemoDataToProject(QUI\Projects\Project $Project, string $templateName): void
-    {
+    public static function applyDemoDataToProject(
+        QUI\Projects\Project $Project,
+        string $templateName,
+        ?string $demoDataSet = null
+    ): void {
         $TemplatePackage = QUI::getPackageManager()->getInstalledPackage($templateName);
         $Parser = new DemoDataParser();
 
         $demoDataArray = [];
 
-        if (file_exists($TemplatePackage->getDir() . 'demodata.xml')) {
+        if (
+            self::parserSupportsDemoDataSets($Parser)
+            && self::getParserDemoDataSets($Parser, $TemplatePackage) !== []
+        ) {
+            $demoDataArray = self::parseDemoDataSet(
+                $Parser,
+                $TemplatePackage,
+                $Project,
+                $demoDataSet
+            );
+        }
+
+        if (
+            empty($demoDataArray)
+            && file_exists($TemplatePackage->getDir() . 'demodata.xml')
+        ) {
             $demoDataArray = $Parser->parse($TemplatePackage, $Project);
         }
 
@@ -236,6 +254,72 @@ class Project
 
         $DemoData = new QUI\Demodata\DemoData();
         $DemoData->apply($Project, $demoDataArray);
+    }
+
+    /**
+     * @return array<string, array<string, string>>
+     * @throws QUI\Exception
+     */
+    public static function getDemoDataSetsForTemplate(string $templateName): array
+    {
+        $TemplatePackage = QUI::getPackageManager()->getInstalledPackage($templateName);
+        $Parser = new DemoDataParser();
+
+        if (!self::parserSupportsDemoDataSets($Parser)) {
+            if (!file_exists($TemplatePackage->getDir() . 'demodata.xml')) {
+                return [];
+            }
+
+            return [
+                'default' => [
+                    'id' => 'default',
+                    'title' => 'Default',
+                    'description' => ''
+                ]
+            ];
+        }
+
+        return self::getParserDemoDataSets($Parser, $TemplatePackage);
+    }
+
+    protected static function parserSupportsDemoDataSets(object $Parser): bool
+    {
+        return method_exists($Parser, 'getSets');
+    }
+
+    /**
+     * @return array<string, array<string, string>>
+     */
+    protected static function getParserDemoDataSets(object $Parser, QUI\Package\Package $TemplatePackage): array
+    {
+        if (!method_exists($Parser, 'getSets')) {
+            return [];
+        }
+
+        $sets = call_user_func_array([$Parser, 'getSets'], [$TemplatePackage]);
+
+        return is_array($sets) ? $sets : [];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected static function parseDemoDataSet(
+        object $Parser,
+        QUI\Package\Package $TemplatePackage,
+        QUI\Projects\Project $Project,
+        ?string $demoDataSet
+    ): array {
+        if (!method_exists($Parser, 'parse')) {
+            return [];
+        }
+
+        $demoDataArray = call_user_func_array(
+            [$Parser, 'parse'],
+            [$TemplatePackage, $Project, $demoDataSet]
+        );
+
+        return is_array($demoDataArray) ? $demoDataArray : [];
     }
 
     /**

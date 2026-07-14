@@ -151,6 +151,7 @@
   "quiqqer.packages.quiqqerstockmanagement.canUse": false,
   "quiqqer.packages.quiqqerpaymentstripe.canUse": false,
   "quiqqer.payments.stripe.subscriptions.cancel": false,
+  "quiqqer.payments.stripe.subscriptions.delete": false,
   "quiqqer.payments.stripe.billing_plans.delete": false,
   "quiqqer.payments.stripe.subscriptions.view": false,
   "quiqqer.payments.stripe.billing_plans.view": false,

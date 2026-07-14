@@ -25,12 +25,17 @@ define('controls/projects/project/site/MultiLangSelect', [
             '$onInject'
         ],
 
+        options: {
+            external: false // external urls allowed?
+        },
+
         initialize: function (options) {
             this.parent(options);
 
             this.$Container = null;
             this.$Button    = null;
             this.$Input     = null;
+            this.$loaded    = false;
 
             this.addEvents({
                 onImport: this.$onImport,
@@ -55,6 +60,10 @@ define('controls/projects/project/site/MultiLangSelect', [
             var self = this,
                 Elm  = this.getElm(),
                 path = URL_BIN_DIR + '16x16/flags/';
+
+            if (Elm.getAttribute('data-qui-options-external')) {
+                this.setAttribute('external', true);
+            }
 
             this.$Button = new Element('span', {
                 'class': 'field-container-item quiqqer-MultiLangSelect-button',
@@ -128,7 +137,8 @@ define('controls/projects/project/site/MultiLangSelect', [
                     }).inject(self.$Container);
 
                     new QUISiteInput({
-                        events: {
+                        external: self.getAttribute('external'),
+                        events  : {
                             onSelect: onChange,
                             onRemove: onChange
                         }
@@ -137,6 +147,7 @@ define('controls/projects/project/site/MultiLangSelect', [
                     InputField = LangContainer.getElement('input');
 
                     InputField.name = lang;
+                    InputField.addEventListener('change', onChange);
 
                     InputField.setStyles({
                         backgroundImage: "url('" + flag + "')"
@@ -172,7 +183,17 @@ define('controls/projects/project/site/MultiLangSelect', [
                     self.toggle();
                 });
                 self.refreshData();
+
+                self.$loaded = true;
+                self.fireEvent('load', [self]);
             });
+        },
+
+        /**
+         * @returns {Boolean}
+         */
+        isLoaded: function () {
+            return this.$loaded;
         },
 
         /**

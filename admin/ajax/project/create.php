@@ -21,6 +21,13 @@ QUI::$Ajax->registerFunction(
             $template = QUI\Utils\Security\Orthos::clearPath($template);
         }
 
+        $demoDataSet = null;
+
+        if (!empty($params['demodataSet']) && is_string($params['demodataSet'])) {
+            $demoDataSet = QUI\Utils\Security\Orthos::removeHTML($params['demodataSet']);
+            $demoDataSet = QUI\Utils\Security\Orthos::clearPath($demoDataSet);
+        }
+
         $Project = QUI\Projects\Manager::createProject(
             $params['project'],
             $params['lang'],
@@ -29,7 +36,7 @@ QUI::$Ajax->registerFunction(
         );
 
         if (isset($params['demodata']) && $params['demodata'] && !empty($template)) {
-            QUI\Utils\Project::applyDemoDataToProject($Project, $template);
+            QUI\Utils\Project::applyDemoDataToProject($Project, $template, $demoDataSet);
         }
 
         return $Project->getName();
