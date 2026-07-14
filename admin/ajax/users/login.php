@@ -45,10 +45,20 @@ QUI::$Ajax->registerFunction(
             QUI::getSession()->remove('inAuthentication');
         }
 
+        if (is_string($params)) {
+            $authParams = json_decode($params, true);
+        } else {
+            $authParams = $params;
+        }
+
+        if (!is_array($authParams)) {
+            $authParams = [];
+        }
+
         try {
             QUI::getUsers()->authenticate(
                 $authenticator,
-                json_decode($params, true)
+                $authParams
             );
         } catch (QUI\Users\UserAuthException | QUI\Users\Auth\Exception | QUI\Users\Exception $Exception) {
             if ($Exception->getCode() === 429) {

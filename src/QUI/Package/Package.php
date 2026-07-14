@@ -116,6 +116,11 @@ class Package extends QUI\QDOM
         if (!is_dir($packageDir) && str_contains($package, '/')) {
             [$vendor, $name] = explode('/', $package, 2);
             $packageDir = OPT_DIR . 'bin/' . $vendor . '/' . $name . '/';
+
+            if (!is_dir($packageDir)) {
+                // Components like "quiqqer/qui" are installed to "bin/$name".
+                $packageDir = OPT_DIR . 'bin/' . $name . '/';
+            }
         }
 
         if (!is_dir($packageDir)) {

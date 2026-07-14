@@ -9,7 +9,6 @@
 
 <meta name="date" content="{$Site->getAttribute('e_date')}" />
 <meta name="copyright" content="{$Project->getConfig('meta.copyright')}" />
-<meta name="publisher" content="{$Project->getConfig('meta.publisher')}" />
 {/if}
 
 <meta name="description" content="{$Site->getAttribute('meta.description')|escape:'html'}" />
@@ -25,6 +24,9 @@
 
 <meta name="generator" content="{$smarty.const.GENERATOR}" />
 <meta name="author" content="{$Site->getAttribute('meta.author')}" />
+{if $Site->getAttribute('meta.publisher')}
+<meta name="publisher" content="{$Site->getAttribute('meta.publisher')|escape:'html'}" />
+{/if}
 <meta name="revisit-after" content="{$Site->getAttribute('meta.revisit')}" />
 
 {$Favicon->output($Project)}

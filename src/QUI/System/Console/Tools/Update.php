@@ -11,6 +11,7 @@ use QUI;
 use QUI\System\Console\UpdateConsoleOutput;
 use QUI\System\Console\UpdatePackageOutput;
 
+use function array_merge;
 use function count;
 use function date;
 use function error_log;
@@ -305,10 +306,6 @@ class Update extends QUI\System\Console\Tool
             return true;
         }
 
-        $Maintenance = new Maintenance();
-        $Maintenance->setArgument('status', 'on');
-        $Maintenance->execute();
-
         $executeFileSystemCheck = true;
         if ($this->getArgument('skip-filesystem-check')) {
             $executeFileSystemCheck = false;
@@ -331,8 +328,6 @@ class Update extends QUI\System\Console\Tool
                 ]);
 
                 if ($this->executedAnywayQuestion() === false) {
-                    $Maintenance->setArgument('status', 'off');
-                    $Maintenance->execute();
                     return false;
                 }
 
@@ -343,8 +338,6 @@ class Update extends QUI\System\Console\Tool
                 $Output->warning('The update has found inconsistencies in the system.');
 
                 if ($this->executedAnywayQuestion() === false) {
-                    $Maintenance->setArgument('status', 'off');
-                    $Maintenance->execute();
                     return false;
                 }
             }
@@ -352,6 +345,10 @@ class Update extends QUI\System\Console\Tool
 
         // init backup
         $etcBackupFolder = QUI\System\Backup::createEtcBackup();
+
+        $Maintenance = new Maintenance();
+        $Maintenance->setArgument('status', 'on');
+        $Maintenance->execute();
 
         // start update routines
         $CLIOutput = new QUI\System\Console\Output();
@@ -875,7 +872,10 @@ class Update extends QUI\System\Console\Tool
         $Runner->setOutput($CLIOutput);
 
         try {
-            $Runner->executeComposer('status', $this->getComposerVerbosityOptions());
+            $Runner->executeComposer(
+                'status',
+                array_merge(['--no-interaction' => true], $this->getComposerVerbosityOptions())
+            );
         } catch (\QUI\Exception $exception) {
             if ($this->getVerbosityLevel() >= 3 && !$filesystemStatusOutputWritten) {
                 foreach ($result as $line) {

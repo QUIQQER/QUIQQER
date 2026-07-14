@@ -26,10 +26,10 @@ QUI::$Ajax->registerFunction(
 
         // create breadcrumb data
         foreach ($parents as $Parent) {
-            $breadcrumb[] = QUI\Projects\Media\Utils::parseForMediaCenter($Parent);
+            $breadcrumb[] = QUI\Projects\Media\Utils::parseForMediaBreadcrumb($Parent);
         }
 
-        $breadcrumb[] = QUI\Projects\Media\Utils::parseForMediaCenter($File);
+        $breadcrumb[] = QUI\Projects\Media\Utils::parseForMediaBreadcrumb($File);
 
         return $breadcrumb;
     },

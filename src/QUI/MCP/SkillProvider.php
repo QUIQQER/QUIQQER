@@ -25,5 +25,9 @@ class SkillProvider implements SkillProviderInterface
         $repository->addFromMarkdownFile(
             $root . '/skills/developer/quiqqer_extension_points.md'
         );
+
+        $repository->addFromMarkdownFile(
+            $root . '/skills/developer/quiqqer_package_quality_upgrade.md'
+        );
     }
 }

@@ -81,16 +81,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
                 $QueryBuilder->orderBy($Platform->quoteSingleIdentifier($orderField), $orderDirection);
             }
 
-            if (!empty($query["limit"])) {
-                $limit = explode(",", (string)$query["limit"], 2);
-
-                if (isset($limit[1])) {
-                    $QueryBuilder->setFirstResult((int)$limit[0]);
-                    $QueryBuilder->setMaxResults((int)$limit[1]);
-                } else {
-                    $QueryBuilder->setMaxResults((int)$limit[0]);
-                }
-            }
+            QUI\Utils\Doctrine::applyLimit($QueryBuilder, $query["limit"] ?? null);
 
             $data = $QueryBuilder->executeQuery()->fetchAllAssociative();
         } catch (\Doctrine\DBAL\Exception) {

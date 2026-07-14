@@ -34,6 +34,7 @@ use function file_get_contents;
 use function file_put_contents;
 use function implode;
 use function in_array;
+use function is_array;
 use function is_dir;
 use function is_numeric;
 use function json_decode;
@@ -71,6 +72,8 @@ use const USR_DIR;
  */
 class Manager
 {
+    private const CACHE_EDITOR_DEFINITIONS = 'quiqqer/editor/definitions';
+
     /**
      * WYSIWYG editor config
      */
@@ -326,6 +329,17 @@ class Manager
             return self::$editorDefinitions;
         }
 
+        try {
+            $cachedDefinitions = QUI\Cache\Manager::get(self::CACHE_EDITOR_DEFINITIONS);
+
+            if (is_array($cachedDefinitions)) {
+                self::$editorDefinitions = $cachedDefinitions;
+
+                return $cachedDefinitions;
+            }
+        } catch (QUI\Exception) {
+        }
+
         $result = [];
         $packages = QUI::getPackageManager()->getInstalled();
 
@@ -373,6 +387,10 @@ class Manager
         }
 
         self::$editorDefinitions = $result;
+
+        if (!empty($result)) {
+            QUI\Cache\Manager::set(self::CACHE_EDITOR_DEFINITIONS, $result);
+        }
 
         return $result;
     }

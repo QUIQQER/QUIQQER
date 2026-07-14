@@ -16,7 +16,7 @@
     "url": "https://www.quiqqer.com"
   },
   "require": {
-    "php": "^8.1",
+    "php": "^8.2",
     "ext-curl": "*",
     "ext-dom": "*",
     "ext-filter": "*",
@@ -30,7 +30,7 @@
     "ext-zip": "*",
     "composer/semver": "^3",
     "martinvenus/knapsack": "^10",
-    "doctrine/dbal": "^4",
+    "doctrine/dbal": "^4.4",
     "html2text/html2text": "^4",
     "intervention/image": "^3.10",
     "league/climate": "^3",
@@ -74,8 +74,7 @@
     "report-uri/passkeys-php": "^2.0",
     "seld/jsonlint": "^1",
     "symfony/console": "^4|^5|^6|^7|^8",
-    "symfony/http-foundation": "^6",
-    "symfony/polyfill-php82": "^1",
+    "symfony/http-foundation": "^7.4",
     "symfony/polyfill-php83": "^1",
     "t7systems/blowfish": "1.0.0",
     "tedivm/stash": "^1.2"
@@ -111,6 +110,7 @@
       "@dev:phpunit"
     ],
     "dev:phpunit": "./tools/phpunit",
+    "dev:test:cleanup": "@php tests/cleanup.php",
     "dev:lint": [
       "@dev:lint:phpstan",
       "@dev:lint:style"
@@ -138,6 +138,7 @@
   "scripts-descriptions": {
     "test": "Runs linting, static analysis, and unit tests.",
     "dev:phpunit": "Run PHPUnit test suites",
+    "dev:test:cleanup": "Run test cleanup listeners and remove PHPUnit projects",
     "dev:lint": "Run PHPStan and code style check",
     "dev:lint:phpstan": "Run PHPStan",
     "dev:lint:style": "Run code style check (PHP_CodeSniffer)",

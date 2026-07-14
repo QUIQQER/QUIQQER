@@ -274,6 +274,20 @@ class Menu
                     }
 
                     $Parent = $Menu->getElementByPath($menuParent);
+
+                    if ($Parent === false) {
+                        QUI\System\Log::addWarning(
+                            'Could not add settings window to backend menu: menu parent does not exist.',
+                            [
+                                'file' => $file,
+                                'window' => $winName,
+                                'menuParent' => $menuParent
+                            ]
+                        );
+
+                        continue;
+                    }
+
                     $Parent->appendChild($Item);
                 }
             }

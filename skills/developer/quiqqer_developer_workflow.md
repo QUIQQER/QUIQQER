@@ -8,6 +8,19 @@ category: developer
 
 Use this skill for QUIQQER development work before changing code, preparing commits, or handing work over for review.
 
+## Skill Routing
+
+Use this skill as the entry point for general QUIQQER development. Load the focused skill that matches the task before
+implementing specialized work:
+
+- `quiqqer_extension_points` for providers, package XML files, events, console tools, permissions, settings, controls,
+  assets, and setup integrations.
+- `quiqqer_package_quality_upgrade` for PHIVE tool upgrades, PHPStan 2 and level 8, optional-dependency analysis stubs,
+  DBAL/PostgreSQL migration, portable `database.xml`, and PHPUnit integration coverage.
+
+Use both focused skills when a package modernization also changes an extension declaration. Keep this workflow loaded for
+branch selection, atomic commits, validation, and handover rules.
+
 ## Development Scope
 
 - Prefer creating or extending a package for normal project work.
@@ -66,7 +79,7 @@ fix(locale): handle missing translation fallback
 Mark breaking changes with `!` and a `BREAKING CHANGE` footer:
 
 ```text
-build!: bump minimum PHP version to 8.1
+build!: bump minimum PHP version to 8.2
 
 BREAKING CHANGE: Drop support for PHP 7.4
 ```

@@ -65,7 +65,11 @@
                     </label>
                 </td>
                 <td>
-                    <input type="checkbox" name="demodata" />
+                    <select name="demodata" disabled="disabled">
+                        <option value="">
+                            {locale group="quiqqer/core" var="demodata.project.no.demodata"}
+                        </option>
+                    </select>
                 </td>
             </tr>
         </tbody>

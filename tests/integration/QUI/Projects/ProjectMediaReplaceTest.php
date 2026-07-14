@@ -2,6 +2,8 @@
 
 namespace QUI\Projects;
 
+use QUI;
+
 class ProjectMediaReplaceTest extends ProjectIntegrationTestCase
 {
     public function testImageCanBeReplacedWithZeroMaxUploadSizeConfig(): void
@@ -48,6 +50,102 @@ class ProjectMediaReplaceTest extends ProjectIntegrationTestCase
             $this->assertSame(1, (int)$Replaced->getAttribute('image_height'));
         } finally {
             self::setProjectConfig($Project, $originalConfig);
+
+            if ($fileId) {
+                ProjectTestHelper::runAsSystemUser(static function () use ($Media, $fileId): void {
+                    $File = $Media->get($fileId);
+                    $File->delete();
+                    $File->destroy();
+                });
+            }
+
+            if ($folderId) {
+                ProjectTestHelper::runAsSystemUser(static function () use ($Media, $folderId): void {
+                    $Folder = $Media->get($folderId);
+                    $Folder->delete();
+                    $Folder->destroy();
+                });
+            }
+
+            if (file_exists($sourceFile)) {
+                unlink($sourceFile);
+            }
+
+            if (file_exists($replacementFile)) {
+                unlink($replacementFile);
+            }
+        }
+    }
+
+    public function testMediaReplaceBeginReceivesPreviousMediaDataBeforeFileIsDeleted(): void
+    {
+        $Project = self::getTestProject();
+        $Media = $Project->getMedia();
+        $Root = $Media->firstChild();
+        $folderName = 'phpunit-replace-begin-parent-' . uniqid();
+        $sourceFile = sys_get_temp_dir() . '/quiqqer-phpunit-replace-begin-source-' . uniqid() . '.png';
+        $replacementFile = sys_get_temp_dir() . '/quiqqer-phpunit-replace-begin-target-' . uniqid() . '.png';
+        $fileId = null;
+        $folderId = null;
+        $eventCalls = 0;
+        $eventPreviousData = null;
+        $previousFileExistedDuringEvent = false;
+
+        self::createPng($sourceFile);
+        self::createPng($replacementFile);
+
+        $listener = static function (
+            Media $EventMedia,
+            int $eventFileId,
+            array $previousData
+        ) use (
+            $Media,
+            &$fileId,
+            &$eventCalls,
+            &$eventPreviousData,
+            &$previousFileExistedDuringEvent
+        ): void {
+            if ($eventFileId !== $fileId || $EventMedia !== $Media) {
+                return;
+            }
+
+            $eventCalls++;
+            $eventPreviousData = $previousData;
+            $previousFileExistedDuringEvent = file_exists($EventMedia->getFullPath() . $previousData['file']);
+        };
+
+        QUI::getEvents()->addEvent('onMediaReplaceBegin', $listener);
+
+        try {
+            $folderId = ProjectTestHelper::runAsSystemUser(static function () use ($Root, $folderName): int {
+                return $Root->createFolder($folderName)->getId();
+            });
+
+            $fileId = ProjectTestHelper::runAsSystemUser(
+                static function () use ($Media, $folderId, $sourceFile): int {
+                    $File = $Media->get($folderId)->uploadFile($sourceFile);
+
+                    return $File->getId();
+                }
+            );
+
+            $uploadedFile = $Media->get($fileId);
+            $previousFile = $uploadedFile->getAttribute('file');
+
+            ProjectTestHelper::runAsSystemUser(
+                static function () use ($Media, $fileId, $replacementFile): void {
+                    $Media->replace($fileId, $replacementFile);
+                }
+            );
+
+            $this->assertSame(1, $eventCalls);
+            $this->assertIsArray($eventPreviousData);
+            $this->assertSame($fileId, (int)$eventPreviousData['id']);
+            $this->assertSame($previousFile, $eventPreviousData['file']);
+            $this->assertSame('image/png', $eventPreviousData['mime_type']);
+            $this->assertTrue($previousFileExistedDuringEvent);
+        } finally {
+            QUI::getEvents()->removeEvent('onMediaReplaceBegin', $listener);
 
             if ($fileId) {
                 ProjectTestHelper::runAsSystemUser(static function () use ($Media, $fileId): void {

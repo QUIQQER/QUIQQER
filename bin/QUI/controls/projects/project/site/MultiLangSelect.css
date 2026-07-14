@@ -1,5 +1,10 @@
-.quiqqer-MultiLangSelect-entry + .quiqqer-MultiLangSelect-entry {
-    margin-top: 10px;
+.quiqqer-MultiLangSelect-entry {
+    border-bottom: 1px solid #ddd;
+    overflow: hidden;
+}
+
+.quiqqer-MultiLangSelect-entry:last-child {
+    border-bottom: 0;
 }
 
 .quiqqer-MultiLangSelect-entry img {

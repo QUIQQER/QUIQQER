@@ -4,7 +4,7 @@
  * This file contains the main header file
  */
 
-const QUIQQER_MIN_PHP_VERSION = '8.1.0';
+const QUIQQER_MIN_PHP_VERSION = '8.2.0';
 
 header("Content-Type: text/html; charset=utf-8");
 

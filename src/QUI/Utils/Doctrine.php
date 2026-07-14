@@ -5,8 +5,13 @@ namespace QUI\Utils;
 use Doctrine\DBAL\Query\QueryBuilder;
 
 use function explode;
+use function filter_var;
 use function is_array;
+use function is_int;
 use function is_string;
+use function trim;
+
+use const FILTER_VALIDATE_INT;
 
 class Doctrine
 {
@@ -75,17 +80,47 @@ class Doctrine
             );
         }
 
-        if (isset($params['limit'])) {
-            $limit = explode(',', (string)$params['limit'], 2);
-
-            if (isset($limit[1])) {
-                $query->setFirstResult((int)$limit[0]);
-                $query->setMaxResults((int)$limit[1]);
-            } else {
-                $query->setMaxResults((int)$limit[0]);
-            }
-        }
+        self::applyLimit($query, $params['limit'] ?? null);
 
         return $query;
+    }
+
+    /**
+     * Applies a positive limit or a non-negative offset with a positive limit.
+     */
+    public static function applyLimit(QueryBuilder $query, mixed $value): QueryBuilder
+    {
+        if (!is_int($value) && !is_string($value)) {
+            return $query;
+        }
+
+        $limit = explode(',', (string)$value, 2);
+        $maxResults = filter_var(
+            trim($limit[1] ?? $limit[0]),
+            FILTER_VALIDATE_INT,
+            ['options' => ['min_range' => 1]]
+        );
+
+        if ($maxResults === false) {
+            return $query;
+        }
+
+        if (!isset($limit[1])) {
+            return $query->setMaxResults($maxResults);
+        }
+
+        $offset = filter_var(
+            trim($limit[0]),
+            FILTER_VALIDATE_INT,
+            ['options' => ['min_range' => 0]]
+        );
+
+        if ($offset === false) {
+            return $query;
+        }
+
+        return $query
+            ->setFirstResult($offset)
+            ->setMaxResults($maxResults);
     }
 }

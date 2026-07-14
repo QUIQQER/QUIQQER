@@ -327,6 +327,12 @@ class Manager
         return $this->Session;
     }
 
+    public function resetSessionUser(): void
+    {
+        $this->Session = null;
+        $this->multipleCallPrevention = false;
+    }
+
     public function getSystemUser(): SystemUser
     {
         if ($this->SystemUser === null) {
