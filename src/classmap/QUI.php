@@ -913,7 +913,7 @@ class QUI
     /**
      * Return the global QUI Session
      */
-    public static function getSession(): Session|QUI\System\Console\Session|null
+    public static function getSession(): Session|QUI\System\Console\Session
     {
         if (php_sapi_name() === 'cli') {
             if (self::$Session === null) {
