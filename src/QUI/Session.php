@@ -34,10 +34,12 @@ use function explode;
 use function file_exists;
 use function headers_sent;
 use function implode;
+use function in_array;
 use function md5;
 use function microtime;
 use function preg_replace;
 use function range;
+use function str_starts_with;
 use function time;
 
 /**
@@ -48,6 +50,18 @@ use function time;
  */
 class Session
 {
+    private const CLIENT_PROTECTED_KEYS = [
+        'uid',
+        'secHash',
+        'inAuthentication'
+    ];
+
+    private const CLIENT_PROTECTED_KEY_PREFIXES = [
+        'auth',
+        'session_master_',
+        'session_log_'
+    ];
+
     /**
      * Lifetime of the cookie
      */
@@ -444,6 +458,21 @@ class Session
         }
 
         return false;
+    }
+
+    public static function isClientSessionKeyAllowed(string $key): bool
+    {
+        if (in_array($key, self::CLIENT_PROTECTED_KEYS, true)) {
+            return false;
+        }
+
+        foreach (self::CLIENT_PROTECTED_KEY_PREFIXES as $prefix) {
+            if (str_starts_with($key, $prefix)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function getId(): string
