@@ -51,15 +51,16 @@ define('controls/users/auth/VerifiedMail2FA', [
                     QUI.getMessageHandler().then((mh) => {
                         mh.addError(err.getMessage());
 
-                        // destroy session
-                        require(['utils/Session'], (Session) => {
-                            Session.remove('inAuthentication');
-                            Session.remove('auth-primary');
-
+                        // destroy authentication session
+                        QUIAjax.post('ajax_users_authenticator_resetSession', () => {
                             const loginNode = this.getElm().closest('[data-qui="controls/users/Login"]');
 
                             if (loginNode) {
                                 QUI.Controls.getById(loginNode.get('data-quiid')).refresh();
+                            }
+                        }, {
+                            onError: () => {
+                                window.location.reload();
                             }
                         });
                     });

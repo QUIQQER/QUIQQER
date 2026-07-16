@@ -6,10 +6,14 @@
  * @param string $key
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_session_remove',
     static function ($key): void {
-        QUI::getSession()->del($key);
+        if (!is_string($key) || !QUI\Session::isClientSessionKeyAllowed($key)) {
+            throw new QUI\Exception('Access to this session key is not permitted.', 403);
+        }
+
+        QUI::getSession()->remove($key);
     },
     ['key']
 );
