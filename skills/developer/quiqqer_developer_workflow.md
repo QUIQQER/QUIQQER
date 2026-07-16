@@ -17,9 +17,17 @@ implementing specialized work:
   assets, and setup integrations.
 - `quiqqer_package_quality_upgrade` for PHIVE tool upgrades, PHPStan 2 and level 8, optional-dependency analysis stubs,
   DBAL/PostgreSQL migration, portable `database.xml`, and PHPUnit integration coverage.
+- `quiqqer_frontend_css_variables` for control and module CSS, binding settings into styling through the three-layer
+  CSS variable pattern, theming, and color usage.
+- `quiqqer_frontend_javascript` for JavaScript in packages: vanilla JavaScript instead of MooTools and element
+  selection through `data-name` attributes.
+- `quiqqer_frontend_accessibility` for every change to HTML templates, markup, or DOM-creating JavaScript:
+  semantic HTML, targeted ARIA usage, keyboard and focus handling.
+- `quiqqer_secure_coding` whenever dynamic values are written into Smarty templates or database queries
+  are built: context-aware XSS prevention and SQL parameter binding.
 
-Use both focused skills when a package modernization also changes an extension declaration. Keep this workflow loaded for
-branch selection, atomic commits, validation, and handover rules.
+Combine focused skills when a task spans several areas, for example when a package modernization also changes an
+extension declaration. Keep this workflow loaded for branch selection, atomic commits, validation, and handover rules.
 
 ## Development Scope
 
@@ -27,6 +35,8 @@ branch selection, atomic commits, validation, and handover rules.
 - Change Core only when the task explicitly targets platform behavior.
 - Read the local repository structure before editing. Prefer existing package patterns over new abstractions.
 - Keep changes small and reviewable. Do not mix unrelated formatting, refactoring, features, and fixes.
+- Use context-appropriate escaping for dynamic template output and parameter binding for database queries.
+  Load `quiqqer_secure_coding` for the full rules.
 
 ## Atomic Commits
 

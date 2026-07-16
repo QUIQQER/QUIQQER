@@ -29,5 +29,21 @@ class SkillProvider implements SkillProviderInterface
         $repository->addFromMarkdownFile(
             $root . '/skills/developer/quiqqer_package_quality_upgrade.md'
         );
+
+        $repository->addFromMarkdownFile(
+            $root . '/skills/developer/quiqqer_frontend_css_variables.md'
+        );
+
+        $repository->addFromMarkdownFile(
+            $root . '/skills/developer/quiqqer_frontend_javascript.md'
+        );
+
+        $repository->addFromMarkdownFile(
+            $root . '/skills/developer/quiqqer_frontend_accessibility.md'
+        );
+
+        $repository->addFromMarkdownFile(
+            $root . '/skills/developer/quiqqer_secure_coding.md'
+        );
     }
 }
