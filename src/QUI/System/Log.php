@@ -170,6 +170,8 @@ class Log
         }
 
         $message .= $Exception->getMessage() . "\n";
+        $message .= 'File: ' . $Exception->getFile() . PHP_EOL;
+        $message .= 'Line:' . $Exception->getLine() . PHP_EOL;
         $message .= $Exception->getTraceAsString();
 
         self::write($message, $logLevel, $context, $filename, $force);
@@ -205,6 +207,8 @@ class Log
         }
 
         $message .= $Exception->getMessage() . "\n";
+        $message .= 'File: ' . $Exception->getFile() . PHP_EOL;
+        $message .= 'Line:' . $Exception->getLine() . PHP_EOL;
         $message .= $Exception->getTraceAsString();
 
         self::write($message, $logLevel, $context, $filename, $force);

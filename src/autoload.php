@@ -107,8 +107,6 @@ function exception_error_handler(int $errno, string $errStr, string $errFile, in
     }
 
     $errorMessage = $type . ': ' . $errStr;
-    $errorMessage .= PHP_EOL . 'File: ' . $errFile;
-    $errorMessage .= PHP_EOL . 'Line:' . $errLine;
 
     $exception = new \ErrorException(
         $errorMessage,
