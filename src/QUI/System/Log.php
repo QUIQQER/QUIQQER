@@ -163,13 +163,13 @@ class Log
         bool | string $filename = false,
         bool $force = false
     ): void {
-        $message = $Exception->getCode() . " :: \n\n";
+        $message = $Exception->getCode() . " :: " . PHP_EOL . PHP_EOL;
 
         if (method_exists($Exception, 'getContext')) {
-            $message .= print_r($Exception->getContext(), true) . "\n\n";
+            $message .= print_r($Exception->getContext(), true) . PHP_EOL . PHP_EOL;
         }
 
-        $message .= $Exception->getMessage() . "\n";
+        $message .= $Exception->getMessage() . PHP_EOL;
         $message .= 'File: ' . $Exception->getFile() . PHP_EOL;
         $message .= 'Line:' . $Exception->getLine() . PHP_EOL;
         $message .= $Exception->getTraceAsString();
@@ -200,13 +200,13 @@ class Log
             return;
         }
 
-        $message = $Exception->getCode() . " :: \n\n";
+        $message = $Exception->getCode() . " :: " . PHP_EOL . PHP_EOL;
 
         if (method_exists($Exception, 'getContext')) {
-            $message .= print_r($Exception->getContext(), true) . "\n\n";
+            $message .= print_r($Exception->getContext(), true) . PHP_EOL . PHP_EOL;
         }
 
-        $message .= $Exception->getMessage() . "\n";
+        $message .= $Exception->getMessage() . PHP_EOL;
         $message .= 'File: ' . $Exception->getFile() . PHP_EOL;
         $message .= 'Line:' . $Exception->getLine() . PHP_EOL;
         $message .= $Exception->getTraceAsString();
