@@ -177,6 +177,20 @@ tests/integration/
 tests/stubs/
 ```
 
+Configure PHPUnit to measure all production source files, including files that no test loads:
+
+```xml
+<source>
+    <include>
+        <directory suffix=".php">src</directory>
+    </include>
+</source>
+<coverage includeUncoveredFiles="true"/>
+```
+
+Reach at least 80% line coverage over the existing production code. Treat completely untested source files as uncovered;
+do not exclude production paths or add coverage-ignore annotations merely to raise the percentage.
+
 Integration tests must exercise public package APIs and the real QUIQQER bootstrap/database. Cover the workflow changed by
 the migration, including relevant create, update, lookup, search, sort, pagination, archive, and delete behavior.
 
