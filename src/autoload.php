@@ -156,8 +156,8 @@ function exception_handler(\Throwable $Exception): void
         return;
     }
 
-    if (!headers_sent() && $exceptionCode >= 400 && $exceptionCode < 600) {
-        http_response_code($exceptionCode);
+    if (!headers_sent()) {
+        http_response_code(500);
         header('Content-Type: application/json');
     }
 
