@@ -133,11 +133,6 @@ function exception_handler(\Throwable $Exception): void
 {
     $exceptionCode = $Exception->getCode();
 
-    if (php_sapi_name() !== 'cli' && !headers_sent() && $exceptionCode >= 400 && $exceptionCode < 600) {
-        http_response_code($exceptionCode);
-        header('Content-Type: application/json');
-    }
-
     $isCacheMissException = $Exception instanceof QUI\Cache\MissException;
 
     if (!$isCacheMissException) {
@@ -159,6 +154,11 @@ function exception_handler(\Throwable $Exception): void
         }
 
         return;
+    }
+
+    if (!headers_sent() && $exceptionCode >= 400 && $exceptionCode < 600) {
+        http_response_code($exceptionCode);
+        header('Content-Type: application/json');
     }
 
     echo json_encode([
