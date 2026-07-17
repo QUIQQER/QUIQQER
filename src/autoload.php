@@ -59,8 +59,6 @@ function exception_error_handler(int $errno, string $errStr, string $errFile, in
         return true;
     }
 
-    $l = error_reporting();
-
     if ($errno === E_DEPRECATED || $errno === E_USER_DEPRECATED) {
         QUI\System\Log::addDeprecated('Deprecated: ' . $errStr, [
             'file' => $errFile,
@@ -70,58 +68,59 @@ function exception_error_handler(int $errno, string $errStr, string $errFile, in
         return true;
     }
 
-
-    if ($l & $errno) {
-        $exit = false;
-
-        switch ($errno) {
-            case E_USER_ERROR:
-                $type = 'Fatal Error';
-                $exit = true;
-                break;
-
-            case E_USER_WARNING:
-            case E_WARNING:
-                $type = 'Warning';
-                break;
-
-            case E_USER_NOTICE:
-            case E_NOTICE:
-            case @E_STRICT:
-                $type = 'Notice';
-                break;
-
-            case @E_RECOVERABLE_ERROR:
-                $type = 'Catchable';
-                break;
-
-            default:
-                $type = 'Unknown Error';
-                $exit = true;
-                break;
-        }
-
-        $errorMessage = $type . ': ' . $errStr;
-        $errorMessage .= PHP_EOL . 'File: ' . $errFile;
-        $errorMessage .= PHP_EOL . 'Line:' . $errLine;
-
-        $exception = new \ErrorException(
-            $errorMessage,
-            $errno,
-            $errno,
-            $errFile,
-            $errLine
-        );
-
-        if ($exit) {
-            exception_handler($exception);
-            exit('Unknown Error in QUIQQER exception_error_handler()');
-        }
-
-        throw $exception;
+    $erroreReportingLevel = error_reporting();
+    if (!($erroreReportingLevel & $errno)) {
+        // This error code is not included in error_reporting, so let it fall through to the standard PHP error handler
+        return false;
     }
 
-    return false;
+    $exit = false;
+
+    switch ($errno) {
+        case E_USER_ERROR:
+            $type = 'Fatal Error';
+            $exit = true;
+            break;
+
+        case E_USER_WARNING:
+        case E_WARNING:
+            $type = 'Warning';
+            break;
+
+        case E_USER_NOTICE:
+        case E_NOTICE:
+        case @E_STRICT:
+            $type = 'Notice';
+            break;
+
+        case @E_RECOVERABLE_ERROR:
+            $type = 'Catchable';
+            break;
+
+        default:
+            $type = 'Unknown Error';
+            $exit = true;
+            break;
+    }
+
+    $errorMessage = $type . ': ' . $errStr;
+    $errorMessage .= PHP_EOL . 'File: ' . $errFile;
+    $errorMessage .= PHP_EOL . 'Line:' . $errLine;
+
+    $exception = new \ErrorException(
+        $errorMessage,
+        $errno,
+        $errno,
+        $errFile,
+        $errLine
+    );
+
+    if ($exit) {
+        exception_handler($exception);
+        exit('Unknown Error in QUIQQER exception_error_handler()');
+    }
+
+    throw $exception;
 }
 
 /**
@@ -129,20 +128,20 @@ function exception_error_handler(int $errno, string $errStr, string $errFile, in
  */
 function exception_handler(\Throwable $Exception): void
 {
-    $code = $Exception->getCode();
+    $exceptionCode = $Exception->getCode();
 
-    if (php_sapi_name() !== 'cli' && !headers_sent() && $code >= 400 && $code < 600) {
-        http_response_code($code);
+    if (php_sapi_name() !== 'cli' && !headers_sent() && $exceptionCode >= 400 && $exceptionCode < 600) {
+        http_response_code($exceptionCode);
         header('Content-Type: application/json');
     }
 
-    $isCacheMiss = $Exception instanceof QUI\Cache\MissException;
+    $isCacheMissException = $Exception instanceof QUI\Cache\MissException;
 
-    if (php_sapi_name() === 'cli' && !$isCacheMiss) {
+    if (php_sapi_name() === 'cli' && !$isCacheMissException) {
         Log::writeException($Exception);
     }
 
-    if (!$isCacheMiss) {
+    if (!$isCacheMissException) {
         Log::addError($Exception->getMessage());
     }
 
@@ -150,11 +149,11 @@ function exception_handler(\Throwable $Exception): void
         echo PHP_EOL;
         echo 'Error: ' . $Exception->getMessage() . PHP_EOL;
 
-        if ($code) {
-            echo 'Code: ' . $code . PHP_EOL;
+        if ($exceptionCode) {
+            echo 'Code: ' . $exceptionCode . PHP_EOL;
         }
 
-        if (!$isCacheMiss) {
+        if (!$isCacheMissException) {
             echo 'Details were written to the error log.' . PHP_EOL;
         }
 
@@ -164,6 +163,6 @@ function exception_handler(\Throwable $Exception): void
     echo json_encode([
         'error' => true,
         'message' => 'An error occurred. Check the log for more details.',
-        'code' => $code
+        'code' => $exceptionCode
     ]);
 }
