@@ -120,7 +120,7 @@ function exception_error_handler(int $errno, string $errStr, string $errFile, in
 
     if ($exit) {
         exception_handler($exception);
-        exit('Unknown Error in QUIQQER exception_error_handler()');
+        exit(1);
     }
 
     throw $exception;
