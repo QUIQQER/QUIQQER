@@ -38,6 +38,9 @@ spl_autoload_register(static function ($className): bool {
 /**
  * Error Handler
  *
+ * Despite it's name, this does not acutally handle exceptions - it handles errors.
+ * Exceptions are handled by {@see exception_handler()}
+ *
  * @throws ErrorException
  * @author www.pcsg.de (Henning Leutz)
  */
