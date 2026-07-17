@@ -144,6 +144,8 @@ function exception_handler(\Throwable $Exception): void
     if (php_sapi_name() === 'cli') {
         echo PHP_EOL;
         echo 'Error: ' . $Exception->getMessage() . PHP_EOL;
+        echo 'File: ' . $Exception->getFile() . PHP_EOL;
+        echo 'Line:' . $Exception->getLine() . PHP_EOL;
 
         if ($exceptionCode) {
             echo 'Code: ' . $exceptionCode . PHP_EOL;
