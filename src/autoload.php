@@ -137,12 +137,8 @@ function exception_handler(\Throwable $Exception): void
 
     $isCacheMissException = $Exception instanceof QUI\Cache\MissException;
 
-    if (php_sapi_name() === 'cli' && !$isCacheMissException) {
-        Log::writeException($Exception);
-    }
-
     if (!$isCacheMissException) {
-        Log::addError($Exception->getMessage());
+        Log::writeException($Exception);
     }
 
     if (php_sapi_name() === 'cli') {
