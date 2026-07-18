@@ -1,6 +1,6 @@
 ---
 name: quiqqer_package_quality_upgrade
-description: Use when modernizing and completing a QUIQQER package with current PHIVE tools, PHPStan 2 at level 8, DBAL and PostgreSQL-compatible database access, portable database.xml schemas, CI stubs for optional dependencies, PHPUnit integration tests, package metadata, licensing, README documentation, and required visual assets.
+description: Use when modernizing and completing a QUIQQER package in the mandatory sequence quality files, PHPUnit coverage, DBAL migration, and PHPStan level 8, with current PHIVE tools, portable database.xml schemas, CI stubs for optional dependencies, package metadata, licensing, README documentation, and required visual assets.
 category: developer
 ---
 
@@ -38,7 +38,57 @@ Inspect at least:
 Use `rg` to find suppressed analysis, optional dependencies, PDO, MySQL-only SQL, and old database APIs. Include dead or
 commented legacy implementations in the cleanup decision.
 
-## 3. Update The Local Toolchain
+## 3. Follow The Mandatory Upgrade Sequence
+
+For a full package quality upgrade, the following phase order takes precedence over the order of the detailed reference
+sections below. Do not combine or reorder the phases merely because PHPStan, DBAL, and PHPUnit findings overlap.
+
+### Phase 1: Quality Files And Tooling
+
+Modernize the quality infrastructure before changing tests or production behavior:
+
+- CI PHP versions and jobs
+- package-local PHIVE tools
+- Composer requirements, scripts, and development autoloading
+- PHPCS, PHPUnit, and PHPStan configuration
+- supported PHP version range
+- an empty PHPStan baseline
+
+Validate configuration syntax and Composer metadata. PHPStan may be run once to inventory findings, but do not start the
+production-code remediation in this phase. Keep dependency changes in separate commits when they carry their own semantic
+meaning, such as a required ERP major upgrade. Commit the quality-file phase before adding the test suite.
+
+### Phase 2: PHPUnit Before Production Modernization
+
+Build the PHPUnit safety net against the existing production implementation. Reach at least 80% line coverage before the
+DBAL migration starts. Database-backed tests must use DBAL from the beginning for fixtures, assertions, and cleanup even
+while the production code still uses legacy database APIs.
+
+Exercise the behavior that the later migration must preserve, including create, update, lookup, search, sort, pagination,
+archive, delete, session/global state, and relevant ERP workflows. Run the suite twice consecutively and commit the tests
+and fixtures before changing production database access.
+
+### Phase 3: DBAL And Portable Schema
+
+Only after the test commit, migrate production database access to DBAL and convert `database.xml` to portable schema
+metadata. Keep the PHPUnit suite green throughout the migration. Fix database-specific defects exposed by the tests, but
+do not weaken assertions to preserve broken MySQL-only or nonexistent-column behavior. Commit the coherent DBAL/schema
+migration before or together with only those type fixes that are inseparable from the changed database code.
+
+### Phase 4: PHPStan And Final Quality Gate
+
+After the DBAL migration, resolve the remaining PHPStan 2 level-8 findings in production and test code. Keep the baseline
+empty and do not add ignores merely to make the final gate pass. Run the complete package quality command sequence twice,
+including PHPCS, PHPStan, and PHPUnit, then verify coverage remains at least 80% and commit the final analysis fixes.
+
+If the developer explicitly requests a different phase boundary, follow that request and document the deviation.
+Task-specific content restrictions, such as not changing README or package texts, also override the completion defaults
+below.
+
+The remaining sections describe the detailed requirements for these phases; their document order is not an alternative
+execution order.
+
+## 4. Update The Local Toolchain
 
 Use package-local PHIVE tools. Upgrade the required quality tools with:
 
@@ -58,7 +108,7 @@ and CI invoke the same package-local tools. Prefer these commands:
 
 Keep the isolated toolchain/CI change separate from large analysis fixes.
 
-## 4. Reach PHPStan Level 8
+## 5. Reach PHPStan Level 8
 
 Run PHPStan without trusting an old result cache:
 
@@ -108,7 +158,7 @@ their types, add minimal analysis-only shims under `tests/phpstan-shims/` or the
 
 Run PHPStan both in the full local installation and in CI. CI is authoritative for optional-dependency coverage.
 
-## 5. Migrate Database Access To DBAL
+## 6. Migrate Database Access To DBAL
 
 Follow the Core DBAL migration rules from
 `https://dev.quiqqer.com/quiqqer/core/-/work_items/1525` and the database XML reference at
@@ -165,7 +215,7 @@ Use portable types, explicit nullability, explicit defaults, primary keys, and i
 indexes only when the query patterns justify them. Validate XML and scan again for `AUTO_INCREMENT`, `UNSIGNED`, backticks,
 engines, and other MySQL-only syntax.
 
-## 6. Add PHPUnit Coverage
+## 7. Add PHPUnit Coverage
 
 Add unit tests for isolated behavior and integration tests for database-backed workflows. Follow the package layout; a
 typical integration setup uses:
@@ -209,10 +259,13 @@ narrow test stubs for optional classes when necessary; do not change production 
 Run the integration suite twice consecutively. The second run detects incomplete cleanup, fixed IDs, leaked global state,
 and ordering assumptions.
 
-## 7. Complete The Package
+## 8. Complete The Package
 
-Completion is mandatory for every full package quality upgrade. Inspect and improve the repository-local package metadata,
-licensing, documentation, and required visual assets instead of merely reporting omissions.
+Completion inspection is mandatory for every full package quality upgrade. Inspect repository-local package metadata,
+licensing, documentation, locale text, support text, and required visual assets, but do not treat inspection as permission
+to rewrite suitable existing content. Preserve content that is complete, correct, current, and internally consistent.
+Change it only when a concrete defect or omission is found or when the developer explicitly requests a rewrite. Do not
+rephrase good text merely for style, standardization, tone, or recurring quality runs.
 
 ### Composer Metadata
 
@@ -221,7 +274,8 @@ Follow `https://quiqqer.com/docs/developer/package-development#composer-metadata
 - Use `quiqqer-module` for normal extension packages, `quiqqer-template` for project presentation packages, and
   `quiqqer-asset` only for the corresponding generated browser asset packages.
 - Remove a `version` field. The QUIQQER update server derives and manages package versions.
-- Replace personal author entries with the company maintainer entry:
+- When maintainer metadata is missing, stale, or still contains a personal legacy entry that no longer represents current
+  maintenance, use the company maintainer entry:
 
 ```json
 "authors": [
@@ -241,17 +295,24 @@ Follow `https://quiqqer.com/docs/developer/package-development#composer-metadata
 ### License And README
 
 - Preserve the package's intended licensing meaning and use a valid SPDX identifier where one exists.
-- Add or update the repository's `LICENSE` file and keep it consistent with Composer and `package.xml`.
+- Ensure the repository's `LICENSE` file exists and is consistent with Composer and `package.xml`. Do not replace or
+  rewrite a correct existing license file.
 - If the intended license cannot be determined unambiguously from existing repository evidence, ask the developer instead
   of inventing or changing a license.
-- Create or improve the README without waiting for a separate request. Write it at least in English and include a clear
-  title, description, installation, configuration when applicable, usage, relevant technical notes, license, and support.
+- Create a README when it is missing. Update an existing README only when required information is absent, incorrect,
+  outdated, inconsistent with the package, or explicitly requested. A suitable README should be at least in English and
+  include a clear title, description, installation, configuration when applicable, usage, relevant technical notes,
+  license, and support.
+- Preserve good README wording and structure. Do not rewrite, reorder, translate, or expand it merely because a quality
+  upgrade is being performed.
 - Remove obsolete personal developer attribution and stale instructions. Keep useful package-specific documentation.
 
 ### `package.xml`, Locales, And Images
 
 - Verify localized title and short description, package image reference, support information, copyright, license, and all
   referenced locale variables. Ensure English locale text exists.
+- Preserve suitable package descriptions, locale wording, support text, and other module-facing text. Edit only concrete
+  omissions, stale facts, invalid references, or inconsistencies; do not rephrase them for stylistic uniformity.
 - Reuse suitable existing images. Never regenerate or replace an existing suitable image merely to standardize its file
   type, style, name, or location.
 - Required visual asset types are the README header, package logo/icon, and GitLab project avatar image. Screenshots are not
@@ -269,7 +330,7 @@ of manual release steps.
 Keep completion changes reviewable. Prefer separate Conventional Commits for metadata/license/README changes and visual
 assets when both categories are changed.
 
-## 8. Validate And Deliver
+## 9. Validate And Deliver
 
 Run the complete package checks:
 
