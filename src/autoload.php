@@ -71,12 +71,6 @@ function exception_error_handler(int $errno, string $errStr, string $errFile, in
         return true;
     }
 
-    $erroreReportingLevel = error_reporting();
-    if (!($erroreReportingLevel & $errno)) {
-        // This error code is not included in error_reporting, so let it fall through to the standard PHP error handler
-        return false;
-    }
-
     $exit = false;
 
     switch ($errno) {
