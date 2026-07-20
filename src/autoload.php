@@ -44,28 +44,28 @@ spl_autoload_register(static function ($className): bool {
  * @throws ErrorException
  * @author www.pcsg.de (Henning Leutz)
  */
-function exception_error_handler(int $errno, string $errStr, string $errFile, int $errLine): bool
+function exception_error_handler(int $errorLevel, string $errorMessage, string $errorFile, int $errorLine): bool
 {
-    if ($errStr === 'json_encode(): Invalid UTF-8 sequence in argument') {
+    if ($errorMessage === 'json_encode(): Invalid UTF-8 sequence in argument') {
         QUI::getErrorHandler()->setAttribute('show_request', true);
-        QUI::getErrorHandler()->writeErrorToLog($errno, $errStr, $errFile, $errLine);
+        QUI::getErrorHandler()->writeErrorToLog($errorLevel, $errorMessage, $errorFile, $errorLine);
         QUI::getErrorHandler()->setAttribute('show_request', false);
 
         return true;
     }
 
     if (
-        str_contains($errStr, 'session_regenerate_id()')
-        || str_contains($errStr, 'session_destroy()')
-        || str_contains($errStr, 'Required parameter $permissions follows optional parameter $path')
+        str_contains($errorMessage, 'session_regenerate_id()')
+        || str_contains($errorMessage, 'session_destroy()')
+        || str_contains($errorMessage, 'Required parameter $permissions follows optional parameter $path')
     ) {
         return true;
     }
 
-    if ($errno === E_DEPRECATED || $errno === E_USER_DEPRECATED) {
-        QUI\System\Log::addDeprecated('Deprecated: ' . $errStr, [
-            'file' => $errFile,
-            'line' => $errLine
+    if ($errorLevel === E_DEPRECATED || $errorLevel === E_USER_DEPRECATED) {
+        QUI\System\Log::addDeprecated('Deprecated: ' . $errorMessage, [
+            'file' => $errorFile,
+            'line' => $errorLine
         ]);
 
         return true;
@@ -73,7 +73,7 @@ function exception_error_handler(int $errno, string $errStr, string $errFile, in
 
     $exit = false;
 
-    switch ($errno) {
+    switch ($errorLevel) {
         case E_USER_ERROR:
             $type = 'Fatal Error';
             $exit = true;
@@ -100,14 +100,14 @@ function exception_error_handler(int $errno, string $errStr, string $errFile, in
             break;
     }
 
-    $errorMessage = $type . ': ' . $errStr;
+    $errorMessage = $type . ': ' . $errorMessage;
 
     $exception = new \ErrorException(
         $errorMessage,
-        $errno,
-        $errno,
-        $errFile,
-        $errLine
+        $errorLevel,
+        $errorLevel,
+        $errorFile,
+        $errorLine
     );
 
     if ($exit) {
