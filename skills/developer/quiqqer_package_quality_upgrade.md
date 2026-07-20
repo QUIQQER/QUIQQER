@@ -27,7 +27,7 @@ rewrite history as part of this quality workflow unless the developer explicitly
 Inspect at least:
 
 - `composer.json` and `composer.lock` context
-- `phive.xml`
+- `.phive/phars.xml` (the current PHIVE configuration; do not use or create a root-level `phive.xml`)
 - `phpstan.neon`, `phpstan.dist.neon`, and baselines
 - `phpunit.dist.xml` and `tests/`
 - `phpcs.xml.dist`
@@ -96,8 +96,9 @@ Use package-local PHIVE tools. Upgrade the required quality tools with:
 phive install phpstan:2.* phpcs:4.* phpcbf:4.*
 ```
 
-Keep existing PHPUnit and other tools unless their upgrade is part of the task. Verify that `phive.xml`, Composer scripts,
-and CI invoke the same package-local tools. Prefer these commands:
+Keep existing PHPUnit and other tools unless their upgrade is part of the task. Verify that `.phive/phars.xml`, Composer
+scripts, and CI invoke the same package-local tools. `.phive/phars.xml` is the current PHIVE configuration file; do not
+create or restore the outdated `phive.xml` in the repository root. Prefer these commands:
 
 ```shell
 ./tools/phpcs
