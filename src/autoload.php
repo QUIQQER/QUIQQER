@@ -41,7 +41,6 @@ spl_autoload_register(static function ($className): bool {
  * Despite it's name, this does not acutally handle exceptions - it handles errors.
  * Exceptions are handled by {@see exception_handler()}
  *
- * @throws ErrorException
  * @author www.pcsg.de (Henning Leutz)
  */
 function exception_error_handler(int $errorLevel, string $errorMessage, string $errorFile, int $errorLine): bool
@@ -62,60 +61,26 @@ function exception_error_handler(int $errorLevel, string $errorMessage, string $
         return true;
     }
 
-    if ($errorLevel === E_DEPRECATED || $errorLevel === E_USER_DEPRECATED) {
-        QUI\System\Log::addDeprecated('Deprecated: ' . $errorMessage, [
-            'file' => $errorFile,
-            'line' => $errorLine
-        ]);
+    $context = [
+        'file' => $errorFile,
+        'line' => $errorLine
+    ];
 
-        return true;
-    }
+    $loggingMethod = match ($errorLevel) {
+        E_DEPRECATED, E_USER_DEPRECATED => Log::addDeprecated(...),
+        E_NOTICE, E_USER_NOTICE, E_STRICT => Log::addNotice(...),
+        E_WARNING, E_USER_WARNING => Log::addWarning(...),
+        E_RECOVERABLE_ERROR, E_USER_ERROR => Log::addError(...),
+        default => Log::addError(...),
+    };
 
-    $exit = false;
+    $loggingMethod($errorMessage, $context);
 
-    switch ($errorLevel) {
-        case E_USER_ERROR:
-            $type = 'Fatal Error';
-            $exit = true;
-            break;
-
-        case E_USER_WARNING:
-        case E_WARNING:
-            $type = 'Warning';
-            break;
-
-        case E_USER_NOTICE:
-        case E_NOTICE:
-        case @E_STRICT:
-            $type = 'Notice';
-            break;
-
-        case @E_RECOVERABLE_ERROR:
-            $type = 'Catchable';
-            break;
-
-        default:
-            $type = 'Unknown Error';
-            $exit = true;
-            break;
-    }
-
-    $errorMessage = $type . ': ' . $errorMessage;
-
-    $exception = new \ErrorException(
-        $errorMessage,
-        $errorLevel,
-        $errorLevel,
-        $errorFile,
-        $errorLine
-    );
-
-    if ($exit) {
-        exception_handler($exception);
+    if ($errorLevel === E_USER_ERROR) {
         exit(1);
     }
 
-    throw $exception;
+    return true;
 }
 
 /**
