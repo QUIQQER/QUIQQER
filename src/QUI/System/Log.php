@@ -13,6 +13,8 @@ use Throwable;
 
 use function defined;
 
+use function method_exists;
+
 use const DEBUG_MODE;
 
 /**
@@ -180,20 +182,13 @@ class Log
         bool | string $filename = false,
         bool $force = false
     ): void {
-        $message = $Exception->getCode() . " :: " . PHP_EOL . PHP_EOL;
-
-        if (method_exists($Exception, 'getContext')) {
-            $message .= print_r($Exception->getContext(), true) . PHP_EOL . PHP_EOL;
-        }
-
-        $message .= $Exception->getMessage() . PHP_EOL;
-        $message .= 'File: ' . $Exception->getFile() . PHP_EOL;
-        $message .= 'Line:' . $Exception->getLine() . PHP_EOL;
-        $message .= $Exception->getTraceAsString();
-
         $context['exception'] = $Exception;
 
-        self::write($message, $logLevel, $context, $filename, $force);
+        if (method_exists($Exception, 'getContext')) {
+            $context['exceptionContext'] = $Exception->getContext();
+        }
+
+        self::write($Exception->getMessage(), $logLevel, $context, $filename, $force);
     }
 
     /**
@@ -212,20 +207,7 @@ class Log
         bool | string $filename = false,
         bool $force = false
     ): void {
-        $message = $Exception->getCode() . " :: " . PHP_EOL . PHP_EOL;
-
-        if (method_exists($Exception, 'getContext')) {
-            $message .= print_r($Exception->getContext(), true) . PHP_EOL . PHP_EOL;
-        }
-
-        $message .= $Exception->getMessage() . PHP_EOL;
-        $message .= 'File: ' . $Exception->getFile() . PHP_EOL;
-        $message .= 'Line:' . $Exception->getLine() . PHP_EOL;
-        $message .= $Exception->getTraceAsString();
-
-        $context['exception'] = $Exception;
-
-        self::write($message, $logLevel, $context, $filename, $force);
+        self::writeException($Exception, $logLevel, $context, $filename, $force);
     }
 
     /**
