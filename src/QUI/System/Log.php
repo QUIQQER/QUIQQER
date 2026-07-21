@@ -112,7 +112,6 @@ class Log
             $context['ajaxBundler'] = $_REQUEST['quiqqerBundle'];
         }
 
-        $context['errorFilename'] = $filename;
         $context['IP'] = QUI\Utils\System::getClientIP();
 
         if (defined('QUIQQER_SESSION_STARTED')) {
