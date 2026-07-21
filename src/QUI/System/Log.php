@@ -46,7 +46,7 @@ class Log
      * Writes with print_r the object into a log file
      *
      * @param object|array<array-key, mixed>|integer|string $object
-     * @param integer $logLevel - Log-Level ( \QUI\System\Log::LEVEL_ERROR ... )
+     * @param int&self::LEVEL_* $logLevel - Log-Level ( \QUI\System\Log::LEVEL_ERROR ... )
      * @param array<string, mixed> $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database
      * @param boolean $force - [optional] if true: log in any case, no matter which settings
@@ -65,7 +65,7 @@ class Log
      * Writes a string to a log file
      *
      * @param string $message - string to write
-     * @param integer $logLevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
+     * @param int&self::LEVEL_* $logLevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
      * @param array<string, mixed> $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database,
      * @param boolean $force - [optional] if true: log in any case, no matter which settings
@@ -93,8 +93,7 @@ class Log
             self::LEVEL_ERROR => Config::isErrorLoggingEnabled(),
             self::LEVEL_CRITICAL => Config::isCriticalLoggingEnabled(),
             self::LEVEL_ALERT => Config::isAlertLoggingEnabled(),
-            self::LEVEL_EMERGENCY => Config::isEmergencyLoggingEnabled(),
-            default => false,
+            self::LEVEL_EMERGENCY => Config::isEmergencyLoggingEnabled()
         };
 
         if (!$force && !$isLogLevelEnabled) {
@@ -136,8 +135,7 @@ class Log
             self::LEVEL_ERROR => $Logger->error(...),
             self::LEVEL_CRITICAL => $Logger->critical(...),
             self::LEVEL_ALERT => $Logger->alert(...),
-            self::LEVEL_EMERGENCY => $Logger->emergency(...),
-            default => $Logger->error(...),
+            self::LEVEL_EMERGENCY => $Logger->emergency(...)
         };
 
         $loggingMethod($message, $context);
@@ -166,7 +164,7 @@ class Log
      * Writes an Exception to a log file
      *
      * @param Exception|QUI\Exception|Throwable $Exception |QUI\Exception $Exception
-     * @param integer $logLevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
+     * @param int&self::LEVEL_* $logLevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
      * @param array<string, mixed> $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database
      * @param boolean $force - [optional] if true: log in any case, no matter which settings
@@ -189,6 +187,8 @@ class Log
         $message .= 'Line:' . $Exception->getLine() . PHP_EOL;
         $message .= $Exception->getTraceAsString();
 
+        $context['exception'] = $Exception;
+
         self::write($message, $logLevel, $context, $filename, $force);
     }
 
@@ -196,7 +196,7 @@ class Log
      * Writes an Exception to a log file
      *
      * @param Exception|QUI\Exception|Throwable $Exception
-     * @param integer $logLevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
+     * @param int&self::LEVEL_* $logLevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
      * @param array<string, mixed> $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database
      * @param boolean $force - [optional] if true: log in any case, no matter which settings
@@ -225,6 +225,8 @@ class Log
         $message .= 'File: ' . $Exception->getFile() . PHP_EOL;
         $message .= 'Line:' . $Exception->getLine() . PHP_EOL;
         $message .= $Exception->getTraceAsString();
+
+        $context['exception'] = $Exception;
 
         self::write($message, $logLevel, $context, $filename, $force);
     }
