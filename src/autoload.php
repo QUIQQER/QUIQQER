@@ -102,10 +102,6 @@ function exception_handler(\Throwable $Exception): void
         echo 'File: ' . $Exception->getFile() . PHP_EOL;
         echo 'Line:' . $Exception->getLine() . PHP_EOL;
 
-        if ($exceptionCode) {
-            echo 'Code: ' . $exceptionCode . PHP_EOL;
-        }
-
         if (!$isCacheMissException) {
             echo 'Details were written to the error log.' . PHP_EOL;
         }
