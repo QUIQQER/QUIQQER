@@ -77,6 +77,15 @@ function exception_error_handler(int $errorLevel, string $errorMessage, string $
     $loggingMethod($errorMessage, $context);
 
     if ($errorLevel === E_USER_ERROR) {
+        if (php_sapi_name() === 'cli') {
+            fwrite(
+                STDERR,
+                'Error: ' . $errorMessage . PHP_EOL
+                . 'File: ' . $errorFile . PHP_EOL
+                . 'Line: ' . $errorLine . PHP_EOL
+            );
+        }
+
         exit(1);
     }
 
@@ -97,16 +106,17 @@ function exception_handler(\Throwable $Exception): void
     }
 
     if (php_sapi_name() === 'cli') {
-        echo PHP_EOL;
-        echo 'Error: ' . $Exception->getMessage() . PHP_EOL;
-        echo 'File: ' . $Exception->getFile() . PHP_EOL;
-        echo 'Line:' . $Exception->getLine() . PHP_EOL;
+        $message =
+            'Uncaught Exception: ' . $Exception->getMessage() . PHP_EOL
+            . 'File: ' . $Exception->getFile() . PHP_EOL
+            . 'Line: ' . $Exception->getLine() . PHP_EOL;
 
         if (!$isCacheMissException) {
-            echo 'Details were written to the error log.' . PHP_EOL;
+            $message .= 'Further details were written to the error log.' . PHP_EOL;
         }
 
-        return;
+        fwrite(STDERR, $message);
+        exit(1);
     }
 
     if (!headers_sent()) {
