@@ -8,6 +8,7 @@ namespace QUI\System;
 
 use Exception;
 use QUI;
+use QUI\Log\Config;
 use Throwable;
 
 use function defined;
@@ -78,16 +79,25 @@ class Log
         bool | string $filename = false,
         bool $force = false
     ): void {
-        $Logger = QUI\Log\Logger::getLogger();
-        $levels = QUI\Log\Logger::$logLevels;
+        // @todo: Leave this decision to the Log Handler inside Monolog
+        // This is currently not possible as the handlers are all configured with "DEBUG" level
+        // QUIQQER allows different levels to be enabled
+        // Monolog allows just one level which implies this level and everything above (e.g. INFO will also enable ERROR)
+        // While this is still the case, QUIQQER has to pre-filter the log messages
+        $isLogLevelEnabled = match ($logLevel) {
+            self::LEVEL_DEBUG => Config::isDebugLoggingEnabled(),
+            self::LEVEL_DEPRECATED => Config::isDeprecationLoggingEnabled(),
+            self::LEVEL_INFO => Config::isInfoLoggingEnabled(),
+            self::LEVEL_NOTICE => Config::isNoticeLoggingEnabled(),
+            self::LEVEL_WARNING => Config::isWarningLoggingEnabled(),
+            self::LEVEL_ERROR => Config::isErrorLoggingEnabled(),
+            self::LEVEL_CRITICAL => Config::isCriticalLoggingEnabled(),
+            self::LEVEL_ALERT => Config::isAlertLoggingEnabled(),
+            self::LEVEL_EMERGENCY => Config::isEmergencyLoggingEnabled(),
+            default => false,
+        };
 
-        $logLevelName = self::levelToLogName($logLevel);
-
-        if (
-            $force === false
-            && isset($levels[$logLevelName])
-            && (int)$levels[$logLevelName] === 0
-        ) {
+        if (!$force && !$isLogLevelEnabled) {
             return;
         }
 
@@ -116,16 +126,21 @@ class Log
             $context['filename'] = 'deprecated';
         }
 
-        match ($logLevelName) {
-            'debug' => $Logger->debug($message, $context),
-            'info' => $Logger->info($message, $context),
-            'notice' => $Logger->notice($message, $context),
-            'deprecated', 'warning' => $Logger->warning($message, $context),
-            'critical' => $Logger->critical($message, $context),
-            'alert' => $Logger->alert($message, $context),
-            'emergency' => $Logger->emergency($message, $context),
-            default => $Logger->error($message, $context),
+        $Logger = QUI\Log\Logger::getLogger();
+        $loggingMethod = match ($logLevel) {
+            self::LEVEL_DEBUG => $Logger->debug(...),
+            self::LEVEL_DEPRECATED => $Logger->warning(...),
+            self::LEVEL_INFO => $Logger->info(...),
+            self::LEVEL_NOTICE => $Logger->notice(...),
+            self::LEVEL_WARNING => $Logger->warning(...),
+            self::LEVEL_ERROR => $Logger->error(...),
+            self::LEVEL_CRITICAL => $Logger->critical(...),
+            self::LEVEL_ALERT => $Logger->alert(...),
+            self::LEVEL_EMERGENCY => $Logger->emergency(...),
+            default => $Logger->error(...),
         };
+
+        $loggingMethod($message, $context);
     }
 
     /**
