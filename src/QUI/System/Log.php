@@ -212,13 +212,6 @@ class Log
         bool | string $filename = false,
         bool $force = false
     ): void {
-        if (
-            !defined('DEBUG_MODE')
-            || defined('DEBUG_MODE') && DEBUG_MODE === false
-        ) {
-            return;
-        }
-
         $message = $Exception->getCode() . " :: " . PHP_EOL . PHP_EOL;
 
         if (method_exists($Exception, 'getContext')) {
