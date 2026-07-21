@@ -12,7 +12,6 @@ use QUI\Log\Config;
 use Throwable;
 
 use function defined;
-
 use function method_exists;
 
 use const DEBUG_MODE;
@@ -102,24 +101,6 @@ class Log
 
         if (!$force && !$isLogLevelEnabled) {
             return;
-        }
-
-        if (!empty($_SERVER['REQUEST_URI']) && defined('HOST')) {
-            $context['request'] = HOST . $_SERVER['REQUEST_URI'];
-        }
-
-        if (isset($_REQUEST['quiqqerBundle'])) {
-            $context['ajaxBundler'] = $_REQUEST['quiqqerBundle'];
-        }
-
-        if ($clientIP = QUI\Utils\System::getClientIP()) {
-            $context['ip'] = $clientIP;
-        }
-
-        if (defined('QUIQQER_SESSION_STARTED')) {
-            $User = QUI::getUserBySession();
-            $context['userId'] = $User->getUUID();
-            $context['username'] = $User->getUsername();
         }
 
         if ($filename) {
