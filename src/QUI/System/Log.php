@@ -112,7 +112,9 @@ class Log
             $context['ajaxBundler'] = $_REQUEST['quiqqerBundle'];
         }
 
-        $context['ip'] = QUI\Utils\System::getClientIP();
+        if ($clientIP = QUI\Utils\System::getClientIP()) {
+            $context['ip'] = $clientIP;
+        }
 
         if (defined('QUIQQER_SESSION_STARTED')) {
             $User = QUI::getUserBySession();
