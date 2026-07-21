@@ -93,7 +93,9 @@ class Log
             self::LEVEL_ERROR => Config::isErrorLoggingEnabled(),
             self::LEVEL_CRITICAL => Config::isCriticalLoggingEnabled(),
             self::LEVEL_ALERT => Config::isAlertLoggingEnabled(),
-            self::LEVEL_EMERGENCY => Config::isEmergencyLoggingEnabled()
+            // @phpstan-ignore match.alwaysTrue ("default" branch has to be kept for calls with a value that's not from the constants)
+            self::LEVEL_EMERGENCY => Config::isEmergencyLoggingEnabled(),
+            default => false
         };
 
         if (!$force && !$isLogLevelEnabled) {
@@ -135,7 +137,9 @@ class Log
             self::LEVEL_ERROR => $Logger->error(...),
             self::LEVEL_CRITICAL => $Logger->critical(...),
             self::LEVEL_ALERT => $Logger->alert(...),
-            self::LEVEL_EMERGENCY => $Logger->emergency(...)
+            // @phpstan-ignore match.alwaysTrue ("default" branch has to be kept for calls with a value that's not from the constants)
+            self::LEVEL_EMERGENCY => $Logger->emergency(...),
+            default => $Logger->error(...)
         };
 
         $loggingMethod($message, $context);
