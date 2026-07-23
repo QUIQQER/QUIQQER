@@ -8,9 +8,11 @@ namespace QUI\System;
 
 use Exception;
 use QUI;
+use QUI\Log\Config;
 use Throwable;
 
 use function defined;
+use function method_exists;
 
 use const DEBUG_MODE;
 
@@ -45,7 +47,7 @@ class Log
      * Writes with print_r the object into a log file
      *
      * @param object|array<array-key, mixed>|integer|string $object
-     * @param integer $logLevel - Log-Level ( \QUI\System\Log::LEVEL_ERROR ... )
+     * @param int&self::LEVEL_* $logLevel - Log-Level ( \QUI\System\Log::LEVEL_ERROR ... )
      * @param array<string, mixed> $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database
      * @param boolean $force - [optional] if true: log in any case, no matter which settings
@@ -64,7 +66,7 @@ class Log
      * Writes a string to a log file
      *
      * @param string $message - string to write
-     * @param integer $logLevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
+     * @param int&self::LEVEL_* $logLevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
      * @param array<string, mixed> $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database,
      * @param boolean $force - [optional] if true: log in any case, no matter which settings
@@ -78,34 +80,27 @@ class Log
         bool | string $filename = false,
         bool $force = false
     ): void {
-        $Logger = QUI\Log\Logger::getLogger();
-        $levels = QUI\Log\Logger::$logLevels;
+        // @todo: Leave this decision to the Log Handler inside Monolog
+        // This is currently not possible as the handlers are all configured with "DEBUG" level
+        // QUIQQER allows different levels to be enabled
+        // Monolog allows just one level which implies this level and everything above (e.g. INFO will also enable ERROR)
+        // While this is still the case, QUIQQER has to pre-filter the log messages
+        $isLogLevelEnabled = match ($logLevel) {
+            self::LEVEL_DEBUG => Config::isDebugLoggingEnabled(),
+            self::LEVEL_DEPRECATED => Config::isDeprecationLoggingEnabled(),
+            self::LEVEL_INFO => Config::isInfoLoggingEnabled(),
+            self::LEVEL_NOTICE => Config::isNoticeLoggingEnabled(),
+            self::LEVEL_WARNING => Config::isWarningLoggingEnabled(),
+            self::LEVEL_ERROR => Config::isErrorLoggingEnabled(),
+            self::LEVEL_CRITICAL => Config::isCriticalLoggingEnabled(),
+            self::LEVEL_ALERT => Config::isAlertLoggingEnabled(),
+            // @phpstan-ignore match.alwaysTrue ("default" branch has to be kept for calls with a value that's not from the constants)
+            self::LEVEL_EMERGENCY => Config::isEmergencyLoggingEnabled(),
+            default => false
+        };
 
-        $logLevelName = self::levelToLogName($logLevel);
-
-        if (
-            $force === false
-            && isset($levels[$logLevelName])
-            && (int)$levels[$logLevelName] === 0
-        ) {
+        if (!$force && !$isLogLevelEnabled) {
             return;
-        }
-
-        if (!empty($_SERVER['REQUEST_URI']) && defined('HOST')) {
-            $context['request'] = HOST . $_SERVER['REQUEST_URI'];
-        }
-
-        if (isset($_REQUEST['quiqqerBundle'])) {
-            $context['ajaxBundler'] = $_REQUEST['quiqqerBundle'];
-        }
-
-        $context['errorFilename'] = $filename;
-        $context['IP'] = QUI\Utils\System::getClientIP();
-
-        if (defined('QUIQQER_SESSION_STARTED')) {
-            $User = QUI::getUserBySession();
-            $context['userId'] = $User->getUUID();
-            $context['username'] = $User->getUsername();
         }
 
         if ($filename) {
@@ -116,16 +111,22 @@ class Log
             $context['filename'] = 'deprecated';
         }
 
-        match ($logLevelName) {
-            'debug' => $Logger->debug($message, $context),
-            'info' => $Logger->info($message, $context),
-            'notice' => $Logger->notice($message, $context),
-            'deprecated', 'warning' => $Logger->warning($message, $context),
-            'critical' => $Logger->critical($message, $context),
-            'alert' => $Logger->alert($message, $context),
-            'emergency' => $Logger->emergency($message, $context),
-            default => $Logger->error($message, $context),
+        $Logger = QUI\Log\Logger::getLogger();
+        $loggingMethod = match ($logLevel) {
+            self::LEVEL_DEBUG => $Logger->debug(...),
+            self::LEVEL_DEPRECATED => $Logger->warning(...),
+            self::LEVEL_INFO => $Logger->info(...),
+            self::LEVEL_NOTICE => $Logger->notice(...),
+            self::LEVEL_WARNING => $Logger->warning(...),
+            self::LEVEL_ERROR => $Logger->error(...),
+            self::LEVEL_CRITICAL => $Logger->critical(...),
+            self::LEVEL_ALERT => $Logger->alert(...),
+            // @phpstan-ignore match.alwaysTrue ("default" branch has to be kept for calls with a value that's not from the constants)
+            self::LEVEL_EMERGENCY => $Logger->emergency(...),
+            default => $Logger->error(...)
         };
+
+        $loggingMethod($message, $context);
     }
 
     /**
@@ -151,7 +152,7 @@ class Log
      * Writes an Exception to a log file
      *
      * @param Exception|QUI\Exception|Throwable $Exception |QUI\Exception $Exception
-     * @param integer $logLevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
+     * @param int&self::LEVEL_* $logLevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
      * @param array<string, mixed> $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database
      * @param boolean $force - [optional] if true: log in any case, no matter which settings
@@ -163,23 +164,20 @@ class Log
         bool | string $filename = false,
         bool $force = false
     ): void {
-        $message = $Exception->getCode() . " :: \n\n";
+        $context['exception'] = $Exception;
 
         if (method_exists($Exception, 'getContext')) {
-            $message .= print_r($Exception->getContext(), true) . "\n\n";
+            $context['exceptionContext'] = $Exception->getContext();
         }
 
-        $message .= $Exception->getMessage() . "\n";
-        $message .= $Exception->getTraceAsString();
-
-        self::write($message, $logLevel, $context, $filename, $force);
+        self::write($Exception->getMessage(), $logLevel, $context, $filename, $force);
     }
 
     /**
      * Writes an Exception to a log file
      *
      * @param Exception|QUI\Exception|Throwable $Exception
-     * @param integer $logLevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
+     * @param int&self::LEVEL_* $logLevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
      * @param array<string, mixed> $context - context data
      * @param boolean|string $filename - [optional] name of the log eq: messages, database
      * @param boolean $force - [optional] if true: log in any case, no matter which settings
@@ -191,23 +189,7 @@ class Log
         bool | string $filename = false,
         bool $force = false
     ): void {
-        if (
-            !defined('DEBUG_MODE')
-            || defined('DEBUG_MODE') && DEBUG_MODE === false
-        ) {
-            return;
-        }
-
-        $message = $Exception->getCode() . " :: \n\n";
-
-        if (method_exists($Exception, 'getContext')) {
-            $message .= print_r($Exception->getContext(), true) . "\n\n";
-        }
-
-        $message .= $Exception->getMessage() . "\n";
-        $message .= $Exception->getTraceAsString();
-
-        self::write($message, $logLevel, $context, $filename, $force);
+        self::writeException($Exception, $logLevel, $context, $filename, $force);
     }
 
     /**
