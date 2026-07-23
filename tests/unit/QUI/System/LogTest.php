@@ -30,7 +30,7 @@ class LogTest extends TestCase
         $this->Handler = new TestHandler();
         Logger::$Logger = new MonologLogger('test', [$this->Handler]);
 
-        $LogConfig = Logger::getPackage()->getConfig();
+        $LogConfig = \QUI\Log\Config::getPackageConfig();
         self::assertNotNull($LogConfig);
         $this->LogConfig = $LogConfig;
         $this->OriginalLogLevels = $LogConfig->get('log_levels');
