@@ -60,7 +60,7 @@
     "quiqqer/demodata": "^2",
     "quiqqer/diashow": "^2",
     "quiqqer/fontawesome": "^6",
-    "quiqqer/log": "^2.2",
+    "quiqqer/log": "^2.2.1",
     "quiqqer/login-logger": "^2",
     "quiqqer/messages": "^2",
     "quiqqer/meta": "^3",
