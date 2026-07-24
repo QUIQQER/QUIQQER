@@ -33,7 +33,7 @@ class Utils
         ]);
 
         DOM::addTabsToToolbar(
-            XML::getTabsFromXml(OPT_DIR . 'quiqqer/core/user.xml'),
+            self::getDeprecatedTabsFromUserXml(OPT_DIR . 'quiqqer/core/user.xml'),
             $TabBar,
             'quiqqer/core'
         );
@@ -64,7 +64,7 @@ class Utils
             $userXmlFiles[] = $userXml;
 
             DOM::addTabsToToolbar(
-                XML::getTabsFromXml($userXml),
+                self::getDeprecatedTabsFromUserXml($userXml),
                 $TabBar,
                 $entry['name']
             );
@@ -97,13 +97,32 @@ class Utils
 
         foreach ($projects as $project) {
             DOM::addTabsToToolbar(
-                XML::getTabsFromXml(USR_DIR . 'lib/' . $project . '/user.xml'),
+                self::getDeprecatedTabsFromUserXml(USR_DIR . 'lib/' . $project . '/user.xml'),
                 $TabBar,
                 'project.' . $project
             );
         }
 
         return $TabBar;
+    }
+
+    /**
+     * Read legacy user panel tabs and log their deprecated usage.
+     *
+     * @return array<int, \DOMElement>
+     */
+    private static function getDeprecatedTabsFromUserXml(string $file): array
+    {
+        $tabs = XML::getTabsFromXml($file);
+
+        if (!empty($tabs)) {
+            QUI\System\Log::addDeprecated(
+                'Using <window><tab> in user.xml is deprecated. Use <categories>/<category>/<settings> instead.',
+                ['file' => $file]
+            );
+        }
+
+        return $tabs;
     }
 
     /**

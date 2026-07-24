@@ -13,8 +13,6 @@
  * @author www.pcsg.com (Henning Leutz)
  */
 
-error_reporting(E_ALL);
-
 if (!defined('QUIQQER_SYSTEM')) {
     define('QUIQQER_SYSTEM', true);
 }
@@ -311,16 +309,12 @@ try {
             'request' => $_REQUEST
         ]);
     } else {
-        QUI\System\Log::addError($Exception->getMessage());
-        QUI\System\Log::writeException($Exception);
+        \QUI\Log\ErrorHandler::logUncaughtException($Exception);
     }
 
-    // error ??
-    header('HTTP/1.1 503 Service Temporarily Unavailable');
-    header('Status: 503 Service Temporarily Unavailable');
-
-    error_log($Exception->getTraceAsString());
-    error_log($Exception->getMessage());
+    if (!headers_sent()) {
+        http_response_code(503);
+    }
 
     echo file_get_contents(
         dirname(__FILE__) . '/src/templates/error.html'

@@ -1208,6 +1208,12 @@ class User implements QUIUserInterface
                 $groupIds = explode(',', trim($this->groups, ','));
 
                 foreach ($groupIds as $id) {
+                    $id = trim($id);
+
+                    if ($id === '') {
+                        continue;
+                    }
+
                     try {
                         $this->Group[] = QUI::getGroups()->get($id);
                     } catch (QUI\Exception $Exception) {

@@ -26,7 +26,9 @@ use function is_numeric;
 use function is_string;
 use function json_decode;
 use function json_encode;
+use function preg_match;
 use function str_replace;
+use function str_contains;
 use function strtotime;
 use function time;
 use function trim;
@@ -909,34 +911,60 @@ class Edit extends Site
         }
 
         // save main data
-        QUI::getDataBaseConnection()->update(
-            $this->TABLE,
-            [
-                'name' => $name,
-                'title' => trim($this->getAttribute('title')),
-                'short' => $this->getAttribute('short'),
-                'content' => $this->getAttribute('content'),
-                'type' => $this->getAttribute('type'),
-                'layout' => $this->getAttribute('layout'),
-                'nav_hide' => $this->getAttribute('nav_hide') ? 1 : 0,
-                'e_user' => $SaveUser->getUUID(),
-                // ORDER
-                'order_type' => $order_type,
-                'order_field' => $order_field,
-                // images
-                'image_emotion' => $this->getAttribute('image_emotion'),
-                'image_site' => $this->getAttribute('image_site'),
-                // release
-                'release_from' => $release_from,
-                'release_to' => $release_to,
-                // Extra-Feld
-                'extra' => json_encode($siteExtra),
-                'auto_release' => $this->getAttribute('auto_release') ? 1 : 0
-            ],
-            [
-                'id' => $this->getId()
-            ]
-        );
+        try {
+            QUI::getDataBaseConnection()->update(
+                $this->TABLE,
+                [
+                    'name' => $name,
+                    'title' => trim($this->getAttribute('title')),
+                    'short' => $this->getAttribute('short'),
+                    'content' => $this->getAttribute('content'),
+                    'type' => $this->getAttribute('type'),
+                    'layout' => $this->getAttribute('layout'),
+                    'nav_hide' => $this->getAttribute('nav_hide') ? 1 : 0,
+                    'e_user' => $SaveUser->getUUID(),
+                    // ORDER
+                    'order_type' => $order_type,
+                    'order_field' => $order_field,
+                    // images
+                    'image_emotion' => $this->getAttribute('image_emotion'),
+                    'image_site' => $this->getAttribute('image_site'),
+                    // release
+                    'release_from' => $release_from,
+                    'release_to' => $release_to,
+                    // Extra-Feld
+                    'extra' => json_encode($siteExtra),
+                    'auto_release' => $this->getAttribute('auto_release') ? 1 : 0
+                ],
+                [
+                    'id' => $this->getId()
+                ]
+            );
+        } catch (\Doctrine\DBAL\Exception\DriverException $Exception) {
+            $message = $Exception->getMessage();
+            $isUnsupportedContentCharacter = $Exception->getCode() === 1366
+                && str_contains($message, 'Incorrect string value')
+                && preg_match(
+                    '/for column\s+(?:[^\s.]+\.)*[`\'"]?content[`\'"]?\s+at row\b/i',
+                    $message
+                ) === 1;
+
+            if (!$isUnsupportedContentCharacter) {
+                throw $Exception;
+            }
+
+            QUI\System\Log::writeException($Exception);
+
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/core',
+                    'exception.site.content.unsupported.characters'
+                ),
+                0,
+                [],
+                $Exception
+            );
+        }
 
         // save package automatic site data (database.xml)
         $dataList = Utils::getDataListForSite($this);
