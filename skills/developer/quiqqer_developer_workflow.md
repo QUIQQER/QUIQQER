@@ -17,9 +17,17 @@ implementing specialized work:
   assets, and setup integrations.
 - `quiqqer_package_quality_upgrade` for PHIVE tool upgrades, PHPStan 2 and level 8, optional-dependency analysis stubs,
   DBAL/PostgreSQL migration, portable `database.xml`, and PHPUnit integration coverage.
+- `quiqqer_frontend_css_variables` for control and module CSS, binding settings into styling through the three-layer
+  CSS variable pattern, theming, and color usage.
+- `quiqqer_frontend_javascript` for JavaScript in packages: vanilla JavaScript instead of MooTools and element
+  selection through `data-name` attributes.
+- `quiqqer_frontend_accessibility` for every change to HTML templates, markup, or DOM-creating JavaScript:
+  semantic HTML, targeted ARIA usage, keyboard and focus handling.
+- `quiqqer_secure_coding` whenever dynamic values are written into Smarty templates or database queries
+  are built: context-aware XSS prevention and SQL parameter binding.
 
-Use both focused skills when a package modernization also changes an extension declaration. Keep this workflow loaded for
-branch selection, atomic commits, validation, and handover rules.
+Combine focused skills when a task spans several areas, for example when a package modernization also changes an
+extension declaration. Keep this workflow loaded for branch selection, atomic commits, validation, and handover rules.
 
 ## Development Scope
 
@@ -27,6 +35,8 @@ branch selection, atomic commits, validation, and handover rules.
 - Change Core only when the task explicitly targets platform behavior.
 - Read the local repository structure before editing. Prefer existing package patterns over new abstractions.
 - Keep changes small and reviewable. Do not mix unrelated formatting, refactoring, features, and fixes.
+- Use context-appropriate escaping for dynamic template output and parameter binding for database queries.
+  Load `quiqqer_secure_coding` for the full rules.
 
 ## Atomic Commits
 
@@ -118,7 +128,11 @@ Common PHIVE-managed tools:
 - `./tools/phpcbf` for fixable PHPCS violations.
 - `./tools/captainhook` for Git hooks.
 
-Use `phive.xml` to pin tool versions. Core currently shows the expected shape: PHPUnit `^10.5`, PHPStan `2.*`, PHPCS `4.*`, PHPCBF `4.*`, Composer Require Checker, and CaptainHook. Composer scripts should wrap these local tools with `dev:init`, `dev:lint`, `dev:phpunit`, and `test`.
+Use `.phive/phars.xml` to pin tool versions. This is the current PHIVE configuration file. Do not create or
+restore a `phive.xml` in the repository root; that location is outdated and must not be used as a template.
+Core's `.phive/phars.xml` shows the expected shape: PHPUnit `^10.5`, PHPStan `2.*`, PHPCS `4.*`, PHPCBF `4.*`,
+Composer Require Checker, and CaptainHook. Composer scripts should wrap these local tools with `dev:init`,
+`dev:lint`, `dev:phpunit`, and `test`.
 
 If tools are missing in a QUIQQER package, add or restore the package-local tooling when that is in scope. Otherwise report the missing tool explicitly. Do not replace package checks with unrelated global tools.
 
@@ -208,7 +222,9 @@ Commit messages drive release type:
 - `feat` creates a minor release.
 - `!` or `BREAKING CHANGE` creates a major release.
 
-Use dependency version constraints deliberately in `composer.json`. For current packages, require `php` and `quiqqer/core` with explicit constraints and pin local development tools in `phive.xml`.
+Use dependency version constraints deliberately in `composer.json`. For current packages, require `php` and
+`quiqqer/core` with explicit constraints and pin local development tools in `.phive/phars.xml`. Never create a
+root-level `phive.xml`; it is no longer the current PHIVE configuration location.
 
 Repository setup for maintainers can be automated through the stabilization CI component. Use `with-release-workflow` for branch management and semantic-release, `with-php-tooling` for PHP linting/analysis/testing, and `with-quiqqer` for QUIQQER package bootstrapping and update-server integration.
 

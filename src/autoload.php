@@ -8,8 +8,6 @@
  * Autoloader for the QUIQQER CMS
  */
 
-use QUI\System\Log;
-
 require __DIR__ . '/QUI/Autoloader.php';
 require __DIR__ . '/polyfills.php';
 
@@ -38,132 +36,22 @@ spl_autoload_register(static function ($className): bool {
 /**
  * Error Handler
  *
- * @throws ErrorException
- * @author www.pcsg.de (Henning Leutz)
+ * Despite it's name, this does not acutally handle exceptions - it handles errors.
+ * Exceptions are handled by {@see exception_handler()}
+ *
+ * @deprecated Use {@see \QUI\Log\ErrorHandler::handleError()} instead
  */
-function exception_error_handler(int $errno, string $errStr, string $errFile, int $errLine): bool
+function exception_error_handler(int $errorLevel, string $errorMessage, string $errorFile, int $errorLine): bool
 {
-    if ($errStr === 'json_encode(): Invalid UTF-8 sequence in argument') {
-        QUI::getErrorHandler()->setAttribute('show_request', true);
-        QUI::getErrorHandler()->writeErrorToLog($errno, $errStr, $errFile, $errLine);
-        QUI::getErrorHandler()->setAttribute('show_request', false);
-
-        return true;
-    }
-
-    if (
-        str_contains($errStr, 'session_regenerate_id()')
-        || str_contains($errStr, 'session_destroy()')
-        || str_contains($errStr, 'Required parameter $permissions follows optional parameter $path')
-    ) {
-        return true;
-    }
-
-    $l = error_reporting();
-
-    if ($errno === E_DEPRECATED || $errno === E_USER_DEPRECATED) {
-        QUI\System\Log::addDeprecated('Deprecated: ' . $errStr, [
-            'file' => $errFile,
-            'line' => $errLine
-        ]);
-
-        return true;
-    }
-
-
-    if ($l & $errno) {
-        $exit = false;
-
-        switch ($errno) {
-            case E_USER_ERROR:
-                $type = 'Fatal Error';
-                $exit = true;
-                break;
-
-            case E_USER_WARNING:
-            case E_WARNING:
-                $type = 'Warning';
-                break;
-
-            case E_USER_NOTICE:
-            case E_NOTICE:
-            case @E_STRICT:
-                $type = 'Notice';
-                break;
-
-            case @E_RECOVERABLE_ERROR:
-                $type = 'Catchable';
-                break;
-
-            default:
-                $type = 'Unknown Error';
-                $exit = true;
-                break;
-        }
-
-        $errorMessage = $type . ': ' . $errStr;
-        $errorMessage .= PHP_EOL . 'File: ' . $errFile;
-        $errorMessage .= PHP_EOL . 'Line:' . $errLine;
-
-        $exception = new \ErrorException(
-            $errorMessage,
-            $errno,
-            $errno,
-            $errFile,
-            $errLine
-        );
-
-        if ($exit) {
-            exception_handler($exception);
-            exit('Unknown Error in QUIQQER exception_error_handler()');
-        }
-
-        throw $exception;
-    }
-
-    return false;
+    return QUI\Log\ErrorHandler::handleError($errorLevel, $errorMessage, $errorFile, $errorLine);
 }
 
 /**
- * Exception handler
+ * Uncaught exception handler
+ *
+ * @deprecated Use {@see \QUI\Log\ErrorHandler::handleUncaughtException()} instead
  */
 function exception_handler(\Throwable $Exception): void
 {
-    $code = $Exception->getCode();
-
-    if (php_sapi_name() !== 'cli' && !headers_sent() && $code >= 400 && $code < 600) {
-        http_response_code($code);
-        header('Content-Type: application/json');
-    }
-
-    $isCacheMiss = $Exception instanceof QUI\Cache\MissException;
-
-    if (php_sapi_name() === 'cli' && !$isCacheMiss) {
-        Log::writeException($Exception);
-    }
-
-    if (!$isCacheMiss) {
-        Log::addError($Exception->getMessage());
-    }
-
-    if (php_sapi_name() === 'cli') {
-        echo PHP_EOL;
-        echo 'Error: ' . $Exception->getMessage() . PHP_EOL;
-
-        if ($code) {
-            echo 'Code: ' . $code . PHP_EOL;
-        }
-
-        if (!$isCacheMiss) {
-            echo 'Details were written to the error log.' . PHP_EOL;
-        }
-
-        return;
-    }
-
-    echo json_encode([
-        'error' => true,
-        'message' => 'An error occurred. Check the log for more details.',
-        'code' => $code
-    ]);
+    QUI\Log\ErrorHandler::handleUncaughtException($Exception);
 }

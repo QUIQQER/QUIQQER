@@ -261,7 +261,14 @@ class Console
         }
 
         if ($this->getArgument('#system-tool')) {
-            $this->executeSystemTool();
+            if ($this->getArgument('help')) {
+                $this->executeSystemTool();
+            } else {
+                $this->executeWithTerminalProgress(function (): void {
+                    $this->executeSystemTool();
+                });
+            }
+
             exit;
         }
 
@@ -877,6 +884,16 @@ class Console
     }
 
     /**
+     * Execute a console tool while reporting its activity to the terminal.
+     */
+    private function executeWithTerminalProgress(callable $callback): mixed
+    {
+        $Progress = new Console\TerminalProgress();
+
+        return $Progress->run($callback);
+    }
+
+    /**
      * clear the console (all colors)
      */
     public function clear(): void
@@ -1250,7 +1267,9 @@ class Console
             /* @var $Exec Console\Tool */
 
             try {
-                $Exec->execute();
+                $this->executeWithTerminalProgress(static function () use ($Exec): void {
+                    $Exec->execute();
+                });
             } catch (QUI\Exception $Exception) {
                 Log::addAlert($Exception->getMessage(), [
                     'type' => 'cron',
@@ -1295,7 +1314,9 @@ class Console
                     return;
                 }
 
-                $Tool->execute();
+                $this->executeWithTerminalProgress(static function () use ($Tool): void {
+                    $Tool->execute();
+                });
             } catch (QUI\Exception $Exception) {
                 $this->writeLn($Exception->getMessage(), 'red');
                 $this->writeLn();

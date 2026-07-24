@@ -1,36 +1,188 @@
-<!doctype html>
-<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
-<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
-<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
-<!--[if (gte IE 9)|!(IE)]><!--><html lang="en"> <!--<![endif]-->
+<!DOCTYPE html>
+<html lang="en">
 <head>
-
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
     <meta http-equiv="refresh" content="10; URL=/">
 
-    <title>Error - QUIQQER</title>
+    <title>System unavailable - QUIQQER</title>
 
     <style>
-
-        body {
-            text-align: center;
-            padding-top: 40px;
+        :root {
+            color: #202124;
+            font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-synthesis: none;
         }
 
-    </style>
+        * {
+            box-sizing: border-box;
+        }
 
+        html,
+        body {
+            min-height: 100%;
+        }
+
+        body {
+            background:
+                radial-gradient(circle at 15% 15%, rgb(255 102 0 / 12%), transparent 34rem),
+                linear-gradient(145deg, #f8f9fa 0%, #f2f3f5 100%);
+            margin: 0;
+        }
+
+        .page {
+            align-items: center;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding: 2rem;
+        }
+
+        .error-card {
+            background: rgb(255 255 255 / 96%);
+            border: 1px solid rgb(32 33 36 / 9%);
+            border-radius: 1rem;
+            box-shadow:
+                0 1px 2px rgb(32 33 36 / 4%),
+                0 1.5rem 4rem rgb(32 33 36 / 10%);
+            max-width: 42rem;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .content {
+            padding: clamp(2rem, 7vw, 3.75rem);
+            text-align: center;
+        }
+
+        .card-header {
+            align-items: center;
+            background: #fafafa;
+            border-bottom: 1px solid #eceef0;
+            display: flex;
+            justify-content: space-between;
+            padding: 1.25rem 1.5rem;
+        }
+
+        .logo {
+            display: block;
+            height: auto;
+            width: clamp(7.5rem, 20vw, 9rem);
+        }
+
+        .status {
+            align-items: center;
+            color: #b42318;
+            display: inline-flex;
+            font-size: 0.78rem;
+            font-weight: 650;
+            gap: 0.5rem;
+            letter-spacing: 0.04em;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .status::before {
+            background: #d92d20;
+            border-radius: 50%;
+            box-shadow: 0 0 0 0.25rem #fee4e2;
+            content: "";
+            height: 0.5rem;
+            width: 0.5rem;
+        }
+
+        h1 {
+            color: #202124;
+            font-size: clamp(2rem, 6vw, 2.75rem);
+            font-weight: 650;
+            letter-spacing: -0.035em;
+            line-height: 1.12;
+            margin: 0 0 1.25rem;
+        }
+
+        p {
+            color: #5f6368;
+            font-size: 1rem;
+            line-height: 1.7;
+            margin: 0 auto;
+            max-width: 34rem;
+        }
+
+        .hint {
+            border-top: 1px solid #eceef0;
+            color: #73777c;
+            font-size: 0.875rem;
+            margin-top: 2rem;
+            padding-top: 1.25rem;
+        }
+
+        @media (min-width: 90rem) {
+            .page {
+                padding-bottom: 7vh;
+            }
+
+            .error-card {
+                max-width: 48rem;
+            }
+
+            .content {
+                padding: 4rem 4.5rem;
+            }
+
+            h1 {
+                font-size: 3rem;
+            }
+
+            p {
+                font-size: 1.0625rem;
+            }
+        }
+
+        @media (max-width: 36rem) {
+            .page {
+                align-items: flex-start;
+                padding: 1rem;
+            }
+
+            .error-card {
+                margin-top: 8vh;
+            }
+
+            .card-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
 
-    <img src="{$smarty.const.URL_BIN_DIR}quiqqer_logo.png" />
-
-    <p>
-        Temporarily down for Maintenance.
-    </p>
-
-    <p>
-        But soon we'll be up.
-    </p>
+<main class="page">
+    <section class="error-card" aria-labelledby="error-title">
+        <header class="card-header">
+            <img class="logo"
+                 src="/bin/quiqqer_logo.svg"
+                 alt="QUIQQER"
+            >
+            <div class="status">Service interruption</div>
+        </header>
+        <div class="content">
+            <h1 id="error-title">System unavailable</h1>
+            <p>
+                We are currently unable to process your request.
+            </p>
+            <p>
+                Please try again in a few minutes.
+            </p>
+            <p class="hint">
+                This page will refresh automatically.<br>
+                If the problem persists, please contact the system administrator.
+            </p>
+        </div>
+    </section>
+</main>
 
 </body>
 </html>
