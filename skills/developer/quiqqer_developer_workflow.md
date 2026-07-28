@@ -166,11 +166,19 @@ When PHPUnit cannot resolve optional package dependencies, MCP classes, external
 
 ## Git Workflow
 
-- Develop changes on short-lived feature or fix branches.
+- Before changing code, inspect the current branch and worktree. If the developer has not already selected a branch
+  workflow, ask whether to create a new short-lived ticket/feature branch from the matching `next-*.x` branch or work
+  directly in that `next-*.x` branch. Ask in the developer's language and do not create or switch branches before the
+  developer answers.
+- Do not ask again when the developer already named the target branch, explicitly chose direct `next-*.x` work, or the
+  repository is already on the intended task branch.
+- When the developer chooses a feature or fix branch, keep the work isolated on that short-lived branch.
+- When the developer chooses direct `next-*.x` work, stay on that branch and preserve the same atomic commit,
+  validation, and handover requirements.
 - Start feature branches from the `next-*.x` branch for the major version that should receive the change.
 - Use the next unreleased major branch, for example `next-3.x`, for breaking changes when the current major is `2.x`.
 - Prefix branch names with the GitLab ticket number when one exists, for example `42-feat-new-logo`.
-- Open merge requests from the feature branch back into its source `next-*.x` branch.
+- When using a feature branch, open its merge request back into the source `next-*.x` branch.
 - Keep the feature branch private to the people actively working on that change.
 - Make the branch stable and tested before assigning the merge request to a maintainer.
 - Merge the target branch into the feature branch when resolving merge conflicts.
@@ -203,8 +211,8 @@ Long-lived branches:
 
 Feature branches:
 
-- Create feature and fix branches from the matching `next-*.x` branch.
-- Create breaking-change branches from the next unreleased major branch.
+- When the developer selects branch-based work, create feature and fix branches from the matching `next-*.x` branch.
+- When the developer selects a branch for breaking work, create it from the next unreleased major branch.
 - Delete feature branches after they are merged into the target `next-*.x` branch.
 
 Maintainers publish releases through merge requests:

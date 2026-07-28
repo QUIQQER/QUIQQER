@@ -114,13 +114,7 @@ class Autoloader
                 require_once $file;
             }
 
-            /** @phpstan-ignore-next-line */
-            if (class_exists($classname, false)) {
-                return true;
-            }
-
-            /** @phpstan-ignore-next-line */
-            if (interface_exists($classname, false)) {
+            if (self::isClassOrInterfaceLoaded($classname)) {
                 return true;
             }
         }
@@ -138,17 +132,17 @@ class Autoloader
             require_once $file;
         }
 
-        /** @phpstan-ignore-next-line */
-        if (class_exists($classname, false)) {
-            return true;
-        }
-
-        /** @phpstan-ignore-next-line */
-        if (interface_exists($classname, false)) {
+        if (self::isClassOrInterfaceLoaded($classname)) {
             return true;
         }
 
         return false;
+    }
+
+    private static function isClassOrInterfaceLoaded(string $classname): bool
+    {
+        return class_exists($classname, false)
+            || interface_exists($classname, false);
     }
 
     public static function shouldOtherAutoloadersBeUnregistered(): bool
