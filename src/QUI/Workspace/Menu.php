@@ -166,6 +166,28 @@ class Menu
             );
         }
 
+        // Read package menu.xml files before settings.xml files so settings
+        // windows can use package-provided menu parents.
+        $packages = QUI::getPackageManager()->getInstalled();
+
+        foreach ($packages as $package) {
+            try {
+                $Package = QUI::getPackage($package['name']);
+            } catch (QUI\Exception) {
+                continue;
+            }
+
+            if (!$Package->hasPermission()) {
+                continue;
+            }
+
+            $menuXml = $Package->getXMLFilePath(QUI\Package\Package::MENU_XML);
+
+            if ($menuXml) {
+                XML::addXMLFileToMenu($Menu, $menuXml, $User);
+            }
+        }
+
         // read the settings.xml`s
         if (Permission::hasPermission('quiqqer.settings')) {
             $files = [];
@@ -290,27 +312,6 @@ class Menu
 
                     $Parent->appendChild($Item);
                 }
-            }
-        }
-
-        // read the menu.xml`s
-        $packages = QUI::getPackageManager()->getInstalled();
-
-        foreach ($packages as $package) {
-            try {
-                $Package = QUI::getPackage($package['name']);
-            } catch (QUI\Exception) {
-                continue;
-            }
-
-            if (!$Package->hasPermission()) {
-                continue;
-            }
-
-            $menuXml = $Package->getXMLFilePath(QUI\Package\Package::MENU_XML);
-
-            if ($menuXml) {
-                XML::addXMLFileToMenu($Menu, $menuXml, $User);
             }
         }
 
