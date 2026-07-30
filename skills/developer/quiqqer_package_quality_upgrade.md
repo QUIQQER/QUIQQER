@@ -1,6 +1,6 @@
 ---
 name: quiqqer_package_quality_upgrade
-description: Use when modernizing and completing a QUIQQER package in the mandatory sequence quality files, PHPUnit coverage, DBAL migration, and PHPStan level 8, with current PHIVE tools, portable database.xml schemas, CI stubs for optional dependencies, package metadata, licensing, README documentation, and required visual assets.
+description: Use when modernizing and completing a QUIQQER package in the mandatory sequence quality files, PHPUnit coverage, DBAL migration, and PHPStan 2 at level 8, with current PHIVE tools, portable database.xml schemas, CI stubs for optional dependencies, package metadata, licensing, README documentation, and required visual assets.
 category: developer
 ---
 
