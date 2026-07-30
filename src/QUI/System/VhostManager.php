@@ -16,7 +16,12 @@ use function array_unique;
 use function explode;
 use function file_exists;
 use function file_put_contents;
+use function in_array;
+use function is_array;
+use function is_string;
+use function parse_url;
 use function rtrim;
+use function strtolower;
 use function str_replace;
 use function trim;
 
@@ -30,6 +35,8 @@ use function trim;
  */
 class VhostManager
 {
+    public const PATH_LANGUAGES_CONFIG_KEY = 'path_langs';
+
     protected ?Config $Config = null;
 
     /**
@@ -91,8 +98,13 @@ class VhostManager
         $Config = $this->getConfig();
         $list = $this->getList();
 
-        // check lang entries
+        // Normalize path language entries without assigning newly added
+        // project languages automatically.
         foreach ($list as $host => $data) {
+            if ((int)$host) {
+                continue;
+            }
+
             if (!isset($data['project'])) {
                 continue;
             }
@@ -101,33 +113,11 @@ class VhostManager
                 continue;
             }
 
-            if (!isset($data['template'])) {
-                continue;
-            }
-
-            try {
-                $Project = QUI::getProject($data['project']);
-                $languages = $Project->getAttribute('langs');
-            } catch (Exception $Exception) {
-                QUI::getMessagesHandler()->addError($Exception->getMessage());
-                continue;
-            }
-
-            foreach ($languages as $lang) {
-                if (!empty($data[$lang])) {
-                    continue;
-                }
-
-                // repair language entry
-                $Config->setValue(
-                    $host,
-                    $lang,
-                    $this->getHostByProject(
-                        $data['project'],
-                        $lang
-                    )
-                );
-            }
+            $Config->setValue(
+                $host,
+                self::PATH_LANGUAGES_CONFIG_KEY,
+                implode(',', self::parsePathLanguages($data[self::PATH_LANGUAGES_CONFIG_KEY] ?? ''))
+            );
         }
 
         $Config->save();
@@ -185,6 +175,222 @@ class VhostManager
     }
 
     /**
+     * Return the canonical VHost route for a project language.
+     *
+     * Root languages are hosted at the VHost root. Path languages are hosted
+     * below /<language>/. Legacy language-to-host assignments remain readable
+     * as a fallback for existing installations.
+     *
+     * @return array{
+     *     host: string,
+     *     httpshost: string,
+     *     path: string,
+     *     project: string,
+     *     lang: string
+     * }|null
+     *
+     * @throws Exception
+     */
+    public function getProjectLanguageRoute(string $projectName, string $projectLang): ?array
+    {
+        return self::resolveProjectLanguageRoute(
+            $this->getList(),
+            $projectName,
+            $projectLang
+        );
+    }
+
+    /**
+     * Resolve a canonical project language route from VHost configuration.
+     *
+     * @param array<string|int, array<string, mixed>> $config
+     *
+     * @return array{
+     *     host: string,
+     *     httpshost: string,
+     *     path: string,
+     *     project: string,
+     *     lang: string
+     * }|null
+     */
+    public static function resolveProjectLanguageRoute(
+        array $config,
+        string $projectName,
+        string $projectLang
+    ): ?array {
+        $projectLang = strtolower(trim($projectLang));
+
+        if ($projectName === '' || $projectLang === '') {
+            return null;
+        }
+
+        // A root language route always takes precedence.
+        foreach ($config as $host => $data) {
+            if (
+                !is_string($host)
+                || ($data['project'] ?? null) !== $projectName
+                || ($data['lang'] ?? null) !== $projectLang
+            ) {
+                continue;
+            }
+
+            return self::createLanguageRoute($host, $data, $projectName, $projectLang);
+        }
+
+        // A path language is owned by exactly one VHost.
+        foreach ($config as $host => $data) {
+            if (
+                !is_string($host)
+                || ($data['project'] ?? null) !== $projectName
+                || !in_array(
+                    $projectLang,
+                    self::parsePathLanguages($data[self::PATH_LANGUAGES_CONFIG_KEY] ?? ''),
+                    true
+                )
+            ) {
+                continue;
+            }
+
+            return self::createLanguageRoute(
+                $host,
+                $data,
+                $projectName,
+                $projectLang,
+                $projectLang
+            );
+        }
+
+        // Backward compatibility for the former per-language host fields.
+        foreach ($config as $data) {
+            if (
+                ($data['project'] ?? null) !== $projectName
+                || empty($data[$projectLang])
+                || !is_string($data[$projectLang])
+            ) {
+                continue;
+            }
+
+            $legacyRoute = self::parseLegacyLanguageRoute($data[$projectLang]);
+
+            if ($legacyRoute === null) {
+                continue;
+            }
+
+            $targetData = [];
+
+            if (isset($config[$legacyRoute['host']])) {
+                $targetData = $config[$legacyRoute['host']];
+            }
+
+            return self::createLanguageRoute(
+                $legacyRoute['host'],
+                $targetData,
+                $projectName,
+                $projectLang,
+                $legacyRoute['path']
+            );
+        }
+
+        return null;
+    }
+
+    /**
+     * Parse the comma-separated path language configuration.
+     *
+     * @return array<int, string>
+     */
+    public static function parsePathLanguages(mixed $languages): array
+    {
+        if (is_string($languages)) {
+            $languages = explode(',', $languages);
+        }
+
+        if (!is_array($languages)) {
+            return [];
+        }
+
+        $result = [];
+
+        foreach ($languages as $language) {
+            if (!is_string($language)) {
+                continue;
+            }
+
+            $language = strtolower(trim($language));
+
+            if (strlen($language) !== 2 || in_array($language, $result, true)) {
+                continue;
+            }
+
+            $result[] = $language;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     *
+     * @return array{
+     *     host: string,
+     *     httpshost: string,
+     *     path: string,
+     *     project: string,
+     *     lang: string
+     * }
+     */
+    private static function createLanguageRoute(
+        string $host,
+        array $data,
+        string $projectName,
+        string $projectLang,
+        string $path = ''
+    ): array {
+        $httpsHost = '';
+
+        if (!empty($data['httpshost']) && is_string($data['httpshost'])) {
+            $httpsHost = trim($data['httpshost'], '/');
+        }
+
+        return [
+            'host' => trim($host, '/'),
+            'httpshost' => $httpsHost,
+            'path' => trim($path, '/'),
+            'project' => $projectName,
+            'lang' => $projectLang
+        ];
+    }
+
+    /**
+     * @return array{host: string, path: string}|null
+     */
+    private static function parseLegacyLanguageRoute(string $route): ?array
+    {
+        $route = trim($route);
+
+        if ($route === '') {
+            return null;
+        }
+
+        if (!str_contains($route, '://')) {
+            $route = '//' . $route;
+        }
+
+        $parts = parse_url($route);
+
+        if ($parts === false || empty($parts['host'])) {
+            return null;
+        }
+
+        return [
+            'host' => $parts['host'],
+            'path' => isset($parts['path'])
+                ? trim($parts['path'], '/')
+                : ''
+        ];
+    }
+
+    /**
      * Add or edit a vhost entry
      *
      * @param string $vhost - host name (eq: www.something.com)
@@ -220,55 +426,105 @@ class VhostManager
             ]);
         }
 
-        // host already exist - quiqqer/core#752
+        if (empty($result['lang']) || !is_string($result['lang'])) {
+            throw new Exception([
+                'quiqqer/core',
+                'exception.vhost.missing.data.lang'
+            ]);
+        }
+
+        $Project = QUI::getProject($result['project']);
+        $projectLanguages = $Project->getLanguages();
+        $rootLanguage = strtolower(trim($result['lang']));
+        $pathLanguages = self::parsePathLanguages(
+            $result[self::PATH_LANGUAGES_CONFIG_KEY] ?? ''
+        );
+
+        if (!in_array($rootLanguage, $projectLanguages, true)) {
+            throw new Exception([
+                'quiqqer/core',
+                'exception.vhost.invalid.project.language',
+                ['language' => $rootLanguage]
+            ]);
+        }
+
+        $pathLanguages = array_values(
+            array_filter(
+                $pathLanguages,
+                static fn(string $language): bool => $language !== $rootLanguage
+            )
+        );
+
+        foreach ($pathLanguages as $pathLanguage) {
+            if (in_array($pathLanguage, $projectLanguages, true)) {
+                continue;
+            }
+
+            throw new Exception([
+                'quiqqer/core',
+                'exception.vhost.invalid.project.language',
+                ['language' => $pathLanguage]
+            ]);
+        }
+
+        $result['lang'] = $rootLanguage;
+        $result[self::PATH_LANGUAGES_CONFIG_KEY] = implode(',', $pathLanguages);
+
+        // A project language can have only one canonical VHost route.
         $config = $Config->toArray();
+        $claimedLanguages = array_merge([$rootLanguage], $pathLanguages);
 
         foreach ($config as $h => $d) {
             if ($h === $vhost) {
                 continue;
             }
 
-            if ($d['project'] !== $result['project']) {
+            if (!is_array($d) || ($d['project'] ?? null) !== $result['project']) {
                 continue;
             }
 
-            if ($d['lang'] !== $result['lang']) {
-                continue;
-            }
-
-            throw new Exception([
-                'quiqqer/core',
-                'exception.vhost.same.host.already.exists'
-            ]);
-        }
-
-
-        // lang hosts
-        $Project = QUI::getProject($result['project']);
-        $projectLangs = $Project->getAttribute('langs');
-        $lang = $result['lang'];
-
-        foreach ($projectLangs as $projectLang) {
-            if ($projectLang === $lang) {
-                continue;
-            }
-
-            if (!isset($result[$projectLang])) {
-                $result[$projectLang] = '';
-            }
-
-            if (!empty($result[$projectLang])) {
-                continue;
-            }
-
-            $result[$projectLang] = $this->getHostByProject(
-                $result['project'],
-                $projectLang
+            $otherLanguages = self::parsePathLanguages(
+                $d[self::PATH_LANGUAGES_CONFIG_KEY] ?? ''
             );
+
+            if (!empty($d['lang']) && is_string($d['lang'])) {
+                $otherLanguages[] = strtolower(trim($d['lang']));
+            }
+
+            foreach ($claimedLanguages as $claimedLanguage) {
+                if (!in_array($claimedLanguage, $otherLanguages, true)) {
+                    continue;
+                }
+
+                throw new Exception([
+                    'quiqqer/core',
+                    'exception.vhost.language.already.assigned',
+                    [
+                        'language' => $claimedLanguage,
+                        'host' => (string)$h
+                    ]
+                ]);
+            }
         }
 
-        if (empty($result[$lang])) {
-            $result[$lang] = $vhost;
+        // Preserve legacy language host assignments while the installation is
+        // migrated to root and path language ownership.
+        $existing = $Config->getSection($vhost);
+
+        if (
+            is_array($existing)
+            && ($existing['project'] ?? null) === $result['project']
+        ) {
+            foreach ($projectLanguages as $projectLanguage) {
+                if (
+                    array_key_exists($projectLanguage, $result)
+                    || empty($existing[$projectLanguage])
+                ) {
+                    continue;
+                }
+
+                $result[$projectLanguage] = $existing[$projectLanguage];
+            }
         }
 
         $Config->setSection($vhost, $result);
@@ -313,6 +569,32 @@ class VhostManager
     public function getVhost(string $vhost): bool|array
     {
         return $this->getConfig()->getSection($vhost);
+    }
+
+    /**
+     * Return the Root- and Path-languages owned by a VHost.
+     *
+     * @return array<int, string>
+     *
+     * @throws Exception
+     */
+    public function getLanguagesByHost(string $vhost): array
+    {
+        $data = $this->getVhost($vhost);
+
+        if (!is_array($data)) {
+            return [];
+        }
+
+        $languages = self::parsePathLanguages(
+            $data[self::PATH_LANGUAGES_CONFIG_KEY] ?? ''
+        );
+
+        if (!empty($data['lang']) && is_string($data['lang'])) {
+            array_unshift($languages, strtolower(trim($data['lang'])));
+        }
+
+        return array_values(array_unique($languages));
     }
 
     /**

@@ -534,6 +534,23 @@
             <en>
                 <![CDATA[If you have multiple languages in the project, you can determine the hosts of another language here.]]></en>
         </locale>
+        <locale name="system.vhost.label.rootLanguage">
+            <en><![CDATA[Root language]]></en>
+        </locale>
+        <locale name="system.vhost.table.pathLanguages">
+            <en><![CDATA[Path languages]]></en>
+        </locale>
+        <locale name="system.vhost.table.pathLanguages.description">
+            <en><![CDATA[
+                Additional languages are automatically served on this host below /LANGUAGE/.
+            ]]></en>
+        </locale>
+        <locale name="system.vhost.language.assigned">
+            <en><![CDATA[Already assigned to [host][path]]]></en>
+        </locale>
+        <locale name="system.vhost.language.assigned.option">
+            <en><![CDATA[[language] – already assigned to [host]]]></en>
+        </locale>
         <locale name="system.vhost.label.domain">
             <en><![CDATA[Domain]]></en>
         </locale>
@@ -597,6 +614,15 @@
         </locale>
         <locale name="system.vhosts.edit.sheet.btn.save">
             <en><![CDATA[Save changes]]></en>
+        </locale>
+        <locale name="system.vhosts.edit.window.title">
+            <en><![CDATA[Edit [vhost]]]></en>
+        </locale>
+        <locale name="system.vhosts.edit.window.btn.save">
+            <en><![CDATA[Save VHost]]></en>
+        </locale>
+        <locale name="system.vhosts.edit.window.btn.cancel">
+            <en><![CDATA[Cancel]]></en>
         </locale>
         <locale name="permissions.panel.title">
             <en><![CDATA[Permissions-Manager]]></en>

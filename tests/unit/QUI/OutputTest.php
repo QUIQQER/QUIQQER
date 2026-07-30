@@ -3,9 +3,78 @@
 namespace QUI;
 
 use PHPUnit\Framework\TestCase;
+use QUI\Projects\Project;
+use ReflectionMethod;
 
 class OutputTest extends TestCase
 {
+    public function testPathLanguageIsPrefixedToSiteUrl(): void
+    {
+        $Project = $this->createMock(Project::class);
+        $Project->method('getVHostPath')->willReturn('es');
+        $Project->method('hasVHost')->willReturn(true);
+
+        $prependProjectLanguagePath = new ReflectionMethod(
+            Output::class,
+            'prependProjectLanguagePath'
+        );
+
+        self::assertSame(
+            'es/example',
+            $prependProjectLanguagePath->invoke(
+                new Output(),
+                'example',
+                $Project,
+                ['www.example.eu' => []]
+            )
+        );
+    }
+
+    public function testRootLanguageDoesNotPrefixSiteUrl(): void
+    {
+        $Project = $this->createMock(Project::class);
+        $Project->method('getVHostPath')->willReturn('');
+        $Project->method('hasVHost')->willReturn(true);
+
+        $prependProjectLanguagePath = new ReflectionMethod(
+            Output::class,
+            'prependProjectLanguagePath'
+        );
+
+        self::assertSame(
+            'example',
+            $prependProjectLanguagePath->invoke(
+                new Output(),
+                'example',
+                $Project,
+                ['www.example.eu' => []]
+            )
+        );
+    }
+
+    public function testUnassignedLanguageKeepsLegacyLanguagePrefix(): void
+    {
+        $Project = $this->createMock(Project::class);
+        $Project->method('getVHostPath')->willReturn('');
+        $Project->method('hasVHost')->willReturn(false);
+        $Project->method('getLang')->willReturn('es');
+
+        $prependProjectLanguagePath = new ReflectionMethod(
+            Output::class,
+            'prependProjectLanguagePath'
+        );
+
+        self::assertSame(
+            'es/example',
+            $prependProjectLanguagePath->invoke(
+                new Output(),
+                'example',
+                $Project,
+                ['www.example.eu' => []]
+            )
+        );
+    }
+
     public function testParseWithAbsoluteUrlsConvertsImageSrcsetUrlsWithoutPicture(): void
     {
         $Output = new Output();

@@ -10,7 +10,6 @@ use QUI;
 use QUI\Exception;
 
 use function ltrim;
-use function rtrim;
 use function strtolower;
 use function trim;
 
@@ -72,10 +71,29 @@ class Canonical
             return $canonical;
         }
 
-        $httpsHost = rtrim($Project->getVHost(true, true), '/');
         $canonical = ltrim($canonical, '/');
+        $installationPath = trim(URL_DIR, '/');
+        $languagePath = $Project->getVHostPath();
 
-        return $httpsHost . '/' . ltrim(URL_DIR . $canonical, '/');
+        if (
+            $installationPath !== ''
+            && (
+                $canonical === $installationPath
+                || str_starts_with($canonical, $installationPath . '/')
+            )
+        ) {
+            $canonical = ltrim(substr($canonical, strlen($installationPath)), '/');
+        }
+
+        if ($languagePath !== '') {
+            if ($canonical === $languagePath) {
+                $canonical = '';
+            } elseif (str_starts_with($canonical, $languagePath . '/')) {
+                $canonical = ltrim(substr($canonical, strlen($languagePath)), '/');
+            }
+        }
+
+        return $Project->getVHostBaseUrl() . $canonical;
     }
 
     /**

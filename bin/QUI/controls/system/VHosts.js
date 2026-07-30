@@ -8,12 +8,11 @@ define('controls/system/VHosts', [
     'qui/controls/windows/Prompt',
     'qui/controls/windows/Confirm',
     'controls/grid/Grid',
-    'controls/system/VHost',
-    'controls/system/VHostServerCode',
+    'controls/system/vhost/EditWindow',
     'Ajax',
     'Locale'
 
-], function (QUI, QUIPanel, QUIPrompt, QUIConfirm, Grid, Vhost, VhostServerCode, Ajax, Locale) {
+], function (QUI, QUIPanel, QUIPrompt, QUIConfirm, Grid, VHostEditWindow, Ajax, Locale) {
     "use strict";
 
     const lg = 'quiqqer/core';
@@ -106,10 +105,15 @@ define('controls/system/VHosts', [
                     dataType: 'string',
                     width: 200
                 }, {
-                    header: Locale.get(lg, 'language'),
+                    header: Locale.get(lg, 'system.vhost.label.rootLanguage'),
                     dataIndex: 'lang',
                     dataType: 'string',
-                    width: 200
+                    width: 120
+                }, {
+                    header: Locale.get(lg, 'system.vhost.table.pathLanguages'),
+                    dataIndex: 'path_langs',
+                    dataType: 'string',
+                    width: 150
                 }, {
                     header: Locale.get(lg, 'template'),
                     dataIndex: 'template',
@@ -172,6 +176,7 @@ define('controls/system/VHosts', [
                             host: host,
                             project: entry.project,
                             lang: entry.lang,
+                            path_langs: entry.path_langs || '',
                             template: entry.template
                         });
                     }
@@ -246,10 +251,6 @@ define('controls/system/VHosts', [
         },
 
         /**
-         * window & sheet methods
-         */
-
-        /**
          * opens a add vhost window
          */
         openAddVhost: function () {
@@ -272,7 +273,7 @@ define('controls/system/VHosts', [
         },
 
         /**
-         * Open the edit sheet
+         * Open the VHost edit window.
          *
          * @param {String} [vhost] - (optional), host name
          */
@@ -289,52 +290,14 @@ define('controls/system/VHosts', [
                 return;
             }
 
-            const Sheet = this.createSheet({
-                title: Locale.get(lg, 'system.vhosts.edit.sheet.title', {
-                    vhost: vhost
-                }),
-                icon: 'fa fa-location-arrow',
+            new VHostEditWindow({
+                vhost: vhost,
                 events: {
-                    onOpen: (Sheet) => {
-                        this.Loader.show();
-
-                        let Host = null;
-
-                        // only numbers -> server error codes
-                        if (/^\d+$/.test(vhost)) {
-                            Host = new VhostServerCode({
-                                host: vhost
-                            }).inject(Sheet.getContent());
-
-                        } else {
-                            Host = new Vhost({
-                                host: vhost
-                            }).inject(Sheet.getContent());
-                        }
-
-
-                        Sheet.addButton({
-                            text: Locale.get(lg, 'system.vhosts.edit.sheet.btn.save'),
-                            textimage: 'fa fa-save',
-                            events: {
-                                onClick: function () {
-                                    Host.save(function () {
-                                        Sheet.hide();
-                                    });
-                                }
-                            }
-                        });
-
-                        this.Loader.hide();
-                    },
-
-                    onClose: () => {
+                    onSubmit: () => {
                         this.load();
                     }
                 }
-            });
-
-            Sheet.show();
+            }).open();
         },
 
         /**

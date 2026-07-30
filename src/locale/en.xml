@@ -1591,6 +1591,23 @@ You can also ignore the console user permissions check with '--ignore-file-permi
             <en><![CDATA[
                 If you have multiple languages in the project, you can determine the hosts of another language here.]]></en>
         </locale>
+        <locale name="system.vhost.label.rootLanguage">
+            <en><![CDATA[Root language]]></en>
+        </locale>
+        <locale name="system.vhost.table.pathLanguages">
+            <en><![CDATA[Path languages]]></en>
+        </locale>
+        <locale name="system.vhost.table.pathLanguages.description">
+            <en><![CDATA[
+                Additional languages are automatically served on this host below /LANGUAGE/.
+            ]]></en>
+        </locale>
+        <locale name="system.vhost.language.assigned">
+            <en><![CDATA[Already assigned to [host][path]]]></en>
+        </locale>
+        <locale name="system.vhost.language.assigned.option">
+            <en><![CDATA[[language] – already assigned to [host]]]></en>
+        </locale>
         <locale name="system.vhost.label.domain">
             <en><![CDATA[Domain]]></en>
         </locale>
@@ -1672,6 +1689,15 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         </locale>
         <locale name="system.vhosts.edit.sheet.btn.save">
             <en><![CDATA[Save changes]]></en>
+        </locale>
+        <locale name="system.vhosts.edit.window.title">
+            <en><![CDATA[Edit [vhost]]]></en>
+        </locale>
+        <locale name="system.vhosts.edit.window.btn.save">
+            <en><![CDATA[Save VHost]]></en>
+        </locale>
+        <locale name="system.vhosts.edit.window.btn.cancel">
+            <en><![CDATA[Cancel]]></en>
         </locale>
         <locale name="permissions.panel.title">
             <en><![CDATA[Permissions-Manager]]></en>
@@ -5607,6 +5633,12 @@ After logging in you will be prompted to set a new password.
         </locale>
         <locale name="exception.vhost.same.host.already.exists">
             <en><![CDATA[Missing data: language]]></en>
+        </locale>
+        <locale name="exception.vhost.invalid.project.language">
+            <en><![CDATA[The language [language] does not belong to the selected project.]]></en>
+        </locale>
+        <locale name="exception.vhost.language.already.assigned">
+            <en><![CDATA[The language [language] is already assigned to VHost [host].]]></en>
         </locale>
         <locale name="console.tool.passwordreset.header">
             <en><![CDATA[Password reset]]></en>
