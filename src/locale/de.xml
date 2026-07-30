@@ -158,6 +158,9 @@
         <locale name="permission.quiqqer.core.mcp.updateAllowed">
             <de><![CDATA[Darf QUIQQER-Updates per MCP ausführen]]></de>
         </locale>
+        <locale name="permission.quiqqer.core.mcp.manageVhosts">
+            <de><![CDATA[Darf VHosts per MCP erstellen, bearbeiten und löschen]]></de>
+        </locale>
         <locale name="permission.quiqqer.projects._header">
             <de><![CDATA[Projekte]]></de>
         </locale>
@@ -4534,6 +4537,9 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         </locale>
         <locale name="exception.project.lang.not.two.signs">
             <de><![CDATA[Die Projektsprache ist ungültig.]]></de>
+        </locale>
+        <locale name="exception.project.lang.not.available">
+            <de><![CDATA[Die Sprache [lang] ist in diesem QUIQQER-System nicht installiert.]]></de>
         </locale>
         <locale name="exception.project.has.no.langs">
             <de><![CDATA[Das Projekt besitzt keine gültigen sprachen.]]></de>

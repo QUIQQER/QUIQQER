@@ -36,7 +36,9 @@ use function is_string;
 use function json_decode;
 use function key;
 use function preg_replace;
+use function preg_match;
 use function str_replace;
+use function strtolower;
 use function strlen;
 use function trim;
 use function unlink;
@@ -78,6 +80,52 @@ class Manager
     public static function cleanup(): void
     {
         self::$projects = [];
+    }
+
+    /**
+     * Add an installed language to a project and execute the required setup.
+     *
+     * @throws QUI\Exception
+     * @throws Exception
+     */
+    public static function addLanguage(string $project, string $language): Project
+    {
+        $Project = self::getProject($project);
+
+        Permission::checkProjectPermission(
+            'quiqqer.projects.setconfig',
+            $Project
+        );
+
+        $language = strtolower(trim($language));
+
+        if (!preg_match('/^[a-z]{2}$/', $language)) {
+            throw new QUI\Exception([
+                'quiqqer/core',
+                'exception.project.lang.not.two.signs'
+            ]);
+        }
+
+        if (!in_array($language, QUI::availableLanguages(), true)) {
+            throw new QUI\Exception([
+                'quiqqer/core',
+                'exception.project.lang.not.available',
+                ['lang' => $language]
+            ]);
+        }
+
+        $languages = $Project->getLanguages();
+
+        if (!in_array($language, $languages, true)) {
+            $languages[] = $language;
+
+            self::setConfigForProject(
+                $Project->getName(),
+                ['langs' => implode(',', $languages)]
+            );
+        }
+
+        return self::getProject($Project->getName(), $language);
     }
 
     /**
