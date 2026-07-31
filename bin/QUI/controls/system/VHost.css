@@ -1,24 +1,33 @@
 @CHARSET "UTF-8";
 
 .control-system-vhost {
+    box-sizing: border-box;
     height: 100%;
     overflow: auto;
     padding: 20px;
     width: 100%;
 }
 
-.control-system-vhost label {
-    float: left;
-    line-height: 30px;
-    width: 20%;
+.control-system-vhost-path-languages {
+    margin-top: 20px;
 }
 
-.control-system-vhost select,
-.control-system-vhost input {
+.control-system-vhost-path-languages-description {
+    padding: 0 !important;
+}
+
+.control-system-vhost-path-languages-description .field-container-item-desc {
+    box-sizing: border-box;
+}
+
+.control-system-vhost .control-system-vhost-path-language {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+}
+
+.control-system-vhost .control-system-vhost-path-language input {
+    flex: 0 0 auto;
     margin: 0;
-    width: 200px;
-}
-
-.control-system-vhost input[disabled="disabled"] {
-    padding: 10px 0;
+    width: auto;
 }

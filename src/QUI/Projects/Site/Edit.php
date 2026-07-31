@@ -1327,6 +1327,10 @@ class Edit extends Site
                 continue;
             }
 
+            if ($key == 'order_field') {
+                continue;
+            }
+
             $Site->setAttribute($key, $value);
         }
 
