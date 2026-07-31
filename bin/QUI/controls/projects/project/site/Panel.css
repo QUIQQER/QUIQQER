@@ -81,6 +81,23 @@
     font-weight: bold !important;
 }
 
+.qui-site-panel-deleted {
+    margin: 2rem auto;
+    max-width: 48rem;
+    padding: 1.5rem;
+}
+
+.qui-site-panel-deleted-title {
+    align-items: center;
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0;
+}
+
+.qui-site-panel-deleted p:last-child {
+    margin-bottom: 0;
+}
+
 .qui-panel-dataRestore {
     margin: 0 auto;
     max-width: 600px;

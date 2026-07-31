@@ -4239,6 +4239,9 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         <locale name="exception.site.not.found">
             <de><![CDATA[Diese Seite konnte nicht gefunden werden.]]></de>
         </locale>
+        <locale name="exception.site.deleted.cannot.edit">
+            <de><![CDATA[Diese Seite wurde gelöscht und kann nicht mehr bearbeitet werden.]]></de>
+        </locale>
         <locale name="exception.permissions.edit">
             <de><![CDATA[Sie haben keine Rechte um diese Seite zu bearbeiten]]></de>
         </locale>
@@ -4438,6 +4441,12 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         </locale>
         <locale name="projects.project.site.panel.information.header">
             <de><![CDATA[Daten von Seite: #[id]]]></de>
+        </locale>
+        <locale name="projects.project.site.panel.deleted.title">
+            <de><![CDATA[Diese Seite wurde gelöscht]]></de>
+        </locale>
+        <locale name="projects.project.site.panel.deleted.message">
+            <de><![CDATA[Die Seite befindet sich im Papierkorb und kann nicht mehr bearbeitet werden. Stellen Sie sie im Papierkorb wieder her, um sie zu bearbeiten.]]></de>
         </locale>
         <locale name="projects.project.site.panel.information.nameUrl">
             <de><![CDATA[URL]]></de>

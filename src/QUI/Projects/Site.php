@@ -1771,6 +1771,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             ['deleted' => 0],
             ['id' => $this->getId()]
         );
+
+        $this->setAttribute('deleted', 0);
     }
 
     /**
