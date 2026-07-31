@@ -4107,6 +4107,9 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="exception.site.not.found">
             <en><![CDATA[This Site could not be found.]]></en>
         </locale>
+        <locale name="exception.site.deleted.cannot.edit">
+            <en><![CDATA[This page has been deleted and can no longer be edited.]]></en>
+        </locale>
         <locale name="exception.permissions.edit">
             <en><![CDATA[You have no rights to edit this page.]]></en>
         </locale>
@@ -4297,6 +4300,12 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         </locale>
         <locale name="projects.project.site.panel.information.header">
             <en><![CDATA[Data from site: #[id]]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.deleted.title">
+            <en><![CDATA[This page has been deleted]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.deleted.message">
+            <en><![CDATA[The page is in the trash and can no longer be edited. Restore it from the trash to edit it again.]]></en>
         </locale>
         <locale name="projects.project.site.panel.information.nameUrl">
             <en><![CDATA[URL]]></en>

@@ -464,4 +464,75 @@ class ProjectSiteDbalTest extends ProjectIntegrationTestCase
 
         $this->assertSame(0, (int)$exists);
     }
+
+    public function testDeletedSiteCannotBeEditedUntilRestored(): void
+    {
+        $Project = self::getTestProject();
+        $Root = $Project->firstChild()->getEdit();
+        $siteTitle = 'PHPUnit Deleted Site';
+
+        $siteId = ProjectTestHelper::runAsSystemUser(static function () use ($Root, $siteTitle): int {
+            $siteId = $Root->createChild([
+                'name' => 'phpunit-deleted-site-' . uniqid(),
+                'title' => $siteTitle
+            ]);
+
+            (new Site\Edit($Root->getProject(), $siteId))->delete();
+
+            return $siteId;
+        });
+
+        $DeletedSite = new Site\Edit($Project, $siteId);
+        $DeletedSite->setAttribute('title', 'Changed deleted site');
+        $DeletedSite->setAttribute('deleted', 0);
+
+        $this->assertDeletedSiteMutationRejected(
+            static fn() => $DeletedSite->save()
+        );
+        $this->assertDeletedSiteMutationRejected(
+            static fn() => $DeletedSite->activate()
+        );
+        $this->assertDeletedSiteMutationRejected(
+            static fn() => $DeletedSite->createChild(['name' => 'not-created'])
+        );
+
+        $ReloadedSite = new Site\Edit($Project, $siteId);
+        $this->assertSame($siteTitle, $ReloadedSite->getAttribute('title'));
+        $this->assertSame(1, (int)$ReloadedSite->getAttribute('deleted'));
+
+        ProjectTestHelper::runAsSystemUser(static function () use ($Project, $Root, $siteId): void {
+            $Project->getTrash()->restore($Project, [$siteId], $Root->getId());
+
+            $RestoredSite = new Site\Edit($Project, $siteId);
+            $RestoredSite->setAttribute('title', 'Restored site');
+            $RestoredSite->save();
+        });
+
+        $RestoredSite = new Site\Edit($Project, $siteId);
+        $this->assertSame(0, (int)$RestoredSite->getAttribute('deleted'));
+        $this->assertSame('Restored site', $RestoredSite->getAttribute('title'));
+
+        ProjectTestHelper::runAsSystemUser(static function () use ($RestoredSite): void {
+            $RestoredSite->delete();
+            $RestoredSite->refresh();
+            $RestoredSite->destroy();
+        });
+    }
+
+    /**
+     * @param callable(): void $Mutation
+     */
+    private function assertDeletedSiteMutationRejected(callable $Mutation): void
+    {
+        try {
+            ProjectTestHelper::runAsSystemUser($Mutation);
+            $this->fail('Deleted site mutation was not rejected.');
+        } catch (\QUI\Exception $Exception) {
+            $this->assertSame(706, $Exception->getCode());
+            $this->assertSame(
+                QUI::getLocale()->get('quiqqer/core', 'exception.site.deleted.cannot.edit'),
+                $Exception->getMessage()
+            );
+        }
+    }
 }

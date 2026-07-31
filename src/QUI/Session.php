@@ -334,7 +334,8 @@ class Session
                 'db_id_col' => 'session_id',
                 'db_data_col' => 'session_value',
                 'db_time_col' => 'session_time',
-                'db_lifetime_col' => 'session_lifetime'
+                'db_lifetime_col' => 'session_lifetime',
+                'lock_mode' => PdoSessionHandler::LOCK_ADVISORY
             ]);
         }
 
