@@ -113,6 +113,17 @@ class Project implements \Stringable
     private Site|QUI\Projects\Site\Edit|null $firstchild = null;
 
     /**
+     * @var array{
+     *     host: string,
+     *     httpshost: string,
+     *     path: string,
+     *     project: string,
+     *     lang: string
+     * }|false|null
+     */
+    private array|false|null $vhostRoute = null;
+
+    /**
      * Constructor
      *
      * @param string $name - Name of the Project
@@ -146,6 +157,7 @@ class Project implements \Stringable
      */
     public function refresh(): void
     {
+        $this->vhostRoute = null;
         $config = Manager::getConfig()->toArray();
 
         $name = $this->name;
@@ -535,35 +547,7 @@ class Project implements \Stringable
 
     public function hasVHost(): bool
     {
-        $Hosts = QUI::getRewrite()->getVHosts();
-
-        foreach ($Hosts as $url => $params) {
-            if ($url == 404 || $url == 301) {
-                continue;
-            }
-
-            if (empty($params['project'])) {
-                continue;
-            }
-
-            if (empty($params['lang'])) {
-                continue;
-            }
-
-            $project = $params['project'];
-
-            if ($project != $this->getName()) {
-                continue;
-            }
-
-            if (empty($params[$this->getLang()])) {
-                return false;
-            }
-
-            return true;
-        }
-
-        return false;
+        return $this->getVHostRoute() !== null;
     }
 
     //region cache
@@ -573,8 +557,10 @@ class Project implements \Stringable
      */
     public function getHost(): string
     {
-        if (isset($this->config['vhost'])) {
-            return $this->config['vhost'];
+        $route = $this->getVHostRoute();
+
+        if ($route !== null) {
+            return $route['host'];
         }
 
         if (isset($this->config['host'])) {
@@ -780,31 +766,20 @@ class Project implements \Stringable
             $ssl = true;
         }
 
-        $Hosts = QUI::getRewrite()->getVHosts();
+        $route = $this->getVHostRoute();
 
-        foreach ($Hosts as $url => $params) {
-            if ($url == 404 || $url == 301) {
-                continue;
+        if ($route !== null) {
+            $host = $route['host'];
+
+            if ($ssl && $route['httpshost'] !== '') {
+                $host = $route['httpshost'];
             }
 
-            if (!isset($params['project'])) {
-                continue;
+            if (!$with_protocol) {
+                return $host;
             }
 
-            if (
-                $params['project'] == $this->getAttribute('name')
-                && $params['lang'] == $this->getAttribute('lang')
-            ) {
-                if ($ssl && !empty($params['httpshost'])) {
-                    return $with_protocol ? 'https://' . $params['httpshost'] : $params['httpshost'];
-                }
-
-                if (QUI::conf("webserver", "forceHttps")) {
-                    return $with_protocol ? 'https://' . $url : $url;
-                }
-
-                return $with_protocol ? 'https://' . $url : $url;
-            }
+            return 'https://' . $host;
         }
 
         try {
@@ -819,6 +794,76 @@ class Project implements \Stringable
         }
 
         return HOST . '/' . QUI\Rewrite::URL_PROJECT_CHARACTER . $this->getName() . '/';
+    }
+
+    /**
+     * Return the canonical VHost route for this project language.
+     *
+     * @return array{
+     *     host: string,
+     *     httpshost: string,
+     *     path: string,
+     *     project: string,
+     *     lang: string
+     * }|null
+     */
+    public function getVHostRoute(): ?array
+    {
+        if (is_array($this->vhostRoute)) {
+            return $this->vhostRoute;
+        }
+
+        if ($this->vhostRoute === false) {
+            return null;
+        }
+
+        try {
+            $VHosts = new QUI\System\VhostManager();
+            $route = $VHosts->getProjectLanguageRoute(
+                $this->getName(),
+                $this->getLang()
+            );
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeDebugException($Exception);
+            $route = null;
+        }
+
+        if ($route === null) {
+            $this->vhostRoute = false;
+            return null;
+        }
+
+        $this->vhostRoute = $route;
+        return $this->vhostRoute;
+    }
+
+    /**
+     * Return the language path below the VHost root without surrounding slashes.
+     */
+    public function getVHostPath(): string
+    {
+        return $this->getVHostRoute()['path'] ?? '';
+    }
+
+    /**
+     * Return the absolute base URL for this project language, including the
+     * installation directory and an optional language path.
+     */
+    public function getVHostBaseUrl(bool $ssl = true): string
+    {
+        $host = rtrim((string)$this->getVHost(true, $ssl), '/');
+        $path = trim(URL_DIR, '/');
+        $languagePath = $this->getVHostPath();
+
+        if ($languagePath !== '') {
+            $path = trim($path . '/' . $languagePath, '/');
+        }
+
+        if ($path === '') {
+            return $host . '/';
+        }
+
+        return $host . '/' . $path . '/';
     }
 
     /**

@@ -158,6 +158,9 @@
         <locale name="permission.quiqqer.core.mcp.updateAllowed">
             <de><![CDATA[Darf QUIQQER-Updates per MCP ausführen]]></de>
         </locale>
+        <locale name="permission.quiqqer.core.mcp.manageVhosts">
+            <de><![CDATA[Darf VHosts per MCP erstellen, bearbeiten und löschen]]></de>
+        </locale>
         <locale name="permission.quiqqer.projects._header">
             <de><![CDATA[Projekte]]></de>
         </locale>
@@ -1606,6 +1609,23 @@
             Wenn Sie mehrere Sprachen im Projekt haben, können Sie hier die Hosts der weiteren Sprache bestimmen.
             ]]></de>
         </locale>
+        <locale name="system.vhost.label.rootLanguage">
+            <de><![CDATA[Root-Sprache]]></de>
+        </locale>
+        <locale name="system.vhost.table.pathLanguages">
+            <de><![CDATA[Path-Sprachen]]></de>
+        </locale>
+        <locale name="system.vhost.table.pathLanguages.description">
+            <de><![CDATA[
+                Zusätzliche Sprachen werden auf diesem Host automatisch unter /SPRACHE/ bereitgestellt.
+            ]]></de>
+        </locale>
+        <locale name="system.vhost.language.assigned">
+            <de><![CDATA[Bereits [host][path] zugeordnet]]></de>
+        </locale>
+        <locale name="system.vhost.language.assigned.option">
+            <de><![CDATA[[language] – bereits [host] zugeordnet]]></de>
+        </locale>
         <locale name="system.vhost.label.domain">
             <de><![CDATA[Domain]]></de>
         </locale>
@@ -1692,6 +1712,15 @@
         </locale>
         <locale name="system.vhosts.edit.sheet.btn.save">
             <de><![CDATA[Änderungen speichern]]></de>
+        </locale>
+        <locale name="system.vhosts.edit.window.title">
+            <de><![CDATA[[vhost] bearbeiten]]></de>
+        </locale>
+        <locale name="system.vhosts.edit.window.btn.save">
+            <de><![CDATA[VHost speichern]]></de>
+        </locale>
+        <locale name="system.vhosts.edit.window.btn.cancel">
+            <de><![CDATA[Abbrechen]]></de>
         </locale>
         <locale name="permissions.panel.title">
             <de><![CDATA[Zugriffsrechtemanager]]></de>
@@ -4509,6 +4538,9 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         <locale name="exception.project.lang.not.two.signs">
             <de><![CDATA[Die Projektsprache ist ungültig.]]></de>
         </locale>
+        <locale name="exception.project.lang.not.available">
+            <de><![CDATA[Die Sprache [lang] ist in diesem QUIQQER-System nicht installiert.]]></de>
+        </locale>
         <locale name="exception.project.has.no.langs">
             <de><![CDATA[Das Projekt besitzt keine gültigen sprachen.]]></de>
         </locale>
@@ -5784,6 +5816,12 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
         </locale>
         <locale name="exception.vhost.same.host.already.exists">
             <de><![CDATA[A VHost with the same host data already exists.]]></de>
+        </locale>
+        <locale name="exception.vhost.invalid.project.language">
+            <de><![CDATA[Die Sprache [language] gehört nicht zum ausgewählten Projekt.]]></de>
+        </locale>
+        <locale name="exception.vhost.language.already.assigned">
+            <de><![CDATA[Die Sprache [language] ist bereits dem VHost [host] zugeordnet.]]></de>
         </locale>
         <locale name="console.tool.passwordreset.header">
             <de><![CDATA[Password zurücksetzen]]></de>

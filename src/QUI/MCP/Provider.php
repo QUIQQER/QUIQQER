@@ -9,6 +9,7 @@ namespace QUI\MCP;
 use Mcp\Server\Builder;
 use QUI\AI\MCP\ProviderInterface;
 use QUI\AI\MCP\Server;
+use QUI\MCP\Project\AddLanguage;
 use QUI\MCP\Project\GetCustomCSS;
 use QUI\MCP\Project\GetCustomJavaScript;
 use QUI\MCP\Project\ListProjects;
@@ -43,6 +44,11 @@ use QUI\MCP\Project\Sites\SortSites;
 use QUI\MCP\Project\Sites\UpdateSite;
 use QUI\MCP\System\ClearCache;
 use QUI\MCP\System\Update;
+use QUI\MCP\VHost\CreateVHost;
+use QUI\MCP\VHost\DeleteVHost;
+use QUI\MCP\VHost\GetVHost;
+use QUI\MCP\VHost\ListVHosts;
+use QUI\MCP\VHost\UpdateVHost;
 use QUI\Permissions\Permission;
 use Throwable;
 
@@ -60,6 +66,7 @@ class Provider implements ProviderInterface
     {
         $this->tools = [
             new ListProjects(),
+            new AddLanguage(),
             new GetCustomCSS(),
             new SetCustomCSS(),
             new GetCustomJavaScript(),
@@ -81,6 +88,11 @@ class Provider implements ProviderInterface
             new DeleteSite(),
             new ClearCache(),
             new Update(),
+            new ListVHosts(),
+            new GetVHost(),
+            new CreateVHost(),
+            new UpdateVHost(),
+            new DeleteVHost(),
             new GetMedia(),
             new ListMedia(),
             new SearchMedia(),

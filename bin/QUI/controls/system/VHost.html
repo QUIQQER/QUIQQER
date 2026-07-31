@@ -1,0 +1,118 @@
+<form data-name="form">
+    <table class="data-table data-table-flexbox">
+        <thead>
+        <tr>
+            <th>
+                {{titleHostData}}
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <label class="field-container" for="{{idPrefix}}-domain">
+                    <span class="field-container-item">
+                        {{labelDomain}}
+                    </span>
+                    <input class="field-container-field"
+                           id="{{idPrefix}}-domain"
+                           data-name="domain"
+                           type="text"
+                           disabled
+                    />
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container" for="{{idPrefix}}-project">
+                    <span class="field-container-item">
+                        {{labelProject}}
+                    </span>
+                    <select class="field-container-field"
+                            id="{{idPrefix}}-project"
+                            data-name="project"
+                            required
+                    ></select>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container" for="{{idPrefix}}-root-language">
+                    <span class="field-container-item">
+                        {{labelRootLanguage}}
+                    </span>
+                    <select class="field-container-field"
+                            id="{{idPrefix}}-root-language"
+                            data-name="root-language"
+                            required
+                    ></select>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container" for="{{idPrefix}}-template">
+                    <span class="field-container-item">
+                        {{labelTemplate}}
+                    </span>
+                    <select class="field-container-field"
+                            id="{{idPrefix}}-template"
+                            data-name="template"
+                    ></select>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container" for="{{idPrefix}}-error">
+                    <span class="field-container-item">
+                        {{labelErrorSite}}
+                    </span>
+                    <input class="field-container-field project-site"
+                           id="{{idPrefix}}-error"
+                           data-name="error"
+                    />
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container" for="{{idPrefix}}-https-host">
+                    <span class="field-container-item">
+                        {{labelHttpsHost}}
+                    </span>
+                    <input class="field-container-field"
+                           id="{{idPrefix}}-https-host"
+                           data-name="https-host"
+                    />
+                </label>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="data-table data-table-flexbox control-system-vhost-path-languages"
+           data-name="path-languages-table"
+           hidden
+    >
+        <thead>
+        <tr>
+            <th>
+                {{titlePathLanguages}}
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="control-system-vhost-path-languages-description">
+                <div class="field-container-item-desc">
+                    {{descriptionPathLanguages}}
+                </div>
+            </td>
+        </tr>
+        </tbody>
+        <tbody data-name="path-languages"></tbody>
+    </table>
+</form>

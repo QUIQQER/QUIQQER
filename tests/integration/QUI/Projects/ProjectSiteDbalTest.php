@@ -336,6 +336,49 @@ class ProjectSiteDbalTest extends ProjectIntegrationTestCase
         $this->assertNotContains($linkParentId, array_map('intval', $UnlinkedSource->getParentIds()));
     }
 
+    public function testCopiedSiteIsAppendedToManualChildOrder(): void
+    {
+        $Project = self::getTestProject();
+        $Root = $Project->firstChild()->getEdit();
+
+        [$parentId, $firstId, $secondId, $copyId] = ProjectTestHelper::runAsSystemUser(
+            static function () use ($Root): array {
+                $parentId = $Root->createChild([
+                    'name' => 'phpunit-copy-order-parent-' . uniqid(),
+                    'title' => 'PHPUnit Copy Order Parent'
+                ]);
+                $Parent = new Site\Edit($Root->getProject(), $parentId);
+                $Parent->setAttribute('order_type', 'manuell');
+                $Parent->save();
+
+                $firstId = $Parent->createChild([
+                    'name' => 'phpunit-copy-order-first-' . uniqid(),
+                    'title' => 'PHPUnit Copy Order First'
+                ]);
+                $secondId = $Parent->createChild([
+                    'name' => 'phpunit-copy-order-second-' . uniqid(),
+                    'title' => 'PHPUnit Copy Order Second'
+                ]);
+                $copyId = (new Site\Edit($Root->getProject(), $firstId))->copy($parentId)->getId();
+
+                return [$parentId, $firstId, $secondId, $copyId];
+            }
+        );
+
+        $Parent = new Site\Edit($Project, $parentId);
+        $First = new Site\Edit($Project, $firstId);
+        $Second = new Site\Edit($Project, $secondId);
+        $Copy = new Site\Edit($Project, $copyId);
+
+        $this->assertSame(1, (int)$First->getAttribute('order_field'));
+        $this->assertSame(2, (int)$Second->getAttribute('order_field'));
+        $this->assertSame(3, (int)$Copy->getAttribute('order_field'));
+        $this->assertSame(
+            [$firstId, $secondId, $copyId],
+            $Parent->getChildrenIds(['active' => '0&1'])
+        );
+    }
+
     public function testSiteLifecycleCanEditActivateMoveDeleteAndDestroy(): void
     {
         $Project = self::getTestProject();

@@ -14,6 +14,7 @@ use QUI\Projects\Media\Utils as MediaUtils;
 use QUI\Projects\Project;
 use QUI\Projects\Site;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 use function array_flip;
@@ -26,6 +27,7 @@ use function defined;
 use function explode;
 use function file_exists;
 use function http_response_code;
+use function http_build_query;
 use function implode;
 use function in_array;
 use function is_array;
@@ -241,7 +243,6 @@ class Rewrite
             return;
         }
 
-        $httpHost = $_SERVER['HTTP_HOST'] ?? null;
         $vhostData = $this->getCurrentVhostData();
         $defaultSuffix = self::getDefaultSuffix();
 
@@ -257,17 +258,6 @@ class Rewrite
         ) {
             $this->showErrorHeader(404, URL_DIR);
         }
-
-        // wenn sprach ohne /
-        // dann / dran
-        // sprach ist ein ordner keine seite
-        if (!empty($_REQUEST['_url']) && mb_strlen($_REQUEST['_url']) == 2) {
-            QUI::getEvents()->fireEvent('request', [$this, $_REQUEST['_url'] . '/']);
-
-            // 301 weiterleiten
-            $this->showErrorHeader(301, URL_DIR . $_REQUEST['_url'] . '/');
-        }
-
 
         // Kategorien aufruf
         // Aus url/kat/ wird url/kat.html
@@ -367,33 +357,24 @@ class Rewrite
                 }
 
                 $_url = $_new_url;
-
-                // Wenns ein Hosteintrag mit der Sprache gibt, dahin leiten
-                // und es nicht der https host ist
-                // @todo https host nicht über den port prüfen, zu ungenau
-                if (
-                    isset($vhostData[$this->lang])
-                    && !empty($vhostData[$this->lang])
-                    && (int)$_SERVER['SERVER_PORT'] !== 443
-                    && QUI::conf('globals', 'httpshost') != 'https://' . $httpHost
-                ) {
-                    $url = implode('/', $_url);
-                    $url = $vhostData[$this->lang] . URL_DIR . $url;
-                    $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
-                    $url = 'http://' . $this->project_prefix . $url;
-
-                    QUI::getEvents()->fireEvent('request', [$this, $_REQUEST['_url']]);
-
-                    if ($url !== $this->getRequestUri()) {
-                        $this->showErrorHeader(301, $url);
-                    }
-                }
             }
 
             $_REQUEST['_url'] = implode('/', $_url);
 
             if (!count($_url)) {
                 unset($_REQUEST['_url']);
+            }
+
+            if (
+                $language
+                && !empty($vhostData['project'])
+                && is_string($vhostData['project'])
+            ) {
+                $this->redirectProjectLanguageRoute(
+                    $vhostData['project'],
+                    $language,
+                    implode('/', $_url)
+                );
             }
         }
 
@@ -558,29 +539,6 @@ class Rewrite
                 }
 
                 $this->site = $this->first_child;
-            }
-
-            // Sprachen Host finden
-            // und es nicht der https host ist
-            if (
-                isset($vhostData[$this->lang])
-                && !empty($vhostData[$this->lang])
-                && $httpHost != $vhostData[$this->lang]
-                && (int)$_SERVER['SERVER_PORT'] !== 443
-                && QUI::conf('globals', 'httpshost') != 'https://' . $httpHost
-                && !$this->isWildcardHost()
-            ) {
-                $url = $this->site->getUrlRewritten();
-
-                if (!str_contains($url, 'http:')) {
-                    $url = $vhostData[$this->lang] . URL_DIR . $url;
-                    $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
-                    $url = 'http://' . $this->project_prefix . $url;
-                }
-
-                if ($url !== $this->getRequestUri()) {
-                    $this->showErrorHeader(301, $url);
-                }
             }
 
             // REQUEST setzen
@@ -823,6 +781,136 @@ class Rewrite
         $Redirect->setStatusCode(Response::HTTP_MOVED_PERMANENTLY);
         $Redirect->send();
         exit;
+    }
+
+    /**
+     * Redirect an explicitly requested language to its canonical Root- or
+     * Path-language route.
+     */
+    private function redirectProjectLanguageRoute(
+        string $projectName,
+        string $language,
+        string $remainingPath
+    ): void {
+        try {
+            $VHosts = new System\VhostManager();
+            $route = $VHosts->getProjectLanguageRoute($projectName, $language);
+        } catch (QUI\Exception $Exception) {
+            System\Log::writeDebugException($Exception);
+            return;
+        }
+
+        $Request = QUI::getRequest();
+
+        if ($route === null) {
+            if ($remainingPath === '' && !str_ends_with($Request->getPathInfo(), '/')) {
+                $target = $Request->getSchemeAndHttpHost()
+                    . rtrim(URL_DIR, '/')
+                    . '/'
+                    . $language
+                    . '/';
+                $target = self::appendPublicQueryString($target, $Request);
+
+                $Redirect = new RedirectResponse($target);
+                $Redirect->setStatusCode(Response::HTTP_MOVED_PERMANENTLY);
+                $Redirect->send();
+                exit;
+            }
+
+            return;
+        }
+
+        $targetScheme = $Request->getScheme();
+
+        if (QUI::conf('webserver', 'forceHttps')) {
+            $targetScheme = 'https';
+        }
+
+        $targetHost = $route['host'];
+
+        if ($targetScheme === 'https' && $route['httpshost'] !== '') {
+            $targetHost = $route['httpshost'];
+        }
+
+        $requestHost = $Request->getHost();
+
+        if (
+            str_contains($targetHost, '*')
+            && fnmatch($targetHost, $requestHost, FNM_CASEFOLD)
+        ) {
+            $targetHost = $Request->getHttpHost();
+        } elseif ($requestHost === $targetHost) {
+            $targetHost = $Request->getHttpHost();
+        }
+
+        $targetPath = self::buildProjectLanguageRoutePath(
+            $route['path'],
+            $remainingPath
+        );
+
+        $target = $targetScheme . '://' . $targetHost . $targetPath;
+        $target = self::appendPublicQueryString($target, $Request);
+
+        $current = $Request->getSchemeAndHttpHost() . $Request->getRequestUri();
+
+        if ($target === $current) {
+            return;
+        }
+
+        QUI::getEvents()->fireEvent('request', [$this, $_REQUEST['_url'] ?? '']);
+
+        $Redirect = new RedirectResponse($target);
+        $Redirect->setStatusCode(Response::HTTP_MOVED_PERMANENTLY);
+        $Redirect->send();
+        exit;
+    }
+
+    /**
+     * Build the request path for a canonical project language route.
+     */
+    private static function buildProjectLanguageRoutePath(
+        string $languagePath,
+        string $remainingPath
+    ): string {
+        $pathParts = [];
+        $installationPath = trim(URL_DIR, '/');
+
+        if ($installationPath !== '') {
+            $pathParts[] = $installationPath;
+        }
+
+        if ($languagePath !== '') {
+            $pathParts[] = trim($languagePath, '/');
+        }
+
+        $remainingPath = trim($remainingPath, '/');
+
+        if ($remainingPath !== '') {
+            $pathParts[] = $remainingPath;
+        }
+
+        $targetPath = '/' . implode('/', $pathParts);
+
+        if ($targetPath !== '/' && $remainingPath === '') {
+            $targetPath .= '/';
+        }
+
+        return $targetPath;
+    }
+
+    /**
+     * Append public query parameters without QUIQQER's internal rewrite URL.
+     */
+    private static function appendPublicQueryString(string $target, Request $Request): string
+    {
+        $query = $Request->query->all();
+        unset($query['_url']);
+
+        if (empty($query)) {
+            return $target;
+        }
+
+        return $target . '?' . http_build_query($query, '', '&', PHP_QUERY_RFC3986);
     }
 
     private function getTargetHttpHost(string $httpHost, string $currentHost, string $targetHost): string
