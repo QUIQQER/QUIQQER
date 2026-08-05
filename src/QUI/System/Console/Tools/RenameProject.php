@@ -87,7 +87,7 @@ class RenameProject extends Tool
      * Prints a line to the output while using a locale variable of the 'quiqqer/core' group
      */
     protected function writeLnLocale(
-        false|string $locale,
+        string $locale,
         bool|string $color = false,
         bool|string $background = false
     ): void {

@@ -157,7 +157,7 @@ class Handler
 
     public function toJSON(): string
     {
-        return json_encode($this->toArray());
+        return (string)json_encode($this->toArray());
     }
 
     /**

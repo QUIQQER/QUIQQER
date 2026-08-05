@@ -209,7 +209,7 @@ class Permission
         }
 
         try {
-            return self::checkPermission('quiqqer.admin', $User);
+            return (bool)self::checkPermission('quiqqer.admin', $User);
         } catch (QUI\Exception) {
         }
 
@@ -493,7 +493,7 @@ class Permission
                         throw $Exception;
                     }
 
-                    return self::checkPermission(
+                    return (bool)self::checkPermission(
                         'quiqqer.projects.sites.view',
                         $User
                     );
@@ -513,7 +513,7 @@ class Permission
                         throw $Exception;
                     }
 
-                    return self::checkPermission(
+                    return (bool)self::checkPermission(
                         'quiqqer.projects.sites.edit',
                         $User
                     );
@@ -533,7 +533,7 @@ class Permission
                         throw $Exception;
                     }
 
-                    return self::checkPermission(
+                    return (bool)self::checkPermission(
                         'quiqqer.projects.sites.del',
                         $User
                     );
@@ -553,7 +553,7 @@ class Permission
                         throw $Exception;
                     }
 
-                    return self::checkPermission(
+                    return (bool)self::checkPermission(
                         'quiqqer.projects.sites.new',
                         $User
                     );
@@ -907,7 +907,7 @@ class Permission
                         $User
                     );
                 } catch (Exception) {
-                    return self::checkPermission(
+                    return (bool)self::checkPermission(
                         'quiqqer.projects.edit',
                         $User
                     );
@@ -922,7 +922,7 @@ class Permission
                         $User
                     );
                 } catch (Exception) {
-                    return self::checkPermission(
+                    return (bool)self::checkPermission(
                         'quiqqer.projects.destroy',
                         $User
                     );
@@ -937,7 +937,7 @@ class Permission
                         $User
                     );
                 } catch (Exception) {
-                    return self::checkPermission(
+                    return (bool)self::checkPermission(
                         'quiqqer.projects.setconfig',
                         $User
                     );
@@ -952,7 +952,7 @@ class Permission
                         $User
                     );
                 } catch (Exception) {
-                    return self::checkPermission(
+                    return (bool)self::checkPermission(
                         'quiqqer.projects.editCustomCSS',
                         $User
                     );
@@ -967,7 +967,7 @@ class Permission
                         $User
                     );
                 } catch (Exception) {
-                    return self::checkPermission(
+                    return (bool)self::checkPermission(
                         'quiqqer.projects.editCustomJS',
                         $User
                     );

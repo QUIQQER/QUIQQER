@@ -2350,7 +2350,11 @@ class Manager extends QUI\QDOM
         // \QUI\System\Log::write( $type );
         $data = $this->getSiteXMLDataByType($type);
 
-        if (isset($data['locale'])) {
+        if (
+            isset($data['locale'])
+            && is_string($data['locale']['group'])
+            && is_string($data['locale']['var'])
+        ) {
             return QUI::getLocale()->get(
                 $data['locale']['group'],
                 $data['locale']['var']

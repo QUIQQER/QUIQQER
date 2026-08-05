@@ -41,9 +41,9 @@ if (!function_exists('glob_recursive')) {
      */
     function glob_recursive($pattern, int $flags = 0): array
     {
-        $files = glob($pattern, $flags);
+        $files = glob($pattern, $flags) ?: [];
 
-        foreach (glob(dirname($pattern) . '/*', GLOB_ONLYDIR | GLOB_NOSORT) as $dir) {
+        foreach (glob(dirname($pattern) . '/*', GLOB_ONLYDIR | GLOB_NOSORT) ?: [] as $dir) {
             $files = array_merge(
                 $files,
                 glob_recursive($dir . '/' . basename($pattern), $flags)

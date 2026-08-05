@@ -1132,7 +1132,7 @@ class Utils
      */
     public static function generateMD5(Image | File $File): string
     {
-        return md5_file($File->getFullPath());
+        return (string)md5_file($File->getFullPath());
     }
 
     /**
@@ -1140,7 +1140,7 @@ class Utils
      */
     public static function generateSHA1(Image | File $File): string
     {
-        return sha1_file($File->getFullPath());
+        return (string)sha1_file($File->getFullPath());
     }
 
     /**

@@ -501,7 +501,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         unset($att['project']);
 
-        return json_encode($att);
+        return (string)json_encode($att);
     }
 
     /**

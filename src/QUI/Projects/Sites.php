@@ -187,7 +187,7 @@ class Sites
         $Toolbar = self::getTabs($Site);
         $Tab = $Toolbar->getElementByName($tabname);
 
-        if ($Tab === false) {
+        if (!$Tab instanceof Tab) {
             throw new Exception('The tab could not be found.');
         }
 

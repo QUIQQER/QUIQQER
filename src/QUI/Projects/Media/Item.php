@@ -1319,14 +1319,14 @@ abstract class Item extends QUI\QDOM
     protected function saveMultilingualField(array | string $value): string
     {
         if (is_array($value)) {
-            return json_encode($value);
+            return (string)json_encode($value);
         }
 
         $value = json_decode($value, true);
         $current = QUI::getLocale()->getCurrent();
 
         if (!$value) {
-            return json_encode([
+            return (string)json_encode([
                 $current => $value
             ]);
         }
@@ -1339,7 +1339,7 @@ abstract class Item extends QUI\QDOM
             }
         }
 
-        return json_encode($result);
+        return (string)json_encode($result);
     }
 
     /**

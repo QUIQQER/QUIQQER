@@ -1232,7 +1232,7 @@ class Rewrite
      */
     public function getRequestUri(): string
     {
-        return strtok(QUI::getRequest()->getUri(), '?');
+        return (string)strtok(QUI::getRequest()->getUri(), '?');
     }
 
     /**

@@ -330,7 +330,7 @@ class Project implements \Stringable
      */
     public function getLang(): string
     {
-        return $this->lang;
+        return (string)$this->lang;
     }
 
     /**
@@ -442,7 +442,7 @@ class Project implements \Stringable
 
     public function toJSON(): string
     {
-        return json_encode($this->toArray());
+        return (string)json_encode($this->toArray());
     }
 
     /**
@@ -1736,7 +1736,7 @@ class Project implements \Stringable
     public function getCustomCSS(): string
     {
         if (file_exists(USR_DIR . $this->getName() . '/bin/custom.css')) {
-            return file_get_contents(USR_DIR . $this->getName() . '/bin/custom.css');
+            return (string)file_get_contents(USR_DIR . $this->getName() . '/bin/custom.css');
         }
 
         return '';
@@ -1777,7 +1777,7 @@ class Project implements \Stringable
     public function getCustomJavaScript(): string
     {
         if (file_exists(USR_DIR . $this->getName() . '/bin/custom.js')) {
-            return file_get_contents(USR_DIR . $this->getName() . '/bin/custom.js');
+            return (string)file_get_contents(USR_DIR . $this->getName() . '/bin/custom.js');
         }
 
         return '';

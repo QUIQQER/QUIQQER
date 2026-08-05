@@ -1339,7 +1339,7 @@ class User implements QUIUserInterface
 
     public function getUsername(): string
     {
-        return $this->name ?: false;
+        return (string)($this->name ?: false);
     }
 
     public function isCompany(): bool

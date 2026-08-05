@@ -12,7 +12,6 @@ use QUI\Projects\Project;
 use QUI\Utils\Security\Orthos;
 
 use function class_exists;
-use function class_implements;
 use function explode;
 use function file_exists;
 use function file_get_contents;
@@ -316,14 +315,13 @@ class Template extends QUI\QDOM
             $engine = $this->checkSmarty4Engine($engine);
         }
 
-        /* @var $Engine EngineInterface */
         $Engine = new $this->engines[$engine]($admin);
-        $implements = class_implements($Engine);
 
-        if (!isset($implements[EngineInterface::class])) {
-            QUI\System\Log::addError(
-                'The Template Engine implements not from QUI\Interfaces\Template\EngineInterface'
-            );
+        if (!$Engine instanceof EngineInterface) {
+            $message = 'The Template Engine implements not from QUI\Interfaces\Template\EngineInterface';
+            QUI\System\Log::addError($message);
+
+            throw new QUI\Exception($message);
         }
 
         $Engine->assign('__TEMPLATE__', $this);

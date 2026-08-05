@@ -418,11 +418,11 @@ class Manager
 
     public static function getTwoColumnDefault(): string
     {
-        return file_get_contents(dirname(__FILE__, 2) . '/Users/workspaces/twoColumns.js');
+        return (string)file_get_contents(dirname(__FILE__, 2) . '/Users/workspaces/twoColumns.js');
     }
 
     public static function getThreeColumnDefault(): string
     {
-        return file_get_contents(dirname(__FILE__, 2) . '/Users/workspaces/threeColumns.js');
+        return (string)file_get_contents(dirname(__FILE__, 2) . '/Users/workspaces/threeColumns.js');
     }
 }

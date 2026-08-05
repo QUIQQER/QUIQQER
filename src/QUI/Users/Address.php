@@ -146,7 +146,7 @@ class Address extends QUI\QDOM
             return -1;
         }
 
-        return $this->id;
+        return (int)$this->id;
     }
 
     public function getUUID(): ?string
@@ -819,7 +819,7 @@ class Address extends QUI\QDOM
         $attributes['id'] = $this->getId();
         $attributes['uuid'] = $this->getUUID();
 
-        return json_encode($attributes);
+        return (string)json_encode($attributes);
     }
 
     /**

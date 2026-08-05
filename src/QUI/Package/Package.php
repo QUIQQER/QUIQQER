@@ -596,7 +596,7 @@ class Package extends QUI\QDOM
             return true;
         }
 
-        return QUI\Permissions\Permission::hasPermission(
+        return (bool)QUI\Permissions\Permission::hasPermission(
             $this->getPermissionName($permission),
             $User
         );

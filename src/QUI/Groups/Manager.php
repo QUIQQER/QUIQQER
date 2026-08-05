@@ -64,9 +64,9 @@ class Manager extends QUI\QDOM
     protected array $data = [];
 
     /**
-     * @return object|bool|array<array-key, mixed>|string|null
+     * @return array<array-key, mixed>
      */
-    public static function getListOfExtraAttributes(): object | bool | array | string | null
+    public static function getListOfExtraAttributes(): array
     {
         if (self::$getListOfExtraAttributes !== null) {
             return self::$getListOfExtraAttributes;

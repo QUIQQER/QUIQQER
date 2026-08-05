@@ -612,14 +612,14 @@ class Edit extends Site
             ->fetchOne();
 
         if ($result !== false) {
-            return $Connection->update(
+            return (int)$Connection->update(
                 $this->RELLANGTABLE,
                 [$lang => $id],
                 [$p_lang => $this->getId()]
             );
         }
 
-        return $Connection->insert($this->RELLANGTABLE, [
+        return (int)$Connection->insert($this->RELLANGTABLE, [
             $p_lang => $this->getId(),
             $lang => $id
         ]);
@@ -643,7 +643,7 @@ class Edit extends Site
 
         $Project = $this->getProject();
 
-        return QUI::getDataBaseConnection()->update(
+        return (int)QUI::getDataBaseConnection()->update(
             $this->RELLANGTABLE,
             [$lang => 0],
             [$Project->getAttribute("lang") => $this->getId()]

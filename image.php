@@ -28,7 +28,7 @@ function getMimeType(string $file): string
     }
 
     if (function_exists('mime_content_type')) { // PHP interne Funktionen
-        return mime_content_type($file);
+        return (string)mime_content_type($file);
     }
 
     if (function_exists('finfo_open') && function_exists('finfo_file')) { // PECL

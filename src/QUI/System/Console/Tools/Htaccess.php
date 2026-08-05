@@ -172,7 +172,7 @@ HTACCESS
             );
         }
 
-        return file_get_contents(self::CUSTOM_HTACCESS_FILE_PATH);
+        return (string)file_get_contents(self::CUSTOM_HTACCESS_FILE_PATH);
     }
 
     /**

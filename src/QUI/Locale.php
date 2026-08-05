@@ -140,8 +140,9 @@ class Locale implements \Stringable
      * Get the translation
      *
      * @param false|array<array-key, mixed> $replace
+     * @return ($value is string ? string : array<array-key, mixed>|string)
      */
-    public function get(string $group, false|string $value = false, false|array $replace = false): string
+    public function get(string $group, false|string $value = false, false|array $replace = false): array|string
     {
         $str = $this->getHelper($group, $value);
 
@@ -167,7 +168,7 @@ class Locale implements \Stringable
     /**
      * Translation helper method
      *
-     * @return array<array-key, mixed>|string
+     * @return ($value is string ? string : array<array-key, mixed>|string)
      *
      * @see ->get()
      */
@@ -342,7 +343,7 @@ class Locale implements \Stringable
         //  "decimal_pattern": "#,##0.###",
         //  "percent_pattern": "#,##0%",
 
-        return $Formatter->format($number);
+        return (string)$Formatter->format($number);
     }
 
     /**

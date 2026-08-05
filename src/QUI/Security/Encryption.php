@@ -109,6 +109,6 @@ class Encryption
 
         $data = substr($data, (int)$sl) . substr($data, 0, (int)$sl);
 
-        return openssl_encrypt($data, 'aes-256-cbc', $salt, 0, (string)$iv);
+        return (string)openssl_encrypt($data, 'aes-256-cbc', $salt, 0, (string)$iv);
     }
 }

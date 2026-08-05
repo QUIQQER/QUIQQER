@@ -73,7 +73,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function encode(): string
     {
-        return json_encode($this->getAttributes());
+        return (string)json_encode($this->getAttributes());
     }
 
     /**
