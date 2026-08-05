@@ -309,7 +309,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             $this->hasPermission('quiqqer.projects.media.view') &&
             $this->hasPermission('quiqqer.projects.media.view', QUI::getUsers()->getNobody()) === false
         ) {
-            $cacheDir = VAR_DIR . 'media/cache/permissions/' . $this->getProject()->getAttribute('name') . '/';
+            $cacheDir = VAR_DIR . 'media/cache/permissions/' . $this->getProject()->getName() . '/';
         }
 
 

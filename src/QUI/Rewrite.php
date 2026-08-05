@@ -1217,7 +1217,7 @@ class Rewrite
 
             if (!defined('QUIQQER_AJAX')) {
                 QUI::getLocale()->setCurrent(
-                    $Project->getAttribute('lang')
+                    $Project->getLang()
                 );
             }
 

@@ -136,7 +136,7 @@ class Utils
 
         // URL Filter
         if ($Project !== null) {
-            $name = $Project->getAttribute('name');
+            $name = $Project->getName();
             $filter = USR_DIR . 'lib/' . $name . '/url.filter.php';
             $func = 'url_filter_' . $name;
 

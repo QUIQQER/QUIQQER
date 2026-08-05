@@ -444,9 +444,7 @@ class Sites
      *
      * @param array<string, mixed> $params
      *
-     * @return ($params is array{count: scalar|array<array-key, mixed>|object|resource}
-     *     ? int
-     *     : array<int, array<string, mixed>>)
+     * @return array<int, array<string, mixed>>|int
      *
      * @throws Exception
      */
@@ -522,7 +520,7 @@ class Sites
 
         foreach ($projects as $Project) {
             /* @var $Project Project */
-            $langs = $Project->getAttribute('langs');
+            $langs = $Project->getLanguages();
             $name = $Project->getName();
 
             foreach ($langs as $lang) {

@@ -344,7 +344,7 @@ class Manager
                 return $Project;
             }
 
-            if ($Project->getAttribute('template') === $template) {
+            if ($Project->getTemplate() === $template) {
                 return $Project;
             }
         }
@@ -494,11 +494,11 @@ class Manager
         // Falls andere Sprache gewünscht
         if (
             $Rewrite->getParam('lang')
-            && $Rewrite->getParam('lang') != $Standard->getAttribute('lang')
+            && $Rewrite->getParam('lang') != $Standard->getLang()
         ) {
             try {
                 return self::getProject(
-                    $Standard->getAttribute('name'),
+                    $Standard->getName(),
                     $Rewrite->getParam('lang')
                 );
             } catch (QUI\Exception) {
@@ -644,10 +644,10 @@ class Manager
         $templates = [];
         $project = $Project->getName();
 
-        if ($Project->getAttribute('template')) {
-            $result[] = $Project->getAttribute('template');
+        if ($Project->getTemplate()) {
+            $result[] = $Project->getTemplate();
 
-            $templates[$Project->getAttribute('template')] = true;
+            $templates[$Project->getTemplate()] = true;
         }
 
         // vhosts und templates schauen
@@ -1099,7 +1099,7 @@ class Manager
         }
 
         $project = $Project->getName();
-        $languages = $Project->getAttribute('langs');
+        $languages = $Project->getLanguages();
 
         // delete site tables for all languages
         foreach ($languages as $lang) {

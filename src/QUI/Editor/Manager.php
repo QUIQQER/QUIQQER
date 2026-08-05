@@ -759,9 +759,9 @@ class Manager
         // template files
         $templates = [];
 
-        if ($Project->getAttribute('template')) {
+        if ($Project->getTemplate()) {
             try {
-                $Package = QUI::getPackage($Project->getAttribute('template'));
+                $Package = QUI::getPackage($Project->getTemplate());
                 $templates[] = OPT_DIR . $Package->getName() . '/settings.xml';
 
                 $TemplateParent = $Package->getTemplateParent();

@@ -526,10 +526,10 @@ class Media extends QUI\QDOM
     public function getTable(false | string $type = false): string
     {
         if ($type == 'relations') {
-            return QUI::getDBTableName($this->Project->getAttribute('name') . '_media_relations');
+            return QUI::getDBTableName($this->Project->getName() . '_media_relations');
         }
 
-        return QUI::getDBTableName($this->Project->getAttribute('name') . '_media');
+        return QUI::getDBTableName($this->Project->getName() . '_media');
     }
 
     /**
@@ -563,7 +563,7 @@ class Media extends QUI\QDOM
      */
     public function getCacheDir(): string
     {
-        return 'media/cache/' . $this->getProject()->getAttribute('name') . '/';
+        return 'media/cache/' . $this->getProject()->getName() . '/';
     }
 
     /**
@@ -964,7 +964,7 @@ class Media extends QUI\QDOM
      */
     public function getPath(): string
     {
-        return 'media/sites/' . $this->getProject()->getAttribute('name') . '/';
+        return 'media/sites/' . $this->getProject()->getName() . '/';
     }
 
     /**

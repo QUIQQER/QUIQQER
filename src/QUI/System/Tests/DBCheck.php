@@ -164,7 +164,7 @@ class DBCheck extends QUI\System\Test
             if (!empty($langTables)) {
                 foreach ($projects as $Project) {
                     /* @var $Project Project */
-                    $languages = $Project->getAttribute('langs');
+                    $languages = $Project->getLanguages();
 
                     foreach ($languages as $lang) {
                         foreach ($langTables as $tblData) {

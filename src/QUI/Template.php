@@ -413,7 +413,7 @@ class Template extends QUI\QDOM
         $Locale = QUI::getLocale();
         $Template = $this;
 
-        $projectTemplate = $Project->getAttribute('template');
+        $projectTemplate = $Project->getTemplate();
         $hasTemplateParent = false;
 
         if ($Site->getAttribute('quiqqer.site.template')) {
@@ -523,8 +523,8 @@ class Template extends QUI\QDOM
             $tpl = $project_tpl;
 
             $Engine->assign([
-                'URL_TPL_DIR' => URL_USR_DIR . $Project->getAttribute('name') . '/',
-                'TPL_DIR' => USR_DIR . $Project->getAttribute('name') . '/',
+                'URL_TPL_DIR' => URL_USR_DIR . $Project->getName() . '/',
+                'TPL_DIR' => USR_DIR . $Project->getName() . '/',
             ]);
         }
 
@@ -532,8 +532,8 @@ class Template extends QUI\QDOM
         /*
         $suffix = $Rewrite->getSuffix();
 
-        if ( file_exists(USR_DIR .'lib/'. $Project->getAttribute('template') .'/index' . $suffix) ) {
-            $tpl = USR_DIR .'lib/'. $Project->getAttribute('template') .'/index' . $suffix;
+        if ( file_exists(USR_DIR .'lib/'. $Project->getTemplate() .'/index' . $suffix) ) {
+            $tpl = USR_DIR .'lib/'. $Project->getTemplate() .'/index' . $suffix;
         }
         */
 
@@ -570,7 +570,7 @@ class Template extends QUI\QDOM
             }
 
             // site template
-            $siteUsrScript = USR_DIR . $Project->getAttribute('name') . '/lib/' . $package . '/' . $type . '.php';
+            $siteUsrScript = USR_DIR . $Project->getName() . '/lib/' . $package . '/' . $type . '.php';
 
             if (file_exists($siteUsrScript)) {
                 $siteScript = $siteUsrScript;
@@ -920,7 +920,7 @@ class Template extends QUI\QDOM
 
         $templates = [];
 
-        $template = OPT_DIR . $Project->getAttribute('template');
+        $template = OPT_DIR . $Project->getTemplate();
         $siteXML = $template . '/site.xml';
 
         if (file_exists($siteXML)) {
@@ -928,7 +928,7 @@ class Template extends QUI\QDOM
         }
 
         try {
-            $Package = QUI::getPackage($Project->getAttribute('template'));
+            $Package = QUI::getPackage($Project->getTemplate());
             $Parent = $Package->getTemplateParent();
 
             if ($Parent) {
@@ -1004,13 +1004,13 @@ class Template extends QUI\QDOM
 
         if ($siteType[0] == 'standard') {
             // site template
-            $siteTemplate = OPT_DIR . $Project->getAttribute('template') . '/standard.html';
-            $siteStyle = OPT_DIR . $Project->getAttribute('template') . '/bin/standard.css';
+            $siteTemplate = OPT_DIR . $Project->getTemplate() . '/standard.html';
+            $siteStyle = OPT_DIR . $Project->getTemplate() . '/bin/standard.css';
 
             if (file_exists($siteStyle)) {
                 $Engine->assign(
                     'siteStyle',
-                    URL_OPT_DIR . $Project->getAttribute('template') . '/standard.css'
+                    URL_OPT_DIR . $Project->getTemplate() . '/standard.css'
                 );
             }
 

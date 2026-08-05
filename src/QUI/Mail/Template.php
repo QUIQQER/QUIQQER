@@ -122,7 +122,7 @@ class Template extends QUI\QDOM
             return $projectDir . $template;
         }
 
-        $tplPath = OPT_DIR . $Project->getAttribute('template') . '/';
+        $tplPath = OPT_DIR . $Project->getTemplate() . '/';
 
         // exist template in opt?
         if (file_exists($tplPath . $template)) {
@@ -148,7 +148,7 @@ class Template extends QUI\QDOM
             return $projectDir . $template;
         }
 
-        $tplPath = OPT_DIR . $Project->getAttribute('template') . '/';
+        $tplPath = OPT_DIR . $Project->getTemplate() . '/';
 
         // exist template in opt?
         if (file_exists($tplPath . $template)) {
@@ -174,7 +174,7 @@ class Template extends QUI\QDOM
             return $projectDir . $template;
         }
 
-        $tplPath = OPT_DIR . $Project->getAttribute('template') . '/';
+        $tplPath = OPT_DIR . $Project->getTemplate() . '/';
 
         // exist template in opt?
         if (file_exists($tplPath . $template)) {
@@ -200,7 +200,7 @@ class Template extends QUI\QDOM
             return $projectDir . $template;
         }
 
-        $tplPath = OPT_DIR . $Project->getAttribute('template') . '/';
+        $tplPath = OPT_DIR . $Project->getTemplate() . '/';
 
         // exist template in opt?
         if (file_exists($tplPath . $template)) {
@@ -226,7 +226,7 @@ class Template extends QUI\QDOM
             return $projectDir . $template;
         }
 
-        $tplPath = OPT_DIR . $Project->getAttribute('template') . '/';
+        $tplPath = OPT_DIR . $Project->getTemplate() . '/';
 
         // exist template in opt?
         if (file_exists($tplPath . $template)) {

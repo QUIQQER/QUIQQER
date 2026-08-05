@@ -273,8 +273,8 @@ class Project implements \Stringable
         // cache files
         // @todo move to the cache
         $this->cache_files = [
-            'types' => 'projects.' . $this->getAttribute('name') . '.types',
-            'gtypes' => 'projects.' . $this->getAttribute('name') . '.globaltypes'
+            'types' => 'projects.' . $this->getName() . '.types',
+            'gtypes' => 'projects.' . $this->getName() . '.globaltypes'
         ];
     }
 
@@ -286,8 +286,8 @@ class Project implements \Stringable
     public function toArray(): array
     {
         return [
-            'name' => $this->getAttribute('name'),
-            'lang' => $this->getAttribute('lang')
+            'name' => $this->getName(),
+            'lang' => $this->getLang()
         ];
     }
 
@@ -331,6 +331,16 @@ class Project implements \Stringable
     public function getLang(): string
     {
         return (string)$this->lang;
+    }
+
+    public function getDefaultLang(): string
+    {
+        return $this->default_lang;
+    }
+
+    public function getTemplate(): false | string
+    {
+        return $this->template;
     }
 
     /**
@@ -669,7 +679,7 @@ class Project implements \Stringable
     {
         $VHosts = new QUI\System\VhostManager();
         $vhostList = $VHosts->getHostsByProject($this->getName());
-        $template = OPT_DIR . $this->getAttribute('template');
+        $template = OPT_DIR . $this->getTemplate();
 
         $siteXMLs = [
             $template . '/site.xml'
@@ -677,7 +687,7 @@ class Project implements \Stringable
 
         // inheritance
         try {
-            $Package = QUI::getPackage($this->getAttribute('template'));
+            $Package = QUI::getPackage($this->getTemplate());
             $Parent = $Package->getTemplateParent();
             $siteXml = false;
 
@@ -872,9 +882,7 @@ class Project implements \Stringable
      * @param integer $parentid - The parent site ID
      * @param array<string, mixed> $params - extra db statements, like order, where, count, limit
      *
-     * @return ($params is array{count: scalar|array<array-key, mixed>|object|resource}
-     *     ? int
-     *     : array<int, int>)
+     * @return array<int, int>|int
      * @throws QUI\Database\Exception
      */
     public function getChildrenIdsFrom(int $parentid, array $params = []): array|int
@@ -1051,9 +1059,7 @@ class Project implements \Stringable
      *
      * @param array<string, mixed> $params
      *
-     * @return ($params is array{count: scalar|array<array-key, mixed>|object|resource}
-     *     ? int
-     *     : array<int, QUI\Interfaces\Projects\Site>)
+     * @return array<int, QUI\Interfaces\Projects\Site>|int
      *
      * @throws QUI\Database\Exception
      */

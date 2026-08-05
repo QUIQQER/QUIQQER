@@ -97,7 +97,7 @@ class Edit extends Site
 
         $this->TABLE = $Project->table();
         $this->RELTABLE = $Project->table() . '_relations';
-        $this->RELLANGTABLE = QUI::getDBTableName($Project->getAttribute('name') . '_multilingual');
+        $this->RELLANGTABLE = QUI::getDBTableName($Project->getName() . '_multilingual');
 
         $this->checkPermission('quiqqer.projects.site.view');
 
@@ -523,9 +523,7 @@ class Edit extends Site
      *                        $params['limit']
      * @param boolean $load Rekursiv alle Kinder IDs bekommen
      *
-     * @return ($params is array{count: scalar|array<array-key, mixed>|object|resource}
-     *     ? int
-     *     : array<int, Edit>)
+     * @return array<int, Edit>|int
      *
      * @throws QUI\Exception
      */
@@ -597,7 +595,7 @@ class Edit extends Site
         $this->assertNotDeleted();
 
         $Project = $this->getProject();
-        $p_lang = $Project->getAttribute('lang');
+        $p_lang = $Project->getLang();
         $id = (int)$id;
 
         $Connection = QUI::getDataBaseConnection();
@@ -646,7 +644,7 @@ class Edit extends Site
         return (int)QUI::getDataBaseConnection()->update(
             $this->RELLANGTABLE,
             [$lang => 0],
-            [$Project->getAttribute("lang") => $this->getId()]
+            [$Project->getLang() => $this->getId()]
         );
     }
 
@@ -1574,8 +1572,8 @@ class Edit extends Site
         $Parent = $this->getParent();
 
         $table = QUI::getDBTableName(
-            $Project->getAttribute('name') . '_' .
-            $Project->getAttribute('lang') . '_sites_relations'
+            $Project->getName() . '_' .
+            $Project->getLang() . '_sites_relations'
         );
 
         if ($this->getId() == $pid) {
@@ -1640,8 +1638,8 @@ class Edit extends Site
         $Platform = $Connection->getDatabasePlatform();
 
         $table = QUI::getDBTableName(
-            $Project->getAttribute("name") . "_" .
-            $Project->getAttribute("lang") . "_sites_relations"
+            $Project->getName() . "_" .
+            $Project->getLang() . "_sites_relations"
         );
 
         if (QUI\Utils\BoolHelper::JSBool($all)) {

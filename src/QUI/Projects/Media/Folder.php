@@ -575,7 +575,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * If $params['count'] = true is set, then the total number of search results is returned!
      *
-     * @return ($params is array{count: non-empty-mixed} ? int : array<int, int>)
+     * @return array<int, int>|int
      */
     public function getChildrenIds(array $params = []): array | int
     {
@@ -855,9 +855,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @param array<string, mixed> $params
      *
-     * @return ($params is array{count: scalar|array<array-key, mixed>|object|resource}
-     *     ? int
-     *     : array<int, mixed>)
+     * @return array<int, mixed>|int
      */
     public function getImages(array $params = []): array | int
     {
@@ -870,9 +868,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * @param 'image'|'file'|'folder' $type
      * @param array<string, mixed> $params
      *
-     * @return ($params is array{count: scalar|array<array-key, mixed>|object|resource}
-     *     ? int
-     *     : array<int, mixed>)
+     * @return array<int, mixed>|int
      */
     protected function getElements(string $type, array $params): array | int
     {
@@ -1033,9 +1029,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @param array<string, mixed> $params
      *
-     * @return ($params is array{count: scalar|array<array-key, mixed>|object|resource}
-     *     ? int
-     *     : array<int, mixed>)
+     * @return array<int, mixed>|int
      */
     public function getFolders(array $params = []): array | int
     {
@@ -1047,9 +1041,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @param array<string, mixed> $params - filter parameter
      *
-     * @return ($params is array{count: scalar|array<array-key, mixed>|object|resource}
-     *     ? int
-     *     : array<int, mixed>)
+     * @return array<int, mixed>|int
      */
     public function getFiles(array $params = []): array | int
     {

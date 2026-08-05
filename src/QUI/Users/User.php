@@ -244,7 +244,7 @@ class User implements QUIUserInterface
 
         // if user has no language, use the project language
         if (!$this->lang) {
-            $this->lang = QUI\Projects\Manager::get()->getAttribute('lang');
+            $this->lang = QUI\Projects\Manager::get()->getLang();
         }
 
         if (!$this->lang) {

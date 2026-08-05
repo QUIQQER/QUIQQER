@@ -101,7 +101,7 @@ class RenameProject extends Tool
      *
      * @param string $name
      *
-     * @return array|string|string[]
+     * @return string
      */
     protected function purgeProjectName($name): array|string
     {

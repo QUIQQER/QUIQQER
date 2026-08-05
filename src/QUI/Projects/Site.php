@@ -178,7 +178,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         // DB Tables
         $this->TABLE = $Project->table();
         $this->RELTABLE = $Project->table() . '_relations';
-        $this->RELLANGTABLE = QUI::getDBTableName($Project->getAttribute('name') . '_multilingual');
+        $this->RELLANGTABLE = QUI::getDBTableName($Project->getName() . '_multilingual');
 
 
         // view permission check
@@ -316,7 +316,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         // other languages
         $Project = $this->getProject();
 
-        if ($lang === $Project->getAttribute('lang')) {
+        if ($lang === $Project->getLang()) {
             return $this->id;
         }
 
@@ -339,8 +339,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             );
         }
 
-        $projectName = $Project->getAttribute('name');
-        $projectLang = $Project->getAttribute('lang');
+        $projectName = $Project->getName();
+        $projectLang = $Project->getLang();
 
         $site_table = QUI::getDBTableName($projectName . '_' . $projectLang . '_sites');
         $lang_table = QUI::getDBTableName($projectName . '_' . $lang . '_sites');
@@ -539,7 +539,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         $Project = $this->getProject();
 
-        if ($lang == $Project->getAttribute('lang')) {
+        if ($lang == $Project->getLang()) {
             return true;
         }
 
@@ -558,7 +558,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         try {
             $_Project = QUI::getProject(
-                $Project->getAttribute('name'),
+                $Project->getName(),
                 $lang
             );
 
@@ -588,8 +588,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             $Platform = $Connection->getDatabasePlatform();
             $dbResult = $Connection->createQueryBuilder()
                 ->select("*")
-                ->from($Platform->quoteSingleIdentifier($Project->getAttribute("name") . "_multilingual"))
-                ->where($Platform->quoteSingleIdentifier($Project->getAttribute("lang")) . " = :siteId")
+                ->from($Platform->quoteSingleIdentifier($Project->getName() . "_multilingual"))
+                ->where($Platform->quoteSingleIdentifier($Project->getLang()) . " = :siteId")
                 ->setParameter("siteId", $this->getId())
                 ->setMaxResults(1)
                 ->executeQuery()
@@ -682,9 +682,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *                      $params['where']
      *                      $params['limit']
      *
-     * @return ($params is array{count: scalar|array<array-key, mixed>|object|resource}
-     *     ? int
-     *     : array<int, int>)
+     * @return array<int, int>|int
      *
      * @throws QUI\Exception
      */
@@ -827,9 +825,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *                      $params['limit']
      * @param boolean $load - Legt fest ob die Kinder die Plugins laden sollen
      *
-     * @return ($params is array{count: scalar|array<array-key, mixed>|object|resource}
-     *     ? int
-     *     : array<int, Site>)
+     * @return array<int, Site>|int
      *
      * @throws QUI\Exception
      */
@@ -1175,9 +1171,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Gibt die Kinder zurück achtet aber auf "Nicht in Navigation anzeigen" und Rechte
      *
      * @param array<string, mixed> $params
-     * @return ($params is array{count: scalar|array<array-key, mixed>|object|resource}
-     *     ? int
-     *     : array<int, Site>)
+     * @return array<int, Site>|int
      *
      * @throws QUI\Exception
      */
