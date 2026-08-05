@@ -523,7 +523,9 @@ class Edit extends Site
      *                        $params['limit']
      * @param boolean $load Rekursiv alle Kinder IDs bekommen
      *
-     * @return array<int, mixed>|int
+     * @return ($params is array{count: scalar|array<array-key, mixed>|object|resource}
+     *     ? int
+     *     : array<int, Edit>)
      *
      * @throws QUI\Exception
      */

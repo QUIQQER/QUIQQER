@@ -342,7 +342,9 @@ class Manager extends QUI\QDOM
     /**
      * @param boolean $objects - as objects=true, as array=false
      *
-     * @return array<int, array<string, mixed>|Group|Everyone|Guest>
+     * @return ($objects is true
+     *     ? array<int, Group|Everyone|Guest>
+     *     : array<int, array<string, mixed>>)
      *
      * @throws QUI\Database\Exception
      */

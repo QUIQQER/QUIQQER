@@ -439,7 +439,9 @@ class Sites
      *
      * @param array<string, mixed> $params
      *
-     * @return array<int, mixed>|int
+     * @return ($params is array{count: scalar|array<array-key, mixed>|object|resource}
+     *     ? int
+     *     : array<int, array<string, mixed>>)
      *
      * @throws Exception
      */

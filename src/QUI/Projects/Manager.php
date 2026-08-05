@@ -1032,7 +1032,7 @@ class Manager
      * if you want a complete project list with every project language, please use getProjectList()
      *
      * @param bool $asObject - default = false, true = projects as objects
-     * @return array<array-key, mixed>
+     * @return ($asObject is true ? array<int, Project> : array<int, int|string>)
      */
     public static function getProjects(bool $asObject = false): array
     {

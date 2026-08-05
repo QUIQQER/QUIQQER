@@ -949,7 +949,9 @@ class Manager
     /**
      * @param boolean $objects - as objects=true, as array=false
      *
-     * @return array<int, QUIUserInterface|array<string, mixed>>
+     * @return ($objects is true
+     *     ? array<int, QUIUserInterface>
+     *     : array<int, array<string, mixed>>)
      */
     public function getAllUsers(bool $objects = false): array
     {

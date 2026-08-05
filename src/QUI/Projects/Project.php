@@ -872,7 +872,9 @@ class Project implements \Stringable
      * @param integer $parentid - The parent site ID
      * @param array<string, mixed> $params - extra db statements, like order, where, count, limit
      *
-     * @return array<int, mixed>|integer
+     * @return ($params is array{count: scalar|array<array-key, mixed>|object|resource}
+     *     ? int
+     *     : array<int, int>)
      * @throws QUI\Database\Exception
      */
     public function getChildrenIdsFrom(int $parentid, array $params = []): array|int
@@ -1049,7 +1051,9 @@ class Project implements \Stringable
      *
      * @param array<string, mixed> $params
      *
-     * @return array<int, mixed>|int - if count is given, return is an integer, otherwise an array
+     * @return ($params is array{count: scalar|array<array-key, mixed>|object|resource}
+     *     ? int
+     *     : array<int, QUI\Interfaces\Projects\Site>)
      *
      * @throws QUI\Database\Exception
      */

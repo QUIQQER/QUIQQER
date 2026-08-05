@@ -682,7 +682,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *                      $params['where']
      *                      $params['limit']
      *
-     * @return array<int, mixed>|int
+     * @return ($params is array{count: scalar|array<array-key, mixed>|object|resource}
+     *     ? int
+     *     : array<int, int>)
      *
      * @throws QUI\Exception
      */
@@ -825,7 +827,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *                      $params['limit']
      * @param boolean $load - Legt fest ob die Kinder die Plugins laden sollen
      *
-     * @return array<int, mixed>|integer
+     * @return ($params is array{count: scalar|array<array-key, mixed>|object|resource}
+     *     ? int
+     *     : array<int, Site>)
      *
      * @throws QUI\Exception
      */
@@ -1169,6 +1173,11 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
     /**
      * Gibt die Kinder zurück achtet aber auf "Nicht in Navigation anzeigen" und Rechte
+     *
+     * @param array<string, mixed> $params
+     * @return ($params is array{count: scalar|array<array-key, mixed>|object|resource}
+     *     ? int
+     *     : array<int, Site>)
      *
      * @throws QUI\Exception
      */
