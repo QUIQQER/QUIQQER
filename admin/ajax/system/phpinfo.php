@@ -24,17 +24,24 @@ QUI::$Ajax->registerFunction(
             )
         ) {
             foreach ($matches as $match) {
-                if (strlen($match[1])) {
-                    $phpinfo[$match[1]] = [];
-                } elseif (isset($match[3])) {
+                $heading = $match[1] ?? '';
+                $name = $match[2] ?? '';
+                $value = $match[3] ?? null;
+                $additionalValue = $match[4] ?? null;
+
+                if ($heading !== '') {
+                    $phpinfo[$heading] = [];
+                } elseif ($value !== null) {
                     $keys = array_keys($phpinfo);
                     $end = end($keys);
-                    $phpinfo[$end][$match[2]] = isset($match[4]) ? [$match[3], $match[4]] : $match[3];
+                    $phpinfo[$end][$name] = $additionalValue !== null
+                        ? [$value, $additionalValue]
+                        : $value;
                 } else {
                     $keys = array_keys($phpinfo);
                     $end = end($keys);
 
-                    $phpinfo[$end][] = $match[2];
+                    $phpinfo[$end][] = $name;
                 }
             }
         }

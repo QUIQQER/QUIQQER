@@ -1004,10 +1004,9 @@ class User implements QUIUserInterface
 
 
         // saving
-        /** @var list<string> $groupIds */
         $groupIds = array_values(array_filter(
             $this->getGroups(false),
-            static fn ($group): bool => is_string($group) && $group !== ''
+            static fn ($group): bool => $group !== ''
         ));
 
         $query = QUI::getQueryBuilder()->update(QUI\Utils\Doctrine::quoteIdentifier(Manager::table()));
@@ -1198,7 +1197,7 @@ class User implements QUIUserInterface
 
     /**
      * @param boolean $array - returns the groups as objects (true) or as an array (false)
-     * @return QUI\Groups\Group[]|string[]|array
+     * @return ($array is true ? array<int, Group> : array<int, string>)
      */
     public function getGroups(bool $array = true): array
     {

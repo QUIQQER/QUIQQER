@@ -43,7 +43,11 @@ class InstallationWizard extends QUI\System\Console\Tool
         // Write the preset data to the installation wizard config file (maybe for later use, web-wizard does that too)
         $ProviderHandlerConfig = ProviderHandler::getConfig();
         $ProviderHandlerConfig->set('execute', 'provider', $QuiqqerProvider::class);
-        $ProviderHandlerConfig->set('execute', 'data', $presetDataAsJsonString);
+        $ProviderHandlerConfig->set(
+            'execute',
+            'data',
+            $presetDataAsJsonString === false ? 0 : $presetDataAsJsonString
+        );
         $ProviderHandlerConfig->save();
 
         // Execute the wizard with the preset data

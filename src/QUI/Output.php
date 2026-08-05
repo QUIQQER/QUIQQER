@@ -286,7 +286,7 @@ class Output extends Singleton
             $result = implode(
                 '',
                 array_map(
-                    [$Body->ownerDocument, "saveHTML"],
+                    [$Dom, "saveHTML"],
                     iterator_to_array($Body->childNodes)
                 )
             );

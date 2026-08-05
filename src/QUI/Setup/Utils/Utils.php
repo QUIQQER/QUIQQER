@@ -190,7 +190,7 @@ class Utils
         if (System::isShellFunctionEnabled('shell_exec')) {
             $version = shell_exec('nginx -v 2>&1 ');
             $regex = '~nginx/([0-9]+\.[0-9]+\.[0-9])+~i';
-            $res = preg_match($regex, $version, $matches);
+            $res = preg_match($regex, (string)$version, $matches);
             if ($res) {
                 $nginx = true;
             }

@@ -372,11 +372,11 @@ class MigrationV2 extends QUI\System\Console\Tool
                     $eUser = $site['e_user'];
 
                     if (is_numeric($cUser)) {
-                        $cUser = $this->getUserHash($cUser);
+                        $cUser = $this->getUserHash(is_float($cUser) ? (int)$cUser : $cUser);
                     }
 
                     if (is_numeric($eUser)) {
-                        $eUser = $this->getUserHash($eUser);
+                        $eUser = $this->getUserHash(is_float($eUser) ? (int)$eUser : $eUser);
                     }
 
                     $this->updateRows(
@@ -409,11 +409,11 @@ class MigrationV2 extends QUI\System\Console\Tool
                 $eUser = $file['e_user'];
 
                 if (is_numeric($cUser)) {
-                    $cUser = $this->getUserHash($cUser);
+                    $cUser = $this->getUserHash(is_float($cUser) ? (int)$cUser : $cUser);
                 }
 
                 if (is_numeric($eUser)) {
-                    $eUser = $this->getUserHash($eUser);
+                    $eUser = $this->getUserHash(is_float($eUser) ? (int)$eUser : $eUser);
                 }
 
                 $this->updateRows(

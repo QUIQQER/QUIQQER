@@ -377,7 +377,7 @@ class Locale implements \Stringable
 
         // via shell
         $locales = shell_exec('locale -a');
-        $locales = explode("\n", $locales);
+        $locales = explode("\n", (string)$locales);
 
         $langList = [];
 
@@ -432,7 +432,7 @@ class Locale implements \Stringable
         $current = $this->getCurrent();
 
         if (!is_numeric($timestamp)) {
-            $timestamp = strtotime($timestamp);
+            $timestamp = (int)strtotime($timestamp);
         }
 
         // new stuff, compatible with php9
@@ -459,7 +459,7 @@ class Locale implements \Stringable
         $oldLocale = setlocale(LC_TIME, "0");
 
         setlocale(LC_TIME, $localeCode);
-        $result = strftime($format, $timestamp);
+        $result = strftime($format, (int)$timestamp);
         setlocale(LC_TIME, (string)$oldLocale);
 
         return Encoding::toUTF8($result);

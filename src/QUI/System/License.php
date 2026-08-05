@@ -144,7 +144,7 @@ class License
             ]);
         }
 
-        $response = json_decode($response, true);
+        $response = json_decode((string)$response, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new QUI\Exception([
@@ -284,7 +284,7 @@ class License
             ]);
         }
 
-        $response = json_decode($response, true);
+        $response = json_decode((string)$response, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new QUI\Exception([
@@ -340,7 +340,7 @@ class License
             ]);
         }
 
-        $response = json_decode($response, true);
+        $response = json_decode((string)$response, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new QUI\Exception([

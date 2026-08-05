@@ -928,7 +928,7 @@ class Template extends QUI\QDOM
         }
 
         try {
-            $Package = QUI::getPackage($Project->getTemplate());
+            $Package = QUI::getPackage((string)$Project->getTemplate());
             $Parent = $Package->getTemplateParent();
 
             if ($Parent) {

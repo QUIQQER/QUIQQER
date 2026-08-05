@@ -369,7 +369,7 @@ class Ajax extends QUI\QDOM
 
         // strip tags
         $return['Exception']['message'] = strip_tags(
-            $return['Exception']['message'],
+            $return['Exception']['message'] ?? '',
             '<div><span><p><br><hr><ul><ol><li><strong><em><b><i><u>'
         );
 

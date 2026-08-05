@@ -599,7 +599,7 @@ abstract class Item extends QUI\QDOM
      */
     public function getParent(): Folder
     {
-        $Item = $this->Media->get($this->getParentId());
+        $Item = $this->Media->get((int)$this->getParentId());
 
         if ($Item instanceof Folder) {
             return $Item;

@@ -467,7 +467,7 @@ class Rewrite
             }
 
             // @todo consider permissions denied -> show permission denied image
-            if (!isset($file) || !file_exists($file)) {
+            if (!isset($file) || !file_exists((string)$file)) {
                 $Redirect = new RedirectResponse(
                     $this->getErrorSite()->getUrlRewritten()
                 );
@@ -478,7 +478,7 @@ class Rewrite
             }
 
             // Dateien direkt im Browser ausgeben, da Cachedatei noch nicht verfügbar war
-            $this->sendFileWithRange($file, $Item->getAttribute('mime_type'));
+            $this->sendFileWithRange((string)$file, $Item->getAttribute('mime_type'));
             exit;
         }
 
@@ -1059,7 +1059,7 @@ class Rewrite
                     $template = $vhosts[$host]['template'];
                 }
 
-                $Project = QUI::getProject($error[0], $error[1], $template);
+                $Project = QUI::getProject((string)$error[0], $error[1], $template);
 
                 return $Project->get((int)$error[2]);
             } catch (QUI\Exception $Exception) {

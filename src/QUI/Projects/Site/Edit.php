@@ -844,7 +844,7 @@ class Edit extends Site
             // daher werden nur aktive seite beachten
             $release_from = date(
                 'Y-m-d H:i:s',
-                strtotime(date('Y-m-d H:i:s'))
+                (int)strtotime(date('Y-m-d H:i:s'))
             );
         }
 

@@ -98,6 +98,7 @@ class ModRewrite extends QUI\System\Test
             return self::STATUS_ERROR;
         }
 
+        $result = (string)$result;
 
         if (!str_contains($result, '<quiqqer>')) {
             return self::STATUS_ERROR;

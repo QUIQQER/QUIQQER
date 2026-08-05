@@ -60,7 +60,7 @@ class Nobody extends QUI\QDOM implements User
 
     /**
      * @param boolean $array - returns the groups as objects (true) or as an array (false)
-     * @return array<int, Group|string>
+     * @return ($array is true ? array<int, Group> : array<int, string>)
      */
     public function getGroups(bool $array = true): array
     {

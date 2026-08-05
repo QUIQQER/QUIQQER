@@ -266,7 +266,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                     $WatermarkImage->scaleDown($imageWidth, $imageHeight);
                 }
 
-                $Image->place($WatermarkImage, $watermarkPosition);
+                $Image->place($WatermarkImage, (string)$watermarkPosition);
             }
         } catch (Exception $Exception) {
             QUI\System\Log::addInfo($Exception->getMessage(), [
@@ -847,10 +847,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $file = $this->getAttribute('file');
 
         $cachefile = $cdir . $file;
-        $cacheData = pathinfo($cachefile);
+        $cacheDirname = dirname($cachefile);
 
         $fileData = FileUtils::getInfo($this->getFullPath());
-        $files = FileUtils::readDir($cacheData['dirname'], true);
+        $files = FileUtils::readDir($cacheDirname, true);
         $filename = $fileData['filename'];
 
         foreach ($files as $file) {
@@ -858,7 +858,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
             // cache delete
             if (substr($file, 0, $len + 2) === $filename . '__') {
-                FileUtils::unlink($cacheData['dirname'] . '/' . $file);
+                FileUtils::unlink($cacheDirname . '/' . $file);
             }
         }
 

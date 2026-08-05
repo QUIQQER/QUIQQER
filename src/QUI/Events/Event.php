@@ -69,7 +69,7 @@ class Event implements QUI\Interfaces\Events
     public function addEvents(array $events): void
     {
         foreach ($events as $event => $fn) {
-            if (is_array($fn)) {
+            if (is_array($fn) && isset($fn[2])) {
                 $this->addEvent($event, $fn[0], $fn[1], $fn[2]);
                 continue;
             }

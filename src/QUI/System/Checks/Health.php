@@ -215,7 +215,7 @@ class Health
 
         // check folders
         $result = shell_exec('find ' . CMS_DIR . ' -not -path \'*/\.*\' -type d');
-        $lines = explode("\n", trim($result));
+        $lines = explode("\n", trim((string)$result));
 
         foreach ($lines as $line) {
             if (!is_writable($line)) {

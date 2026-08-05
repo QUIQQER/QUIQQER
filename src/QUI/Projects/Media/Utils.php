@@ -803,7 +803,7 @@ class Utils
             $pos_dot = strpos($fileName, '.', $lastpos_ul);
 
             $fileName = substr($fileName, 0, ($lastpos_ul - 2)) .
-                substr($fileName, $pos_dot);
+                substr($fileName, (int)$pos_dot);
         }
 
         $parts[] = $fileName;

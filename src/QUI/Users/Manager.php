@@ -599,7 +599,7 @@ class Manager
         );
 
         if ($username) {
-            if ($this->usernameExists($username)) {
+            if ($this->usernameExists((string)$username)) {
                 throw new QUI\Users\Exception(
                     QUI::getLocale()->get(
                         'quiqqer/core',
@@ -619,7 +619,7 @@ class Manager
             }
         }
 
-        self::checkUsernameSigns($username);
+        self::checkUsernameSigns((string)$username);
 
         try {
             $uuid = QUI\Utils\Uuid::get();

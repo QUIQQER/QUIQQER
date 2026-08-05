@@ -687,7 +687,7 @@ class Project implements \Stringable
 
         // inheritance
         try {
-            $Package = QUI::getPackage($this->getTemplate());
+            $Package = QUI::getPackage((string)$this->getTemplate());
             $Parent = $Package->getTemplateParent();
             $siteXml = false;
 

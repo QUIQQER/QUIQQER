@@ -1211,7 +1211,7 @@ class Manager extends QUI\QDOM
 
         QUI\Cache\Manager::clearCompleteQuiqqerCache();
 
-        $this->composerRequireOrInstall($packages, $version);
+        $this->composerRequireOrInstall($packages, (string)$version);
     }
 
     /**
@@ -2563,7 +2563,7 @@ class Manager extends QUI\QDOM
                 return false;
             }
 
-            $urls = json_decode($response, true);
+            $urls = json_decode((string)$response, true);
 
             QUI\Cache\LongTermCache::set($cacheName, $response);
 
