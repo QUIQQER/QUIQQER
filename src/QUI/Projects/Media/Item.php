@@ -386,7 +386,7 @@ abstract class Item extends QUI\QDOM
      * - looks at the params type
      * - helper for setTitle, setShort, setDescription, setAlt
      *
-     * @param array<int, mixed> $params
+     * @param array<int|string, mixed> $params
      * @param string $type
      */
     protected function setMultilingualParams($params, $type): void

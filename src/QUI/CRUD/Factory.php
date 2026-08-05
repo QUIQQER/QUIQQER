@@ -131,6 +131,9 @@ abstract class Factory extends QUI\Utils\Singleton
         return $Child;
     }
 
+    /**
+     * @return class-string<Child>
+     */
     abstract public function getChildClass(): string;
 
     protected function createQueryBuilder(): QueryBuilder

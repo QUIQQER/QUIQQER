@@ -244,7 +244,7 @@ class MyDB implements \Stringable
      * @param string $table
      * @param array<string, mixed> $FieldValue - [array('field1'=>'value1', 'field2'=>'value2', 'field3'=>'value3')]
      *
-     * @return integer
+     * @return int|string|false
      */
     public function addData($table, $FieldValue)
     {
