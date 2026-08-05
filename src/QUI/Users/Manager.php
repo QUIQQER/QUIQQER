@@ -135,8 +135,15 @@ class Manager
 
             $tabs = $Path->query("//user/profile/tab");
 
-            /* @var $Tab DOMElement */
+            if ($tabs === false) {
+                continue;
+            }
+
             foreach ($tabs as $Tab) {
+                if (!$Tab instanceof DOMElement) {
+                    continue;
+                }
+
                 $extend .= DOM::parseCategoryToHTML($Tab);
             }
         }

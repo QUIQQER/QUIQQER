@@ -185,6 +185,10 @@ class Utils
 
             $tableList = $Path->query("//database/projects/table");
 
+            if ($tableList === false) {
+                continue;
+            }
+
             for ($i = 0, $len = $tableList->length; $i < $len; $i++) {
                 $Table = $tableList->item($i);
 
@@ -283,6 +287,10 @@ class Utils
 
             $tableList = $Path->query("//database/projects/table");
 
+            if ($tableList === false) {
+                continue;
+            }
+
             for ($i = 0, $len = $tableList->length; $i < $len; $i++) {
                 $Table = $tableList->item($i);
 
@@ -363,6 +371,10 @@ class Utils
             $Path = new DOMXPath($Dom);
             $attributes = $Path->query('//site/attributes/attribute');
 
+            if ($attributes === false) {
+                continue;
+            }
+
             foreach ($attributes as $Attribute) {
                 if (!($Attribute instanceof DOMElement)) {
                     continue;
@@ -389,15 +401,17 @@ class Utils
             $Path = new DOMXPath($Dom);
             $attributes = $Path->query($exprPackage);
 
-            foreach ($attributes as $Attribute) {
-                if (!($Attribute instanceof DOMElement)) {
-                    continue;
-                }
+            if ($attributes !== false) {
+                foreach ($attributes as $Attribute) {
+                    if (!($Attribute instanceof DOMElement)) {
+                        continue;
+                    }
 
-                $result[] = [
-                    'attribute' => trim($Attribute->nodeValue),
-                    'default' => $Attribute->getAttribute('default')
-                ];
+                    $result[] = [
+                        'attribute' => trim($Attribute->nodeValue),
+                        'default' => $Attribute->getAttribute('default')
+                    ];
+                }
             }
 
             // Query for site type attributes in other packages than the original package of the site type
@@ -417,6 +431,10 @@ class Utils
                 $Dom = XML::getDomFromXml($siteXmlFile);
                 $Path = new DOMXPath($Dom);
                 $attributes = $Path->query($exprOtherPackage);
+
+                if ($attributes === false) {
+                    continue;
+                }
 
                 foreach ($attributes as $Attribute) {
                     if (!($Attribute instanceof DOMElement)) {
@@ -477,7 +495,15 @@ class Utils
             $Path = new DOMXPath($Dom);
             $cats = $Path->query("//site/settings/category");
 
+            if ($cats === false) {
+                continue;
+            }
+
             foreach ($cats as $Category) {
+                if (!$Category instanceof DOMNode) {
+                    continue;
+                }
+
                 $result .= DOM::parseCategoryToHTML($Category, $current);
             }
         }
@@ -497,8 +523,14 @@ class Utils
                 "//site/types/type[@type='" . $type[1] . "']/settings/category"
             );
 
-            foreach ($cats as $Category) {
-                $result .= DOM::parseCategoryToHTML($Category, $current);
+            if ($cats !== false) {
+                foreach ($cats as $Category) {
+                    if (!$Category instanceof DOMNode) {
+                        continue;
+                    }
+
+                    $result .= DOM::parseCategoryToHTML($Category, $current);
+                }
             }
         }
 
@@ -523,7 +555,15 @@ class Utils
                     "//site/types/type[@type='" . $type[0] . ':' . $type[1] . "']/settings/category"
                 );
 
+                if ($cats === false) {
+                    continue;
+                }
+
                 foreach ($cats as $Category) {
+                    if (!$Category instanceof DOMNode) {
+                        continue;
+                    }
+
                     $result .= DOM::parseCategoryToHTML($Category, $current);
                 }
             }
@@ -569,9 +609,15 @@ class Utils
                 "//site/types/type[@type='" . $type[1] . "']/admin/js"
             );
 
-            foreach ($modules as $Module) {
-                foreach ($Module->attributes as $Attr) {
-                    $result['js'][$Attr->nodeName][] = $Attr->nodeValue;
+            if ($modules !== false) {
+                foreach ($modules as $Module) {
+                    if (!$Module instanceof DOMElement) {
+                        continue;
+                    }
+
+                    foreach ($Module->attributes as $Attr) {
+                        $result['js'][$Attr->nodeName][] = $Attr->nodeValue;
+                    }
                 }
             }
         }

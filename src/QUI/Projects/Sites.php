@@ -281,17 +281,19 @@ class Sites
                     "//site/types/type[@type='" . $siteTypeParts[1] . "' or @type='" . $type . "']"
                 );
 
-                foreach ($TypeNodes as $TypeNode) {
-                    if (!$TypeNode instanceof DOMElement) {
-                        continue;
-                    }
+                if ($TypeNodes !== false) {
+                    foreach ($TypeNodes as $TypeNode) {
+                        if (!$TypeNode instanceof DOMElement) {
+                            continue;
+                        }
 
-                    if (
-                        $TypeNode->hasAttribute('content')
-                        && (int)$TypeNode->getAttribute('content') === 0
-                    ) {
-                        $showDefaultContentTab = false;
-                        break;
+                        if (
+                            $TypeNode->hasAttribute('content')
+                            && (int)$TypeNode->getAttribute('content') === 0
+                        ) {
+                            $showDefaultContentTab = false;
+                            break;
+                        }
                     }
                 }
             }
@@ -335,15 +337,17 @@ class Sites
             $Dom = XML::getDomFromXml($file);
             $Path = new DOMXPath($Dom);
 
-            QUI\Utils\DOM::addTabsToToolbar(
-                $Path->query("//site/types/type[@type='" . $types[1] . "']/tab"),
-                $Tabbar
-            );
+            $tabs = $Path->query("//site/types/type[@type='" . $types[1] . "']/tab");
 
-            QUI\Utils\DOM::addTabsToToolbar(
-                $Path->query("//site/types/type[@type='" . $type . "']/tab"),
-                $Tabbar
-            );
+            if ($tabs !== false) {
+                QUI\Utils\DOM::addTabsToToolbar($tabs, $Tabbar);
+            }
+
+            $tabs = $Path->query("//site/types/type[@type='" . $type . "']/tab");
+
+            if ($tabs !== false) {
+                QUI\Utils\DOM::addTabsToToolbar($tabs, $Tabbar);
+            }
         }
 
         // module / package extensions
@@ -371,10 +375,11 @@ class Sites
             $Dom = XML::getDomFromXml($file);
             $Path = new DOMXPath($Dom);
 
-            QUI\Utils\DOM::addTabsToToolbar(
-                $Path->query("//site/types/type[@type='" . $type . "']/tab"),
-                $Tabbar
-            );
+            $tabs = $Path->query("//site/types/type[@type='" . $type . "']/tab");
+
+            if ($tabs !== false) {
+                QUI\Utils\DOM::addTabsToToolbar($tabs, $Tabbar);
+            }
         }
 
 

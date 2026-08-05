@@ -740,7 +740,7 @@ class Manager
 
             $WYSIWYG = $Path->query("//wysiwyg");
 
-            if ($WYSIWYG->length) {
+            if ($WYSIWYG !== false && $WYSIWYG->length) {
                 $DomElement = $WYSIWYG->item(0);
 
                 if ($DomElement instanceof DOMElement) {
@@ -916,7 +916,7 @@ class Manager
         $Path = new DOMXPath($Dom);
         $WYSIWYG = $Path->query("//wysiwyg");
 
-        if (!$WYSIWYG->length) {
+        if ($WYSIWYG === false || !$WYSIWYG->length) {
             return;
         }
 

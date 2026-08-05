@@ -998,7 +998,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 $XPath = new DOMXPath($Dom);
                 $Types = $XPath->query('//type[@type="' . $type . '"]');
 
-                $Type = $Types->item(0);
+                $Type = $Types === false ? null : $Types->item(0);
 
                 if (
                     $Type instanceof DOMElement

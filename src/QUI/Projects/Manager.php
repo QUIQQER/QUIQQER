@@ -436,14 +436,18 @@ class Manager
 
             $settingsList = $Path->query('//project/settings');
 
+            if ($settingsList === false) {
+                continue;
+            }
+
             for ($i = 0, $len = $settingsList->length; $i < $len; $i++) {
                 $Settings = $settingsList->item($i);
-                $sections = DOM::getConfigParamsFromDOM($Settings);
 
                 if (!($Settings instanceof DOMElement)) {
                     continue;
                 }
 
+                $sections = DOM::getConfigParamsFromDOM($Settings);
                 $settingsName = $Settings->getAttribute('name');
 
                 if (!empty($settingsName)) {
@@ -600,7 +604,7 @@ class Manager
 
             $Settings = $Path->query('//quiqqer/project/settings');
 
-            if ($Settings->length) {
+            if ($Settings !== false && $Settings->length) {
                 $list[] = $file;
             }
         }
@@ -614,7 +618,7 @@ class Manager
 
             $Settings = $Path->query('//quiqqer/project/settings');
 
-            if ($Settings->length) {
+            if ($Settings !== false && $Settings->length) {
                 $list[] = $projectSettings;
             }
         }

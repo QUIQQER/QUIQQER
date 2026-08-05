@@ -1315,6 +1315,10 @@ class Utils
 
             $attributes = $Path->query('//quiqqer/media/attributes/attribute');
 
+            if ($attributes === false) {
+                continue;
+            }
+
             foreach ($attributes as $Attribute) {
                 if (!($Attribute instanceof DOMElement)) {
                     continue;

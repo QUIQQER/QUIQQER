@@ -2403,7 +2403,7 @@ class Manager extends QUI\QDOM
         $XPath = new DOMXPath($Dom);
         $Types = $XPath->query('//type[@type="' . $type . '"]');
 
-        if (!$Types->length) {
+        if ($Types === false || !$Types->length) {
             return false;
         }
 
