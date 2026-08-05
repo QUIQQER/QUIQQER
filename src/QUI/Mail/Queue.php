@@ -305,7 +305,7 @@ class Queue
     /**
      * Send the mail
      *
-     * @param array<string, mixed> $params - mail data
+     * @param array{body: string|null, ...} $params - mail data
      * @return boolean
      *
      * @throws QUI\Exception

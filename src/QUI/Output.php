@@ -96,12 +96,9 @@ class Output extends Singleton
     ];
 
     /**
-     * @param string $content
-     * @return mixed
-     *
      * @throws QUI\Exception
      */
-    public function parse($content)
+    public function parse(string $content): string
     {
         if (empty($content)) {
             return '';

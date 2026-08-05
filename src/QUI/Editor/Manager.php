@@ -1342,7 +1342,7 @@ class Manager
 
             $Tidy->parseString($html, $config, 'utf8');
             $Tidy->cleanRepair();
-            $html = $Tidy->html();
+            $html = $Tidy->html()?->value ?? $html;
         }
 
         return $html;
