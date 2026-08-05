@@ -103,7 +103,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * the site url
      */
-    protected string | bool $url = false;
+    protected string | false $url = false;
 
     /**
      * the ids of the pages in other languages
@@ -135,7 +135,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * is the site a link
      */
-    protected int | bool $LINKED_PARENT = false;
+    protected int | false $LINKED_PARENT = false;
 
     /**
      * tmp data from tables from the plugins
@@ -301,13 +301,13 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Return the ID of the site,
      * or the ID of the sibling (linked) site of another language
      *
-     * @param boolean|string $lang - optional, if it is set, then the language of the wanted linked sibling site
+     * @param false|string $lang - optional, if it is set, then the language of the wanted linked sibling site
      *
      * @return integer
      *
      * @throws QUI\Exception
      */
-    public function getId(bool | string $lang = false): int
+    public function getId(false | string $lang = false): int
     {
         if ($lang === false) {
             return $this->id;
@@ -646,7 +646,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * @throws QUI\Exception
      */
-    public function getParent(): bool | Site
+    public function getParent(): false | Site
     {
         if (!$this->getParentId()) {
             return false;
@@ -808,7 +808,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @throws QUI\Exception
      */
-    public function firstChild(array $params = []): bool | Site
+    public function firstChild(array $params = []): false | Site
     {
         $params['limit'] = '1';
 
@@ -913,13 +913,13 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Lädt die Plugins der Seite
      *
-     * @param boolean|string $plugin - Plugin welches geladen werden soll, optional, ansonsten werden alle geladen
+     * @param false|string $plugin - Plugin welches geladen werden soll, optional, ansonsten werden alle geladen
      *
      * @return Site
      *
      * @throws QUI\Exception
      */
-    public function load(bool | string $plugin = false): Site
+    public function load(false | string $plugin = false): Site
     {
         $this->loadFlag = true;
         $cacheDbPackageCacheName = $this->getCachePath() . '/dbPackageFiles';
@@ -1147,7 +1147,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @throws QUI\Exception
      */
-    public function lastChild(array $params = []): bool | Edit | Site
+    public function lastChild(array $params = []): false | Edit | Site
     {
         $params['limit'] = false;
 
@@ -1412,7 +1412,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Prüft ob es eine Verknüpfung ist
      */
-    public function isLinked(): bool | int
+    public function isLinked(): false | int
     {
         if ($this->LINKED_PARENT === false) {
             return false;

@@ -75,7 +75,7 @@ class Rewrite
 
     const URL_DEFAULT_SUFFIX = '.html';
 
-    public static bool | string $SUFFIX = false;
+    public static false | string $SUFFIX = false;
 
     /**
      * site request parameter
@@ -106,7 +106,7 @@ class Rewrite
     /**
      * active template
      */
-    private string | bool $template_str = false;
+    private string | false $template_str = false;
 
     /**
      * if project prefix is set
@@ -116,7 +116,7 @@ class Rewrite
     /**
      * project lang
      */
-    private string | bool $lang = false;
+    private string | false $lang = false;
 
     /**
      * active site
@@ -145,9 +145,9 @@ class Rewrite
     /**
      * loaded vhosts
      *
-     * @var array<array-key, mixed>|bool
+     * @var array<array-key, mixed>|false
      */
-    private array | bool $vhosts = false;
+    private array | false $vhosts = false;
 
     /**
      * current suffix, (.html, .pdf, .print)
@@ -205,7 +205,7 @@ class Rewrite
     /**
      * Return the default suffix eq: .html or ''
      */
-    public static function getDefaultSuffix(): bool | string
+    public static function getDefaultSuffix(): string
     {
         if (self::$SUFFIX !== false) {
             return self::$SUFFIX;
@@ -1175,7 +1175,7 @@ class Rewrite
      *
      * @return Project|false
      */
-    protected function getProjectByVhost(): bool | Project
+    protected function getProjectByVhost(): false | Project
     {
         if ($this->project) {
             return $this->project;
@@ -1249,7 +1249,7 @@ class Rewrite
     /**
      * @throws QUI\Exception
      */
-    public function getSiteByUrl(string $url, bool $setPath = true): bool | QUI\Interfaces\Projects\Site
+    public function getSiteByUrl(string $url, bool $setPath = true): QUI\Interfaces\Projects\Site
     {
         // Sprache raus
         if ($url === '') {
@@ -1337,7 +1337,7 @@ class Rewrite
      *
      * @throws Exception
      */
-    public function existRegisterPath(string $path, Project $Project): bool | QUI\Interfaces\Projects\Site
+    public function existRegisterPath(string $path, Project $Project): false | QUI\Interfaces\Projects\Site
     {
         if ($this->registerPaths === null) {
             $table = QUI::getDBProjectTableName('paths', $Project);
@@ -1378,7 +1378,7 @@ class Rewrite
     /**
      * Parameter der Rewrite
      */
-    public function getParam(string $name): bool | string
+    public function getParam(string $name): false | string
     {
         $result = '';
 

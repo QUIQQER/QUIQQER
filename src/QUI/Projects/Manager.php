@@ -320,8 +320,8 @@ class Manager
      * Returns a project
      *
      * @param string $project - Project name
-     * @param boolean|string $lang - Project lang, optional (if not set, the standard language used)
-     * @param boolean|string $template - used template, optional (if not set, the standard templaed used)
+     * @param false|string $lang - Project lang, optional (if not set, the standard language used)
+     * @param false|string $template - used template, optional (if not set, the standard templaed used)
      *
      * @return Project
      *
@@ -329,8 +329,8 @@ class Manager
      */
     public static function getProject(
         string $project,
-        bool | string $lang = false,
-        bool | string $template = false
+        false | string $lang = false,
+        false | string $template = false
     ): Project {
         if (isset(self::$projects[$project]['_standard']) && !$lang) {
             return self::$projects[$project]['_standard'];

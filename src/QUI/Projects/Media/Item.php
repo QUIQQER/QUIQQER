@@ -55,9 +55,9 @@ abstract class Item extends QUI\QDOM
     /**
      * internal image effect parameter
      *
-     * @var array<string, mixed>|bool
+     * @var array<string, mixed>|false
      */
-    protected array | bool $effects = false;
+    protected array | false $effects = false;
 
     /**
      * internal media object
@@ -67,7 +67,7 @@ abstract class Item extends QUI\QDOM
     /**
      * internal parent id (use ->getParentId())
      */
-    protected int | bool $parent_id = false;
+    protected int | false $parent_id = false;
 
     /**
      * Path to the real file
@@ -611,7 +611,7 @@ abstract class Item extends QUI\QDOM
     /**
      * Return the parent id
      */
-    public function getParentId(): int | bool
+    public function getParentId(): int | false
     {
         if ($this->parent_id) {
             return $this->parent_id;
@@ -996,10 +996,6 @@ abstract class Item extends QUI\QDOM
 
         $image_effects = $this->getEffects();
 
-        if (is_bool($image_effects)) {
-            $image_effects = [];
-        }
-
         switch ($this->getAttribute('order')) {
             case 'priority':
             case 'priority ASC':
@@ -1282,9 +1278,9 @@ abstract class Item extends QUI\QDOM
     /**
      * Return the effects of the item
      *
-     * @return bool|array<string, mixed>
+     * @return array<string, mixed>
      */
-    public function getEffects(): bool | array
+    public function getEffects(): array
     {
         if (is_array($this->effects)) {
             return $this->effects;
@@ -1413,13 +1409,13 @@ abstract class Item extends QUI\QDOM
     /**
      * Returns information about a file path
      *
-     * @param int|bool $options - If present, specifies a specific element to be returned;
+     * @param int|false $options - If present, specifies a specific element to be returned;
      *                                  one of:
      *                                  PATHINFO_DIRNAME, PATHINFO_BASENAME,
      *                                  PATHINFO_EXTENSION or PATHINFO_FILENAME.
      * @return array<string, mixed>|string
      */
-    public function getPathinfo(bool | int $options = false): array | string
+    public function getPathinfo(false | int $options = false): array | string
     {
         if (!$options) {
             return pathinfo($this->getFullPath());

@@ -127,15 +127,15 @@ class Project implements \Stringable
      * Constructor
      *
      * @param string $name - Name of the Project
-     * @param boolean|string $lang - (optional) Language of the Project - optional
-     * @param boolean|string $template - (optional) Template of the Project
+     * @param false|string $lang - (optional) Language of the Project - optional
+     * @param false|string $template - (optional) Template of the Project
      *
      * @throws QUI\Exception
      */
     public function __construct(
         private string $name,
-        private bool|string $lang = false,
-        private bool|string $template = false
+        private false|string $lang = false,
+        private false|string $template = false
     ) {
         try {
             $this->refresh();
@@ -405,11 +405,11 @@ class Project implements \Stringable
     /**
      * Gibt die gesuchte Einstellung vom Projekt zurück
      *
-     * @param boolean|string $name - name of the config, default = false, returns complete configs
+     * @param false|string $name - name of the config, default = false, returns complete configs
      *
      * @return mixed
      */
-    public function getConfig(bool|string $name = false): mixed
+    public function getConfig(false|string $name = false): mixed
     {
         if (!$name) {
             return $this->config;
@@ -758,9 +758,9 @@ class Project implements \Stringable
      * @param boolean $with_protocol - Mit oder ohne http -> standard = ohne
      * @param boolean $ssl - with or without ssl
      *
-     * @return boolean|string
+     * @return string
      */
-    public function getVHost(bool $with_protocol = false, bool $ssl = false): bool|string
+    public function getVHost(bool $with_protocol = false, bool $ssl = false): string
     {
         if (QUI::conf("webserver", "forceHttps")) {
             $ssl = true;

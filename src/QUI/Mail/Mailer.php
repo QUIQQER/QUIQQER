@@ -334,9 +334,9 @@ class Mailer extends QUI\QDOM
      * Add reply to address
      *
      * @param string $email - E-Mail
-     * @param boolean|string $name - E-Mail Name
+     * @param false|string $name - E-Mail Name
      */
-    public function addReplyTo(string $email, bool | string $name = false): void
+    public function addReplyTo(string $email, false | string $name = false): void
     {
         $email = trim($email);
         $email = explode(',', $email);
@@ -355,9 +355,9 @@ class Mailer extends QUI\QDOM
      * Add cc address
      *
      * @param string $email - E-Mail
-     * @param boolean|string $name - E-Mail Name
+     * @param false|string $name - E-Mail Name
      */
-    public function addCC(string $email, bool | string $name = false): void
+    public function addCC(string $email, false | string $name = false): void
     {
         $email = trim($email);
         $email = explode(',', $email);
@@ -376,9 +376,9 @@ class Mailer extends QUI\QDOM
      * Add bcc address
      *
      * @param string $email - E-Mail
-     * @param boolean|string $name - E-Mail Name
+     * @param false|string $name - E-Mail Name
      */
-    public function addBCC(string $email, bool | string $name = false): void
+    public function addBCC(string $email, false | string $name = false): void
     {
         $email = trim($email);
         $email = explode(',', $email);
@@ -506,9 +506,9 @@ class Mailer extends QUI\QDOM
      * Add a recipient
      *
      * @param string $email - E-Mail
-     * @param boolean|string $name - E-Mail Name
+     * @param false|string $name - E-Mail Name
      */
-    public function addRecipient(string $email, bool | string $name = false): void
+    public function addRecipient(string $email, false | string $name = false): void
     {
         $email = trim($email);
         $email = explode(',', $email);

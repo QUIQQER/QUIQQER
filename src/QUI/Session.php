@@ -563,7 +563,7 @@ class Session
         return $result !== false;
     }
 
-    public function getSymfonySession(): \Symfony\Component\HttpFoundation\Session\Session|bool
+    public function getSymfonySession(): \Symfony\Component\HttpFoundation\Session\Session|false
     {
         return $this->Session;
     }

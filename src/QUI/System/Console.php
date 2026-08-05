@@ -640,9 +640,9 @@ class Console
      *
      * @param boolean|string $tool - boolean true = all Tools | string = specific tool
      *
-     * @return array<string, Console\Tool>|Console\Tool|bool
+     * @return array<string, Console\Tool>|Console\Tool|false
      */
-    public function get(bool | string $tool): bool | array | Console\Tool
+    public function get(bool | string $tool): false | array | Console\Tool
     {
         if (isset($this->tools[$tool])) {
             return $this->tools[$tool];

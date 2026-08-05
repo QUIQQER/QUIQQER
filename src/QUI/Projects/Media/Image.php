@@ -91,7 +91,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @throws QUI\Exception
      * @see QUI\Interfaces\Projects\Media\File::createCache()
      */
-    public function createCache(): bool | string
+    public function createCache(): false | string
     {
         if (Media::$globalDisableMediaCacheCreation) {
             return false;
@@ -103,16 +103,16 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Create a cache file with the new width and height
      *
-     * @param boolean|integer $width - (optional)
-     * @param boolean|integer $height - (optional)
+     * @param false|integer $width - (optional)
+     * @param false|integer $height - (optional)
      *
-     * @return bool|string - URL to the cache file
+     * @return false|string - URL to the cache file
      *
      * @throws QUI\Exception
      * @throws ExceptionStack
      * @throws QUI\Permissions\Exception
      */
-    public function createSizeCache(bool | int $width = false, bool | int $height = false): bool | string
+    public function createSizeCache(false | int $width = false, false | int $height = false): false | string
     {
         if (!$this->getAttribute('active')) {
             return false;
@@ -516,17 +516,16 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the Watermark image file
      */
-    public function getWatermark(): Image | bool
+    public function getWatermark(): Image | false
     {
         // own watermark?
         $imageEffects = $this->getEffects();
 
-        if (is_array($imageEffects) && !isset($imageEffects['watermark'])) {
+        if (!isset($imageEffects['watermark'])) {
             $imageEffects['watermark'] = 'default';
         }
 
-
-        if (!$imageEffects || $imageEffects['watermark'] === '') {
+        if ($imageEffects['watermark'] === '') {
             return false;
         }
 
@@ -594,7 +593,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @return integer|false
      * @throws QUI\Exception
      */
-    public function getHeight(): bool | int
+    public function getHeight(): false | int
     {
         if ($this->getAttribute('image_height')) {
             return (int)$this->getAttribute('image_height');
@@ -617,7 +616,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @return integer|false
      * @throws QUI\Exception
      */
-    public function getWidth(): bool | int
+    public function getWidth(): false | int
     {
         if ($this->getAttribute('image_width')) {
             return (int)$this->getAttribute('image_width');

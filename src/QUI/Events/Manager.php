@@ -255,12 +255,12 @@ class Manager implements QUI\Interfaces\Events
      * Remove an event listener from the runtime stack and persisted cache.
      *
      * @param string $event Event name
-     * @param callable|bool $fn Specific callback or `false` to remove the whole event
+     * @param callable|string|false $fn Specific callback or `false` to remove the whole event
      * @param string $package Package name for persisted string callbacks
      */
     public function removeEvent(
         string $event,
-        callable | bool $fn = false,
+        callable | string | false $fn = false,
         string $package = ''
     ): void {
         $this->Events->removeEvent($event, $fn);
@@ -302,14 +302,14 @@ class Manager implements QUI\Interfaces\Events
      * Fire an event with optional arguments
      *
      * @param string $event The name of the event to fire
-     * @param bool|array<array-key, mixed> $args Optional arguments to pass to the event handlers
+     * @param false|array<array-key, mixed> $args Optional arguments to pass to the event handlers
      *
      * @return array<string, mixed> Results indexed by callback name
      * @throws ExceptionStack
      */
     public function fireEvent(
         string $event,
-        bool | array $args = false,
+        false | array $args = false,
         bool $force = false
     ): array {
         // event onFireEvent

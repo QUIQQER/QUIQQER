@@ -519,11 +519,11 @@ class Media extends QUI\QDOM
     /**
      * Return the DataBase table name
      *
-     * @param boolean|string $type - (optional) standard=false; other options: relations
+     * @param false|string $type - (optional) standard=false; other options: relations
      *
      * @return string
      */
-    public function getTable(bool | string $type = false): string
+    public function getTable(false | string $type = false): string
     {
         if ($type == 'relations') {
             return QUI::getDBTableName($this->Project->getAttribute('name') . '_media_relations');
@@ -890,7 +890,7 @@ class Media extends QUI\QDOM
     /**
      * Return the parent id
      */
-    public function getParentIdFrom(int $id): bool | int
+    public function getParentIdFrom(int $id): false | int
     {
         if ($id <= 1) {
             return false;

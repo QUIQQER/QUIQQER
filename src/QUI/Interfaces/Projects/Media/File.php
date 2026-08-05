@@ -47,7 +47,7 @@ interface File
 
     public function getParent(): Item;
 
-    public function getParentId(): int | bool;
+    public function getParentId(): int | false;
 
     /**
      * @return array<int, int|string>

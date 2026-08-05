@@ -133,9 +133,9 @@ class Event implements QUI\Interfaces\Events
      * Remove a runtime event listener.
      *
      * @param string $event Event name
-     * @param callable|bool $fn Specific handler or `false` to remove the whole event
+     * @param callable|string|false $fn Specific handler or `false` to remove the whole event
      */
-    public function removeEvent(string $event, callable | bool $fn = false): void
+    public function removeEvent(string $event, callable | string | false $fn = false): void
     {
         if (!isset($this->events[$event])) {
             return;
@@ -162,14 +162,14 @@ class Event implements QUI\Interfaces\Events
      * Fire an event with optional arguments.
      *
      * @param string $event Event name such as `onComplete`
-     * @param bool|array<array-key, mixed> $args Event arguments; when provided they must be an array
+     * @param false|array<array-key, mixed> $args Event arguments; when provided they must be an array
      *
      * @return array<string, mixed> Event results indexed by callback name
      * @throws QUI\ExceptionStack
      */
     public function fireEvent(
         string $event,
-        bool | array $args = false,
+        false | array $args = false,
         bool $force = false
     ): array {
         $results = [];

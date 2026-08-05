@@ -45,9 +45,9 @@ class Locale implements \Stringable
     public bool $no_translation = false;
 
     /**
-     * @var array<array-key, mixed>|bool
+     * @var array<array-key, mixed>|false
      */
-    protected array|bool $dateFormats = false;
+    protected array|false $dateFormats = false;
 
     /**
      * The current lang
@@ -71,7 +71,7 @@ class Locale implements \Stringable
     /**
      * Saves the current language of this Locale if setTemporaryCurrent is used.
      */
-    protected bool|string $tempCurrent = false;
+    protected false|string $tempCurrent = false;
 
     public function __toString(): string
     {
@@ -139,9 +139,9 @@ class Locale implements \Stringable
     /**
      * Get the translation
      *
-     * @param bool|array<array-key, mixed> $replace
+     * @param false|array<array-key, mixed> $replace
      */
-    public function get(string $group, bool|string $value = false, bool|array $replace = false): string
+    public function get(string $group, false|string $value = false, false|array $replace = false): string
     {
         $str = $this->getHelper($group, $value);
 
@@ -171,8 +171,11 @@ class Locale implements \Stringable
      *
      * @see ->get()
      */
-    protected function getHelper(string $group, bool|string $value = false, bool|string $current = false): array|string
-    {
+    protected function getHelper(
+        string $group,
+        false|string $value = false,
+        false|string $current = false
+    ): array|string {
         if ($this->no_translation) {
             return '[' . $group . '] ' . $value;
         }
@@ -257,7 +260,7 @@ class Locale implements \Stringable
      *
      * @param array<string, mixed>|string $key
      */
-    public function set(string $lang, string $group, array|string $key, bool|string $value = false): void
+    public function set(string $lang, string $group, array|string $key, false|string $value = false): void
     {
         if (!is_array($key)) {
             LocaleRuntimeCache::set($lang, $group, [$key => $value]);
@@ -418,11 +421,11 @@ class Locale implements \Stringable
      * Format a date timestamp
      *
      * @param int|string $timestamp
-     * @param bool|string $format - (optional) ;if not given, it uses the quiqqer system format
+     * @param false|string $format - (optional) ;if not given, it uses the quiqqer system format
      *
      * @return string
      */
-    public function formatDate(int|string $timestamp, bool|string $format = false): string
+    public function formatDate(int|string $timestamp, false|string $format = false): string
     {
         $Formatter = self::getDateFormatter();
         $current = $this->getCurrent();
@@ -492,11 +495,11 @@ class Locale implements \Stringable
      * Exist the variable in the translation?
      *
      * @param string $group - language group
-     * @param boolean|string $value - language group variable, optional
+     * @param false|string $value - language group variable, optional
      *
      * @return boolean
      */
-    public function exists(string $group, bool|string $value = false): bool
+    public function exists(string $group, false|string $value = false): bool
     {
         $str = $this->getHelper($group, $value);
 
@@ -530,15 +533,15 @@ class Locale implements \Stringable
     /**
      * Get the translation from a specific language
      *
-     * @param bool|array<array-key, mixed> $replace
+     * @param false|array<array-key, mixed> $replace
      *
      * @return array<array-key, mixed>|string
      */
     public function getByLang(
         string $lang,
         string $group,
-        bool|string $value = false,
-        bool|array $replace = false
+        false|string $value = false,
+        false|array $replace = false
     ): array|string {
         $str = $this->getHelper($group, $value, $lang);
 
@@ -637,9 +640,9 @@ class Locale implements \Stringable
     /**
      * Return all available date formats
      *
-     * @return array<array-key, mixed>|bool
+     * @return array<array-key, mixed>
      */
-    protected function getDateFormats(): bool|array
+    protected function getDateFormats(): array
     {
         if ($this->dateFormats) {
             return $this->dateFormats;

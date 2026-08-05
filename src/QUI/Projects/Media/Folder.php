@@ -280,7 +280,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * @throws QUI\Database\Exception
      * @throws QUI\Exception
      */
-    public function getChildrenByName($filename, bool | int $limit = false): array
+    public function getChildrenByName($filename, false | int $limit = false): array
     {
         $table = $this->Media->getTable();
         $table_rel = $this->Media->getTable('relations');
@@ -1490,12 +1490,12 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * If the file is a folder
      *
      * @param string $path - Path to the dir
-     * @param QUI\Projects\Media\Folder|boolean $Folder - (optional) Uploaded Folder
+     * @param QUI\Projects\Media\Folder|false $Folder - (optional) Uploaded Folder
      *
      * @return Folder
      * @throws QUI\Exception
      */
-    protected function uploadFolder(string $path, bool | Folder $Folder = false): Folder
+    protected function uploadFolder(string $path, false | Folder $Folder = false): Folder
     {
         $files = FileUtils::readDir($path);
 

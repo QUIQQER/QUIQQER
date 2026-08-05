@@ -43,7 +43,7 @@ class Permission
      */
     public static function hasPermission(
         string $perm,
-        null | bool | User $User = null
+        null | false | User $User = null
     ): Permission | bool | string {
         try {
             return self::checkPermission($perm, $User);
@@ -60,7 +60,7 @@ class Permission
      */
     public static function checkPermission(
         string $perm,
-        bool | User | null $User = null
+        false | User | null $User = null
     ): Permission | bool | string {
         if (!$User) {
             $User = self::getUser();
@@ -123,7 +123,7 @@ class Permission
     /**
      * Checks, if the user has the SuperUser flag
      */
-    public static function isSU(null | bool | User $User = null): bool
+    public static function isSU(null | false | User $User = null): bool
     {
         if (!$User) {
             $User = self::getUser();
@@ -135,11 +135,11 @@ class Permission
     /**
      * Checks if the user is allowed to enter the admin area
      *
-     * @param boolean|User $User - optional
+     * @param false|User $User - optional
      *
      * @throws \QUI\Exception
      */
-    public static function checkAdminUser(null | bool | User $User = null): void
+    public static function checkAdminUser(null | false | User $User = null): void
     {
         $UserToCheck = false;
 
@@ -170,12 +170,12 @@ class Permission
     /**
      * Checks if the object is also a user object
      *
-     * @param boolean|User $User - optional
+     * @param false|User $User - optional
      *
      * @throws Exception
      * @throws \QUI\Exception
      */
-    public static function checkUser(null | bool | User $User = null): void
+    public static function checkUser(null | false | User $User = null): void
     {
         $UserToCheck = $User;
 
@@ -202,7 +202,7 @@ class Permission
     /**
      * Checks, if the user is an admin user
      */
-    public static function isAdmin(null | bool | User $User = null): bool
+    public static function isAdmin(null | false | User $User = null): bool
     {
         if (!$User) {
             $User = self::getUser();
@@ -220,12 +220,12 @@ class Permission
      * Checks if the user is a SuperUser
      * if not, it throws an exception
      *
-     * @param boolean|User $User - optional
+     * @param false|User $User - optional
      *
      * @throws Exception
      * @throws \QUI\Exception
      */
-    public static function checkSU(null | bool | User $User = null): void
+    public static function checkSU(null | false | User $User = null): void
     {
         $UserToCheck = false;
 
@@ -256,7 +256,7 @@ class Permission
     /**
      * Checks if the permission is set
      */
-    public static function existsPermission(string $perm, null | bool | User $User = null): bool
+    public static function existsPermission(string $perm, null | false | User $User = null): bool
     {
         if (!$User) {
             $User = self::getUser();
@@ -440,7 +440,7 @@ class Permission
     public static function hasSitePermission(
         string $perm,
         Site $Site,
-        null | bool | User $User = null
+        null | false | User $User = null
     ): bool {
         try {
             return self::checkSitePermission($perm, $Site, $User);
@@ -458,7 +458,7 @@ class Permission
     public static function checkSitePermission(
         string $perm,
         Edit | Site $Site,
-        null | bool | User $User = null
+        null | false | User $User = null
     ): bool {
         if (!$User) {
             $User = self::getUser();
@@ -573,7 +573,7 @@ class Permission
     public static function checkPermissionList(
         array $permissions,
         string $perm,
-        null | bool | User $User = null
+        null | false | User $User = null
     ): bool {
         if (!isset($permissions[$perm])) {
             QUI\System\Log::addNotice(
@@ -877,7 +877,7 @@ class Permission
     public static function checkProjectPermission(
         string $perm,
         Project $Project,
-        null | bool | User $User = null
+        null | false | User $User = null
     ): bool {
         if (!$User) {
             $User = self::getUser();

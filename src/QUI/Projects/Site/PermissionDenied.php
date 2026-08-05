@@ -117,7 +117,7 @@ class PermissionDenied extends QUI\Projects\Site
     /**
      * @inheritdoc
      */
-    public function load(bool|string $plugin = false): QUI\Projects\Site
+    public function load(false|string $plugin = false): QUI\Projects\Site
     {
         return $this;
     }
