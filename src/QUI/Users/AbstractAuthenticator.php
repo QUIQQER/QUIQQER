@@ -56,12 +56,12 @@ abstract class AbstractAuthenticator implements QUI\Users\AuthenticatorInterface
 
     public function getUserId(): int
     {
-        return $this->getUser()->getId();
+        return (int)$this->getUser()->getId();
     }
 
     public function getUserUUID(): string
     {
-        return $this->getUser()->getUUID();
+        return (string)$this->getUser()->getUUID();
     }
 
     public function cliAuthentication(Console $Console): void

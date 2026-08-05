@@ -573,7 +573,7 @@ class Rewrite
 
 
         if ($pos !== false) {
-            $request_url = substr($request_url, 0, $pos) . substr($request_url, $end);
+            $request_url = substr($request_url, 0, $pos) . substr($request_url, (int)$end);
 
             if ($this->site->getId() == 1) {
                 $request_url = substr($request_url, 0, $pos);

@@ -731,7 +731,7 @@ class MigrationV2 extends QUI\System\Console\Tool
         $Platform = $Connection->getDatabasePlatform();
         $QueryBuilder = $Connection->createQueryBuilder();
 
-        return $QueryBuilder
+        return (int)$QueryBuilder
             ->update($Platform->quoteSingleIdentifier($workspaceTable))
             ->set($Platform->quoteSingleIdentifier("uid"), ":newUid")
             ->where($QueryBuilder->expr()->eq($Platform->quoteSingleIdentifier("uid"), ":oldUid"))
@@ -1101,6 +1101,6 @@ class MigrationV2 extends QUI\System\Console\Tool
             );
         }
 
-        return $deleted;
+        return (int)$deleted;
     }
 }

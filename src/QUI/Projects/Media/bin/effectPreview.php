@@ -77,7 +77,7 @@ if (isset($_REQUEST['watermark'])) {
             $imageHeight = $imageHeight * ($ratio / 100);
             $imageWidth = $imageWidth * ($ratio / 100);
 
-            $WatermarkImage->scaleDown($imageWidth, $imageHeight);
+            $WatermarkImage->scaleDown((int)$imageWidth, (int)$imageHeight);
         }
 
         $Image->place($WatermarkImage, $watermarkPosition);

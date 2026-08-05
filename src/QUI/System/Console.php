@@ -235,7 +235,7 @@ class Console
         $processUser = posix_getpwuid(posix_geteuid());
         $processUser = $processUser['name'];
 
-        $owner = fileowner(__FILE__);
+        $owner = (int)fileowner(__FILE__);
         $owner = posix_getpwuid($owner);
         $owner = $owner['name'];
 
@@ -684,7 +684,7 @@ class Console
      */
     public function readInput(): string
     {
-        return trim(fgets(STDIN));
+        return trim((string)fgets(STDIN));
     }
 
     /**
@@ -1116,14 +1116,14 @@ class Console
             $name = $Tool->getName();
             $description = $Tool->getDescription();
 
-            $parts = explode(':', $name);
+            $parts = explode(':', (string)$name);
             $command = ':' . $parts[1];
 
 
             $data[] = [
                 "\033[" . $this->colors['green'] . "m" . $command . "\033[0m",
                 $name,
-                trim($description)
+                trim((string)$description)
             ];
         }
 

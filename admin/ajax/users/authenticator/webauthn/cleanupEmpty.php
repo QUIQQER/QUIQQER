@@ -35,7 +35,7 @@ QUI::$Ajax->registerFunction(
             );
         }
 
-        $hasCredentials = !empty((new CredentialRepository())->findByUserUuid($userUuid));
+        $hasCredentials = !empty((new CredentialRepository())->findByUserUuid((string)$userUuid));
 
         if (!$hasCredentials) {
             try {

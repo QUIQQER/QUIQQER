@@ -194,7 +194,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                 $height = null;
             }
 
-            $Image->scaleDown($width, $height);
+            $Image->scaleDown(
+                $width === null ? null : (int)$width,
+                $height === null ? null : (int)$height
+            );
         }
 
         // effects
@@ -334,14 +337,14 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             if (!($params['height'] % 8 === 0)) {
                 $tempParams = $this->getResizeSize(
                     false,
-                    QUI\Utils\Math::ceilUp($params['height'], 16)
+                    (int)QUI\Utils\Math::ceilUp($params['height'], 16)
                 );
             } else {
                 $tempParams = $this->getResizeSize(false, $params['height']);
             }
         } elseif (!($params['width'] % 8 === 0)) {
             $tempParams = $this->getResizeSize(
-                QUI\Utils\Math::ceilUp($params['width'], 16)
+                (int)QUI\Utils\Math::ceilUp($params['width'], 16)
             );
         } else {
             $tempParams = $this->getResizeSize($params['width']);

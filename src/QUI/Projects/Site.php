@@ -1104,7 +1104,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             $Platform = $Connection->getDatabasePlatform();
             $result = $Connection->createQueryBuilder()
                 ->select(...array_map(
-                    static fn($field) => $Platform->quoteSingleIdentifier($field),
+                    static fn($field) => $Platform->quoteSingleIdentifier((string)$field),
                     $fieldList
                 ))
                 ->from($Platform->quoteSingleIdentifier($tbl))

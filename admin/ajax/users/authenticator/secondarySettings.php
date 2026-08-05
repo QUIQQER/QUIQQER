@@ -40,7 +40,7 @@ QUI::$Ajax->registerFunction(
             && $AuthenticatorUser instanceof QUI\Interfaces\Users\User
         ) {
             $credentials = (new QUI\Users\Auth\WebAuthn\CredentialRepository())
-                ->findByUserUuid($AuthenticatorUser->getUUID());
+                ->findByUserUuid((string)$AuthenticatorUser->getUUID());
 
             if (!empty($credentials)) {
                 if (!$AuthenticatorUser->hasAuthenticator(QUI\Users\Auth\WebAuthn::class)) {

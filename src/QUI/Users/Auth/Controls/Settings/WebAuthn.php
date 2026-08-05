@@ -32,7 +32,7 @@ class WebAuthn extends Control
         $isEnabled = false;
 
         if ($user instanceof QUI\Interfaces\Users\User) {
-            $credentials = (new CredentialRepository())->findByUserUuid($user->getUUID());
+            $credentials = (new CredentialRepository())->findByUserUuid((string)$user->getUUID());
             $isEnabled = $user->hasAuthenticator(QUI\Users\Auth\WebAuthn::class);
             $SessionUser = QUI::getUserBySession();
 

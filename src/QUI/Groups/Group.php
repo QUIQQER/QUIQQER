@@ -116,7 +116,7 @@ class Group extends QUI\QDOM
         if (!isset($result[0])) {
             if ($id == Manager::EVERYONE_ID || $id == Manager::GUEST_ID) {
                 $this->id = (int)$id;
-                $this->uuid = $id;
+                $this->uuid = (string)$id;
                 return;
             }
 
@@ -144,7 +144,7 @@ class Group extends QUI\QDOM
                 }
 
                 $result[0]['uuid'] = $uuid;
-                $this->uuid = $result[0]['uuid'];
+                $this->uuid = (string)$result[0]['uuid'];
 
                 QUI::getDataBaseConnection()->update(
                     QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
