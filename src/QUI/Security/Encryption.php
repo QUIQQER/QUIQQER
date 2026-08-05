@@ -59,7 +59,7 @@ class Encryption
         foreach ($ivs as $iv) {
             try {
                 $iv = @hex2bin($iv);
-                $data = openssl_decrypt($givenData, 'aes-256-cbc', $salt, 0, $iv);
+                $data = openssl_decrypt($givenData, 'aes-256-cbc', $salt, 0, (string)$iv);
 
                 if ($data !== false) {
                     return substr($data, -$sl) . substr($data, 0, -$sl);
@@ -109,6 +109,6 @@ class Encryption
 
         $data = substr($data, (int)$sl) . substr($data, 0, (int)$sl);
 
-        return openssl_encrypt($data, 'aes-256-cbc', $salt, 0, $iv);
+        return openssl_encrypt($data, 'aes-256-cbc', $salt, 0, (string)$iv);
     }
 }

@@ -1283,14 +1283,14 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         ) {
             $content = file_get_contents($file);
 
-            if (str_contains($content, '<svg') && strpos($content, '</svg>')) {
-                if (!str_contains($content, '<?xml ')) {
-                    if (preg_match('/(<svg[\s\S]*<\/svg>)/i', $content, $match)) {
+            if (str_contains((string)$content, '<svg') && strpos((string)$content, '</svg>')) {
+                if (!str_contains((string)$content, '<?xml ')) {
+                    if (preg_match('/(<svg[\s\S]*<\/svg>)/i', (string)$content, $match)) {
                         $content = $match[1];
                     }
 
-                    if (mb_substr($content, 0, 3) === "\xEF\xBB\xBF") {
-                        $content = substr($content, 3);
+                    if (mb_substr((string)$content, 0, 3) === "\xEF\xBB\xBF") {
+                        $content = substr((string)$content, 3);
                     }
 
                     $content = '<?xml version="1.0" encoding="UTF-8"?>' . $content;
@@ -1369,15 +1369,15 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         if ($fileInfo['mime_type'] === 'image/svg' || $fileInfo['mime_type'] === 'image/svg+xml') {
             $svgContent = file_get_contents($file);
 
-            if (preg_match('/(<svg[\s\S]*<\/svg>)/i', $svgContent, $match)) {
+            if (preg_match('/(<svg[\s\S]*<\/svg>)/i', (string)$svgContent, $match)) {
                 $svgContent = $match[1];
             }
 
-            if (mb_substr($svgContent, 0, 3) === "\xEF\xBB\xBF") {
-                $svgContent = substr($svgContent, 3);
+            if (mb_substr((string)$svgContent, 0, 3) === "\xEF\xBB\xBF") {
+                $svgContent = substr((string)$svgContent, 3);
             }
 
-            $svgContent = trim($svgContent);
+            $svgContent = trim((string)$svgContent);
 
             try {
                 $dom = new \DOMDocument();

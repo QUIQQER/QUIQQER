@@ -140,7 +140,7 @@ class Utils
             $filter = USR_DIR . 'lib/' . $name . '/url.filter.php';
             $func = 'url_filter_' . $name;
 
-            $filter = Orthos::clearPath(realpath($filter));
+            $filter = Orthos::clearPath((string)realpath($filter));
 
             if (file_exists($filter)) {
                 require_once $filter;

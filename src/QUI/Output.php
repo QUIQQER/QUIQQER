@@ -213,7 +213,7 @@ class Output extends Singleton
                 $Dom->appendChild($b);
                 $html = $Dom->saveHTML();
 
-                $html = str_replace('<!DOCTYPE html>', '', $html);
+                $html = str_replace('<!DOCTYPE html>', '', (string)$html);
                 $html = trim($html);
 
                 return $html;
@@ -301,10 +301,10 @@ class Output extends Singleton
         $result = str_replace(
             ['</img>', '</source>', '</meta>', '</link>', '</input>', '</br>'],
             '',
-            $result
+            (string)$result
         );
 
-        $result = str_replace('<?xml encoding="utf-8" ?>', '', $result);
+        $result = str_replace('<?xml encoding="utf-8" ?>', '', (string)$result);
 
         if ($this->settings['use-absolute-urls']) {
             $result = $this->parseAbsoluteUrls($result);

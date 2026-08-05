@@ -1843,7 +1843,7 @@ class Project implements \Stringable
         $filename = ETC_DIR . "projects.ini.php";
         $content = file_get_contents($filename);
 
-        $content = str_replace('[' . $this->name . ']', '[' . $newName . ']', $content);
+        $content = str_replace('[' . $this->name . ']', '[' . $newName . ']', (string)$content);
         file_put_contents($filename, $content);
 
 
@@ -1851,7 +1851,7 @@ class Project implements \Stringable
         $filename = ETC_DIR . "vhosts.ini.php";
         $content = file_get_contents($filename);
 
-        $content = str_replace($this->name, $newName, $content);
+        $content = str_replace($this->name, $newName, (string)$content);
         file_put_contents($filename, $content);
 
 

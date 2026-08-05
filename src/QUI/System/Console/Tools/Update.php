@@ -451,7 +451,7 @@ class Update extends QUI\System\Console\Tool
             QUI\Cache\Manager::longTimeCacheClearCompleteQuiqqer();
 
             // check init backup, with current inits
-            $diff = QUI\System\Backup::diff($etcBackupFolder);
+            $diff = QUI\System\Backup::diff((string)$etcBackupFolder);
 
             if (!empty($diff)) {
                 if ($this->getVerbosityLevel() > 0) {
@@ -463,10 +463,10 @@ class Update extends QUI\System\Console\Tool
                 $input = $this->readUpdateConfirmationInput('y');
 
                 if (strtolower($input) === 'y') {
-                    QUI\System\Backup::deleteEtcBackup($etcBackupFolder);
+                    QUI\System\Backup::deleteEtcBackup((string)$etcBackupFolder);
                 }
             } else {
-                QUI\System\Backup::deleteEtcBackup($etcBackupFolder);
+                QUI\System\Backup::deleteEtcBackup((string)$etcBackupFolder);
             }
         } catch (Exception $Exception) {
             $this->write(' [error]', 'red');

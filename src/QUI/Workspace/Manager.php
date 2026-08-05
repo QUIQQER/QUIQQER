@@ -286,7 +286,7 @@ class Manager
 
             // text = 65535 single bytes chars,
             // but we have utf8, so we use max 20000, not perfect but better than nothing
-            if (mb_strlen($workspace['data']) > 20000) {
+            if (mb_strlen((string)$workspace['data']) > 20000) {
                 throw new QUI\Exception('Could not save the workspace. Workspace is to big.');
             }
         }

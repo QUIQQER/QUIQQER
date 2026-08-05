@@ -32,7 +32,7 @@ class InstallationWizard extends QUI\System\Console\Tool
         }
 
         $presetDataAsJsonString = file_get_contents($presetFile);
-        $presetData = json_decode($presetDataAsJsonString, true);
+        $presetData = json_decode((string)$presetDataAsJsonString, true);
 
         if ($presetData === null) {
             $this->writeLn("Error: Could not decode JSON in preset file '$presetFile'.", 'red');

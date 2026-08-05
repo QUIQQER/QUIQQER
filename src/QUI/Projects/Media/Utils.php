@@ -1382,7 +1382,7 @@ class Utils
         }
 
         $extensions = file_get_contents($file);
-        $extensions = str_replace(';<?php exit; ?>', '', $extensions);
+        $extensions = str_replace(';<?php exit; ?>', '', (string)$extensions);
         $extensions = trim($extensions);
         $extensions = explode(PHP_EOL, $extensions);
 

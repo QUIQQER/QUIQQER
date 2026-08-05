@@ -219,7 +219,7 @@ class Menu
                     continue;
                 }
 
-                $setting_file = $Package->getXMLFilePath(QUI\Package\Package::SETTINGS_XML);
+                $setting_file = (string)$Package->getXMLFilePath(QUI\Package\Package::SETTINGS_XML);
 
                 if (file_exists($setting_file)) {
                     $files[] = str_replace(CMS_DIR, '', $setting_file);

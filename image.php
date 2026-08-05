@@ -33,7 +33,7 @@ function getMimeType(string $file): string
 
     if (function_exists('finfo_open') && function_exists('finfo_file')) { // PECL
         $finfo = finfo_open(FILEINFO_MIME);
-        $part = explode(';', finfo_file($finfo, $file));
+        $part = explode(';', (string)finfo_file($finfo, $file));
 
         return $part[0];
     }

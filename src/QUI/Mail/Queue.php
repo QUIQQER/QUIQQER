@@ -530,7 +530,7 @@ class Queue
             return 0;
         }
 
-        $mailsSent = explode('-', file_get_contents($cacheFile));
+        $mailsSent = explode('-', (string)file_get_contents($cacheFile));
         $createTime = (int)$mailsSent[0];
 
         if ((time() - $createTime) > 3600) {
@@ -552,7 +552,7 @@ class Queue
         $cacheFile = QUI::getPackage('quiqqer/core')->getVarDir() . 'mailqueue';
         $mailsSent = $this->getMailsSentInLastHour();
 
-        $mailsSentCache = explode('-', file_get_contents($cacheFile));
+        $mailsSentCache = explode('-', (string)file_get_contents($cacheFile));
         file_put_contents($cacheFile, $mailsSentCache[0] . '-' . ($mailsSent + 1));
     }
 

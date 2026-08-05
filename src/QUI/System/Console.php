@@ -606,7 +606,7 @@ class Console
      */
     protected function includeClasses(string $file, string $dir): void
     {
-        $file = Orthos::clearPath(realpath($dir . $file));
+        $file = Orthos::clearPath((string)realpath($dir . $file));
 
         if (!file_exists($file)) {
             throw new QUI\Exception('console tool not exists');

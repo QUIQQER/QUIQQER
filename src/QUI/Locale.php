@@ -459,7 +459,7 @@ class Locale implements \Stringable
 
         setlocale(LC_TIME, $localeCode);
         $result = strftime($format, $timestamp);
-        setlocale(LC_TIME, $oldLocale);
+        setlocale(LC_TIME, (string)$oldLocale);
 
         return Encoding::toUTF8($result);
 //        }

@@ -22,7 +22,7 @@ QUI::$Ajax->registerFunction(
             return false;
         }
 
-        $packages = json_decode(file_get_contents($cacheFile), true);
+        $packages = json_decode((string)file_get_contents($cacheFile), true);
 
         if (!isset($packages[$packageName])) {
             QUI::getMessagesHandler()->addError(

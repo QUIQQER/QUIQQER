@@ -482,7 +482,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         // at least 2 frame headers
         while (!feof($fh) && $count < 2) {
             $chunk = fread($fh, 1024 * 100); //read 100kb at a time
-            $count += preg_match_all('#\x00\x21\xF9\x04.{4}\x00[\x2C\x21]#s', $chunk, $matches);
+            $count += preg_match_all('#\x00\x21\xF9\x04.{4}\x00[\x2C\x21]#s', (string)$chunk, $matches);
         }
 
         fclose($fh);
@@ -699,7 +699,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             $params['height']
         );
 
-        return str_replace(CMS_DIR, URL_DIR, $cacheUrl);
+        return str_replace(CMS_DIR, URL_DIR, (string)$cacheUrl);
     }
 
     /**

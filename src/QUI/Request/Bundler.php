@@ -159,7 +159,7 @@ class Bundler
 
         $dir = OPT_DIR . 'quiqqer/core/admin/';
 
-        if (str_contains($file, $dir) && file_exists($file)) {
+        if (str_contains((string)$file, $dir) && file_exists((string)$file)) {
             require_once $file;
 
             $this->includes[$function] = $file;
@@ -172,7 +172,7 @@ class Bundler
         $file = Orthos::clearPath($file);
         $file = realpath($file);
 
-        if (str_contains($file, CMS_DIR) && file_exists($file)) {
+        if (str_contains((string)$file, CMS_DIR) && file_exists((string)$file)) {
             require_once $file;
 
             $this->includes[$function] = $file;
@@ -213,7 +213,7 @@ class Bundler
         $file = Orthos::clearPath($file);
         $file = realpath($file);
 
-        if (str_contains($file, $dir) && file_exists($file)) {
+        if (str_contains((string)$file, $dir) && file_exists((string)$file)) {
             require_once $file;
         }
 
@@ -264,7 +264,7 @@ class Bundler
 
         $dir = $projectDir . '/lib/';
 
-        if (str_contains($file, $dir) && file_exists($file)) {
+        if (str_contains((string)$file, $dir) && file_exists((string)$file)) {
             require_once $file;
         }
 

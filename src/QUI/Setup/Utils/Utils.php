@@ -146,7 +146,7 @@ class Utils
         if (System::isShellFunctionEnabled('shell_exec')) {
             $version = shell_exec('apache2 -v 2> /dev/null');
             $regex = "/Apache\\/([0-9\\.]*)/i";
-            $res = preg_match($regex, $version, $matches);
+            $res = preg_match($regex, (string)$version, $matches);
             if ($res) {
                 $version = $matches[1];
 
@@ -166,7 +166,7 @@ class Utils
         if (function_exists('apache_get_version')) {
             $version = apache_get_version();
             $regex = "/Apache\\/([0-9\\.]*)/i";
-            $res = preg_match($regex, $version, $matches);
+            $res = preg_match($regex, (string)$version, $matches);
 
             if ($res) {
                 $version = $matches[1];
@@ -211,7 +211,7 @@ class Utils
     public static function templateSupportsDemoData($templateName, $version): bool
     {
         $packagesJson = file_get_contents('https://update.quiqqer.com/packages.json');
-        $packages = json_decode($packagesJson, true);
+        $packages = json_decode((string)$packagesJson, true);
         $packages = $packages['packages'];
 
         if (!isset($packages[$templateName][$version])) {

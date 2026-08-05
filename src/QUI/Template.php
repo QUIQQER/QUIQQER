@@ -364,7 +364,7 @@ class Template extends QUI\QDOM
                 if (!str_contains($templateIni, 'QUI\\Smarty\\Smarty4')) {
                     file_put_contents(
                         $templateIni,
-                        trim($iniContent) . PHP_EOL . 'smarty4="QUI\Smarty\Smarty4"'
+                        trim((string)$iniContent) . PHP_EOL . 'smarty4="QUI\Smarty\Smarty4"'
                     );
                 }
 
@@ -586,7 +586,7 @@ class Template extends QUI\QDOM
 
         // includes
         if ($siteScript) {
-            $siteScript = Orthos::clearPath(realpath($siteScript));
+            $siteScript = Orthos::clearPath((string)realpath($siteScript));
 
             if ($siteScript) {
                 include $siteScript;
@@ -594,7 +594,7 @@ class Template extends QUI\QDOM
         }
 
         if ($projectScript) {
-            $projectScript = Orthos::clearPath(realpath($projectScript));
+            $projectScript = Orthos::clearPath((string)realpath($projectScript));
 
             if ($projectScript) {
                 include $projectScript;
@@ -934,7 +934,7 @@ class Template extends QUI\QDOM
             $Parent = $Package->getTemplateParent();
 
             if ($Parent) {
-                $siteXML = $Parent->getXMLFilePath('site.xml');
+                $siteXML = (string)$Parent->getXMLFilePath('site.xml');
 
                 if (file_exists($siteXML)) {
                     $templates[] = OPT_DIR . $Parent->getName();

@@ -1210,7 +1210,7 @@ class Manager
         $filename = ETC_DIR . 'projects.ini.php';
         $content = file_get_contents($filename);
 
-        $content = str_replace($oldName, $newName, $content);
+        $content = str_replace($oldName, $newName, (string)$content);
         file_put_contents($filename, $content);
 
 
@@ -1218,7 +1218,7 @@ class Manager
         $filename = ETC_DIR . 'vhosts.ini.php';
         $content = file_get_contents($filename);
 
-        $content = str_replace($oldName, $newName, $content);
+        $content = str_replace($oldName, $newName, (string)$content);
         file_put_contents($filename, $content);
 
 

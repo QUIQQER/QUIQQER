@@ -92,7 +92,7 @@ class CSP
         }
 
         $content = file_get_contents($listFile);
-        $content = str_replace(';<?php exit; ?>', '', $content);
+        $content = str_replace(';<?php exit; ?>', '', (string)$content);
         $content = trim($content);
 
         $this->allowedIni = explode("\n", $content);
