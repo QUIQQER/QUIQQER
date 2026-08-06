@@ -30,7 +30,7 @@ class Event implements QUI\Interfaces\Events
 {
     /**
      * @var array<string, array<int, array{
-     *     callable: callable|string,
+     *     callable: callable,
      *     priority: int,
      *     package: string
      * }>>
@@ -51,7 +51,7 @@ class Event implements QUI\Interfaces\Events
      * Return all registered runtime events.
      *
      * @return array<string, array<int, array{
-     *     callable: callable|string,
+     *     callable: callable,
      *     priority: int,
      *     package: string
      * }>>
@@ -71,6 +71,14 @@ class Event implements QUI\Interfaces\Events
         foreach ($events as $event => $fn) {
             if (is_array($fn) && isset($fn[2])) {
                 $this->addEvent($event, $fn[0], $fn[1], $fn[2]);
+                continue;
+            }
+
+            if (is_array($fn) && !is_callable($fn)) {
+                QUI\System\Log::addDebug('Event error :: $fn is not callable', [
+                    'fn' => $fn
+                ]);
+
                 continue;
             }
 
@@ -226,7 +234,11 @@ class Event implements QUI\Interfaces\Events
                     continue;
                 }
 
-                $fn = preg_replace('/[\\\\]{2,}/', '\\', $fn);
+                $normalizedFn = preg_replace('/[\\\\]{2,}/', '\\', $fn);
+
+                if (is_callable($normalizedFn)) {
+                    $fn = $normalizedFn;
+                }
 
                 if ($args === false) {
                     $results[$fn] = call_user_func($fn);
