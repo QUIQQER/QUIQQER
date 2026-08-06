@@ -1679,11 +1679,11 @@ class Manager
      *
      * @param string $permission - Name of the permission
      *
-     * @return false|array<string, mixed>
+     * @return array<string, mixed>
      *
      * @throws QUI\Exception
      */
-    public function getPermissionData(string $permission): bool | array
+    public function getPermissionData(string $permission): array
     {
         if (!isset($this->cache[$permission])) {
             throw new QUI\Exception('Permission not found');

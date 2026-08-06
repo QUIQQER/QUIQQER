@@ -1014,11 +1014,17 @@ class Group extends QUI\QDOM
             return false;
         }
 
-        if ($this->getParent() == $id) {
-            return true;
+        $Parent = $this->getParent();
+
+        if ($Parent === null) {
+            return false;
         }
 
-        return false;
+        if (is_numeric($id)) {
+            return $Parent->getId() === (int)$id;
+        }
+
+        return $Parent->getUUID() === $id;
     }
 
     public function hasChildren(): int

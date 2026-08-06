@@ -15,6 +15,7 @@ use QUI\Utils\Security\Orthos;
 
 use function bin2hex;
 use function is_array;
+use function is_int;
 use function is_null;
 use function is_string;
 use function mb_substr;
@@ -40,6 +41,14 @@ class QUIQQER extends AbstractAuthenticator
 
         if ($user instanceof User) {
             $this->User = $user;
+            return;
+        }
+
+        if (is_int($user)) {
+            $user = (string)$user;
+        }
+
+        if (!is_string($user)) {
             return;
         }
 

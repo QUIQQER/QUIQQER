@@ -397,21 +397,23 @@ class Locale implements \Stringable
         }
 
         // sort, main locale to the top
-        usort($langList, static function ($a, $b) use ($langCode) {
-            if ($a == $b) {
-                return 0;
-            }
+        usort(
+            $langList,
+            static function (string $a, string $b) use ($langCode): int {
+                if ($a === $b) {
+                    return 0;
+                }
 
-            if (str_starts_with($a, $langCode)) {
-                return -1;
-            }
+                $aIsMainLocale = str_starts_with($a, $langCode);
+                $bIsMainLocale = str_starts_with($b, $langCode);
 
-            if (str_starts_with($b, $langCode)) {
-                return 1;
-            }
+                if ($aIsMainLocale !== $bIsMainLocale) {
+                    return $aIsMainLocale ? -1 : 1;
+                }
 
-            return $a > $b;
-        });
+                return $a <=> $b;
+            }
+        );
 
         $this->localeList[$lang] = $langList;
 
@@ -536,7 +538,7 @@ class Locale implements \Stringable
      *
      * @param false|array<array-key, mixed> $replace
      *
-     * @return array<array-key, mixed>|string
+     * @return ($value is string ? string : array<array-key, mixed>|string)
      */
     public function getByLang(
         string $lang,

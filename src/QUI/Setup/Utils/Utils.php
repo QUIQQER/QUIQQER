@@ -48,11 +48,18 @@ class Utils
 
         $dirHandle = opendir($dir);
 
+        if ($dirHandle === false) {
+            return null;
+        }
+
         while (($entry = readdir($dirHandle)) !== false) {
-            if ($entry != '.' && $entry != '..') {
+            if ($entry !== '.' && $entry !== '..') {
+                closedir($dirHandle);
                 return false;
             }
         }
+
+        closedir($dirHandle);
 
         return true;
     }

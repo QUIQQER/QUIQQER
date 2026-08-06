@@ -753,9 +753,11 @@ class Edit extends Site
         $mid = $this->isLockedFromOther();
 
         if ($mid) {
-            try {
-                $User = QUI::getUsers()->get($mid);
-            } catch (QUI\Exception) {
+            if (is_int($mid) || is_string($mid)) {
+                try {
+                    $User = QUI::getUsers()->get($mid);
+                } catch (QUI\Exception) {
+                }
             }
 
             if (isset($User)) {

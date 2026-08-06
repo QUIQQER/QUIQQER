@@ -62,6 +62,11 @@ echo PHP_EOL;
 $etcDir = CMS_DIR . 'etc/';
 $iniFile = parse_ini_file($etcDir . 'conf.ini.php', true);
 
+if (!is_array($iniFile)) {
+    echo 'Could not read configuration: ' . $etcDir . 'conf.ini.php' . PHP_EOL;
+    exit(1);
+}
+
 $varDir = $iniFile['globals']['var_dir'];
 $phpExec = 'php';
 

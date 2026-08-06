@@ -1378,7 +1378,11 @@ class User implements QUIUserInterface
         $available = Auth\Handler::getInstance()->getAvailableAuthenticators();
         $available = array_flip($available);
 
-        if (!isset($available[$authenticator])) {
+        if (
+            !isset($available[$authenticator])
+            || !class_exists($authenticator)
+            || !is_subclass_of($authenticator, AuthenticatorInterface::class)
+        ) {
             throw new QUI\Users\Exception(
                 ['quiqqer/core', 'exception.authenticator.not.found'],
                 404
@@ -2488,7 +2492,13 @@ class User implements QUIUserInterface
      */
     public function isOnline(): bool
     {
-        return QUI::getSession()->isUserOnline($this->getUUID());
+        $Session = QUI::getSession();
+
+        if (!$Session instanceof \QUI\Session) {
+            return false;
+        }
+
+        return $Session->isUserOnline($this->getUUID());
     }
 
     // region verifiable attributes

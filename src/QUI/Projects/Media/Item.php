@@ -1436,7 +1436,7 @@ abstract class Item extends QUI\QDOM
      */
     public function setEffect(string $effect, float | int | string $value): void
     {
-        $this->getEffects();
+        $this->effects = $this->getEffects();
         $this->effects[$effect] = $value;
     }
 

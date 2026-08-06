@@ -160,7 +160,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
         $Parent = new Site\Edit($Project, $parentid);
 
         foreach ($ids as $id) {
-            $Site = new Site\Edit($Project, $id);
+            $Site = new Site\Edit($Project, (int)$id);
 
             $Site->restore();
             $Site->move($Parent->getId());
