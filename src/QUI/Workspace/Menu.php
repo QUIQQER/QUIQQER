@@ -89,16 +89,22 @@ class Menu
         XML::addXMLFileToMenu($Menu, SYS_DIR . 'menu.xml');
 
         if (!$User->isSU() && !Permission::hasPermission('quiqqer.system.update')) {
-            if ($Menu->getElementByName('quiqqer')) {
-                $Menu->getElementByName('quiqqer')->clear();
+            $Quiqqer = $Menu->getElementByName('quiqqer');
+
+            if ($Quiqqer instanceof QUI\Controls\Contextmenu\BarItem) {
+                $Quiqqer->clear();
             }
 
-            if ($Menu->getElementByName('apps')) {
-                $Menu->getElementByName('apps')->clear();
+            $Apps = $Menu->getElementByName('apps');
+
+            if ($Apps instanceof QUI\Controls\Contextmenu\BarItem) {
+                $Apps->clear();
             }
 
-            if ($Menu->getElementByName('settings')) {
-                $Menu->getElementByName('settings')->clear();
+            $Settings = $Menu->getElementByName('settings');
+
+            if ($Settings instanceof QUI\Controls\Contextmenu\BarItem) {
+                $Settings->clear();
             }
         }
 
