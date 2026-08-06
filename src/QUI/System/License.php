@@ -119,6 +119,12 @@ class License
         $licenseServerUrl = self::getLicenseServerUrl() . 'api/license/activate?';
         $licenseData = self::getLicenseData();
 
+        if ($licenseData === false) {
+            throw new QUI\Exception(
+                'The system does not have a registered license.'
+            );
+        }
+
         $licenseServerUrl .= http_build_query([
             'licenseid' => $licenseData['id'],
             'licensehash' => $licenseData['licenseHash'],
@@ -259,6 +265,12 @@ class License
     {
         $licenseServerUrl = self::getLicenseServerUrl() . 'api/license/deactivate?';
         $licenseData = self::getLicenseData();
+
+        if ($licenseData === false) {
+            throw new QUI\Exception(
+                'The system does not have a registered license.'
+            );
+        }
 
         $licenseServerUrl .= http_build_query([
             'licenseid' => $licenseData['id'],
