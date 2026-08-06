@@ -220,15 +220,29 @@ class Manager
                             continue;
                         }
 
-                        if (!in_array(QUI\Interfaces\Users\User::class, class_implements($entry))) {
+                        $interfaces = class_implements($entry);
+
+                        if (!is_array($interfaces)) {
+                            $interfaces = [];
+                        }
+
+                        if (!in_array(QUI\Interfaces\Users\User::class, $interfaces, true)) {
                             continue;
                         }
 
                         $UserInstance = $entry;
                     }
 
-                    if ($UserInstance && in_array(QUI\Interfaces\Users\User::class, class_implements($UserInstance))) {
-                        $User = $UserInstance;
+                    if ($UserInstance) {
+                        $interfaces = class_implements($UserInstance);
+
+                        if (!is_array($interfaces)) {
+                            $interfaces = [];
+                        }
+
+                        if (in_array(QUI\Interfaces\Users\User::class, $interfaces, true)) {
+                            $User = $UserInstance;
+                        }
                     }
                 }
             } catch (\Exception $Exception) {
@@ -299,16 +313,30 @@ class Manager
                         continue;
                     }
 
-                    if (!in_array(QUI\Interfaces\Users\User::class, class_implements($entry))) {
+                    $interfaces = class_implements($entry);
+
+                    if (!is_array($interfaces)) {
+                        $interfaces = [];
+                    }
+
+                    if (!in_array(QUI\Interfaces\Users\User::class, $interfaces, true)) {
                         continue;
                     }
 
                     $UserInstance = $entry;
                 }
 
-                if ($UserInstance && in_array(QUI\Interfaces\Users\User::class, class_implements($UserInstance))) {
-                    $this->Session = $UserInstance;
-                    return $this->Session;
+                if ($UserInstance) {
+                    $interfaces = class_implements($UserInstance);
+
+                    if (!is_array($interfaces)) {
+                        $interfaces = [];
+                    }
+
+                    if (in_array(QUI\Interfaces\Users\User::class, $interfaces, true)) {
+                        $this->Session = $UserInstance;
+                        return $this->Session;
+                    }
                 }
             }
         } catch (\Exception $exception) {
@@ -1055,6 +1083,10 @@ class Manager
                 'username' => $arguments[0],
                 'password' => $arguments[1]
             ];
+        }
+
+        if (!is_array($authData)) {
+            $authData = [];
         }
 
         // try to get userId by authData
