@@ -313,7 +313,7 @@ class Server
      * @param array<string, mixed> $state
      * @param array<string, mixed> $attestation
      */
-    private function processCreate(array $state, array $attestation): object
+    private function processCreate(array $state, array $attestation): \stdClass
     {
         $webAuthn = $this->createWebAuthn();
 
