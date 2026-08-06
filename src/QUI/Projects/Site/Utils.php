@@ -841,6 +841,10 @@ class Utils
                         'order' => $order
                     ]);
 
+                    if (!is_array($children)) {
+                        $children = [];
+                    }
+
                     $ids = array_merge($ids, $children);
                 } catch (Exception) {
                 }

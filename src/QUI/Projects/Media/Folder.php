@@ -465,6 +465,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         // copy the children
         $ids = $this->getChildrenIds();
 
+        if (!is_array($ids)) {
+            $ids = [];
+        }
+
         foreach ($ids as $id) {
             try {
                 $Item = $this->Media->get($id);
@@ -772,6 +776,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         $ids = $this->getChildrenIds($params);
+
+        if (!is_array($ids)) {
+            $ids = [];
+        }
 
         foreach ($ids as $id) {
             try {

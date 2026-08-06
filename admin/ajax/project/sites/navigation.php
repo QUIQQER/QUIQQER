@@ -17,6 +17,10 @@ QUI::$Ajax->registerFunction(
         $result = [];
         $list = $Site->getNavigation();
 
+        if (!is_array($list)) {
+            $list = [];
+        }
+
         foreach ($list as $Child) {
             /* @var $Child \QUI\Projects\Site */
             $result[] = [

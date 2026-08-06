@@ -96,6 +96,10 @@ class Search
             if ($count) {
                 $searchResult['users'] = $resultUsers;
             } elseif (!empty($resultUsers)) {
+                if (!is_array($resultUsers)) {
+                    $resultUsers = [];
+                }
+
                 $selectFieldsAvailable = [
                     'username' => true,
                     'usergroup' => true,
@@ -156,6 +160,10 @@ class Search
             if ($count) {
                 $searchResult['groups'] = $resultGroups;
             } elseif (!empty($resultGroups)) {
+                if (!is_array($resultGroups)) {
+                    $resultGroups = [];
+                }
+
                 $selectFieldsAvailable = [
                     'name' => true,
                     'parent' => true,
@@ -506,6 +514,10 @@ class Search
             $resultUsers = self::searchUsers($searchTerm, $searchParams['users']);
 
             if (!empty($resultUsers)) {
+                if (!is_array($resultUsers)) {
+                    $resultUsers = [];
+                }
+
                 $selectFields = [
                     'uuid',
                     'username'
@@ -533,6 +545,10 @@ class Search
             $resultGroups = self::searchGroups($searchTerm, $searchParams);
 
             if (!empty($resultGroups)) {
+                if (!is_array($resultGroups)) {
+                    $resultGroups = [];
+                }
+
                 $selectFields = [
                     'uuid',
                     'name'

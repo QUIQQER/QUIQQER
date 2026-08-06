@@ -633,6 +633,10 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         $list = $Parent->getChildrenIds();
 
+        if (!is_array($list)) {
+            $list = [];
+        }
+
         foreach ($list as $key => $id) {
             if ($id != $this->getId()) {
                 continue;
@@ -730,6 +734,10 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         $list = $Parent->getChildrenIds();
 
+        if (!is_array($list)) {
+            $list = [];
+        }
+
         foreach ($list as $key => $id) {
             if ($id != $this->getId()) {
                 continue;
@@ -770,6 +778,10 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         $list = $Parent->getChildrenIds();
 
+        if (!is_array($list)) {
+            $list = [];
+        }
+
         foreach ($list as $key => $id) {
             if ($id != $this->getId()) {
                 continue;
@@ -804,6 +816,10 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         }
 
         $list = $Parent->getChildrenIds();
+
+        if (!is_array($list)) {
+            $list = [];
+        }
 
         foreach ($list as $key => $id) {
             if ($id != $this->getId()) {
@@ -875,6 +891,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             return (int)$result;
         }
 
+        if (!is_array($result)) {
+            $result = [];
+        }
 
         $children = [];
 
@@ -1177,6 +1196,10 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         $result = $this->getChildrenIds($params);
 
+        if (!is_array($result)) {
+            $result = [];
+        }
+
         if (!count($result)) {
             return false;
         }
@@ -1207,6 +1230,10 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         if (isset($params['count'])) {
             return $children;
+        }
+
+        if (!is_array($children)) {
+            $children = [];
         }
 
         foreach ($children as $k => $Child) {
@@ -1425,6 +1452,10 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     protected function recursiveHelper(int $pid, array $params = []): void
     {
         $ids = $this->getProject()->getChildrenIdsFrom($pid, $params);
+
+        if (!is_array($ids)) {
+            $ids = [];
+        }
 
         if (empty($ids)) {
             return;

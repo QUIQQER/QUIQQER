@@ -665,6 +665,10 @@ class Edit extends Site
         $Parent = new self($Project, $pid);
         $children = $this->getChildrenIds(['active' => '0&1']);
 
+        if (!is_array($children)) {
+            $children = [];
+        }
+
         if (in_array($pid, $children) || $pid === $this->getId()) {
             return;
         }

@@ -37,6 +37,11 @@ QUI::$Ajax->registerFunction(
         }
 
         $_children = $File->getChildrenIds($params);
+
+        if (!is_array($_children)) {
+            $_children = [];
+        }
+
         $getUserName = static function ($uid): string {
             try {
                 return QUI::getUsers()->get($uid)->getName();

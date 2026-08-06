@@ -80,6 +80,10 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
         $result = [];
         $sites = $this->Project->getSites($_params);
 
+        if (!is_array($sites)) {
+            $sites = [];
+        }
+
         foreach ($sites as $Site) {
             try {
                 /* @var $Site Site */

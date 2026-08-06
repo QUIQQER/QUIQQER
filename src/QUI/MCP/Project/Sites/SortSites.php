@@ -42,6 +42,11 @@ class SortSites extends AbstractTool
                     $childrenIds = $Parent->getChildrenIds([
                         'active' => '0&1'
                     ]);
+
+                    if (!is_array($childrenIds)) {
+                        $childrenIds = [];
+                    }
+
                     $orderField = (int)max(0, $from ?? 0);
                     $sorted = [];
 
