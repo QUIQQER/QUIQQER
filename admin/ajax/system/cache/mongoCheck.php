@@ -55,7 +55,7 @@ QUI::$Ajax->registerFunction(
 
         $result = $CacheDriver->getData(['db-test']);
 
-        if ($result['data'] === 1) {
+        if (is_array($result) && ($result['data'] ?? null) === 1) {
             QUI::getMessagesHandler()->addSuccess(
                 QUI::getLocale()->get('quiqqer/core', 'message.quiqqer.mongo.success')
             );
