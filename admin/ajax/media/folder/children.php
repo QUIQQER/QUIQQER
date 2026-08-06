@@ -25,7 +25,11 @@ QUI::$Ajax->registerFunction(
             return [];
         }
 
-        $params = Orthos::clearArray(json_decode($params, true));
+        if (is_string($params)) {
+            $params = json_decode($params, true);
+        }
+
+        $params = Orthos::clearArray($params);
         $Grid = new Grid($params);
 
         $children = [];
@@ -78,10 +82,15 @@ QUI::$Ajax->registerFunction(
 
         // Set count parameter to get total count of results
         $params['count'] = true;
+        $count = $File->getChildrenIds($params);
+
+        if (is_array($count)) {
+            $count = count($count);
+        }
 
         return $Grid->parseResult(
             $children,
-            $File->getChildrenIds($params)
+            $count
         );
     },
     ['project', 'folderid', 'params'],
