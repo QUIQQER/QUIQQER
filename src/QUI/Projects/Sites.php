@@ -337,13 +337,13 @@ class Sites
             $tabs = $Path->query("//site/types/type[@type='" . $types[1] . "']/tab");
 
             if ($tabs !== false) {
-                QUI\Utils\DOM::addTabsToToolbar($tabs, $Tabbar);
+                self::addXPathTabsToToolbar($tabs, $Tabbar);
             }
 
             $tabs = $Path->query("//site/types/type[@type='" . $type . "']/tab");
 
             if ($tabs !== false) {
-                QUI\Utils\DOM::addTabsToToolbar($tabs, $Tabbar);
+                self::addXPathTabsToToolbar($tabs, $Tabbar);
             }
         }
 
@@ -375,7 +375,7 @@ class Sites
             $tabs = $Path->query("//site/types/type[@type='" . $type . "']/tab");
 
             if ($tabs !== false) {
-                QUI\Utils\DOM::addTabsToToolbar($tabs, $Tabbar);
+                self::addXPathTabsToToolbar($tabs, $Tabbar);
             }
         }
 
@@ -426,6 +426,22 @@ class Sites
 
 
         return $Tabbar;
+    }
+
+    /**
+     * @param iterable<mixed> $tabs
+     */
+    private static function addXPathTabsToToolbar(iterable $tabs, Bar $Tabbar): void
+    {
+        $tabElements = [];
+
+        foreach ($tabs as $Tab) {
+            if ($Tab instanceof DOMElement) {
+                $tabElements[] = $Tab;
+            }
+        }
+
+        QUI\Utils\DOM::addTabsToToolbar($tabElements, $Tabbar);
     }
 
     /**
