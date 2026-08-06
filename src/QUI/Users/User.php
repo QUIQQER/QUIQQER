@@ -244,7 +244,7 @@ class User implements QUIUserInterface
 
         // if user has no language, use the project language
         if (!$this->lang) {
-            $this->lang = QUI\Projects\Manager::get()->getAttribute('lang');
+            $this->lang = QUI\Projects\Manager::get()->getLang();
         }
 
         if (!$this->lang) {
@@ -1004,10 +1004,9 @@ class User implements QUIUserInterface
 
 
         // saving
-        /** @var list<string> $groupIds */
         $groupIds = array_values(array_filter(
             $this->getGroups(false),
-            static fn ($group): bool => is_string($group) && $group !== ''
+            static fn ($group): bool => $group !== ''
         ));
 
         $query = QUI::getQueryBuilder()->update(QUI\Utils\Doctrine::quoteIdentifier(Manager::table()));
@@ -1198,7 +1197,7 @@ class User implements QUIUserInterface
 
     /**
      * @param boolean $array - returns the groups as objects (true) or as an array (false)
-     * @return QUI\Groups\Group[]|string[]|array
+     * @return ($array is true ? array<int, Group> : array<int, string>)
      */
     public function getGroups(bool $array = true): array
     {
@@ -1339,7 +1338,7 @@ class User implements QUIUserInterface
 
     public function getUsername(): string
     {
-        return $this->name ?: false;
+        return (string)($this->name ?: false);
     }
 
     public function isCompany(): bool
@@ -1379,7 +1378,11 @@ class User implements QUIUserInterface
         $available = Auth\Handler::getInstance()->getAvailableAuthenticators();
         $available = array_flip($available);
 
-        if (!isset($available[$authenticator])) {
+        if (
+            !isset($available[$authenticator])
+            || !class_exists($authenticator)
+            || !is_subclass_of($authenticator, AuthenticatorInterface::class)
+        ) {
             throw new QUI\Users\Exception(
                 ['quiqqer/core', 'exception.authenticator.not.found'],
                 404
@@ -2489,7 +2492,13 @@ class User implements QUIUserInterface
      */
     public function isOnline(): bool
     {
-        return QUI::getSession()->isUserOnline($this->getUUID());
+        $Session = QUI::getSession();
+
+        if (!$Session instanceof \QUI\Session) {
+            return false;
+        }
+
+        return $Session->isUserOnline($this->getUUID());
     }
 
     // region verifiable attributes

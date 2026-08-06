@@ -279,7 +279,12 @@ class EventHandler
         }
 
         $Conf = QUI::getConfig('etc/conf.ini.php');
-        $Conf->set('packagestore', 'url', json_encode($packageStoreUrlConf));
+        $packageStoreUrlConf = json_encode($packageStoreUrlConf);
+        $Conf->set(
+            'packagestore',
+            'url',
+            $packageStoreUrlConf === false ? 0 : $packageStoreUrlConf
+        );
         $Conf->save();
     }
 

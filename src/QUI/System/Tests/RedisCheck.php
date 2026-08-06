@@ -46,7 +46,7 @@ class RedisCheck extends QUI\System\Test
     /**
      * @param string $server - optional
      * @param bool $message - error codes as message or flag?
-     * @return int|string
+     * @return ($message is true ? int|string : int)
      */
     public static function checkServer(string $server = '', bool $message = false): int|string
     {
@@ -64,12 +64,22 @@ class RedisCheck extends QUI\System\Test
 
         try {
             $Redis = new Redis();
-            $server = parse_url($server);
+            $serverConfig = parse_url($server);
 
-            if (!isset($server['port'])) {
-                $Redis->connect($server['path']);
+            if ($serverConfig === false) {
+                throw new Exception('Invalid Redis server address.');
+            }
+
+            $host = $serverConfig['host'] ?? $serverConfig['path'] ?? '';
+
+            if ($host === '') {
+                throw new Exception('Invalid Redis server address.');
+            }
+
+            if (isset($serverConfig['port'])) {
+                $Redis->connect($host, $serverConfig['port']);
             } else {
-                $Redis->connect($server['path'], $server['port']);
+                $Redis->connect($host);
             }
 
             $Redis->ping();

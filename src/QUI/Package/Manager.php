@@ -46,13 +46,13 @@ use function curl_init;
 use function curl_setopt_array;
 use function current;
 use function date;
-use function date_interval_create_from_date_string;
 use function define;
 use function defined;
 use function explode;
 use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
+use function get_object_vars;
 use function hex2bin;
 use function http_build_query;
 use function is_array;
@@ -307,7 +307,7 @@ class Manager extends QUI\QDOM
         }
 
         $data = file_get_contents($this->composer_lock);
-        $data = json_decode($data, true);
+        $data = json_decode((string)$data, true);
 
         $package = array_filter($data['packages'], static function (array $package): bool {
             return $package['name'] === 'quiqqer/core';
@@ -333,7 +333,7 @@ class Manager extends QUI\QDOM
         $this->hash = '';
 
         $data = file_get_contents($this->composer_lock);
-        $data = json_decode($data, true);
+        $data = json_decode((string)$data, true);
 
         $package = array_filter($data['packages'], static function (array $package): bool {
             return $package['name'] === 'quiqqer/core';
@@ -356,7 +356,7 @@ class Manager extends QUI\QDOM
     public function getPackageLock(Package $Package): array
     {
         $data = file_get_contents($this->composer_lock);
-        $data = json_decode($data, true);
+        $data = json_decode((string)$data, true);
 
         $packageName = $Package->getName();
 
@@ -420,7 +420,7 @@ class Manager extends QUI\QDOM
         if (file_exists($this->composer_json)) {
             try {
                 $composerJson = $Parser->parse(
-                    file_get_contents($this->composer_json)
+                    (string)file_get_contents($this->composer_json)
                 );
             } catch (ParsingException $e) {
                 throw new ParsingException(
@@ -433,7 +433,7 @@ class Manager extends QUI\QDOM
                 __DIR__ . '/composer.tpl'
             );
 
-            $composerJson = $Parser->parse($template);
+            $composerJson = $Parser->parse((string)$template);
         }
 
         // config
@@ -706,7 +706,7 @@ class Manager extends QUI\QDOM
                     && !empty($data['licenseHash'])
                     && !empty($licenseServerUrl)
                 ) {
-                    $hash = bin2hex(QUI\Security\Encryption::decrypt(hex2bin($data['licenseHash'])));
+                    $hash = bin2hex(QUI\Security\Encryption::decrypt((string)hex2bin($data['licenseHash'])));
 
                     $repositories[] = [
                         'type' => 'composer',
@@ -718,7 +718,7 @@ class Manager extends QUI\QDOM
                                     'licensehash: ' . $hash,
                                     'systemid: ' . QUI\System\License::getSystemId(),
                                     'systemhash: ' . QUI\System\License::getSystemDataHash(),
-                                    'clientdata: ' . bin2hex(json_encode($this->getLicenseClientData()))
+                                    'clientdata: ' . bin2hex((string)json_encode($this->getLicenseClientData()))
                                 ]
                             ]
                         ]
@@ -781,7 +781,9 @@ class Manager extends QUI\QDOM
             if (is_array($composerJson->require)) {
                 $composerJson->require["quiqqer/core"] = QUI::conf('globals', 'quiqqer_version');
             } elseif (is_object($composerJson->require)) {
-                $composerJson->require->{"quiqqer/core"} = QUI::conf('globals', 'quiqqer_version');
+                $require = get_object_vars($composerJson->require);
+                $require["quiqqer/core"] = QUI::conf('globals', 'quiqqer_version');
+                $composerJson->require = $require;
             } else {
                 $composerJson->require = [
                     "quiqqer/core" => QUI::conf('globals', 'quiqqer_version')
@@ -909,7 +911,7 @@ class Manager extends QUI\QDOM
         }
 
         $data = file_get_contents($installed_file);
-        $list = json_decode($data, true);
+        $list = json_decode((string)$data, true);
 
         if (isset($list['packages'])) {
             $list = $list['packages'];
@@ -1211,7 +1213,7 @@ class Manager extends QUI\QDOM
 
         QUI\Cache\Manager::clearCompleteQuiqqerCache();
 
-        $this->composerRequireOrInstall($packages, $version);
+        $this->composerRequireOrInstall($packages, (string)$version);
     }
 
     /**
@@ -2350,7 +2352,11 @@ class Manager extends QUI\QDOM
         // \QUI\System\Log::write( $type );
         $data = $this->getSiteXMLDataByType($type);
 
-        if (isset($data['locale'])) {
+        if (
+            isset($data['locale'])
+            && is_string($data['locale']['group'])
+            && is_string($data['locale']['var'])
+        ) {
             return QUI::getLocale()->get(
                 $data['locale']['group'],
                 $data['locale']['var']
@@ -2403,7 +2409,7 @@ class Manager extends QUI\QDOM
         $XPath = new DOMXPath($Dom);
         $Types = $XPath->query('//type[@type="' . $type . '"]');
 
-        if (!$Types->length) {
+        if ($Types === false || !$Types->length) {
             return false;
         }
 
@@ -2500,7 +2506,7 @@ class Manager extends QUI\QDOM
 
             $isLicensed = !empty($response);
 
-            QUICacheManager::set($cacheName, $isLicensed, date_interval_create_from_date_string('1 day'));
+            QUICacheManager::set($cacheName, $isLicensed, new \DateInterval('P1D'));
 
             return $isLicensed;
         } catch (Exception $Exception) {
@@ -2559,7 +2565,7 @@ class Manager extends QUI\QDOM
                 return false;
             }
 
-            $urls = json_decode($response, true);
+            $urls = json_decode((string)$response, true);
 
             QUI\Cache\LongTermCache::set($cacheName, $response);
 
@@ -2583,7 +2589,7 @@ class Manager extends QUI\QDOM
         $this->checkComposer();
         $json = file_get_contents($this->composer_json);
 
-        return json_decode($json, true);
+        return json_decode((string)$json, true);
     }
 
     //endregion
@@ -2618,7 +2624,7 @@ class Manager extends QUI\QDOM
         }
 
         $data = file_get_contents($installed_file);
-        $list = json_decode($data, true);
+        $list = json_decode((string)$data, true);
 
         foreach ($list as $entry) {
             $cf = $this->dir . $entry['name'] . '/composer.json';
@@ -2627,7 +2633,7 @@ class Manager extends QUI\QDOM
                 continue;
             }
 
-            $data = json_decode(file_get_contents($cf), true);
+            $data = json_decode((string)file_get_contents($cf), true);
 
             if (!is_array($data)) {
                 continue;

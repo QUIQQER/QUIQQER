@@ -33,6 +33,10 @@ QUI::$Ajax->registerFunction(
             $children = $Site->getChildren();
         }
 
+        if (!is_array($children)) {
+            $children = [];
+        }
+
         $result = [];
 
         for ($i = 0, $len = count($children); $i < $len; $i++) {

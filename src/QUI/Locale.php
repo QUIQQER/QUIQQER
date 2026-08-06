@@ -45,9 +45,9 @@ class Locale implements \Stringable
     public bool $no_translation = false;
 
     /**
-     * @var array<array-key, mixed>|bool
+     * @var array<array-key, mixed>|false
      */
-    protected array|bool $dateFormats = false;
+    protected array|false $dateFormats = false;
 
     /**
      * The current lang
@@ -71,7 +71,7 @@ class Locale implements \Stringable
     /**
      * Saves the current language of this Locale if setTemporaryCurrent is used.
      */
-    protected bool|string $tempCurrent = false;
+    protected false|string $tempCurrent = false;
 
     public function __toString(): string
     {
@@ -139,9 +139,10 @@ class Locale implements \Stringable
     /**
      * Get the translation
      *
-     * @param bool|array<array-key, mixed> $replace
+     * @param false|array<array-key, mixed> $replace
+     * @return ($value is string ? string : array<array-key, mixed>|string)
      */
-    public function get(string $group, bool|string $value = false, bool|array $replace = false): string
+    public function get(string $group, false|string $value = false, false|array $replace = false): array|string
     {
         $str = $this->getHelper($group, $value);
 
@@ -167,12 +168,15 @@ class Locale implements \Stringable
     /**
      * Translation helper method
      *
-     * @return array<array-key, mixed>|string
+     * @return ($value is string ? string : array<array-key, mixed>|string)
      *
      * @see ->get()
      */
-    protected function getHelper(string $group, bool|string $value = false, bool|string $current = false): array|string
-    {
+    protected function getHelper(
+        string $group,
+        false|string $value = false,
+        false|string $current = false
+    ): array|string {
         if ($this->no_translation) {
             return '[' . $group . '] ' . $value;
         }
@@ -257,7 +261,7 @@ class Locale implements \Stringable
      *
      * @param array<string, mixed>|string $key
      */
-    public function set(string $lang, string $group, array|string $key, bool|string $value = false): void
+    public function set(string $lang, string $group, array|string $key, false|string $value = false): void
     {
         if (!is_array($key)) {
             LocaleRuntimeCache::set($lang, $group, [$key => $value]);
@@ -339,7 +343,7 @@ class Locale implements \Stringable
         //  "decimal_pattern": "#,##0.###",
         //  "percent_pattern": "#,##0%",
 
-        return $Formatter->format($number);
+        return (string)$Formatter->format($number);
     }
 
     /**
@@ -373,7 +377,7 @@ class Locale implements \Stringable
 
         // via shell
         $locales = shell_exec('locale -a');
-        $locales = explode("\n", $locales);
+        $locales = explode("\n", (string)$locales);
 
         $langList = [];
 
@@ -393,21 +397,23 @@ class Locale implements \Stringable
         }
 
         // sort, main locale to the top
-        usort($langList, static function ($a, $b) use ($langCode) {
-            if ($a == $b) {
-                return 0;
-            }
+        usort(
+            $langList,
+            static function (string $a, string $b) use ($langCode): int {
+                if ($a === $b) {
+                    return 0;
+                }
 
-            if (str_starts_with($a, $langCode)) {
-                return -1;
-            }
+                $aIsMainLocale = str_starts_with($a, $langCode);
+                $bIsMainLocale = str_starts_with($b, $langCode);
 
-            if (str_starts_with($b, $langCode)) {
-                return 1;
-            }
+                if ($aIsMainLocale !== $bIsMainLocale) {
+                    return $aIsMainLocale ? -1 : 1;
+                }
 
-            return $a > $b;
-        });
+                return $a <=> $b;
+            }
+        );
 
         $this->localeList[$lang] = $langList;
 
@@ -418,17 +424,17 @@ class Locale implements \Stringable
      * Format a date timestamp
      *
      * @param int|string $timestamp
-     * @param bool|string $format - (optional) ;if not given, it uses the quiqqer system format
+     * @param false|string $format - (optional) ;if not given, it uses the quiqqer system format
      *
      * @return string
      */
-    public function formatDate(int|string $timestamp, bool|string $format = false): string
+    public function formatDate(int|string $timestamp, false|string $format = false): string
     {
         $Formatter = self::getDateFormatter();
         $current = $this->getCurrent();
 
         if (!is_numeric($timestamp)) {
-            $timestamp = strtotime($timestamp);
+            $timestamp = (int)strtotime($timestamp);
         }
 
         // new stuff, compatible with php9
@@ -455,8 +461,8 @@ class Locale implements \Stringable
         $oldLocale = setlocale(LC_TIME, "0");
 
         setlocale(LC_TIME, $localeCode);
-        $result = strftime($format, $timestamp);
-        setlocale(LC_TIME, $oldLocale);
+        $result = strftime($format, (int)$timestamp);
+        setlocale(LC_TIME, (string)$oldLocale);
 
         return Encoding::toUTF8($result);
 //        }
@@ -492,11 +498,11 @@ class Locale implements \Stringable
      * Exist the variable in the translation?
      *
      * @param string $group - language group
-     * @param boolean|string $value - language group variable, optional
+     * @param false|string $value - language group variable, optional
      *
      * @return boolean
      */
-    public function exists(string $group, bool|string $value = false): bool
+    public function exists(string $group, false|string $value = false): bool
     {
         $str = $this->getHelper($group, $value);
 
@@ -530,15 +536,15 @@ class Locale implements \Stringable
     /**
      * Get the translation from a specific language
      *
-     * @param bool|array<array-key, mixed> $replace
+     * @param false|array<array-key, mixed> $replace
      *
-     * @return array<array-key, mixed>|string
+     * @return ($value is string ? string : array<array-key, mixed>|string)
      */
     public function getByLang(
         string $lang,
         string $group,
-        bool|string $value = false,
-        bool|array $replace = false
+        false|string $value = false,
+        false|array $replace = false
     ): array|string {
         $str = $this->getHelper($group, $value, $lang);
 
@@ -637,9 +643,9 @@ class Locale implements \Stringable
     /**
      * Return all available date formats
      *
-     * @return array<array-key, mixed>|bool
+     * @return array<array-key, mixed>
      */
-    protected function getDateFormats(): bool|array
+    protected function getDateFormats(): array
     {
         if ($this->dateFormats) {
             return $this->dateFormats;

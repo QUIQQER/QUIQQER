@@ -50,6 +50,9 @@ class SystemUser extends QUI\Users\Nobody implements QUI\Interfaces\Users\User
         return $this->getAttribute('username');
     }
 
+    /**
+     * @return ($array is true ? array<int, QUI\Groups\Group> : array<int, string>)
+     */
     public function getGroups(bool $array = true): array
     {
         $Everyone = new QUI\Groups\Everyone();

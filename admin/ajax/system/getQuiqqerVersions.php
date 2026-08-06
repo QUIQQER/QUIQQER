@@ -10,7 +10,7 @@ QUI::$Ajax->registerFunction(
     'ajax_system_getQuiqqerVersions',
     static function (): array {
         $packages = @file_get_contents('https://update.quiqqer.com/packages.json');
-        $packages = json_decode($packages, true);
+        $packages = json_decode((string)$packages, true);
 
         $currentVersion = QUI::getPackageManager()->getVersion();
         $currentVersionParts = explode('.', $currentVersion);
@@ -24,7 +24,7 @@ QUI::$Ajax->registerFunction(
             $versionList = array_keys($quiqqer);
 
             foreach ($versionList as $version) {
-                [$major, $minor] = explode('.', $version) + [null, null];
+                [$major, $minor] = explode('.', (string)$version) + [null, null];
 
                 if ($major === null) {
                     continue;
@@ -51,7 +51,10 @@ QUI::$Ajax->registerFunction(
         });
 
         $filteredVersions = array_values($filteredVersions);
-        usort($filteredVersions, 'version_compare');
+        usort(
+            $filteredVersions,
+            static fn(string $version1, string $version2): int => version_compare($version1, $version2)
+        );
 
         //$versions[] = "dev-main";
 

@@ -101,8 +101,13 @@ class MyDB implements \Stringable
         }
 
         $query .= ';';
+        $Statement = $this->getPDO()->query($query);
 
-        return $this->getPDO()->query($query)->fetchAll();
+        if ($Statement === false) {
+            throw new QUI\Exception('Could not execute database query.');
+        }
+
+        return $Statement->fetchAll();
     }
 
     /**
@@ -244,7 +249,7 @@ class MyDB implements \Stringable
      * @param string $table
      * @param array<string, mixed> $FieldValue - [array('field1'=>'value1', 'field2'=>'value2', 'field3'=>'value3')]
      *
-     * @return integer
+     * @return int|string|false
      */
     public function addData($table, $FieldValue)
     {

@@ -286,7 +286,7 @@ class Manager
 
             // text = 65535 single bytes chars,
             // but we have utf8, so we use max 20000, not perfect but better than nothing
-            if (mb_strlen($workspace['data']) > 20000) {
+            if (mb_strlen((string)$workspace['data']) > 20000) {
                 throw new QUI\Exception('Could not save the workspace. Workspace is to big.');
             }
         }
@@ -418,11 +418,11 @@ class Manager
 
     public static function getTwoColumnDefault(): string
     {
-        return file_get_contents(dirname(__FILE__, 2) . '/Users/workspaces/twoColumns.js');
+        return (string)file_get_contents(dirname(__FILE__, 2) . '/Users/workspaces/twoColumns.js');
     }
 
     public static function getThreeColumnDefault(): string
     {
-        return file_get_contents(dirname(__FILE__, 2) . '/Users/workspaces/threeColumns.js');
+        return (string)file_get_contents(dirname(__FILE__, 2) . '/Users/workspaces/threeColumns.js');
     }
 }

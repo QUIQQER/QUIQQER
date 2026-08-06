@@ -30,7 +30,7 @@ QUI::$Ajax->registerFunction(
 
         $hash = $data['licenseHash'];
         $hash = hex2bin($hash);
-        $hash = bin2hex(Encryption::decrypt($hash));
+        $hash = bin2hex(Encryption::decrypt((string)$hash));
 
         return [
             'licenseId' => $data['id'],

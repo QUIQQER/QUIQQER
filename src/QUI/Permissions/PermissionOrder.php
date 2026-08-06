@@ -9,10 +9,12 @@ namespace QUI\Permissions;
 use QUI;
 use QUI\Exception;
 use QUI\Groups\Group;
-use QUI\Users\User;
+use QUI\Interfaces\Users\User as UserInterface;
 
 use function is_bool;
 use function is_int;
+use function is_string;
+use function method_exists;
 
 /**
  * Class PermissionOrder
@@ -33,7 +35,7 @@ class PermissionOrder
      * Finds the maximum integer value of a specified permission from a list of objects.
      *
      * @param string $permission The permission to check.
-     * @param array<int, Group|User> $list An array of objects to check permissions against.
+     * @param array<int, Group|UserInterface> $list An array of objects to check permissions against.
      *
      * @return int|null The maximum integer value of the permission, or null if no objects have the permission.
      * @throws Exception
@@ -43,6 +45,10 @@ class PermissionOrder
         $result = null;
 
         foreach ($list as $Object) {
+            if (!method_exists($Object, 'hasPermission')) {
+                continue;
+            }
+
             if (QUI::getGroups()->isGroup($Object)) {
                 /* @var $Object Group */
                 $hasPermissionResult = $Object->hasPermission($permission);
@@ -77,7 +83,7 @@ class PermissionOrder
      * Calculates the minimum integer result of checking a permission against a list of objects.
      *
      * @param string $permission The permission to check against.
-     * @param array<int, Group|User> $list The list of objects to check the permission against.
+     * @param array<int, Group|UserInterface> $list The list of objects to check the permission against.
      * @return int|null The minimum integer result. If no object has the permission, returns null.
      * @throws Exception
      */
@@ -87,6 +93,10 @@ class PermissionOrder
 
         /* @var $Object Group */
         foreach ($list as $Object) {
+            if (!method_exists($Object, 'hasPermission')) {
+                continue;
+            }
+
             $hasPermissionResult = $Object->hasPermission($permission);
 
             if ($hasPermissionResult === false) {
@@ -115,7 +125,7 @@ class PermissionOrder
      * Checks if a permission is granted for any object in the given list.
      *
      * @param string $permission The permission to check for.
-     * @param array<int, Group|User> $list The list of objects to check against.
+     * @param array<int, Group|UserInterface> $list The list of objects to check against.
      *
      * @return bool|int|string Returns true if the permission is granted by any object,
      *         the highest integer permission value if multiple objects have integer
@@ -127,6 +137,10 @@ class PermissionOrder
 
         /* @var $Group Group */
         foreach ($list as $Object) {
+            if (!method_exists($Object, 'hasPermission')) {
+                continue;
+            }
+
             if (QUI::getGroups()->isGroup($Object)) {
                 /* @var $Object Group */
                 $hasPermissionResult = $Object->hasPermission($permission);
@@ -156,7 +170,7 @@ class PermissionOrder
             }
 
             // string
-            if ($hasPermissionResult) {
+            if (is_string($hasPermissionResult) && $hasPermissionResult !== '') {
                 return $hasPermissionResult;
             }
         }

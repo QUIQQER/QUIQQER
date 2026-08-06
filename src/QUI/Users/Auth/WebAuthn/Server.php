@@ -41,7 +41,7 @@ class Server
     ): array {
         $webAuthn = $this->createWebAuthn();
         $existing = [];
-        $credentials = $this->credentials->findByUserUuid($User->getUUID());
+        $credentials = $this->credentials->findByUserUuid((string)$User->getUUID());
 
         if (empty($userHandle) && !empty($credentials[0]['userHandle'])) {
             $userHandle = $credentials[0]['userHandle'];
@@ -169,7 +169,7 @@ class Server
         $credential = $this->processCreate($state, $attestation);
 
         $this->credentials->create(
-            $User->getUUID(),
+            (string)$User->getUUID(),
             $state['userHandle'],
             $credential->credentialId,
             $credential->credentialPublicKey,
@@ -198,7 +198,7 @@ class Server
         $userUuid = null;
 
         if ($User) {
-            $userUuid = $User->getUUID();
+            $userUuid = (string)$User->getUUID();
 
             foreach ($this->credentials->findByUserUuid($userUuid) as $credential) {
                 $credentialIds[] = $credential['credentialId'];
@@ -313,7 +313,7 @@ class Server
      * @param array<string, mixed> $state
      * @param array<string, mixed> $attestation
      */
-    private function processCreate(array $state, array $attestation): object
+    private function processCreate(array $state, array $attestation): \stdClass
     {
         $webAuthn = $this->createWebAuthn();
 

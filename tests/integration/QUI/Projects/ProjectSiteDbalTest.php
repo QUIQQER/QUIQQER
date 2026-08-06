@@ -282,6 +282,34 @@ class ProjectSiteDbalTest extends ProjectIntegrationTestCase
         $this->assertContains($grandChildId, $Parent->getChildrenIdsRecursive(['active' => '0&1']));
     }
 
+    public function testRootSiteHasNoSiblings(): void
+    {
+        $Root = self::getTestProject()->firstChild();
+
+        $this->assertSame([], $Root->nextSiblings(1));
+        $this->assertSame([], $Root->previousSiblings(1));
+
+        try {
+            $Root->nextSibling();
+            $this->fail('The root site unexpectedly returned a next sibling.');
+        } catch (QUI\Exception $Exception) {
+            $this->assertSame(
+                QUI::getLocale()->get('quiqqer/core', 'exception.site.no.next.sibling'),
+                $Exception->getMessage()
+            );
+        }
+
+        try {
+            $Root->previousSibling();
+            $this->fail('The root site unexpectedly returned a previous sibling.');
+        } catch (QUI\Exception $Exception) {
+            $this->assertSame(
+                QUI::getLocale()->get('quiqqer/core', 'exception.site.no.previous.sibling'),
+                $Exception->getMessage()
+            );
+        }
+    }
+
     public function testSiteCanBeCopiedAndLinkedAndLinkCanBeRemoved(): void
     {
         $Project = self::getTestProject();

@@ -34,7 +34,7 @@ QUI::$Ajax->registerFunction(
         }
 
 
-        $cacheName = 'quiqqer/package/quiqqer/core/menu/categories/' . md5(json_encode($files)) . '/' . $category;
+        $cacheName = 'quiqqer/package/quiqqer/core/menu/categories/' . md5((string)json_encode($files)) . '/' . $category;
 
         try {
             $result = QUI\Cache\Manager::get($cacheName);

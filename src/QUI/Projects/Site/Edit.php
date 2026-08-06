@@ -97,7 +97,7 @@ class Edit extends Site
 
         $this->TABLE = $Project->table();
         $this->RELTABLE = $Project->table() . '_relations';
-        $this->RELLANGTABLE = QUI::getDBTableName($Project->getAttribute('name') . '_multilingual');
+        $this->RELLANGTABLE = QUI::getDBTableName($Project->getName() . '_multilingual');
 
         $this->checkPermission('quiqqer.projects.site.view');
 
@@ -523,7 +523,7 @@ class Edit extends Site
      *                        $params['limit']
      * @param boolean $load Rekursiv alle Kinder IDs bekommen
      *
-     * @return array<int, mixed>|int
+     * @return array<int, Edit>|int
      *
      * @throws QUI\Exception
      */
@@ -595,7 +595,7 @@ class Edit extends Site
         $this->assertNotDeleted();
 
         $Project = $this->getProject();
-        $p_lang = $Project->getAttribute('lang');
+        $p_lang = $Project->getLang();
         $id = (int)$id;
 
         $Connection = QUI::getDataBaseConnection();
@@ -610,14 +610,14 @@ class Edit extends Site
             ->fetchOne();
 
         if ($result !== false) {
-            return $Connection->update(
+            return (int)$Connection->update(
                 $this->RELLANGTABLE,
                 [$lang => $id],
                 [$p_lang => $this->getId()]
             );
         }
 
-        return $Connection->insert($this->RELLANGTABLE, [
+        return (int)$Connection->insert($this->RELLANGTABLE, [
             $p_lang => $this->getId(),
             $lang => $id
         ]);
@@ -641,10 +641,10 @@ class Edit extends Site
 
         $Project = $this->getProject();
 
-        return QUI::getDataBaseConnection()->update(
+        return (int)QUI::getDataBaseConnection()->update(
             $this->RELLANGTABLE,
             [$lang => 0],
-            [$Project->getAttribute("lang") => $this->getId()]
+            [$Project->getLang() => $this->getId()]
         );
     }
 
@@ -664,6 +664,10 @@ class Edit extends Site
         $Project = $this->getProject();
         $Parent = new self($Project, $pid);
         $children = $this->getChildrenIds(['active' => '0&1']);
+
+        if (!is_array($children)) {
+            $children = [];
+        }
 
         if (in_array($pid, $children) || $pid === $this->getId()) {
             return;
@@ -749,9 +753,11 @@ class Edit extends Site
         $mid = $this->isLockedFromOther();
 
         if ($mid) {
-            try {
-                $User = QUI::getUsers()->get($mid);
-            } catch (QUI\Exception) {
+            if (is_int($mid) || is_string($mid)) {
+                try {
+                    $User = QUI::getUsers()->get($mid);
+                } catch (QUI\Exception) {
+                }
             }
 
             if (isset($User)) {
@@ -844,7 +850,7 @@ class Edit extends Site
             // daher werden nur aktive seite beachten
             $release_from = date(
                 'Y-m-d H:i:s',
-                strtotime(date('Y-m-d H:i:s'))
+                (int)strtotime(date('Y-m-d H:i:s'))
             );
         }
 
@@ -1571,9 +1577,13 @@ class Edit extends Site
         $Project = $this->getProject();
         $Parent = $this->getParent();
 
+        if ($Parent === false) {
+            throw new QUI\Exception('The root site cannot be linked.', 703);
+        }
+
         $table = QUI::getDBTableName(
-            $Project->getAttribute('name') . '_' .
-            $Project->getAttribute('lang') . '_sites_relations'
+            $Project->getName() . '_' .
+            $Project->getLang() . '_sites_relations'
         );
 
         if ($this->getId() == $pid) {
@@ -1638,11 +1648,15 @@ class Edit extends Site
         $Platform = $Connection->getDatabasePlatform();
 
         $table = QUI::getDBTableName(
-            $Project->getAttribute("name") . "_" .
-            $Project->getAttribute("lang") . "_sites_relations"
+            $Project->getName() . "_" .
+            $Project->getLang() . "_sites_relations"
         );
 
         if (QUI\Utils\BoolHelper::JSBool($all)) {
+            if ($Parent === false) {
+                throw new QUI\Exception('The root site has no linked parent.', 703);
+            }
+
             // Seite löschen
             $this->delete();
 

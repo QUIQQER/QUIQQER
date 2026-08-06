@@ -11,6 +11,10 @@ QUI::$Ajax->registerFunction(
             'limit' => 1
         ]);
 
+        if (!is_array($sites)) {
+            $sites = [];
+        }
+
         if (empty($sites)) {
             return '/';
         }

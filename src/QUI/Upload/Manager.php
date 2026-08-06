@@ -80,10 +80,17 @@ class Manager
             return $function();
         }
 
+        if (!is_string($function)) {
+            throw new Exception(
+                'Unsupported upload callback type: ' . get_debug_type($function),
+                400
+            );
+        }
+
         if (str_starts_with($function, 'ajax_')) {
             // if the function is an ajax_function
             $_rf_file = OPT_DIR . 'quiqqer/core/admin/' . str_replace('_', '/', $function) . '.php';
-            $_rf_file = Orthos::clearPath(realpath($_rf_file));
+            $_rf_file = Orthos::clearPath((string)realpath($_rf_file));
 
             if (file_exists($_rf_file)) {
                 require_once $_rf_file;
@@ -101,7 +108,7 @@ class Manager
             $file = substr(str_replace('_', '/', $function), 8) . '.php';
 
             $_rf_file = $dir . $file;
-            $_rf_file = Orthos::clearPath(realpath($_rf_file));
+            $_rf_file = Orthos::clearPath((string)realpath($_rf_file));
 
             if (file_exists($_rf_file)) {
                 require_once $_rf_file;
@@ -277,10 +284,9 @@ class Manager
         $Handle = fopen($tmp_name, 'a');
 
         if ($Handle) {
-            fwrite($Handle, $putdata);
+            fwrite($Handle, (string)$putdata);
+            fclose($Handle);
         }
-
-        fclose($Handle);
 
         // upload finish?
         $fileinfo = QUIFile::getInfo($tmp_name, [
@@ -721,7 +727,7 @@ class Manager
         }
 
         $data = json_decode(
-            file_get_contents($conf),
+            (string)file_get_contents($conf),
             true
         );
 

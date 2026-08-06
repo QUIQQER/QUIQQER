@@ -35,6 +35,11 @@ QUI::$Ajax->registerFunction(
         }
 
         $search = $Users->search($params);
+
+        if (!is_array($search)) {
+            $search = [];
+        }
+
         $result = [];
         $Locale = QUI::getLocale();
         $groupNames = [

@@ -135,8 +135,15 @@ class Manager
 
             $tabs = $Path->query("//user/profile/tab");
 
-            /* @var $Tab DOMElement */
+            if ($tabs === false) {
+                continue;
+            }
+
             foreach ($tabs as $Tab) {
+                if (!$Tab instanceof DOMElement) {
+                    continue;
+                }
+
                 $extend .= DOM::parseCategoryToHTML($Tab);
             }
         }
@@ -213,15 +220,29 @@ class Manager
                             continue;
                         }
 
-                        if (!in_array(QUI\Interfaces\Users\User::class, class_implements($entry))) {
+                        $interfaces = class_implements($entry);
+
+                        if (!is_array($interfaces)) {
+                            $interfaces = [];
+                        }
+
+                        if (!in_array(QUI\Interfaces\Users\User::class, $interfaces, true)) {
                             continue;
                         }
 
                         $UserInstance = $entry;
                     }
 
-                    if ($UserInstance && in_array(QUI\Interfaces\Users\User::class, class_implements($UserInstance))) {
-                        $User = $UserInstance;
+                    if ($UserInstance) {
+                        $interfaces = class_implements($UserInstance);
+
+                        if (!is_array($interfaces)) {
+                            $interfaces = [];
+                        }
+
+                        if (in_array(QUI\Interfaces\Users\User::class, $interfaces, true)) {
+                            $User = $UserInstance;
+                        }
                     }
                 }
             } catch (\Exception $Exception) {
@@ -292,16 +313,30 @@ class Manager
                         continue;
                     }
 
-                    if (!in_array(QUI\Interfaces\Users\User::class, class_implements($entry))) {
+                    $interfaces = class_implements($entry);
+
+                    if (!is_array($interfaces)) {
+                        $interfaces = [];
+                    }
+
+                    if (!in_array(QUI\Interfaces\Users\User::class, $interfaces, true)) {
                         continue;
                     }
 
                     $UserInstance = $entry;
                 }
 
-                if ($UserInstance && in_array(QUI\Interfaces\Users\User::class, class_implements($UserInstance))) {
-                    $this->Session = $UserInstance;
-                    return $this->Session;
+                if ($UserInstance) {
+                    $interfaces = class_implements($UserInstance);
+
+                    if (!is_array($interfaces)) {
+                        $interfaces = [];
+                    }
+
+                    if (in_array(QUI\Interfaces\Users\User::class, $interfaces, true)) {
+                        $this->Session = $UserInstance;
+                        return $this->Session;
+                    }
                 }
             }
         } catch (\Exception $exception) {
@@ -368,7 +403,13 @@ class Manager
                 return;
             }
 
-            $sessionData = $Session->getSymfonySession()->all();
+            $SymfonySession = $Session->getSymfonySession();
+
+            if ($SymfonySession === false) {
+                return;
+            }
+
+            $sessionData = $SymfonySession->all();
 
             foreach (array_keys($sessionData) as $key) {
                 if (str_starts_with($key, 'auth-')) {
@@ -507,7 +548,12 @@ class Manager
         );
 
         $Session->set('uid', 0);
-        $Session->getSymfonySession()->clear();
+        $SymfonySession = $Session->getSymfonySession();
+
+        if ($SymfonySession !== false) {
+            $SymfonySession->clear();
+        }
+
         $Session->refresh();
         $Session->set('expired.from.other', 1);
 
@@ -592,7 +638,7 @@ class Manager
         );
 
         if ($username) {
-            if ($this->usernameExists($username)) {
+            if ($this->usernameExists((string)$username)) {
                 throw new QUI\Users\Exception(
                     QUI::getLocale()->get(
                         'quiqqer/core',
@@ -612,7 +658,7 @@ class Manager
             }
         }
 
-        self::checkUsernameSigns($username);
+        self::checkUsernameSigns((string)$username);
 
         try {
             $uuid = QUI\Utils\Uuid::get();
@@ -949,7 +995,9 @@ class Manager
     /**
      * @param boolean $objects - as objects=true, as array=false
      *
-     * @return array<int, QUIUserInterface|array<string, mixed>>
+     * @return ($objects is true
+     *     ? array<int, QUIUserInterface>
+     *     : array<int, array<string, mixed>>)
      */
     public function getAllUsers(bool $objects = false): array
     {
@@ -1035,6 +1083,10 @@ class Manager
                 'username' => $arguments[0],
                 'password' => $arguments[1]
             ];
+        }
+
+        if (!is_array($authData)) {
+            $authData = [];
         }
 
         // try to get userId by authData

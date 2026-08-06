@@ -30,7 +30,7 @@ class Event implements QUI\Interfaces\Events
 {
     /**
      * @var array<string, array<int, array{
-     *     callable: callable|string,
+     *     callable: callable,
      *     priority: int,
      *     package: string
      * }>>
@@ -51,7 +51,7 @@ class Event implements QUI\Interfaces\Events
      * Return all registered runtime events.
      *
      * @return array<string, array<int, array{
-     *     callable: callable|string,
+     *     callable: callable,
      *     priority: int,
      *     package: string
      * }>>
@@ -69,8 +69,16 @@ class Event implements QUI\Interfaces\Events
     public function addEvents(array $events): void
     {
         foreach ($events as $event => $fn) {
-            if (is_array($fn)) {
+            if (is_array($fn) && isset($fn[2])) {
                 $this->addEvent($event, $fn[0], $fn[1], $fn[2]);
+                continue;
+            }
+
+            if (is_array($fn) && !is_callable($fn)) {
+                QUI\System\Log::addDebug('Event error :: $fn is not callable', [
+                    'fn' => $fn
+                ]);
+
                 continue;
             }
 
@@ -133,9 +141,9 @@ class Event implements QUI\Interfaces\Events
      * Remove a runtime event listener.
      *
      * @param string $event Event name
-     * @param callable|bool $fn Specific handler or `false` to remove the whole event
+     * @param callable|string|false $fn Specific handler or `false` to remove the whole event
      */
-    public function removeEvent(string $event, callable | bool $fn = false): void
+    public function removeEvent(string $event, callable | string | false $fn = false): void
     {
         if (!isset($this->events[$event])) {
             return;
@@ -162,14 +170,14 @@ class Event implements QUI\Interfaces\Events
      * Fire an event with optional arguments.
      *
      * @param string $event Event name such as `onComplete`
-     * @param bool|array<array-key, mixed> $args Event arguments; when provided they must be an array
+     * @param false|array<array-key, mixed> $args Event arguments; when provided they must be an array
      *
      * @return array<string, mixed> Event results indexed by callback name
      * @throws QUI\ExceptionStack
      */
     public function fireEvent(
         string $event,
-        bool | array $args = false,
+        false | array $args = false,
         bool $force = false
     ): array {
         $results = [];
@@ -226,7 +234,11 @@ class Event implements QUI\Interfaces\Events
                     continue;
                 }
 
-                $fn = preg_replace('/[\\\\]{2,}/', '\\', $fn);
+                $normalizedFn = preg_replace('/[\\\\]{2,}/', '\\', $fn);
+
+                if (is_callable($normalizedFn)) {
+                    $fn = $normalizedFn;
+                }
 
                 if ($args === false) {
                     $results[$fn] = call_user_func($fn);

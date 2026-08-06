@@ -68,9 +68,16 @@ class RunRepository
         }
 
         $states = [];
-        $items = new \FilesystemIterator($this->root, \FilesystemIterator::SKIP_DOTS);
+        $items = new \FilesystemIterator(
+            $this->root,
+            \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::CURRENT_AS_FILEINFO
+        );
 
         foreach ($items as $item) {
+            if (!$item instanceof \SplFileInfo) {
+                continue;
+            }
+
             if (!$item->isDir()) {
                 continue;
             }
@@ -191,9 +198,16 @@ class RunRepository
         }
 
         $deleted = [];
-        $items = new \FilesystemIterator($this->root, \FilesystemIterator::SKIP_DOTS);
+        $items = new \FilesystemIterator(
+            $this->root,
+            \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::CURRENT_AS_FILEINFO
+        );
 
         foreach ($items as $item) {
+            if (!$item instanceof \SplFileInfo) {
+                continue;
+            }
+
             if (!$item->isDir()) {
                 continue;
             }
@@ -231,9 +245,16 @@ class RunRepository
 
         $deleted = [];
         $active = [];
-        $items = new \FilesystemIterator($this->root, \FilesystemIterator::SKIP_DOTS);
+        $items = new \FilesystemIterator(
+            $this->root,
+            \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::CURRENT_AS_FILEINFO
+        );
 
         foreach ($items as $item) {
+            if (!$item instanceof \SplFileInfo) {
+                continue;
+            }
+
             if (!$item->isDir()) {
                 continue;
             }
@@ -305,9 +326,16 @@ class RunRepository
 
     private function deleteDirectory(string $directory): void
     {
-        $items = new \FilesystemIterator($directory, \FilesystemIterator::SKIP_DOTS);
+        $items = new \FilesystemIterator(
+            $directory,
+            \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::CURRENT_AS_FILEINFO
+        );
 
         foreach ($items as $item) {
+            if (!$item instanceof \SplFileInfo) {
+                continue;
+            }
+
             if ($item->isDir()) {
                 $this->deleteDirectory($item->getPathname());
                 continue;

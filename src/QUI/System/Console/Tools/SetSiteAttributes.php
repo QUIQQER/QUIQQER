@@ -151,18 +151,18 @@ class SetSiteAttributes extends QUI\System\Console\Tool
 
                 foreach (array_keys($placeholderDesc) as $placeholder) {
                     $placeholder = '[' . $placeholder . ']';
-                    if (mb_strpos($v, $placeholder) === false) {
+                    if (mb_strpos((string)$v, $placeholder) === false) {
                         continue;
                     }
 
                     switch ($placeholder) {
                         case '[id]':
-                            $v = str_replace($placeholder, (string)$Site->getId(), $v);
+                            $v = str_replace($placeholder, (string)$Site->getId(), (string)$v);
                             $output = $v;
                             break;
 
                         case '[title]':
-                            $v = str_replace($placeholder, $Site->getAttribute('title'), $v);
+                            $v = str_replace($placeholder, $Site->getAttribute('title'), (string)$v);
                             $output = $v;
                             break;
 
@@ -195,6 +195,6 @@ class SetSiteAttributes extends QUI\System\Console\Tool
         }
 
         $this->writeLn("\n\nFinished.\n\n");
-        exit(1);
+        exit(0);
     }
 }

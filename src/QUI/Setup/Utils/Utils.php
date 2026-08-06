@@ -48,11 +48,18 @@ class Utils
 
         $dirHandle = opendir($dir);
 
+        if ($dirHandle === false) {
+            return null;
+        }
+
         while (($entry = readdir($dirHandle)) !== false) {
-            if ($entry != '.' && $entry != '..') {
+            if ($entry !== '.' && $entry !== '..') {
+                closedir($dirHandle);
                 return false;
             }
         }
+
+        closedir($dirHandle);
 
         return true;
     }
@@ -70,6 +77,10 @@ class Utils
 
         $fileHashes = [];
         $directory = dir($dir);
+
+        if ($directory === false) {
+            return false;
+        }
 
         while (($entry = $directory->read()) !== false) {
             if ($entry == '.' || $entry == '..') {
@@ -146,7 +157,7 @@ class Utils
         if (System::isShellFunctionEnabled('shell_exec')) {
             $version = shell_exec('apache2 -v 2> /dev/null');
             $regex = "/Apache\\/([0-9\\.]*)/i";
-            $res = preg_match($regex, $version, $matches);
+            $res = preg_match($regex, (string)$version, $matches);
             if ($res) {
                 $version = $matches[1];
 
@@ -166,7 +177,7 @@ class Utils
         if (function_exists('apache_get_version')) {
             $version = apache_get_version();
             $regex = "/Apache\\/([0-9\\.]*)/i";
-            $res = preg_match($regex, $version, $matches);
+            $res = preg_match($regex, (string)$version, $matches);
 
             if ($res) {
                 $version = $matches[1];
@@ -190,7 +201,7 @@ class Utils
         if (System::isShellFunctionEnabled('shell_exec')) {
             $version = shell_exec('nginx -v 2>&1 ');
             $regex = '~nginx/([0-9]+\.[0-9]+\.[0-9])+~i';
-            $res = preg_match($regex, $version, $matches);
+            $res = preg_match($regex, (string)$version, $matches);
             if ($res) {
                 $nginx = true;
             }
@@ -211,7 +222,7 @@ class Utils
     public static function templateSupportsDemoData($templateName, $version): bool
     {
         $packagesJson = file_get_contents('https://update.quiqqer.com/packages.json');
-        $packages = json_decode($packagesJson, true);
+        $packages = json_decode((string)$packagesJson, true);
         $packages = $packages['packages'];
 
         if (!isset($packages[$templateName][$version])) {

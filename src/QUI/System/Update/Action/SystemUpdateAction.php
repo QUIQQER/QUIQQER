@@ -41,9 +41,9 @@ class SystemUpdateAction implements RunActionInterface
         return RunActionResult::next(RunState::PHASE_CLEANUP);
     }
 
-    private function createCliOutput(): object
+    private function createCliOutput(): SystemUpdateOutput
     {
-        return new class {
+        return new class implements SystemUpdateOutput {
             private string $lastErrorMessage = '';
 
             public function writeLn(string $msg = '', bool|string $color = false, bool|string $bg = false): void

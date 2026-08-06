@@ -46,7 +46,7 @@ class RunEntrypoint
         ?string $sapi = null,
         ?int $now = null
     ): int {
-        $sapi ??= php_sapi_name();
+        $sapi ??= (string)php_sapi_name();
         $query ??= $_GET;
         $argv ??= $_SERVER['argv'] ?? [];
 

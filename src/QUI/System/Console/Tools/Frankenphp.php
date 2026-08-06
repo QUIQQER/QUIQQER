@@ -270,7 +270,7 @@ class Frankenphp extends QUI\System\Console\Tool
         $oldContent = file_get_contents(self::FRANKENPHP_CONFIG_FILE);
         $content = $this->getConfig();
 
-        if (trim($oldContent) !== trim($content)) {
+        if (trim((string)$oldContent) !== trim($content)) {
             return true;
         }
 

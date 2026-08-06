@@ -127,15 +127,15 @@ class Project implements \Stringable
      * Constructor
      *
      * @param string $name - Name of the Project
-     * @param boolean|string $lang - (optional) Language of the Project - optional
-     * @param boolean|string $template - (optional) Template of the Project
+     * @param false|string $lang - (optional) Language of the Project - optional
+     * @param false|string $template - (optional) Template of the Project
      *
      * @throws QUI\Exception
      */
     public function __construct(
         private string $name,
-        private bool|string $lang = false,
-        private bool|string $template = false
+        private false|string $lang = false,
+        private false|string $template = false
     ) {
         try {
             $this->refresh();
@@ -273,8 +273,8 @@ class Project implements \Stringable
         // cache files
         // @todo move to the cache
         $this->cache_files = [
-            'types' => 'projects.' . $this->getAttribute('name') . '.types',
-            'gtypes' => 'projects.' . $this->getAttribute('name') . '.globaltypes'
+            'types' => 'projects.' . $this->getName() . '.types',
+            'gtypes' => 'projects.' . $this->getName() . '.globaltypes'
         ];
     }
 
@@ -286,8 +286,8 @@ class Project implements \Stringable
     public function toArray(): array
     {
         return [
-            'name' => $this->getAttribute('name'),
-            'lang' => $this->getAttribute('lang')
+            'name' => $this->getName(),
+            'lang' => $this->getLang()
         ];
     }
 
@@ -330,7 +330,17 @@ class Project implements \Stringable
      */
     public function getLang(): string
     {
-        return $this->lang;
+        return (string)$this->lang;
+    }
+
+    public function getDefaultLang(): string
+    {
+        return $this->default_lang;
+    }
+
+    public function getTemplate(): false | string
+    {
+        return $this->template;
     }
 
     /**
@@ -405,11 +415,11 @@ class Project implements \Stringable
     /**
      * Gibt die gesuchte Einstellung vom Projekt zurück
      *
-     * @param boolean|string $name - name of the config, default = false, returns complete configs
+     * @param false|string $name - name of the config, default = false, returns complete configs
      *
      * @return mixed
      */
-    public function getConfig(bool|string $name = false): mixed
+    public function getConfig(false|string $name = false): mixed
     {
         if (!$name) {
             return $this->config;
@@ -442,7 +452,7 @@ class Project implements \Stringable
 
     public function toJSON(): string
     {
-        return json_encode($this->toArray());
+        return (string)json_encode($this->toArray());
     }
 
     /**
@@ -669,7 +679,7 @@ class Project implements \Stringable
     {
         $VHosts = new QUI\System\VhostManager();
         $vhostList = $VHosts->getHostsByProject($this->getName());
-        $template = OPT_DIR . $this->getAttribute('template');
+        $template = OPT_DIR . $this->getTemplate();
 
         $siteXMLs = [
             $template . '/site.xml'
@@ -677,7 +687,7 @@ class Project implements \Stringable
 
         // inheritance
         try {
-            $Package = QUI::getPackage($this->getAttribute('template'));
+            $Package = QUI::getPackage((string)$this->getTemplate());
             $Parent = $Package->getTemplateParent();
             $siteXml = false;
 
@@ -758,9 +768,9 @@ class Project implements \Stringable
      * @param boolean $with_protocol - Mit oder ohne http -> standard = ohne
      * @param boolean $ssl - with or without ssl
      *
-     * @return boolean|string
+     * @return string
      */
-    public function getVHost(bool $with_protocol = false, bool $ssl = false): bool|string
+    public function getVHost(bool $with_protocol = false, bool $ssl = false): string
     {
         if (QUI::conf("webserver", "forceHttps")) {
             $ssl = true;
@@ -872,7 +882,7 @@ class Project implements \Stringable
      * @param integer $parentid - The parent site ID
      * @param array<string, mixed> $params - extra db statements, like order, where, count, limit
      *
-     * @return array<int, mixed>|integer
+     * @return array<int, int>|int
      * @throws QUI\Database\Exception
      */
     public function getChildrenIdsFrom(int $parentid, array $params = []): array|int
@@ -1049,7 +1059,7 @@ class Project implements \Stringable
      *
      * @param array<string, mixed> $params
      *
-     * @return array<int, mixed>|int - if count is given, return is an integer, otherwise an array
+     * @return array<int, QUI\Interfaces\Projects\Site>|int
      *
      * @throws QUI\Database\Exception
      */
@@ -1732,7 +1742,7 @@ class Project implements \Stringable
     public function getCustomCSS(): string
     {
         if (file_exists(USR_DIR . $this->getName() . '/bin/custom.css')) {
-            return file_get_contents(USR_DIR . $this->getName() . '/bin/custom.css');
+            return (string)file_get_contents(USR_DIR . $this->getName() . '/bin/custom.css');
         }
 
         return '';
@@ -1773,7 +1783,7 @@ class Project implements \Stringable
     public function getCustomJavaScript(): string
     {
         if (file_exists(USR_DIR . $this->getName() . '/bin/custom.js')) {
-            return file_get_contents(USR_DIR . $this->getName() . '/bin/custom.js');
+            return (string)file_get_contents(USR_DIR . $this->getName() . '/bin/custom.js');
         }
 
         return '';
@@ -1839,7 +1849,7 @@ class Project implements \Stringable
         $filename = ETC_DIR . "projects.ini.php";
         $content = file_get_contents($filename);
 
-        $content = str_replace('[' . $this->name . ']', '[' . $newName . ']', $content);
+        $content = str_replace('[' . $this->name . ']', '[' . $newName . ']', (string)$content);
         file_put_contents($filename, $content);
 
 
@@ -1847,7 +1857,7 @@ class Project implements \Stringable
         $filename = ETC_DIR . "vhosts.ini.php";
         $content = file_get_contents($filename);
 
-        $content = str_replace($this->name, $newName, $content);
+        $content = str_replace($this->name, $newName, (string)$content);
         file_put_contents($filename, $content);
 
 

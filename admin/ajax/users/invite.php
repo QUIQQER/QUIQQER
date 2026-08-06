@@ -21,7 +21,7 @@ QUI::$Ajax->registerFunction(
         $Invite = new QUI\Users\Invite();
         $User = $Invite->invite($email, $groups);
 
-        return $User->getUUID();
+        return (string)$User->getUUID();
     },
     ['email', 'groups'],
     ['Permission::checkUser', 'quiqqer.admin.users.create']

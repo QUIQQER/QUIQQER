@@ -118,7 +118,7 @@ class SecurityUpdate extends QUI\System\Console\Tool
                 $packages[$package] = $v;
             }
 
-            $composerJSON = json_decode(file_get_contents($composerOriginal), true);
+            $composerJSON = json_decode((string)file_get_contents($composerOriginal), true);
             $originalRequire = $composerJSON['require'];
             $composerJSON['require'] = $packages;
 

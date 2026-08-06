@@ -68,14 +68,18 @@ class MigrationV2 extends QUI\System\Console\Tool
         $rootUser = $Config->getValue('globals', 'rootuser');
         $rootGroup = $Config->getValue('globals', 'root');
 
-        try {
-            $Config->setValue('globals', 'rootuser', QUI::getUsers()->get($rootUser)->getUUID());
-        } catch (QUI\Exception) {
+        if (is_string($rootUser)) {
+            try {
+                $Config->setValue('globals', 'rootuser', QUI::getUsers()->get($rootUser)->getUUID());
+            } catch (QUI\Exception) {
+            }
         }
 
-        try {
-            $Config->setValue('globals', 'root', QUI::getGroups()->get($rootGroup)->getUUID());
-        } catch (QUI\Exception) {
+        if (is_string($rootGroup)) {
+            try {
+                $Config->setValue('globals', 'root', QUI::getGroups()->get($rootGroup)->getUUID());
+            } catch (QUI\Exception) {
+            }
         }
 
         $Config->save();
@@ -372,11 +376,11 @@ class MigrationV2 extends QUI\System\Console\Tool
                     $eUser = $site['e_user'];
 
                     if (is_numeric($cUser)) {
-                        $cUser = $this->getUserHash($cUser);
+                        $cUser = $this->getUserHash(is_float($cUser) ? (int)$cUser : $cUser);
                     }
 
                     if (is_numeric($eUser)) {
-                        $eUser = $this->getUserHash($eUser);
+                        $eUser = $this->getUserHash(is_float($eUser) ? (int)$eUser : $eUser);
                     }
 
                     $this->updateRows(
@@ -409,11 +413,11 @@ class MigrationV2 extends QUI\System\Console\Tool
                 $eUser = $file['e_user'];
 
                 if (is_numeric($cUser)) {
-                    $cUser = $this->getUserHash($cUser);
+                    $cUser = $this->getUserHash(is_float($cUser) ? (int)$cUser : $cUser);
                 }
 
                 if (is_numeric($eUser)) {
-                    $eUser = $this->getUserHash($eUser);
+                    $eUser = $this->getUserHash(is_float($eUser) ? (int)$eUser : $eUser);
                 }
 
                 $this->updateRows(
@@ -446,12 +450,17 @@ class MigrationV2 extends QUI\System\Console\Tool
         $permissions = $this->fetchRows($table2Users);
 
         foreach ($permissions as $entry) {
-            if (!is_numeric($entry['user_id'])) {
+            $userId = $entry['user_id'];
+
+            if (
+                !is_int($userId)
+                && (!is_string($userId) || !is_numeric($userId))
+            ) {
                 continue;
             }
 
             try {
-                $userUUID = QUI::getUsers()->get($entry['user_id'])->getUUID();
+                $userUUID = QUI::getUsers()->get($userId)->getUUID();
             } catch (QUI\Exception) {
                 // nutzer existiert nicht, kann als permission gelöscht werden
                 QUI::getDataBaseConnection()->delete(QUI\Utils\Doctrine::quoteIdentifier($table2Users), [
@@ -475,12 +484,17 @@ class MigrationV2 extends QUI\System\Console\Tool
         $permissions = $this->fetchRows($table2Groups);
 
         foreach ($permissions as $entry) {
-            if (!is_numeric($entry['group_id'])) {
+            $groupId = $entry['group_id'];
+
+            if (
+                !is_int($groupId)
+                && (!is_string($groupId) || !is_numeric($groupId))
+            ) {
                 continue;
             }
 
             try {
-                $groupUUID = QUI::getGroups()->get($entry['group_id'])->getUUID();
+                $groupUUID = QUI::getGroups()->get($groupId)->getUUID();
             } catch (\Exception) {
                 // gruppe existiert nicht, kann als permission gelöscht werden
 
@@ -731,7 +745,7 @@ class MigrationV2 extends QUI\System\Console\Tool
         $Platform = $Connection->getDatabasePlatform();
         $QueryBuilder = $Connection->createQueryBuilder();
 
-        return $QueryBuilder
+        return (int)$QueryBuilder
             ->update($Platform->quoteSingleIdentifier($workspaceTable))
             ->set($Platform->quoteSingleIdentifier("uid"), ":newUid")
             ->where($QueryBuilder->expr()->eq($Platform->quoteSingleIdentifier("uid"), ":oldUid"))
@@ -1101,6 +1115,6 @@ class MigrationV2 extends QUI\System\Console\Tool
             );
         }
 
-        return $deleted;
+        return (int)$deleted;
     }
 }

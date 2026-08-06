@@ -28,7 +28,7 @@ QUI::$Ajax->registerFunction(
 
             $Config = QUI\Utils\Text\XML::getConfigFromXml($file, true);
 
-            if ($Config) {
+            if ($Config !== false) {
                 $config = array_merge_recursive_overwrite($config, $Config->toArray());
             }
 
@@ -51,8 +51,10 @@ QUI::$Ajax->registerFunction(
                 if (empty($config['globals']['nonce'])) {
                     $nonce = \QUI\Security\Password::generateRandom();
 
-                    $Config->setValue('globals', 'nonce', $nonce);
-                    $Config->save();
+                    if ($Config !== false) {
+                        $Config->setValue('globals', 'nonce', $nonce);
+                        $Config->save();
+                    }
 
                     $config['globals']['nonce'] = $nonce;
                 }

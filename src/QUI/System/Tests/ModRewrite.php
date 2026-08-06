@@ -68,7 +68,7 @@ class ModRewrite extends QUI\System\Test
         $phpinfo = ob_get_contents();
         ob_end_clean();
 
-        if (str_contains($phpinfo, 'mod_rewrite')) {
+        if (str_contains((string)$phpinfo, 'mod_rewrite')) {
             return self::STATUS_OK;
         }
 
@@ -98,6 +98,7 @@ class ModRewrite extends QUI\System\Test
             return self::STATUS_ERROR;
         }
 
+        $result = (string)$result;
 
         if (!str_contains($result, '<quiqqer>')) {
             return self::STATUS_ERROR;

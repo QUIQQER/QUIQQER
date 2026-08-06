@@ -32,6 +32,10 @@ QUI::$Ajax->registerFunction(
             'active' => '0&1'
         ]);
 
+        if (!is_array($childrenIds)) {
+            $childrenIds = [];
+        }
+
         foreach ($ids as $id) {
             $from = $from + 1;
 

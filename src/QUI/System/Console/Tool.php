@@ -21,7 +21,7 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
     /**
      * Console parameter list, list of available parameter
      *
-     * @var array<string, array{param: string, description: string, short: bool|string, optional: bool}>
+     * @var array<string, array{param: string, description: string, short: false|string, optional: bool}>
      */
     protected array $paramsList = [];
 
@@ -79,7 +79,7 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
      *
      * @param string $name - Name of the argument
      * @param string $description - Description of the argument
-     * @param boolean|string $short - optional, shortcut
+     * @param false|string $short - optional, shortcut
      * @param boolean $optional - optional, Argument is optional
      *
      * @return Tool
@@ -87,7 +87,7 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
     public function addArgument(
         string $name,
         string $description,
-        bool|string $short = false,
+        false|string $short = false,
         bool $optional = false
     ): self {
         $this->paramsList[$name] = [

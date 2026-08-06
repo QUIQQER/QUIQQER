@@ -28,12 +28,18 @@ function getMimeType(string $file): string
     }
 
     if (function_exists('mime_content_type')) { // PHP interne Funktionen
-        return mime_content_type($file);
+        return (string)mime_content_type($file);
     }
 
     if (function_exists('finfo_open') && function_exists('finfo_file')) { // PECL
         $finfo = finfo_open(FILEINFO_MIME);
-        $part = explode(';', finfo_file($finfo, $file));
+
+        if ($finfo === false) {
+            return '';
+        }
+
+        $part = explode(';', (string)finfo_file($finfo, $file));
+        finfo_close($finfo);
 
         return $part[0];
     }
@@ -194,11 +200,15 @@ try {
     header("Connection: Keep-Alive");
     header("Content-Disposition: inline; filename=\"" . pathinfo($file, PATHINFO_BASENAME) . "\"");
 
-    $fo_image = fopen($image, "r");
-    $fr_image = fread($fo_image, filesize($image));
-    fclose($fo_image);
+    $fo_image = fopen($image, 'r');
 
-    echo $fr_image;
+    if ($fo_image === false) {
+        header('HTTP/1.0 404 Not Found');
+        exit;
+    }
+
+    fpassthru($fo_image);
+    fclose($fo_image);
     exit;
 } catch (QUI\Exception $Exception) {
 }

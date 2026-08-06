@@ -103,7 +103,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * the site url
      */
-    protected string | bool $url = false;
+    protected string | false $url = false;
 
     /**
      * the ids of the pages in other languages
@@ -135,7 +135,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * is the site a link
      */
-    protected int | bool $LINKED_PARENT = false;
+    protected int | false $LINKED_PARENT = false;
 
     /**
      * tmp data from tables from the plugins
@@ -178,7 +178,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         // DB Tables
         $this->TABLE = $Project->table();
         $this->RELTABLE = $Project->table() . '_relations';
-        $this->RELLANGTABLE = QUI::getDBTableName($Project->getAttribute('name') . '_multilingual');
+        $this->RELLANGTABLE = QUI::getDBTableName($Project->getName() . '_multilingual');
 
 
         // view permission check
@@ -301,13 +301,13 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Return the ID of the site,
      * or the ID of the sibling (linked) site of another language
      *
-     * @param boolean|string $lang - optional, if it is set, then the language of the wanted linked sibling site
+     * @param false|string $lang - optional, if it is set, then the language of the wanted linked sibling site
      *
      * @return integer
      *
      * @throws QUI\Exception
      */
-    public function getId(bool | string $lang = false): int
+    public function getId(false | string $lang = false): int
     {
         if ($lang === false) {
             return $this->id;
@@ -316,7 +316,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         // other languages
         $Project = $this->getProject();
 
-        if ($lang === $Project->getAttribute('lang')) {
+        if ($lang === $Project->getLang()) {
             return $this->id;
         }
 
@@ -339,8 +339,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             );
         }
 
-        $projectName = $Project->getAttribute('name');
-        $projectLang = $Project->getAttribute('lang');
+        $projectName = $Project->getName();
+        $projectLang = $Project->getLang();
 
         $site_table = QUI::getDBTableName($projectName . '_' . $projectLang . '_sites');
         $lang_table = QUI::getDBTableName($projectName . '_' . $lang . '_sites');
@@ -501,7 +501,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         unset($att['project']);
 
-        return json_encode($att);
+        return (string)json_encode($att);
     }
 
     /**
@@ -539,7 +539,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         $Project = $this->getProject();
 
-        if ($lang == $Project->getAttribute('lang')) {
+        if ($lang == $Project->getLang()) {
             return true;
         }
 
@@ -558,7 +558,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         try {
             $_Project = QUI::getProject(
-                $Project->getAttribute('name'),
+                $Project->getName(),
                 $lang
             );
 
@@ -588,8 +588,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             $Platform = $Connection->getDatabasePlatform();
             $dbResult = $Connection->createQueryBuilder()
                 ->select("*")
-                ->from($Platform->quoteSingleIdentifier($Project->getAttribute("name") . "_multilingual"))
-                ->where($Platform->quoteSingleIdentifier($Project->getAttribute("lang")) . " = :siteId")
+                ->from($Platform->quoteSingleIdentifier($Project->getName() . "_multilingual"))
+                ->where($Platform->quoteSingleIdentifier($Project->getLang()) . " = :siteId")
                 ->setParameter("siteId", $this->getId())
                 ->setMaxResults(1)
                 ->executeQuery()
@@ -624,7 +624,18 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     {
         $Parent = $this->getParent();
         $Project = $this->getProject();
+
+        if ($Parent === false) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get('quiqqer/core', 'exception.site.no.next.sibling')
+            );
+        }
+
         $list = $Parent->getChildrenIds();
+
+        if (!is_array($list)) {
+            $list = [];
+        }
 
         foreach ($list as $key => $id) {
             if ($id != $this->getId()) {
@@ -646,7 +657,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * @throws QUI\Exception
      */
-    public function getParent(): bool | Site
+    public function getParent(): false | Site
     {
         if (!$this->getParentId()) {
             return false;
@@ -682,7 +693,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *                      $params['where']
      *                      $params['limit']
      *
-     * @return array<int, mixed>|int
+     * @return array<int, int>|int
      *
      * @throws QUI\Exception
      */
@@ -716,7 +727,16 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         $Parent = $this->getParent();
         $Project = $this->getProject();
+
+        if ($Parent === false) {
+            return [];
+        }
+
         $list = $Parent->getChildrenIds();
+
+        if (!is_array($list)) {
+            $list = [];
+        }
 
         foreach ($list as $key => $id) {
             if ($id != $this->getId()) {
@@ -749,7 +769,18 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     {
         $Parent = $this->getParent();
         $Project = $this->getProject();
+
+        if ($Parent === false) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get('quiqqer/core', 'exception.site.no.previous.sibling')
+            );
+        }
+
         $list = $Parent->getChildrenIds();
+
+        if (!is_array($list)) {
+            $list = [];
+        }
 
         foreach ($list as $key => $id) {
             if ($id != $this->getId()) {
@@ -779,7 +810,16 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         $Parent = $this->getParent();
         $Project = $this->getProject();
+
+        if ($Parent === false) {
+            return [];
+        }
+
         $list = $Parent->getChildrenIds();
+
+        if (!is_array($list)) {
+            $list = [];
+        }
 
         foreach ($list as $key => $id) {
             if ($id != $this->getId()) {
@@ -808,7 +848,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @throws QUI\Exception
      */
-    public function firstChild(array $params = []): bool | Site
+    public function firstChild(array $params = []): false | Site
     {
         $params['limit'] = '1';
 
@@ -825,7 +865,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *                      $params['limit']
      * @param boolean $load - Legt fest ob die Kinder die Plugins laden sollen
      *
-     * @return array<int, mixed>|integer
+     * @return array<int, Site>|int
      *
      * @throws QUI\Exception
      */
@@ -851,6 +891,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             return (int)$result;
         }
 
+        if (!is_array($result)) {
+            $result = [];
+        }
 
         $children = [];
 
@@ -913,13 +956,13 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Lädt die Plugins der Seite
      *
-     * @param boolean|string $plugin - Plugin welches geladen werden soll, optional, ansonsten werden alle geladen
+     * @param false|string $plugin - Plugin welches geladen werden soll, optional, ansonsten werden alle geladen
      *
      * @return Site
      *
      * @throws QUI\Exception
      */
-    public function load(bool | string $plugin = false): Site
+    public function load(false | string $plugin = false): Site
     {
         $this->loadFlag = true;
         $cacheDbPackageCacheName = $this->getCachePath() . '/dbPackageFiles';
@@ -994,7 +1037,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 $XPath = new DOMXPath($Dom);
                 $Types = $XPath->query('//type[@type="' . $type . '"]');
 
-                $Type = $Types->item(0);
+                $Type = $Types === false ? null : $Types->item(0);
 
                 if (
                     $Type instanceof DOMElement
@@ -1104,7 +1147,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             $Platform = $Connection->getDatabasePlatform();
             $result = $Connection->createQueryBuilder()
                 ->select(...array_map(
-                    static fn($field) => $Platform->quoteSingleIdentifier($field),
+                    static fn($field) => $Platform->quoteSingleIdentifier((string)$field),
                     $fieldList
                 ))
                 ->from($Platform->quoteSingleIdentifier($tbl))
@@ -1147,11 +1190,15 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @throws QUI\Exception
      */
-    public function lastChild(array $params = []): bool | Edit | Site
+    public function lastChild(array $params = []): false | Edit | Site
     {
         $params['limit'] = false;
 
         $result = $this->getChildrenIds($params);
+
+        if (!is_array($result)) {
+            $result = [];
+        }
 
         if (!count($result)) {
             return false;
@@ -1170,6 +1217,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Gibt die Kinder zurück achtet aber auf "Nicht in Navigation anzeigen" und Rechte
      *
+     * @param array<string, mixed> $params
+     * @return array<int, Site>|int
+     *
      * @throws QUI\Exception
      */
     public function getNavigation(array $params = []): array | int
@@ -1180,6 +1230,10 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         if (isset($params['count'])) {
             return $children;
+        }
+
+        if (!is_array($children)) {
+            $children = [];
         }
 
         foreach ($children as $k => $Child) {
@@ -1399,6 +1453,10 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     {
         $ids = $this->getProject()->getChildrenIdsFrom($pid, $params);
 
+        if (!is_array($ids)) {
+            $ids = [];
+        }
+
         if (empty($ids)) {
             return;
         }
@@ -1412,7 +1470,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Prüft ob es eine Verknüpfung ist
      */
-    public function isLinked(): bool | int
+    public function isLinked(): false | int
     {
         if ($this->LINKED_PARENT === false) {
             return false;

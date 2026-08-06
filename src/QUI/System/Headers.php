@@ -38,20 +38,11 @@ class Headers
      */
     protected array $csp = [];
 
-    /**
-     * @var string|array<string, mixed>|bool
-     */
-    protected string|array|bool $xFrameOptions = false;
+    protected string|false $xFrameOptions = false;
 
-    /**
-     * @var string|array<string, mixed>|bool
-     */
-    protected string|array|bool $xContentTypeOptions = "nosniff";
+    protected string $xContentTypeOptions = "nosniff";
 
-    /**
-     * @var string|array<string, mixed>|bool
-     */
-    protected string|array|bool $xXSSProtection = "1; mode=block";
+    protected string $xXSSProtection = "1; mode=block";
 
     /**
      * Headers constructor.
@@ -77,16 +68,22 @@ class Headers
             $this->hstsPreload();
         }
 
-        if (QUI::conf('securityHeaders', 'xFrameOptions')) {
-            $this->xFrameOptions = QUI::conf('securityHeaders', 'xFrameOptions');
+        $xFrameOptions = QUI::conf('securityHeaders', 'xFrameOptions');
+
+        if (is_string($xFrameOptions) && $xFrameOptions !== '') {
+            $this->xFrameOptions = $xFrameOptions;
         }
 
-        if (QUI::conf('securityHeaders', 'xContentTypeOptions')) {
-            $this->xContentTypeOptions = QUI::conf('securityHeaders', 'xContentTypeOptions');
+        $xContentTypeOptions = QUI::conf('securityHeaders', 'xContentTypeOptions');
+
+        if (is_string($xContentTypeOptions) && $xContentTypeOptions !== '') {
+            $this->xContentTypeOptions = $xContentTypeOptions;
         }
 
-        if (QUI::conf('securityHeaders', 'xXSSProtection')) {
-            $this->xXSSProtection = QUI::conf('securityHeaders', 'xXSSProtection');
+        $xXSSProtection = QUI::conf('securityHeaders', 'xXSSProtection');
+
+        if (is_string($xXSSProtection) && $xXSSProtection !== '') {
+            $this->xXSSProtection = $xXSSProtection;
         }
 
         // default CSP

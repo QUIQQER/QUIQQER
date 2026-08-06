@@ -280,7 +280,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * @throws QUI\Database\Exception
      * @throws QUI\Exception
      */
-    public function getChildrenByName($filename, bool | int $limit = false): array
+    public function getChildrenByName($filename, false | int $limit = false): array
     {
         $table = $this->Media->getTable();
         $table_rel = $this->Media->getTable('relations');
@@ -465,6 +465,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         // copy the children
         $ids = $this->getChildrenIds();
 
+        if (!is_array($ids)) {
+            $ids = [];
+        }
+
         foreach ($ids as $id) {
             try {
                 $Item = $this->Media->get($id);
@@ -575,7 +579,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * If $params['count'] = true is set, then the total number of search results is returned!
      *
-     * @return array<int, mixed>|int
+     * @return array<int, int>|int
      */
     public function getChildrenIds(array $params = []): array | int
     {
@@ -773,6 +777,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         $ids = $this->getChildrenIds($params);
 
+        if (!is_array($ids)) {
+            $ids = [];
+        }
+
         foreach ($ids as $id) {
             try {
                 $this->children[] = $this->Media->get($id);
@@ -865,6 +873,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return children / elements in the folder
      *
+     * @param 'image'|'file'|'folder' $type
      * @param array<string, mixed> $params
      *
      * @return array<int, mixed>|int
@@ -1274,14 +1283,14 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         ) {
             $content = file_get_contents($file);
 
-            if (str_contains($content, '<svg') && strpos($content, '</svg>')) {
-                if (!str_contains($content, '<?xml ')) {
-                    if (preg_match('/(<svg[\s\S]*<\/svg>)/i', $content, $match)) {
+            if (str_contains((string)$content, '<svg') && strpos((string)$content, '</svg>')) {
+                if (!str_contains((string)$content, '<?xml ')) {
+                    if (preg_match('/(<svg[\s\S]*<\/svg>)/i', (string)$content, $match)) {
                         $content = $match[1];
                     }
 
-                    if (mb_substr($content, 0, 3) === "\xEF\xBB\xBF") {
-                        $content = substr($content, 3);
+                    if (mb_substr((string)$content, 0, 3) === "\xEF\xBB\xBF") {
+                        $content = substr((string)$content, 3);
                     }
 
                     $content = '<?xml version="1.0" encoding="UTF-8"?>' . $content;
@@ -1360,15 +1369,15 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         if ($fileInfo['mime_type'] === 'image/svg' || $fileInfo['mime_type'] === 'image/svg+xml') {
             $svgContent = file_get_contents($file);
 
-            if (preg_match('/(<svg[\s\S]*<\/svg>)/i', $svgContent, $match)) {
+            if (preg_match('/(<svg[\s\S]*<\/svg>)/i', (string)$svgContent, $match)) {
                 $svgContent = $match[1];
             }
 
-            if (mb_substr($svgContent, 0, 3) === "\xEF\xBB\xBF") {
-                $svgContent = substr($svgContent, 3);
+            if (mb_substr((string)$svgContent, 0, 3) === "\xEF\xBB\xBF") {
+                $svgContent = substr((string)$svgContent, 3);
             }
 
-            $svgContent = trim($svgContent);
+            $svgContent = trim((string)$svgContent);
 
             try {
                 $dom = new \DOMDocument();
@@ -1386,6 +1395,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 // Fallback auf viewBox, falls width/height fehlen oder 0 sind
                 if ((!$width || !$height) && $viewBox) {
                     $parts = preg_split('/[\s,]+/', $viewBox);
+
+                    if (!is_array($parts)) {
+                        $parts = [];
+                    }
 
                     if (count($parts) === 4) {
                         if (!$width) {
@@ -1490,12 +1503,12 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * If the file is a folder
      *
      * @param string $path - Path to the dir
-     * @param QUI\Projects\Media\Folder|boolean $Folder - (optional) Uploaded Folder
+     * @param QUI\Projects\Media\Folder|false $Folder - (optional) Uploaded Folder
      *
      * @return Folder
      * @throws QUI\Exception
      */
-    protected function uploadFolder(string $path, bool | Folder $Folder = false): Folder
+    protected function uploadFolder(string $path, false | Folder $Folder = false): Folder
     {
         $files = FileUtils::readDir($path);
 

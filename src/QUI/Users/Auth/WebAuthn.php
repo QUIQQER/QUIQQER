@@ -10,6 +10,7 @@ use QUI\Users\Auth\WebAuthn\Server;
 use QUI\Utils\Security\Orthos;
 
 use function is_array;
+use function is_int;
 use function is_null;
 use function is_string;
 use function json_decode;
@@ -31,6 +32,14 @@ class WebAuthn extends AbstractAuthenticator
 
         if ($user instanceof User) {
             $this->User = $user;
+            return;
+        }
+
+        if (is_int($user)) {
+            $user = (string)$user;
+        }
+
+        if (!is_string($user)) {
             return;
         }
 

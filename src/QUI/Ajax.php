@@ -171,7 +171,7 @@ class Ajax extends QUI\QDOM
     {
         if (
             !isset($_REQUEST['_rf'])
-            || !is_string($_REQUEST['_rf']) && count($_REQUEST['_rf']) > 1
+            || !is_string($_REQUEST['_rf'])
         ) {
             return $this->writeException(
                 new Exception('Bad Request', 400)
@@ -190,16 +190,20 @@ class Ajax extends QUI\QDOM
             $result[$_rf] = $this->callRequestFunction($_rf);
         }
 
-        try {
-            QUI::getSession()->getSymfonySession()->save();
-        } catch (PDOException) {
-            // sometimes pdo transactions get lost. double saving helps.
-            // problem lies in the match between symfony and doctrine.
-            // unfortunately this is the only way to solve it
+        $SymfonySession = QUI::getSession()->getSymfonySession();
+
+        if ($SymfonySession !== false) {
             try {
-                QUI::getSession()->getSymfonySession()->save();
-            } catch (PDOException $e) {
-                QUI\System\Log::addWarning('Session Error :: ' . $e->getMessage());
+                $SymfonySession->save();
+            } catch (PDOException) {
+                // sometimes pdo transactions get lost. double saving helps.
+                // problem lies in the match between symfony and doctrine.
+                // unfortunately this is the only way to solve it
+                try {
+                    $SymfonySession->save();
+                } catch (PDOException $e) {
+                    QUI\System\Log::addWarning('Session Error :: ' . $e->getMessage());
+                }
             }
         }
 
@@ -369,7 +373,7 @@ class Ajax extends QUI\QDOM
 
         // strip tags
         $return['Exception']['message'] = strip_tags(
-            $return['Exception']['message'],
+            $return['Exception']['message'] ?? '',
             '<div><span><p><br><hr><ul><ol><li><strong><em><b><i><u>'
         );
 
@@ -455,6 +459,12 @@ class Ajax extends QUI\QDOM
                     )
                 ];
             } else {
+                if (!is_callable($_rf)) {
+                    return $this->writeException(
+                        new Exception('Bad Request', 400)
+                    );
+                }
+
                 $return = [
                     'result' => call_user_func_array($_rf, $params)
                 ];
@@ -482,7 +492,7 @@ class Ajax extends QUI\QDOM
      * @throws Exception
      * @throws \QUI\Permissions\Exception
      */
-    public static function checkPermissions(callable|string $reg_function): void
+    public static function checkPermissions(string $reg_function): void
     {
         if (!isset(self::$permissions[$reg_function])) {
             return;

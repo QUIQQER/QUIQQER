@@ -365,7 +365,7 @@ class Package extends QUI\System\Console\Tool
 
         // check composer json
         $composer = file_get_contents(VAR_DIR . 'composer/composer.json');
-        $composer = json_decode($composer, true);
+        $composer = json_decode((string)$composer, true);
 
         $require = $composer['require'];
 
