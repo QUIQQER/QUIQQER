@@ -481,7 +481,10 @@ class Output extends Singleton
         $id = false;
 
         // Falls ein Objekt übergeben wird
-        if (isset($params['site']) && is_object($params['site'])) {
+        if (
+            isset($params['site'])
+            && $params['site'] instanceof QUI\Interfaces\Projects\Site
+        ) {
             /* @var $Project Project */
             /* @var $Site Site */
             $Site = $params['site'];
@@ -1136,6 +1139,11 @@ class Output extends Singleton
             }
 
             $parts = preg_split('/\s+/', $source, 2);
+
+            if ($parts === false) {
+                continue;
+            }
+
             $url = $this->getAbsoluteUrl($parts[0]);
 
             if (isset($parts[1])) {
