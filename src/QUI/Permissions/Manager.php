@@ -693,7 +693,7 @@ class Manager
     /**
      * Set the permissions for an object
      *
-     * @param User|Group|Project|Site|Edit|QUI\Projects\Media\Item $Obj
+     * @param QUI\Interfaces\Users\User|Group|Project|Site|Edit|QUI\Projects\Media\Item $Obj
      * @param array<string, mixed> $permissions - Array of permissions
      * @param QUI\Interfaces\Users\User|null $EditUser - Edit user
      *
