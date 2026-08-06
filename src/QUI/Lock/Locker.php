@@ -176,7 +176,7 @@ class Locker
         }
 
         $Item = self::getStash($name);
-        $Item->expiresAfter($lifetime);
+        $Item->expiresAfter((int)$lifetime);
         $Item->set($value);
         $Item->save();
     }

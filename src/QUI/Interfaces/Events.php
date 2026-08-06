@@ -47,11 +47,11 @@ interface Events
      * Removes an event from the stack of events of the Class instance.
      *
      * @param string $event - The type of event (e.g. 'complete').
-     * @param callable|bool $fn - (optional) Function which should be removed
+     * @param callable|string|false $fn - (optional) Function which should be removed
      *
      * @return void
      */
-    public function removeEvent(string $event, callable|bool $fn = false);
+    public function removeEvent(string $event, callable|string|false $fn = false);
 
     /**
      * Removes all events of the given type from the stack of events of a Class instance.
@@ -67,10 +67,10 @@ interface Events
      * Fires all events of the specified type in the Class instance.
      *
      * @param string $event - The type of event (e.g. 'onComplete').
-     * @param bool|array<array-key, mixed> $args - (optional) the argument(s) to pass to the function.
+     * @param false|array<array-key, mixed> $args - (optional) the argument(s) to pass to the function.
      *                        The arguments must be in an array.
      *
      * @return array<string, mixed>
      */
-    public function fireEvent(string $event, bool|array $args = false, bool $force = false);
+    public function fireEvent(string $event, false|array $args = false, bool $force = false);
 }

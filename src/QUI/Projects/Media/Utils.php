@@ -803,7 +803,7 @@ class Utils
             $pos_dot = strpos($fileName, '.', $lastpos_ul);
 
             $fileName = substr($fileName, 0, ($lastpos_ul - 2)) .
-                substr($fileName, $pos_dot);
+                substr($fileName, (int)$pos_dot);
         }
 
         $parts[] = $fileName;
@@ -1132,7 +1132,7 @@ class Utils
      */
     public static function generateMD5(Image | File $File): string
     {
-        return md5_file($File->getFullPath());
+        return (string)md5_file($File->getFullPath());
     }
 
     /**
@@ -1140,7 +1140,7 @@ class Utils
      */
     public static function generateSHA1(Image | File $File): string
     {
-        return sha1_file($File->getFullPath());
+        return (string)sha1_file($File->getFullPath());
     }
 
     /**
@@ -1315,6 +1315,10 @@ class Utils
 
             $attributes = $Path->query('//quiqqer/media/attributes/attribute');
 
+            if ($attributes === false) {
+                continue;
+            }
+
             foreach ($attributes as $Attribute) {
                 if (!($Attribute instanceof DOMElement)) {
                     continue;
@@ -1382,7 +1386,7 @@ class Utils
         }
 
         $extensions = file_get_contents($file);
-        $extensions = str_replace(';<?php exit; ?>', '', $extensions);
+        $extensions = str_replace(';<?php exit; ?>', '', (string)$extensions);
         $extensions = trim($extensions);
         $extensions = explode(PHP_EOL, $extensions);
 

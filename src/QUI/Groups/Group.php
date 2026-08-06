@@ -116,7 +116,7 @@ class Group extends QUI\QDOM
         if (!isset($result[0])) {
             if ($id == Manager::EVERYONE_ID || $id == Manager::GUEST_ID) {
                 $this->id = (int)$id;
-                $this->uuid = $id;
+                $this->uuid = (string)$id;
                 return;
             }
 
@@ -144,7 +144,7 @@ class Group extends QUI\QDOM
                 }
 
                 $result[0]['uuid'] = $uuid;
-                $this->uuid = $result[0]['uuid'];
+                $this->uuid = (string)$result[0]['uuid'];
 
                 QUI::getDataBaseConnection()->update(
                     QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
@@ -711,17 +711,17 @@ class Group extends QUI\QDOM
     /**
      * @deprecated
      *
-     * @return bool|array<array-key, mixed>|string
+     * @return bool|int|array<array-key, mixed>|string
      */
-    public function hasRight(string $right): bool | array | string
+    public function hasRight(string $right): bool | int | array | string
     {
         return $this->hasPermission($right);
     }
 
     /**
-     * @return bool|array<array-key, mixed>|string
+     * @return bool|int|array<array-key, mixed>|string
      */
-    public function hasPermission(string $permission): bool | array | string
+    public function hasPermission(string $permission): bool | int | array | string
     {
         return $this->rights[$permission] ?? false;
     }
@@ -1014,11 +1014,17 @@ class Group extends QUI\QDOM
             return false;
         }
 
-        if ($this->getParent() == $id) {
-            return true;
+        $Parent = $this->getParent();
+
+        if ($Parent === null) {
+            return false;
         }
 
-        return false;
+        if (is_numeric($id)) {
+            return $Parent->getId() === (int)$id;
+        }
+
+        return $Parent->getUUID() === $id;
     }
 
     public function hasChildren(): int

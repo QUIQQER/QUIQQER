@@ -293,6 +293,10 @@ class CopyLanguageSites extends QUI\System\Console\Tool
             'active' => '0&1'
         ]);
 
+        if (!is_array($sourceChildrenIds)) {
+            $sourceChildrenIds = [];
+        }
+
         if (empty($sourceChildrenIds)) {
             return;
         }

@@ -136,11 +136,11 @@ class Utils
 
         // URL Filter
         if ($Project !== null) {
-            $name = $Project->getAttribute('name');
+            $name = $Project->getName();
             $filter = USR_DIR . 'lib/' . $name . '/url.filter.php';
             $func = 'url_filter_' . $name;
 
-            $filter = Orthos::clearPath(realpath($filter));
+            $filter = Orthos::clearPath((string)realpath($filter));
 
             if (file_exists($filter)) {
                 require_once $filter;
@@ -184,6 +184,10 @@ class Utils
             $package = $dbXml['package'];
 
             $tableList = $Path->query("//database/projects/table");
+
+            if ($tableList === false) {
+                continue;
+            }
 
             for ($i = 0, $len = $tableList->length; $i < $len; $i++) {
                 $Table = $tableList->item($i);
@@ -283,6 +287,10 @@ class Utils
 
             $tableList = $Path->query("//database/projects/table");
 
+            if ($tableList === false) {
+                continue;
+            }
+
             for ($i = 0, $len = $tableList->length; $i < $len; $i++) {
                 $Table = $tableList->item($i);
 
@@ -363,6 +371,10 @@ class Utils
             $Path = new DOMXPath($Dom);
             $attributes = $Path->query('//site/attributes/attribute');
 
+            if ($attributes === false) {
+                continue;
+            }
+
             foreach ($attributes as $Attribute) {
                 if (!($Attribute instanceof DOMElement)) {
                     continue;
@@ -389,15 +401,17 @@ class Utils
             $Path = new DOMXPath($Dom);
             $attributes = $Path->query($exprPackage);
 
-            foreach ($attributes as $Attribute) {
-                if (!($Attribute instanceof DOMElement)) {
-                    continue;
-                }
+            if ($attributes !== false) {
+                foreach ($attributes as $Attribute) {
+                    if (!($Attribute instanceof DOMElement)) {
+                        continue;
+                    }
 
-                $result[] = [
-                    'attribute' => trim($Attribute->nodeValue),
-                    'default' => $Attribute->getAttribute('default')
-                ];
+                    $result[] = [
+                        'attribute' => trim($Attribute->nodeValue),
+                        'default' => $Attribute->getAttribute('default')
+                    ];
+                }
             }
 
             // Query for site type attributes in other packages than the original package of the site type
@@ -417,6 +431,10 @@ class Utils
                 $Dom = XML::getDomFromXml($siteXmlFile);
                 $Path = new DOMXPath($Dom);
                 $attributes = $Path->query($exprOtherPackage);
+
+                if ($attributes === false) {
+                    continue;
+                }
 
                 foreach ($attributes as $Attribute) {
                     if (!($Attribute instanceof DOMElement)) {
@@ -477,7 +495,15 @@ class Utils
             $Path = new DOMXPath($Dom);
             $cats = $Path->query("//site/settings/category");
 
+            if ($cats === false) {
+                continue;
+            }
+
             foreach ($cats as $Category) {
+                if (!$Category instanceof DOMNode) {
+                    continue;
+                }
+
                 $result .= DOM::parseCategoryToHTML($Category, $current);
             }
         }
@@ -497,8 +523,14 @@ class Utils
                 "//site/types/type[@type='" . $type[1] . "']/settings/category"
             );
 
-            foreach ($cats as $Category) {
-                $result .= DOM::parseCategoryToHTML($Category, $current);
+            if ($cats !== false) {
+                foreach ($cats as $Category) {
+                    if (!$Category instanceof DOMNode) {
+                        continue;
+                    }
+
+                    $result .= DOM::parseCategoryToHTML($Category, $current);
+                }
             }
         }
 
@@ -523,7 +555,15 @@ class Utils
                     "//site/types/type[@type='" . $type[0] . ':' . $type[1] . "']/settings/category"
                 );
 
+                if ($cats === false) {
+                    continue;
+                }
+
                 foreach ($cats as $Category) {
+                    if (!$Category instanceof DOMNode) {
+                        continue;
+                    }
+
                     $result .= DOM::parseCategoryToHTML($Category, $current);
                 }
             }
@@ -569,9 +609,15 @@ class Utils
                 "//site/types/type[@type='" . $type[1] . "']/admin/js"
             );
 
-            foreach ($modules as $Module) {
-                foreach ($Module->attributes as $Attr) {
-                    $result['js'][$Attr->nodeName][] = $Attr->nodeValue;
+            if ($modules !== false) {
+                foreach ($modules as $Module) {
+                    if (!$Module instanceof DOMElement) {
+                        continue;
+                    }
+
+                    foreach ($Module->attributes as $Attr) {
+                        $result['js'][$Attr->nodeName][] = $Attr->nodeValue;
+                    }
                 }
             }
         }
@@ -591,17 +637,7 @@ class Utils
      */
     public static function isSiteObject(QUI\Interfaces\Projects\Site $Site): bool
     {
-        switch ($Site::class) {
-            case Projects\Site::class:
-            case Edit::class:
-            case OnlyDB::class:
-                break;
-
-            default:
-                return false;
-        }
-
-        return true;
+        return $Site instanceof Projects\Site;
     }
 
     /**
@@ -625,7 +661,7 @@ class Utils
                 705,
                 [
                     'method' => 'getSiteByLink',
-                    'class' => 'QUI/projects/Site/Utils',
+                    'class' => 'QUI/Projects/Site/Utils',
                     'link' => $link
                 ]
             );
@@ -642,13 +678,37 @@ class Utils
                 705,
                 [
                     'method' => 'getSiteByLink',
-                    'class' => 'QUI/projects/Site/Utils',
+                    'class' => 'QUI/Projects/Site/Utils',
                     'link' => $link
                 ]
             );
         }
 
         parse_str($parseUrl['query'], $urlQueryParams);
+
+        if (
+            !isset(
+                $urlQueryParams['project'],
+                $urlQueryParams['lang'],
+                $urlQueryParams['id']
+            )
+            || !is_string($urlQueryParams['project'])
+            || !is_string($urlQueryParams['lang'])
+            || !is_scalar($urlQueryParams['id'])
+        ) {
+            throw new Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/core',
+                    'exception.site.not.found'
+                ),
+                705,
+                [
+                    'method' => 'getSiteByLink',
+                    'class' => 'QUI/Projects/Site/Utils',
+                    'link' => $link
+                ]
+            );
+        }
 
         $Project = QUI::getProject(
             $urlQueryParams['project'],
@@ -795,6 +855,10 @@ class Utils
                         'order' => $order
                     ]);
 
+                    if (!is_array($children)) {
+                        $children = [];
+                    }
+
                     $ids = array_merge($ids, $children);
                 } catch (Exception) {
                 }
@@ -822,11 +886,17 @@ class Utils
             }
 
             // by with parents, we use WHERE AND
-            return $Project->getSites([
+            $sites = $Project->getSites([
                 'where' => array_merge($where, $selectorWhere),
                 'limit' => $limit,
                 'order' => $order
             ]);
+
+            if (!is_array($sites)) {
+                $sites = [];
+            }
+
+            return $sites;
         }
 
         if (isset($params['count']) && $params['count']) {
@@ -845,20 +915,32 @@ class Utils
         }
 
         if (count($selectorWhere) <= 1) {
-            return $Project->getSites([
+            $sites = $Project->getSites([
                 'where' => array_merge($where, $selectorWhere),
                 'limit' => $limit,
                 'order' => $order
             ]);
+
+            if (!is_array($sites)) {
+                $sites = [];
+            }
+
+            return $sites;
         }
 
         // by no parents and mixed selectors, we use WHERE OR for the selectors only
-        return $Project->getSites([
+        $sites = $Project->getSites([
             'where' => $where,
             'where_or' => $selectorWhere,
             'limit' => $limit,
             'order' => $order
         ]);
+
+        if (!is_array($sites)) {
+            $sites = [];
+        }
+
+        return $sites;
     }
 
     /**
@@ -882,7 +964,7 @@ class Utils
                 705,
                 [
                     'method' => 'rewriteSiteLink',
-                    'class' => 'QUI/projects/Site/Utils',
+                    'class' => 'QUI/Projects/Site/Utils',
                     'link' => $link
                 ]
             );
@@ -899,7 +981,7 @@ class Utils
                 705,
                 [
                     'method' => 'rewriteSiteLink',
-                    'class' => 'QUI/projects/Site/Utils',
+                    'class' => 'QUI/Projects/Site/Utils',
                     'link' => $link
                 ]
             );

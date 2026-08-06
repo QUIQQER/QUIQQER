@@ -18,23 +18,30 @@ QUI::$Ajax->registerFunction(
         if (
             preg_match_all(
                 '#(?:<h2>(?:<a name=".*?">)?(.*?)(?:</a>)?</h2>)|(?:<tr(?: class=".*?")?><t[hd](?: class=".*?")?>(.*?)\s*</t[hd]>(?:<t[hd](?: class=".*?")?>(.*?)\s*</t[hd]>(?:<t[hd](?: class=".*?")?>(.*?)\s*</t[hd]>)?)?</tr>)#s',
-                \ob_get_clean(),
+                (string)\ob_get_clean(),
                 $matches,
                 PREG_SET_ORDER
             )
         ) {
             foreach ($matches as $match) {
-                if (strlen($match[1])) {
-                    $phpinfo[$match[1]] = [];
-                } elseif (isset($match[3])) {
+                $heading = $match[1] ?? '';
+                $name = $match[2] ?? '';
+                $value = $match[3] ?? null;
+                $additionalValue = $match[4] ?? null;
+
+                if ($heading !== '') {
+                    $phpinfo[$heading] = [];
+                } elseif ($value !== null) {
                     $keys = array_keys($phpinfo);
                     $end = end($keys);
-                    $phpinfo[$end][$match[2]] = isset($match[4]) ? [$match[3], $match[4]] : $match[3];
+                    $phpinfo[$end][$name] = $additionalValue !== null
+                        ? [$value, $additionalValue]
+                        : $value;
                 } else {
                     $keys = array_keys($phpinfo);
                     $end = end($keys);
 
-                    $phpinfo[$end][] = $match[2];
+                    $phpinfo[$end][] = $name;
                 }
             }
         }

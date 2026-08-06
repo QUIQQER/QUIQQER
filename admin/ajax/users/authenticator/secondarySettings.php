@@ -3,10 +3,11 @@
 QUI::$Ajax->registerFunction(
     'ajax_users_authenticator_secondarySettings',
     static function ($authenticator): string {
-        $available = QUI\Users\Auth\Handler::getInstance()->getAvailableAuthenticators();
+        $AuthHandler = QUI\Users\Auth\Handler::getInstance();
+        $available = $AuthHandler->getAvailableAuthenticators();
         $available = array_flip($available);
 
-        if (!isset($available[$authenticator]) && $available[$authenticator]) {
+        if (!isset($available[$authenticator])) {
             return '';
         }
 
@@ -18,17 +19,22 @@ QUI::$Ajax->registerFunction(
 
         if (!QUI::getUsers()->isNobodyUser($User)) {
             $AuthenticatorUser = $User;
-            $instance = new $authenticator($User);
+            $instance = $AuthHandler->getAuthenticator($authenticator, $User);
         } elseif ($Session->get('auth-primary')) {
             $uid = $Session->get('uid');
-            $instance = new $authenticator($uid);
+
+            if (!is_int($uid) && !is_string($uid)) {
+                return '';
+            }
+
+            $instance = $AuthHandler->getAuthenticator($authenticator, $uid);
 
             try {
                 $AuthenticatorUser = QUI::getUsers()->get($uid);
             } catch (QUI\Exception) {
             }
         } else {
-            $instance = new $authenticator();
+            $instance = $AuthHandler->getAuthenticator($authenticator);
         }
 
         if (!$instance->isSecondaryAuthentication()) {
@@ -40,7 +46,7 @@ QUI::$Ajax->registerFunction(
             && $AuthenticatorUser instanceof QUI\Interfaces\Users\User
         ) {
             $credentials = (new QUI\Users\Auth\WebAuthn\CredentialRepository())
-                ->findByUserUuid($AuthenticatorUser->getUUID());
+                ->findByUserUuid((string)$AuthenticatorUser->getUUID());
 
             if (!empty($credentials)) {
                 if (!$AuthenticatorUser->hasAuthenticator(QUI\Users\Auth\WebAuthn::class)) {

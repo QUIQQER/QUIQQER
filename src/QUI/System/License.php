@@ -44,7 +44,7 @@ class License
     public static function registerLicenseFile(QDOM $File): void
     {
         $content = file_get_contents($File->getAttribute('filepath'));
-        $content = json_decode(hex2bin($content), true);
+        $content = json_decode((string)hex2bin((string)$content), true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new QUI\Exception('JSON Error in license data: ' . json_last_error_msg());
@@ -90,7 +90,7 @@ class License
         $LicenseConfig->set(
             'license',
             'licenseHash',
-            bin2hex(Encryption::encrypt(hex2bin($content['licenseHash'])))
+            bin2hex(Encryption::encrypt((string)hex2bin($content['licenseHash'])))
         );
 
         $LicenseConfig->save();
@@ -119,12 +119,18 @@ class License
         $licenseServerUrl = self::getLicenseServerUrl() . 'api/license/activate?';
         $licenseData = self::getLicenseData();
 
+        if ($licenseData === false) {
+            throw new QUI\Exception(
+                'The system does not have a registered license.'
+            );
+        }
+
         $licenseServerUrl .= http_build_query([
             'licenseid' => $licenseData['id'],
             'licensehash' => $licenseData['licenseHash'],
             'systemid' => self::getSystemId(),
             'systemhash' => self::getSystemDataHash(),
-            'systemdata' => bin2hex(json_encode(self::getSystemData()))
+            'systemdata' => bin2hex((string)json_encode(self::getSystemData()))
         ]);
 
         $Curl = curl_init();
@@ -144,7 +150,7 @@ class License
             ]);
         }
 
-        $response = json_decode($response, true);
+        $response = json_decode((string)$response, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new QUI\Exception([
@@ -196,7 +202,7 @@ class License
         }
 
         $data = $LicenseConfig->getSection('license');
-        $data['licenseHash'] = bin2hex(Encryption::decrypt(hex2bin($data['licenseHash'])));
+        $data['licenseHash'] = bin2hex(Encryption::decrypt((string)hex2bin($data['licenseHash'])));
 
         return $data;
     }
@@ -260,11 +266,17 @@ class License
         $licenseServerUrl = self::getLicenseServerUrl() . 'api/license/deactivate?';
         $licenseData = self::getLicenseData();
 
+        if ($licenseData === false) {
+            throw new QUI\Exception(
+                'The system does not have a registered license.'
+            );
+        }
+
         $licenseServerUrl .= http_build_query([
             'licenseid' => $licenseData['id'],
             'licensehash' => $licenseData['licenseHash'],
             'systemid' => self::getSystemId(),
-            'systemdata' => bin2hex(json_encode(self::getSystemData()))
+            'systemdata' => bin2hex((string)json_encode(self::getSystemData()))
         ]);
 
         $Curl = curl_init();
@@ -284,7 +296,7 @@ class License
             ]);
         }
 
-        $response = json_decode($response, true);
+        $response = json_decode((string)$response, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new QUI\Exception([
@@ -340,7 +352,7 @@ class License
             ]);
         }
 
-        $response = json_decode($response, true);
+        $response = json_decode((string)$response, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new QUI\Exception([

@@ -75,7 +75,7 @@ class Rewrite
 
     const URL_DEFAULT_SUFFIX = '.html';
 
-    public static bool | string $SUFFIX = false;
+    public static false | string $SUFFIX = false;
 
     /**
      * site request parameter
@@ -106,7 +106,7 @@ class Rewrite
     /**
      * active template
      */
-    private string | bool $template_str = false;
+    private string | false $template_str = false;
 
     /**
      * if project prefix is set
@@ -116,7 +116,7 @@ class Rewrite
     /**
      * project lang
      */
-    private string | bool $lang = false;
+    private string | false $lang = false;
 
     /**
      * active site
@@ -145,9 +145,9 @@ class Rewrite
     /**
      * loaded vhosts
      *
-     * @var array<array-key, mixed>|bool
+     * @var array<array-key, mixed>|false
      */
-    private array | bool $vhosts = false;
+    private array | false $vhosts = false;
 
     /**
      * current suffix, (.html, .pdf, .print)
@@ -205,7 +205,7 @@ class Rewrite
     /**
      * Return the default suffix eq: .html or ''
      */
-    public static function getDefaultSuffix(): bool | string
+    public static function getDefaultSuffix(): string
     {
         if (self::$SUFFIX !== false) {
             return self::$SUFFIX;
@@ -467,7 +467,7 @@ class Rewrite
             }
 
             // @todo consider permissions denied -> show permission denied image
-            if (!isset($file) || !file_exists($file)) {
+            if (!isset($file) || !file_exists((string)$file)) {
                 $Redirect = new RedirectResponse(
                     $this->getErrorSite()->getUrlRewritten()
                 );
@@ -478,7 +478,7 @@ class Rewrite
             }
 
             // Dateien direkt im Browser ausgeben, da Cachedatei noch nicht verfügbar war
-            $this->sendFileWithRange($file, $Item->getAttribute('mime_type'));
+            $this->sendFileWithRange((string)$file, $Item->getAttribute('mime_type'));
             exit;
         }
 
@@ -573,7 +573,7 @@ class Rewrite
 
 
         if ($pos !== false) {
-            $request_url = substr($request_url, 0, $pos) . substr($request_url, $end);
+            $request_url = substr($request_url, 0, $pos) . substr($request_url, (int)$end);
 
             if ($this->site->getId() == 1) {
                 $request_url = substr($request_url, 0, $pos);
@@ -616,6 +616,13 @@ class Rewrite
                     $end = intval($matches[2]);
                 }
 
+                if ($start >= $size || $end < $start) {
+                    header('HTTP/1.1 416 Range Not Satisfiable');
+                    header("Content-Range: bytes */$size");
+                    exit;
+                }
+
+                $end = min($end, $size - 1);
                 $length = $end - $start + 1;
                 $httpStatus = '206 Partial Content';
                 header("HTTP/1.1 $httpStatus");
@@ -629,13 +636,25 @@ class Rewrite
         header('Content-Disposition: inline; filename="' . basename($file) . '"');
 
         $fp = fopen($file, 'rb');
+
+        if ($fp === false) {
+            header('HTTP/1.1 404 Not Found');
+            exit;
+        }
+
         fseek($fp, $start);
 
         $buffer = 8192;
         $bytesSent = 0;
 
         while (!feof($fp) && $bytesSent < $length) {
-            $readLength = min($buffer, $length - $bytesSent);
+            $remaining = $length - $bytesSent;
+
+            if ($remaining <= 0) {
+                break;
+            }
+
+            $readLength = min($buffer, $remaining);
             echo fread($fp, $readLength);
             $bytesSent += $readLength;
             @ob_flush();
@@ -1059,7 +1078,7 @@ class Rewrite
                     $template = $vhosts[$host]['template'];
                 }
 
-                $Project = QUI::getProject($error[0], $error[1], $template);
+                $Project = QUI::getProject((string)$error[0], $error[1], $template);
 
                 return $Project->get((int)$error[2]);
             } catch (QUI\Exception $Exception) {
@@ -1175,7 +1194,7 @@ class Rewrite
      *
      * @return Project|false
      */
-    protected function getProjectByVhost(): bool | Project
+    protected function getProjectByVhost(): false | Project
     {
         if ($this->project) {
             return $this->project;
@@ -1217,7 +1236,7 @@ class Rewrite
 
             if (!defined('QUIQQER_AJAX')) {
                 QUI::getLocale()->setCurrent(
-                    $Project->getAttribute('lang')
+                    $Project->getLang()
                 );
             }
 
@@ -1232,7 +1251,7 @@ class Rewrite
      */
     public function getRequestUri(): string
     {
-        return strtok(QUI::getRequest()->getUri(), '?');
+        return (string)strtok(QUI::getRequest()->getUri(), '?');
     }
 
     /**
@@ -1249,7 +1268,7 @@ class Rewrite
     /**
      * @throws QUI\Exception
      */
-    public function getSiteByUrl(string $url, bool $setPath = true): bool | QUI\Interfaces\Projects\Site
+    public function getSiteByUrl(string $url, bool $setPath = true): QUI\Interfaces\Projects\Site
     {
         // Sprache raus
         if ($url === '') {
@@ -1337,7 +1356,7 @@ class Rewrite
      *
      * @throws Exception
      */
-    public function existRegisterPath(string $path, Project $Project): bool | QUI\Interfaces\Projects\Site
+    public function existRegisterPath(string $path, Project $Project): false | QUI\Interfaces\Projects\Site
     {
         if ($this->registerPaths === null) {
             $table = QUI::getDBProjectTableName('paths', $Project);
@@ -1378,7 +1397,7 @@ class Rewrite
     /**
      * Parameter der Rewrite
      */
-    public function getParam(string $name): bool | string
+    public function getParam(string $name): false | string
     {
         $result = '';
 

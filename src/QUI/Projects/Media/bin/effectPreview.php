@@ -77,7 +77,7 @@ if (isset($_REQUEST['watermark'])) {
             $imageHeight = $imageHeight * ($ratio / 100);
             $imageWidth = $imageWidth * ($ratio / 100);
 
-            $WatermarkImage->scaleDown($imageWidth, $imageHeight);
+            $WatermarkImage->scaleDown((int)$imageWidth, (int)$imageHeight);
         }
 
         $Image->place($WatermarkImage, $watermarkPosition);
@@ -87,7 +87,12 @@ if (isset($_REQUEST['watermark'])) {
 
 $Image->scaleDown(400, 400);
 
-$file = VAR_DIR . 'tmp/' . $File->getId() . '.' . \pathinfo($File->getFullPath())['extension'];
+$extension = pathinfo(
+    $File->getFullPath(),
+    PATHINFO_EXTENSION
+);
+
+$file = VAR_DIR . 'tmp/' . $File->getId() . '.' . $extension;
 $Image->save($file);
 
 QUI\Utils\System\File::fileHeader($file);

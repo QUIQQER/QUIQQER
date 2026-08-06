@@ -78,7 +78,13 @@ class ProviderHandler
 
                 if (isset($interfaces[InstallationWizardInterface::class])) {
                     $provider = trim($provider, '\\');
-                    $providerList[] = new $provider();
+                    $Provider = new $provider();
+
+                    if (!$Provider instanceof InstallationWizardInterface) {
+                        continue;
+                    }
+
+                    $providerList[] = $Provider;
                 }
             } catch (\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);

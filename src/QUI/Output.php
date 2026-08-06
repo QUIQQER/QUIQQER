@@ -96,12 +96,9 @@ class Output extends Singleton
     ];
 
     /**
-     * @param string $content
-     * @return mixed
-     *
      * @throws QUI\Exception
      */
-    public function parse($content)
+    public function parse(string $content): string
     {
         if (empty($content)) {
             return '';
@@ -213,7 +210,7 @@ class Output extends Singleton
                 $Dom->appendChild($b);
                 $html = $Dom->saveHTML();
 
-                $html = str_replace('<!DOCTYPE html>', '', $html);
+                $html = str_replace('<!DOCTYPE html>', '', (string)$html);
                 $html = trim($html);
 
                 return $html;
@@ -289,7 +286,7 @@ class Output extends Singleton
             $result = implode(
                 '',
                 array_map(
-                    [$Body->ownerDocument, "saveHTML"],
+                    [$Dom, "saveHTML"],
                     iterator_to_array($Body->childNodes)
                 )
             );
@@ -301,10 +298,10 @@ class Output extends Singleton
         $result = str_replace(
             ['</img>', '</source>', '</meta>', '</link>', '</input>', '</br>'],
             '',
-            $result
+            (string)$result
         );
 
-        $result = str_replace('<?xml encoding="utf-8" ?>', '', $result);
+        $result = str_replace('<?xml encoding="utf-8" ?>', '', (string)$result);
 
         if ($this->settings['use-absolute-urls']) {
             $result = $this->parseAbsoluteUrls($result);
@@ -484,7 +481,10 @@ class Output extends Singleton
         $id = false;
 
         // Falls ein Objekt übergeben wird
-        if (isset($params['site']) && is_object($params['site'])) {
+        if (
+            isset($params['site'])
+            && $params['site'] instanceof QUI\Interfaces\Projects\Site
+        ) {
             /* @var $Project Project */
             /* @var $Site Site */
             $Site = $params['site'];
@@ -1139,6 +1139,11 @@ class Output extends Singleton
             }
 
             $parts = preg_split('/\s+/', $source, 2);
+
+            if ($parts === false) {
+                continue;
+            }
+
             $url = $this->getAbsoluteUrl($parts[0]);
 
             if (isset($parts[1])) {

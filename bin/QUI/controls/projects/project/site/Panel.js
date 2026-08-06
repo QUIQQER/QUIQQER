@@ -120,7 +120,11 @@ define('controls/projects/project/site/Panel', [
             this.$Container = null;
 
             this.$ButtonOpenWebsite = null;
+            this.$ButtonPermissions = null;
+            this.$ButtonMedia = null;
+            this.$ButtonSort = null;
             this.$PreviousCategory = null;
+            this.$deletedState = false;
             this.$editorPeriodicalSave = false; // delay for the wysiwyg editor, to save to the locale storage
 
             if (typeOf(Site) === 'classes/projects/project/Site') {
@@ -304,6 +308,15 @@ define('controls/projects/project/site/Panel', [
         load: function () {
             this.refresh();
 
+            if (this.$isDeleted()) {
+                return this.$showDeletedState();
+            }
+
+            if (this.$deletedState) {
+                this.$destroyRefresh();
+                return Promise.resolve();
+            }
+
             if (this.getSite().getAttribute('active') && this.$ButtonOpenWebsite) {
                 this.$ButtonOpenWebsite.show();
             }
@@ -390,7 +403,7 @@ define('controls/projects/project/site/Panel', [
 
 
             // permissions
-            new QUIButton({
+            this.$ButtonPermissions = new QUIButton({
                 image : 'fa fa-shield',
                 name  : 'permissions',
                 alt   : Locale.get(lg, 'projects.project.site.panel.btn.permissions'),
@@ -406,7 +419,7 @@ define('controls/projects/project/site/Panel', [
                 }
             }).inject(this.getHeader());
 
-            new QUIButton({
+            this.$ButtonMedia = new QUIButton({
                 image : 'fa fa-picture-o',
                 name  : 'media',
                 alt   : Locale.get(lg, 'projects.project.site.panel.btn.media'),
@@ -421,7 +434,7 @@ define('controls/projects/project/site/Panel', [
                 }
             }).inject(this.getHeader());
 
-            new QUIButton({
+            this.$ButtonSort = new QUIButton({
                 image : 'fa fa-sort',
                 name  : 'sort',
                 alt   : Locale.get(lg, 'projects.project.site.panel.btn.sort'),
@@ -584,6 +597,11 @@ define('controls/projects/project/site/Panel', [
             this.$buildPanel().then(function () {
                 return Site.hasWorkingStorageChanges();
             }).then(function (hasStorage) {
+                if (self.$isDeleted()) {
+                    Site.clearWorkingStorage();
+                    return;
+                }
+
                 if (hasStorage === false) {
                     Site.load();
                     return;
@@ -599,6 +617,10 @@ define('controls/projects/project/site/Panel', [
                     return Promise.resolve(EditUser);
                 });
             }).then(function (EditUser) {
+                if (self.$isDeleted()) {
+                    return;
+                }
+
                 if (!EditUser) {
                     Site.load();
                     return;
@@ -726,7 +748,7 @@ define('controls/projects/project/site/Panel', [
          * @param e
          */
         $onKeyDown: function (e) {
-            if (e.ctrlKey && e.key === 's' && this.isOpen()) {
+            if (e.ctrlKey && e.key === 's' && this.isOpen() && !this.$isDeleted()) {
                 e.preventDefault();
                 this.save();
             }
@@ -821,6 +843,10 @@ define('controls/projects/project/site/Panel', [
          * @method controls/projects/project/site/Panel#openPermissions
          */
         save: function () {
+            if (this.$isDeleted()) {
+                return Promise.resolve();
+            }
+
             const self = this;
 
             this.$onCategoryLeave(this.getActiveCategory()).then(function () {
@@ -1017,6 +1043,11 @@ define('controls/projects/project/site/Panel', [
          */
         $onCategoryEnter: function (Category) {
             const self = this;
+
+            if (this.$isDeleted()) {
+                this.Loader.hide();
+                return Promise.resolve();
+            }
 
             if (Category === this.getActiveCategory()) {
                 this.Loader.hide();
@@ -1467,6 +1498,11 @@ define('controls/projects/project/site/Panel', [
         $onCategoryLeave: function (Category, callback) {
             this.Loader.show();
 
+            if (this.$isDeleted()) {
+                this.Loader.hide();
+                return Promise.resolve();
+            }
+
             const Site = this.getSite(),
                   Body = this.$Container;
 
@@ -1648,6 +1684,10 @@ define('controls/projects/project/site/Panel', [
         $onPanelButtonClick: function (Btn) {
             const Panel = this,
                   Site  = Panel.getSite();
+
+            if (this.$isDeleted()) {
+                return;
+            }
 
             const evalButtonClick = function () {
                 eval(Btn.getAttribute('_onclick') + '();');
@@ -1846,6 +1886,10 @@ define('controls/projects/project/site/Panel', [
          * Enable the buttons, if the site is unlocked
          */
         setUnlocked: function () {
+            if (this.$isDeleted()) {
+                return;
+            }
+
             const buttons = this.getButtons();
 
             for (let i = 0, len = buttons.length; i < len; i++) {
@@ -1853,6 +1897,74 @@ define('controls/projects/project/site/Panel', [
                     buttons[i].enable();
                 }
             }
+        },
+
+        /**
+         * Is the site in the trash?
+         *
+         * @return {Boolean}
+         */
+        $isDeleted: function () {
+            return parseInt(this.getSite().getAttribute('deleted'), 10) === 1;
+        },
+
+        /**
+         * Display deleted sites without edit controls.
+         *
+         * @return {Promise}
+         */
+        $showDeletedState: function () {
+            this.$deletedState = true;
+            this.$clearEditorPeriodicalSave();
+            this.getSite().clearWorkingStorage();
+
+            if (this.$ButtonOpenWebsite) {
+                this.$ButtonOpenWebsite.hide();
+            }
+
+            const controls = [
+                ...Array.from(this.getButtons()),
+                ...Array.from(this.getCategory()),
+                this.$ButtonPermissions,
+                this.$ButtonMedia,
+                this.$ButtonSort
+            ];
+
+            controls.forEach(function (Control) {
+                if (Control && typeof Control.disable === 'function') {
+                    Control.disable();
+                }
+            });
+
+            this.getElm().classList.add('qui-site-panel--deleted');
+
+            const messageId = this.getAttribute('id') + '-deleted-message-title';
+            const Message = document.createElement('section');
+            const Title = document.createElement('h3');
+            const Text = document.createElement('p');
+            const Icon = document.createElement('span');
+
+            Message.className = 'qui-site-panel-deleted messages-message message-attention';
+            Message.dataset.name = 'deleted-message';
+            Message.setAttribute('aria-labelledby', messageId);
+            Message.setAttribute('aria-live', 'polite');
+
+            Title.id = messageId;
+            Title.className = 'qui-site-panel-deleted-title';
+            Title.textContent = Locale.get(lg, 'projects.project.site.panel.deleted.title');
+
+            Icon.className = 'fa fa-trash-o';
+            Icon.setAttribute('aria-hidden', 'true');
+
+            Text.textContent = Locale.get(lg, 'projects.project.site.panel.deleted.message');
+
+            Title.prepend(Icon);
+            Message.append(Title, Text);
+            this.$Container.replaceChildren(Message);
+
+            this.Loader.hide();
+
+            return Promise.resolve();
         },
 
         /**

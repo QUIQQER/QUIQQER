@@ -97,7 +97,7 @@ class Edit extends Site
 
         $this->TABLE = $Project->table();
         $this->RELTABLE = $Project->table() . '_relations';
-        $this->RELLANGTABLE = QUI::getDBTableName($Project->getAttribute('name') . '_multilingual');
+        $this->RELLANGTABLE = QUI::getDBTableName($Project->getName() . '_multilingual');
 
         $this->checkPermission('quiqqer.projects.site.view');
 
@@ -111,6 +111,33 @@ class Edit extends Site
         // onInit event
         $this->Events->fireEvent('init', [$this]);
         QUI::getEvents()->fireEvent('siteInit', [$this]);
+    }
+
+    /**
+     * Deleted sites are read-only until they are restored.
+     *
+     * @throws QUI\Exception
+     */
+    protected function assertNotDeleted(): void
+    {
+        $Connection = QUI::getDataBaseConnection();
+        $Platform = $Connection->getDatabasePlatform();
+        $deleted = $Connection->createQueryBuilder()
+            ->select($Platform->quoteSingleIdentifier('deleted'))
+            ->from($Platform->quoteSingleIdentifier($this->TABLE))
+            ->where($Platform->quoteSingleIdentifier('id') . ' = :siteId')
+            ->setParameter('siteId', $this->getId())
+            ->executeQuery()
+            ->fetchOne();
+
+        if ((int)$deleted !== 1) {
+            return;
+        }
+
+        throw new QUI\Exception(
+            QUI::getLocale()->get('quiqqer/core', 'exception.site.deleted.cannot.edit'),
+            706
+        );
     }
 
     /**
@@ -228,6 +255,8 @@ class Edit extends Site
                     ->get('quiqqer/core', 'exception.permissions.edit')
             );
         }
+
+        $this->assertNotDeleted();
 
         if (!$User) {
             $User = QUI::getUserBySession();
@@ -494,7 +523,7 @@ class Edit extends Site
      *                        $params['limit']
      * @param boolean $load Rekursiv alle Kinder IDs bekommen
      *
-     * @return array<int, mixed>|int
+     * @return array<int, Edit>|int
      *
      * @throws QUI\Exception
      */
@@ -563,9 +592,10 @@ class Edit extends Site
     public function addLanguageLink(string $lang, string | int $id): int
     {
         $this->checkPermission('quiqqer.projects.site.edit');
+        $this->assertNotDeleted();
 
         $Project = $this->getProject();
-        $p_lang = $Project->getAttribute('lang');
+        $p_lang = $Project->getLang();
         $id = (int)$id;
 
         $Connection = QUI::getDataBaseConnection();
@@ -580,14 +610,14 @@ class Edit extends Site
             ->fetchOne();
 
         if ($result !== false) {
-            return $Connection->update(
+            return (int)$Connection->update(
                 $this->RELLANGTABLE,
                 [$lang => $id],
                 [$p_lang => $this->getId()]
             );
         }
 
-        return $Connection->insert($this->RELLANGTABLE, [
+        return (int)$Connection->insert($this->RELLANGTABLE, [
             $p_lang => $this->getId(),
             $lang => $id
         ]);
@@ -607,13 +637,14 @@ class Edit extends Site
     public function removeLanguageLink(string $lang): int
     {
         $this->checkPermission('quiqqer.projects.site.edit');
+        $this->assertNotDeleted();
 
         $Project = $this->getProject();
 
-        return QUI::getDataBaseConnection()->update(
+        return (int)QUI::getDataBaseConnection()->update(
             $this->RELLANGTABLE,
             [$lang => 0],
-            [$Project->getAttribute("lang") => $this->getId()]
+            [$Project->getLang() => $this->getId()]
         );
     }
 
@@ -628,10 +659,15 @@ class Edit extends Site
     public function move(int $pid): void
     {
         $this->checkPermission('quiqqer.projects.site.edit');
+        $this->assertNotDeleted();
 
         $Project = $this->getProject();
         $Parent = new self($Project, $pid);
         $children = $this->getChildrenIds(['active' => '0&1']);
+
+        if (!is_array($children)) {
+            $children = [];
+        }
 
         if (in_array($pid, $children) || $pid === $this->getId()) {
             return;
@@ -708,6 +744,8 @@ class Edit extends Site
             );
         }
 
+        $this->assertNotDeleted();
+
         if (!$SaveUser) {
             $SaveUser = QUI::getUserBySession();
         }
@@ -715,9 +753,11 @@ class Edit extends Site
         $mid = $this->isLockedFromOther();
 
         if ($mid) {
-            try {
-                $User = QUI::getUsers()->get($mid);
-            } catch (QUI\Exception) {
+            if (is_int($mid) || is_string($mid)) {
+                try {
+                    $User = QUI::getUsers()->get($mid);
+                } catch (QUI\Exception) {
+                }
             }
 
             if (isset($User)) {
@@ -810,7 +850,7 @@ class Edit extends Site
             // daher werden nur aktive seite beachten
             $release_from = date(
                 'Y-m-d H:i:s',
-                strtotime(date('Y-m-d H:i:s'))
+                (int)strtotime(date('Y-m-d H:i:s'))
             );
         }
 
@@ -1172,6 +1212,8 @@ class Edit extends Site
             );
         }
 
+        $this->assertNotDeleted();
+
         if (!$User) {
             $User = QUI::getUserBySession();
         }
@@ -1240,6 +1282,7 @@ class Edit extends Site
     {
         // Edit Rechte prüfen
         $this->checkPermission('quiqqer.projects.site.edit');
+        $this->assertNotDeleted();
 
         if (!$Project) {
             $Project = $this->getProject();
@@ -1386,6 +1429,7 @@ class Edit extends Site
         null | QUI\Interfaces\Users\User $User = null
     ): int {
         $this->checkPermission('quiqqer.projects.site.new', $User);
+        $this->assertNotDeleted();
 
         if (!$User) {
             $User = QUI::getUserBySession();
@@ -1528,12 +1572,18 @@ class Edit extends Site
      */
     public function linked(int $pid): void
     {
+        $this->assertNotDeleted();
+
         $Project = $this->getProject();
         $Parent = $this->getParent();
 
+        if ($Parent === false) {
+            throw new QUI\Exception('The root site cannot be linked.', 703);
+        }
+
         $table = QUI::getDBTableName(
-            $Project->getAttribute('name') . '_' .
-            $Project->getAttribute('lang') . '_sites_relations'
+            $Project->getName() . '_' .
+            $Project->getLang() . '_sites_relations'
         );
 
         if ($this->getId() == $pid) {
@@ -1589,6 +1639,7 @@ class Edit extends Site
     public function deleteLinked(int $pid, bool | int $all = false, bool $orig = false): void
     {
         $this->checkPermission('quiqqer.projects.site.edit');
+        $this->assertNotDeleted();
 
 
         $Project = $this->getProject();
@@ -1597,11 +1648,15 @@ class Edit extends Site
         $Platform = $Connection->getDatabasePlatform();
 
         $table = QUI::getDBTableName(
-            $Project->getAttribute("name") . "_" .
-            $Project->getAttribute("lang") . "_sites_relations"
+            $Project->getName() . "_" .
+            $Project->getLang() . "_sites_relations"
         );
 
         if (QUI\Utils\BoolHelper::JSBool($all)) {
+            if ($Parent === false) {
+                throw new QUI\Exception('The root site has no linked parent.', 703);
+            }
+
             // Seite löschen
             $this->delete();
 

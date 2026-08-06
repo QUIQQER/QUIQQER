@@ -50,7 +50,7 @@ class MigrationV1ToV2
                 }
 
                 try {
-                    $uuid = QUI::getUsers()->get($uid)->getUUID();
+                    $uuid = QUI::getUsers()->get((int)$uid)->getUUID();
                 } catch (QUI\Exception) {
                     continue;
                 }

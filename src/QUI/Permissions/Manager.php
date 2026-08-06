@@ -21,6 +21,7 @@ use Ramsey\Uuid\Uuid;
 use function count;
 use function implode;
 use function is_array;
+use function is_bool;
 use function is_string;
 use function json_decode;
 use function json_encode;
@@ -693,7 +694,7 @@ class Manager
     /**
      * Set the permissions for an object
      *
-     * @param User|Group|Project|Site|Edit|QUI\Projects\Media\Item $Obj
+     * @param QUI\Interfaces\Users\User|Group|Project|Site|Edit|QUI\Projects\Media\Item $Obj
      * @param array<string, mixed> $permissions - Array of permissions
      * @param QUI\Interfaces\Users\User|null $EditUser - Edit user
      *
@@ -722,16 +723,28 @@ class Manager
                 break;
 
             case 'project':
+                if (!($Obj instanceof Project)) {
+                    throw new QUI\Exception('Cannot set Permissions. Object not allowed');
+                }
+
                 $this->setProjectPermissions($Obj, $permissions, $EditUser);
 
                 return;
 
             case 'site':
+                if (!($Obj instanceof QUI\Interfaces\Projects\Site)) {
+                    throw new QUI\Exception('Cannot set Permissions. Object not allowed');
+                }
+
                 $this->setSitePermissions($Obj, $permissions, $EditUser);
 
                 return;
 
             case 'media':
+                if (!($Obj instanceof QUI\Projects\Media\Item)) {
+                    throw new QUI\Exception('Cannot set Permissions. Object not allowed');
+                }
+
                 $this->setMediaPermissions($Obj, $permissions, $EditUser);
 
                 return;
@@ -740,6 +753,13 @@ class Manager
                 throw new QUI\Exception(
                     'Cannot set Permissions. Object not allowed'
                 );
+        }
+
+        if (
+            !($Obj instanceof QUI\Interfaces\Users\User)
+            && !($Obj instanceof Group)
+        ) {
+            throw new QUI\Exception('Cannot set Permissions. Object not allowed');
         }
 
         QUI\Permissions\Permission::checkPermission(
@@ -772,7 +792,6 @@ class Manager
 
         $table2users = $table . '2users';
         $table2groups = $table . '2groups';
-        $table2media = $table . '2media';
 
         // areas
         switch ($area) {
@@ -820,35 +839,6 @@ class Manager
 
                 QUI\Cache\Manager::clear('qui/groups/group/' . $Obj->getUUID() . '/');
                 QUI\Cache\Manager::clear($this->getDataCacheId($Obj) . '/complete');
-                break;
-
-            case 'media':
-                /* @var $Obj File */
-                $Project = $Obj->getProject();
-
-                /* @var $Project Project */
-                if (!isset($_data[0])) {
-                    $Connection->insert(
-                        $table2media,
-                        [
-                            'project' => $Project->getName(),
-                            'lang' => $Project->getLang(),
-                            'id' => $Obj->getId()
-                        ]
-                    );
-
-                    return;
-                }
-
-                $Connection->update(
-                    $table2media,
-                    ['permissions' => json_encode($data)],
-                    [
-                        'project' => $Project->getName(),
-                        'lang' => $Project->getLang(),
-                        'id' => $Obj->getId()
-                    ]
-                );
                 break;
         }
 
@@ -903,6 +893,14 @@ class Manager
 
         // set add permissions
         foreach ($data as $permission => $value) {
+            if (is_bool($value)) {
+                $value = (int)$value;
+            }
+
+            if (is_array($value)) {
+                continue;
+            }
+
             if (!isset($_data[$permission])) {
                 $this->addProjectPermission($Project, $permission, $value);
                 continue;
@@ -938,6 +936,12 @@ class Manager
                 break;
 
             case 'users_and_groups':
+                if (is_array($val)) {
+                    return '';
+                }
+
+                $val = (string)$val;
+
                 // ue8547a92-9d03-11f0-b2b2-42476d08324f <- user-id
                 // ge8547a92-9d03-11f0-b2b2-42476d08324f <- group-id
                 if (str_contains($val, ',')) {
@@ -960,6 +964,12 @@ class Manager
 
             case 'users':
             case 'groups':
+                if (is_array($val)) {
+                    return '';
+                }
+
+                $val = (string)$val;
+
                 if (str_contains($val, ',')) {
                     $val = explode(',', $val);
                     $val = array_map(function ($val) {
@@ -980,6 +990,12 @@ class Manager
 
             case 'user':
             case 'group':
+                if (is_array($val)) {
+                    return '';
+                }
+
+                $val = (string)$val;
+
                 if (!Uuid::isValid($val)) {
                     $val = preg_replace('/[^0-9]/', '', $val);
                 }
@@ -1121,6 +1137,14 @@ class Manager
 
         // set add permissions
         foreach ($data as $permission => $value) {
+            if (is_bool($value)) {
+                $value = (int)$value;
+            }
+
+            if (is_array($value)) {
+                continue;
+            }
+
             if (!isset($_data[$permission])) {
                 $this->addSitePermission($Site, $permission, $value);
                 continue;
@@ -1266,6 +1290,14 @@ class Manager
 
         // set add permissions
         foreach ($data as $permission => $value) {
+            if (is_bool($value)) {
+                $value = (int)$value;
+            }
+
+            if (is_array($value)) {
+                continue;
+            }
+
             if (!isset($_data[$permission])) {
                 $this->addMediaPermission($MediaItem, $permission, $value);
                 continue;
@@ -1679,11 +1711,11 @@ class Manager
      *
      * @param string $permission - Name of the permission
      *
-     * @return false|array<string, mixed>
+     * @return array<string, mixed>
      *
      * @throws QUI\Exception
      */
-    public function getPermissionData(string $permission): bool | array
+    public function getPermissionData(string $permission): array
     {
         if (!isset($this->cache[$permission])) {
             throw new QUI\Exception('Permission not found');
@@ -1718,10 +1750,18 @@ class Manager
 
         switch ($area) {
             case 'project':
-                return $this->getProjectPermissions($Obj);
+                if ($Obj instanceof Project) {
+                    return $this->getProjectPermissions($Obj);
+                }
+
+                break;
 
             case 'site':
-                return $this->getSitePermissions($Obj);
+                if ($Obj instanceof QUI\Interfaces\Projects\Site) {
+                    return $this->getSitePermissions($Obj);
+                }
+
+                break;
         }
 
         $permissions = [];
@@ -1904,9 +1944,13 @@ class Manager
             // bool, string, int, group, array
             $val = match ($right['type']) {
                 'int' => (int)$val,
-                'groups' => preg_replace('/[^0-9,]/', '', $val),
+                'groups' => preg_replace(
+                    '/[^0-9,]/',
+                    '',
+                    is_array($val) ? implode(',', $val) : (string)$val
+                ),
                 'array' => Orthos::clearArray($val),
-                'string' => Orthos::clearMySQL($val),
+                'string' => is_string($val) ? $val : '',
                 default => (bool)$val,
             };
 

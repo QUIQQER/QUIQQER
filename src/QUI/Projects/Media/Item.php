@@ -55,9 +55,9 @@ abstract class Item extends QUI\QDOM
     /**
      * internal image effect parameter
      *
-     * @var array<string, mixed>|bool
+     * @var array<string, mixed>|false
      */
-    protected array | bool $effects = false;
+    protected array | false $effects = false;
 
     /**
      * internal media object
@@ -67,7 +67,7 @@ abstract class Item extends QUI\QDOM
     /**
      * internal parent id (use ->getParentId())
      */
-    protected int | bool $parent_id = false;
+    protected int | false $parent_id = false;
 
     /**
      * Path to the real file
@@ -278,7 +278,7 @@ abstract class Item extends QUI\QDOM
         if (!$rewritten) {
             $Project = $this->Media->getProject();
 
-            $str = 'image.php?id=' . $this->getId() . '&project=' . $Project->getAttribute('name');
+            $str = 'image.php?id=' . $this->getId() . '&project=' . $Project->getName();
 
             if ($this->getAttribute('maxheight')) {
                 $str .= '&maxheight=' . $this->getAttribute('maxheight');
@@ -386,7 +386,7 @@ abstract class Item extends QUI\QDOM
      * - looks at the params type
      * - helper for setTitle, setShort, setDescription, setAlt
      *
-     * @param array<int, mixed> $params
+     * @param array<int|string, mixed> $params
      * @param string $type
      */
     protected function setMultilingualParams($params, $type): void
@@ -599,7 +599,7 @@ abstract class Item extends QUI\QDOM
      */
     public function getParent(): Folder
     {
-        $Item = $this->Media->get($this->getParentId());
+        $Item = $this->Media->get((int)$this->getParentId());
 
         if ($Item instanceof Folder) {
             return $Item;
@@ -611,7 +611,7 @@ abstract class Item extends QUI\QDOM
     /**
      * Return the parent id
      */
-    public function getParentId(): int | bool
+    public function getParentId(): int | false
     {
         if ($this->parent_id) {
             return $this->parent_id;
@@ -996,10 +996,6 @@ abstract class Item extends QUI\QDOM
 
         $image_effects = $this->getEffects();
 
-        if (is_bool($image_effects)) {
-            $image_effects = [];
-        }
-
         switch ($this->getAttribute('order')) {
             case 'priority':
             case 'priority ASC':
@@ -1027,7 +1023,7 @@ abstract class Item extends QUI\QDOM
         if ($this->getAttribute('mime_type') == 'text/html') {
             $content = file_get_contents($this->getFullPath());
 
-            if (str_contains($content, '<svg') && strpos($content, '</svg>')) {
+            if (str_contains((string)$content, '<svg') && strpos((string)$content, '</svg>')) {
                 file_put_contents(
                     $this->getFullPath(),
                     '<?xml version="1.0" encoding="UTF-8"?>' .
@@ -1282,9 +1278,9 @@ abstract class Item extends QUI\QDOM
     /**
      * Return the effects of the item
      *
-     * @return bool|array<string, mixed>
+     * @return array<string, mixed>
      */
-    public function getEffects(): bool | array
+    public function getEffects(): array
     {
         if (is_array($this->effects)) {
             return $this->effects;
@@ -1323,14 +1319,14 @@ abstract class Item extends QUI\QDOM
     protected function saveMultilingualField(array | string $value): string
     {
         if (is_array($value)) {
-            return json_encode($value);
+            return (string)json_encode($value);
         }
 
         $value = json_decode($value, true);
         $current = QUI::getLocale()->getCurrent();
 
         if (!$value) {
-            return json_encode([
+            return (string)json_encode([
                 $current => $value
             ]);
         }
@@ -1343,7 +1339,7 @@ abstract class Item extends QUI\QDOM
             }
         }
 
-        return json_encode($result);
+        return (string)json_encode($result);
     }
 
     /**
@@ -1413,13 +1409,13 @@ abstract class Item extends QUI\QDOM
     /**
      * Returns information about a file path
      *
-     * @param int|bool $options - If present, specifies a specific element to be returned;
+     * @param int|false $options - If present, specifies a specific element to be returned;
      *                                  one of:
      *                                  PATHINFO_DIRNAME, PATHINFO_BASENAME,
      *                                  PATHINFO_EXTENSION or PATHINFO_FILENAME.
      * @return array<string, mixed>|string
      */
-    public function getPathinfo(bool | int $options = false): array | string
+    public function getPathinfo(false | int $options = false): array | string
     {
         if (!$options) {
             return pathinfo($this->getFullPath());
@@ -1440,7 +1436,7 @@ abstract class Item extends QUI\QDOM
      */
     public function setEffect(string $effect, float | int | string $value): void
     {
-        $this->getEffects();
+        $this->effects = $this->getEffects();
         $this->effects[$effect] = $value;
     }
 

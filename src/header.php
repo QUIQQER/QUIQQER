@@ -67,7 +67,7 @@ if (isset($_GET['logout'])) {
 }
 
 $memoryLimit = QUI\Utils\System::getMemoryLimit();
-QUI\Utils\System::$memory_limit = $memoryLimit > 0 ? $memoryLimit : false;
+QUI\Utils\System::$memory_limit = $memoryLimit > 0 ? $memoryLimit : 0;
 
 try {
     QUI::getEvents()->fireEvent('headerLoaded');

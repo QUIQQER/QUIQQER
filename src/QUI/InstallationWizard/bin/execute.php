@@ -77,14 +77,17 @@ $provider = $Config->get('execute', 'provider');
 $data = $Config->get('execute', 'data');
 $data = json_decode($data, true);
 
-$interfaces = class_implements($provider);
-
-if (!isset($interfaces[InstallationWizardInterface::class])) {
-    // @todo window parent close frame and show error
-    exit;
+if (
+    !is_string($provider)
+    || !is_a($provider, InstallationWizardInterface::class, true)
+) {
+    throw new UnexpectedValueException(
+        'Invalid installation wizard provider: '
+        . (is_scalar($provider) ? (string)$provider : get_debug_type($provider))
+    );
 }
 
-/* @var $Provider QUI\InstallationWizard\InstallationWizardInterface */
+/** @var class-string<InstallationWizardInterface> $provider */
 $Provider = new $provider();
 $execSteps = $Provider->getExecuteSteps();
 
@@ -114,8 +117,10 @@ try {
     Log::writeException($Exception);
 }
 
-if ($Provider->finish()) {
-    echo $Provider->finish();
+$finish = $Provider->finish();
+
+if ($finish) {
+    echo $finish;
 } else {
     $Provider->write('<script>window.finish();</script>');
 }

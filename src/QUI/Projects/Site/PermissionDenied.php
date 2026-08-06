@@ -32,7 +32,7 @@ class PermissionDenied extends QUI\Projects\Site
     {
         $this->TABLE = $Project->table();
         $this->RELTABLE = $Project->table() . '_relations';
-        $this->RELLANGTABLE = $Project->getAttribute('name') . '_multilingual';
+        $this->RELLANGTABLE = $Project->getName() . '_multilingual';
 
         if (empty($id)) {
             throw new QUI\Exception('Site Error; No ID given:' . $id, 400);
@@ -117,7 +117,7 @@ class PermissionDenied extends QUI\Projects\Site
     /**
      * @inheritdoc
      */
-    public function load(bool|string $plugin = false): QUI\Projects\Site
+    public function load(false|string $plugin = false): QUI\Projects\Site
     {
         return $this;
     }

@@ -86,8 +86,11 @@ class RenameProject extends Tool
     /**
      * Prints a line to the output while using a locale variable of the 'quiqqer/core' group
      */
-    protected function writeLnLocale(bool|string $locale, bool|string $color = false, bool|string $background = false): void
-    {
+    protected function writeLnLocale(
+        string $locale,
+        bool|string $color = false,
+        bool|string $background = false
+    ): void {
         $text = QUI::getLocale()->get("quiqqer/core", $locale);
 
         $this->writeLn($text, $color, $background);
@@ -98,9 +101,9 @@ class RenameProject extends Tool
      *
      * @param string $name
      *
-     * @return array|string|string[]
+     * @return string
      */
-    protected function purgeProjectName($name): array|string
+    protected function purgeProjectName(string $name): string
     {
         $forbiddenCharacters = [
             '-',

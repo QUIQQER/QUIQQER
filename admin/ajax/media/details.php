@@ -55,7 +55,7 @@ QUI::$Ajax->registerFunction(
             if (Utils::isMediaUrl($fileid)) {
                 $File = Utils::getMediaItemByUrl($fileid);
             } else {
-                $File = $Media->get($fileid);
+                $File = $Media->get((int)$fileid);
             }
 
             $attr = $File->getAttributes();
@@ -100,7 +100,7 @@ QUI::$Ajax->registerFunction(
             if (Utils::isMediaUrl($id)) {
                 $File = Utils::getMediaItemByUrl($id);
             } else {
-                $File = $Media->get($id);
+                $File = $Media->get((int)$id);
             }
 
             if (!Utils::isImage($File)) {

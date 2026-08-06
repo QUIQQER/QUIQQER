@@ -29,7 +29,7 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
      * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
-    public function createCache(): bool|string
+    public function createCache(): false|string
     {
         if (Media::$globalDisableMediaCacheCreation) {
             return false;

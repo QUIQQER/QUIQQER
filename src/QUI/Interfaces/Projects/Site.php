@@ -23,11 +23,11 @@ interface Site extends QUI\QDOMInterface
     /**
      * Lädt die Plugins der Seite
      *
-     * @param boolean|string $plugin - Plugin welches geladen werden soll, optional, ansonsten werden alle geladen
+     * @param false|string $plugin - Plugin welches geladen werden soll, optional, ansonsten werden alle geladen
      *
      * @return Site
      */
-    public function load(bool | string $plugin = false): Site;
+    public function load(false | string $plugin = false): Site;
 
     /**
      * Serialisierungsdaten
@@ -55,7 +55,7 @@ interface Site extends QUI\QDOMInterface
     /**
      * Prüft ob es eine Verknüpfung ist
      */
-    public function isLinked(): bool | int;
+    public function isLinked(): false | int;
 
     /**
      * Prüft ob es die Seite auch in einer anderen Sprache gibt
@@ -73,11 +73,11 @@ interface Site extends QUI\QDOMInterface
      * Return the ID of the site,
      * or the ID of the sibling (linked) site of another language
      *
-     * @param boolean|string $lang - optional, if it is set, then the language of the wanted to be linked sibling site
+     * @param false|string $lang - optional, if it is set, then the language of the wanted to be linked sibling site
      *
      * @return integer
      */
-    public function getId(bool | string $lang = false): int;
+    public function getId(false | string $lang = false): int;
 
     /**
      * Gibt alle Kinder zurück
@@ -126,7 +126,7 @@ interface Site extends QUI\QDOMInterface
      *
      * @param array<string, mixed> $params
      */
-    public function firstChild(array $params = []): bool | Site;
+    public function firstChild(array $params = []): false | Site;
 
     /**
      * Gibt die Kinder zurück achtet aber auf "Nicht in Navigation anzeigen" und Rechte
@@ -213,7 +213,7 @@ interface Site extends QUI\QDOMInterface
      * Gibt das Parent Objekt zurück.
      * Wenn kein Parent Objekt existiert wird false zurückgegeben.
      */
-    public function getParent(): Site | bool;
+    public function getParent(): Site | false;
 
     /**
      * @return array<int, Site>

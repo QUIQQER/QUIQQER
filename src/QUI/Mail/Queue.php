@@ -37,6 +37,26 @@ use function trim;
 
 /**
  * Mail queue
+ *
+ * @phpstan-type MailQueueRow array{
+ *     id: mixed,
+ *     subject: mixed,
+ *     body: string|null,
+ *     text: mixed,
+ *     from: mixed,
+ *     fromName: mixed,
+ *     ishtml: mixed,
+ *     mailto: mixed,
+ *     replyto: mixed,
+ *     cc: mixed,
+ *     bcc: mixed,
+ *     attachements: mixed,
+ *     status: mixed,
+ *     lastsend: mixed,
+ *     retry: mixed,
+ *     errors: mixed,
+ *     ...
+ * }
  */
 class Queue
 {
@@ -116,7 +136,7 @@ class Queue
     }
 
     /**
-     * @return array<string, mixed>|null
+     * @return MailQueueRow|null
      */
     protected static function fetchById(int $id): ?array
     {
@@ -129,11 +149,12 @@ class Queue
             ->executeQuery()
             ->fetchAssociative();
 
+        /** @var MailQueueRow|false $result */
         return $result ?: null;
     }
 
     /**
-     * @return array<string, mixed>|null
+     * @return MailQueueRow|null
      */
     protected static function fetchNextQueuedMail(): ?array
     {
@@ -149,6 +170,7 @@ class Queue
             ->executeQuery()
             ->fetchAssociative();
 
+        /** @var MailQueueRow|false $result */
         return $result ?: null;
     }
 
@@ -305,7 +327,7 @@ class Queue
     /**
      * Send the mail
      *
-     * @param array<string, mixed> $params - mail data
+     * @param MailQueueRow $params - mail data
      * @return boolean
      *
      * @throws QUI\Exception
@@ -530,7 +552,7 @@ class Queue
             return 0;
         }
 
-        $mailsSent = explode('-', file_get_contents($cacheFile));
+        $mailsSent = explode('-', (string)file_get_contents($cacheFile));
         $createTime = (int)$mailsSent[0];
 
         if ((time() - $createTime) > 3600) {
@@ -552,7 +574,7 @@ class Queue
         $cacheFile = QUI::getPackage('quiqqer/core')->getVarDir() . 'mailqueue';
         $mailsSent = $this->getMailsSentInLastHour();
 
-        $mailsSentCache = explode('-', file_get_contents($cacheFile));
+        $mailsSentCache = explode('-', (string)file_get_contents($cacheFile));
         file_put_contents($cacheFile, $mailsSentCache[0] . '-' . ($mailsSent + 1));
     }
 

@@ -321,7 +321,7 @@ class Package extends QUI\QDOM
         if ($file) {
             try {
                 $this->composerData = $Parser->parse(
-                    file_get_contents($file),
+                    (string)file_get_contents($file),
                     JsonParser::PARSE_TO_ASSOC
                 );
             } catch (ParsingException $Exception) {
@@ -596,7 +596,7 @@ class Package extends QUI\QDOM
             return true;
         }
 
-        return QUI\Permissions\Permission::hasPermission(
+        return (bool)QUI\Permissions\Permission::hasPermission(
             $this->getPermissionName($permission),
             $User
         );

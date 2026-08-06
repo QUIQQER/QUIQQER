@@ -10,10 +10,19 @@ use QUI\InstallationWizard\ProviderHandler;
 QUI::$Ajax->registerFunction(
     'ajax_installationWizard_cancel',
     static function ($providers): void {
-        $providers = json_decode($providers, true);
+        if (is_string($providers)) {
+            $providers = json_decode($providers, true);
+        }
+
+        if (!is_array($providers)) {
+            $providers = [];
+        }
 
         foreach ($providers as $provider) {
-            if (!class_exists($provider)) {
+            if (
+                !is_string($provider)
+                || !class_exists($provider)
+            ) {
                 continue;
             }
 
@@ -23,8 +32,14 @@ QUI::$Ajax->registerFunction(
                 continue;
             }
 
+            $Provider = new $provider();
+
+            if (!$Provider instanceof InstallationWizardInterface) {
+                continue;
+            }
+
             ProviderHandler::setProviderStatus(
-                new $provider(),
+                $Provider,
                 ProviderHandler::STATUS_SET_UP_DONE
             );
         }

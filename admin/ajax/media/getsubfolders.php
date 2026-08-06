@@ -30,6 +30,10 @@ QUI::$Ajax->registerFunction(
         $children = [];
         $folders = $File->getFolders($params);
 
+        if (!is_array($folders)) {
+            $folders = [];
+        }
+
         // count
         $params['count'] = true;
         unset($params['limit']);

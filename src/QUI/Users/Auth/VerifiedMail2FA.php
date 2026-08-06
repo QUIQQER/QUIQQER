@@ -39,6 +39,14 @@ class VerifiedMail2FA extends AbstractAuthenticator
             return;
         }
 
+        if (is_int($user)) {
+            $user = (string)$user;
+        }
+
+        if (!is_string($user)) {
+            return;
+        }
+
         $this->user = Orthos::clear($user);
     }
 

@@ -655,10 +655,15 @@ class VhostManager
 
         // Get the host from the config
         $host = QUI::conf("globals", "host");
-        $host = str_replace("http://", "", $host);
-        $host = str_replace("https://", "", $host);
-        $host = rtrim($host, "/");
-        $domains[] = $host;
+
+        if (is_string($host) && $host !== '') {
+            $host = str_replace(['http://', 'https://'], '', $host);
+            $host = rtrim($host, '/');
+
+            if ($host !== '') {
+                $domains[] = $host;
+            }
+        }
 
         // Get the domains from the vhosts
         $vhosts = QUI::vhosts();

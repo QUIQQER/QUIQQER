@@ -248,6 +248,6 @@ class Handler extends QUI\QDOM
             }
         }
 
-        error_log($err_msg, 3, $log);
+        error_log($err_msg, 3, (string)$log);
     }
 }

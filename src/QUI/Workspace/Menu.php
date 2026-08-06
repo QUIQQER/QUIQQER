@@ -89,16 +89,22 @@ class Menu
         XML::addXMLFileToMenu($Menu, SYS_DIR . 'menu.xml');
 
         if (!$User->isSU() && !Permission::hasPermission('quiqqer.system.update')) {
-            if ($Menu->getElementByName('quiqqer')) {
-                $Menu->getElementByName('quiqqer')->clear();
+            $Quiqqer = $Menu->getElementByName('quiqqer');
+
+            if ($Quiqqer instanceof QUI\Controls\Contextmenu\BarItem) {
+                $Quiqqer->clear();
             }
 
-            if ($Menu->getElementByName('apps')) {
-                $Menu->getElementByName('apps')->clear();
+            $Apps = $Menu->getElementByName('apps');
+
+            if ($Apps instanceof QUI\Controls\Contextmenu\BarItem) {
+                $Apps->clear();
             }
 
-            if ($Menu->getElementByName('settings')) {
-                $Menu->getElementByName('settings')->clear();
+            $Settings = $Menu->getElementByName('settings');
+
+            if ($Settings instanceof QUI\Controls\Contextmenu\BarItem) {
+                $Settings->clear();
             }
         }
 
@@ -141,7 +147,9 @@ class Menu
         // projects settings
         $projects = QUI\Projects\Manager::getProjects();
         $Settings = $Menu->getElementByName('settings');
-        $Projects = $Settings->getElementByName('projects');
+        $Projects = $Settings === false
+            ? false
+            : $Settings->getElementByName('projects');
 
         foreach ($projects as $project) {
             if (!$User->isSU()) {
@@ -219,7 +227,7 @@ class Menu
                     continue;
                 }
 
-                $setting_file = $Package->getXMLFilePath(QUI\Package\Package::SETTINGS_XML);
+                $setting_file = (string)$Package->getXMLFilePath(QUI\Package\Package::SETTINGS_XML);
 
                 if (file_exists($setting_file)) {
                     $files[] = str_replace(CMS_DIR, '', $setting_file);
@@ -291,7 +299,10 @@ class Menu
                     }
 
                     if (!$menuParent) {
-                        $Settings->appendChild($Item);
+                        if ($Settings !== false) {
+                            $Settings->appendChild($Item);
+                        }
+
                         continue;
                     }
 

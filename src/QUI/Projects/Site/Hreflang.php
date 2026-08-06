@@ -52,7 +52,7 @@ class Hreflang
         }
 
         if (count($languages) > 1) {
-            $defaultLanguage = (string)$Project->getAttribute('default_lang');
+            $defaultLanguage = $Project->getDefaultLang();
 
             if ($defaultLanguage !== '' && in_array($defaultLanguage, $languages, true)) {
                 $url = $this->getLanguageUrl($defaultLanguage);

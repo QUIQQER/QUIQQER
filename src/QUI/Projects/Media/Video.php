@@ -37,7 +37,7 @@ class Video extends Item implements QUI\Interfaces\Projects\Media\File
      * @return integer|false
      * @throws QUI\Exception
      */
-    public function getHeight(): bool|int
+    public function getHeight(): false|int
     {
         if ($this->getAttribute('image_height')) {
             return (int)$this->getAttribute('image_height');
@@ -60,7 +60,7 @@ class Video extends Item implements QUI\Interfaces\Projects\Media\File
      * @return integer|false
      * @throws QUI\Exception
      */
-    public function getWidth(): bool|int
+    public function getWidth(): false|int
     {
         if ($this->getAttribute('image_width')) {
             return (int)$this->getAttribute('image_width');

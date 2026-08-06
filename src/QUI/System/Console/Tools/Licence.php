@@ -90,7 +90,7 @@ class Licence extends QUI\System\Console\Tool
         $licenceFile = $packageDirectory . '/LICENSE';
 
         if (file_exists($licenceFile)) {
-            $this->writeLn(file_get_contents($licenceFile));
+            $this->writeLn((string)file_get_contents($licenceFile));
 
             return;
         }

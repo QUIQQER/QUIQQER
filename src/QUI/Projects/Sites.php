@@ -47,24 +47,23 @@ class Sites
 
         $gl = 'quiqqer/core';
 
-        $Toolbar->appendChild(
-            new Button([
-                'name' => 'save',
-                'textimage' => 'fa fa-save',
-                'text' => QUI::getLocale()->get($gl, 'projects.project.site.btn.save.text'),
-                'onclick' => 'Panel.save',
-                'help' => QUI::getLocale()->get($gl, 'projects.project.site.btn.save.help'),
-                'alt' => QUI::getLocale()->get($gl, 'projects.project.site.btn.save.alt'),
-                'title' => QUI::getLocale()->get($gl, 'projects.project.site.btn.save.title')
-            ])
-        );
+        $SaveButton = new Button([
+            'name' => 'save',
+            'textimage' => 'fa fa-save',
+            'text' => QUI::getLocale()->get($gl, 'projects.project.site.btn.save.text'),
+            'onclick' => 'Panel.save',
+            'help' => QUI::getLocale()->get($gl, 'projects.project.site.btn.save.help'),
+            'alt' => QUI::getLocale()->get($gl, 'projects.project.site.btn.save.alt'),
+            'title' => QUI::getLocale()->get($gl, 'projects.project.site.btn.save.title')
+        ]);
+        $Toolbar->appendChild($SaveButton);
 
         // wenn die Seite bearbeitet wird
         if (
             $Site->isLockedFromOther()
             || !$Site->hasPermission('quiqqer.projects.site.edit')
         ) {
-            $Toolbar->getElementByName('save')->setDisable();
+            $SaveButton->setDisable();
         }
 
         // Wenn das Bearbeiten Recht vorhanden ist
@@ -122,17 +121,16 @@ class Sites
         );
 
         // delete site
-        $Toolbar->appendChild(
-            new Button([
-                'name' => 'delete',
-                'icon' => 'fa fa-trash-o',
-                //'text'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.delete.text' ),
-                'onclick' => 'Panel.del',
-                'help' => QUI::getLocale()->get($gl, 'projects.project.site.btn.delete.help'),
-                'title' => QUI::getLocale()->get($gl, 'projects.project.site.btn.delete.title'),
-                'alt' => QUI::getLocale()->get($gl, 'projects.project.site.btn.delete.alt')
-            ])
-        );
+        $DeleteButton = new Button([
+            'name' => 'delete',
+            'icon' => 'fa fa-trash-o',
+            //'text'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.delete.text' ),
+            'onclick' => 'Panel.del',
+            'help' => QUI::getLocale()->get($gl, 'projects.project.site.btn.delete.help'),
+            'title' => QUI::getLocale()->get($gl, 'projects.project.site.btn.delete.title'),
+            'alt' => QUI::getLocale()->get($gl, 'projects.project.site.btn.delete.alt')
+        ]);
+        $Toolbar->appendChild($DeleteButton);
 
         // Wenn die Seite bearbeitet wird
         // oder wenn das Löschen Recht nicht vorhanden ist
@@ -140,24 +138,23 @@ class Sites
             $Site->isLockedFromOther()
             || !$Site->hasPermission('quiqqer.projects.site.del')
         ) {
-            $Toolbar->getElementByName('delete')->setDisable();
+            $DeleteButton->setDisable();
         }
 
         // new sub site
-        $Toolbar->appendChild(
-            new Button([
-                'name' => 'new',
-                'icon' => 'fa fa-file-o',
-                //'text'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.new.text' ),
-                'onclick' => 'Panel.createNewChild',
-                'help' => QUI::getLocale()->get($gl, 'projects.project.site.btn.new.help'),
-                'alt' => QUI::getLocale()->get($gl, 'projects.project.site.btn.new.alt'),
-                'title' => QUI::getLocale()->get($gl, 'projects.project.site.btn.new.title')
-            ])
-        );
+        $NewButton = new Button([
+            'name' => 'new',
+            'icon' => 'fa fa-file-o',
+            //'text'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.new.text' ),
+            'onclick' => 'Panel.createNewChild',
+            'help' => QUI::getLocale()->get($gl, 'projects.project.site.btn.new.help'),
+            'alt' => QUI::getLocale()->get($gl, 'projects.project.site.btn.new.alt'),
+            'title' => QUI::getLocale()->get($gl, 'projects.project.site.btn.new.title')
+        ]);
+        $Toolbar->appendChild($NewButton);
 
         if (!$Site->hasPermission('quiqqer.projects.site.new')) {
-            $Toolbar->getElementByName('new')->setDisable();
+            $NewButton->setDisable();
         }
 
 
@@ -187,7 +184,7 @@ class Sites
         $Toolbar = self::getTabs($Site);
         $Tab = $Toolbar->getElementByName($tabname);
 
-        if ($Tab === false) {
+        if (!$Tab instanceof Tab) {
             throw new Exception('The tab could not be found.');
         }
 
@@ -281,17 +278,19 @@ class Sites
                     "//site/types/type[@type='" . $siteTypeParts[1] . "' or @type='" . $type . "']"
                 );
 
-                foreach ($TypeNodes as $TypeNode) {
-                    if (!$TypeNode instanceof DOMElement) {
-                        continue;
-                    }
+                if ($TypeNodes !== false) {
+                    foreach ($TypeNodes as $TypeNode) {
+                        if (!$TypeNode instanceof DOMElement) {
+                            continue;
+                        }
 
-                    if (
-                        $TypeNode->hasAttribute('content')
-                        && (int)$TypeNode->getAttribute('content') === 0
-                    ) {
-                        $showDefaultContentTab = false;
-                        break;
+                        if (
+                            $TypeNode->hasAttribute('content')
+                            && (int)$TypeNode->getAttribute('content') === 0
+                        ) {
+                            $showDefaultContentTab = false;
+                            break;
+                        }
                     }
                 }
             }
@@ -335,15 +334,17 @@ class Sites
             $Dom = XML::getDomFromXml($file);
             $Path = new DOMXPath($Dom);
 
-            QUI\Utils\DOM::addTabsToToolbar(
-                $Path->query("//site/types/type[@type='" . $types[1] . "']/tab"),
-                $Tabbar
-            );
+            $tabs = $Path->query("//site/types/type[@type='" . $types[1] . "']/tab");
 
-            QUI\Utils\DOM::addTabsToToolbar(
-                $Path->query("//site/types/type[@type='" . $type . "']/tab"),
-                $Tabbar
-            );
+            if ($tabs !== false) {
+                self::addXPathTabsToToolbar($tabs, $Tabbar);
+            }
+
+            $tabs = $Path->query("//site/types/type[@type='" . $type . "']/tab");
+
+            if ($tabs !== false) {
+                self::addXPathTabsToToolbar($tabs, $Tabbar);
+            }
         }
 
         // module / package extensions
@@ -371,10 +372,11 @@ class Sites
             $Dom = XML::getDomFromXml($file);
             $Path = new DOMXPath($Dom);
 
-            QUI\Utils\DOM::addTabsToToolbar(
-                $Path->query("//site/types/type[@type='" . $type . "']/tab"),
-                $Tabbar
-            );
+            $tabs = $Path->query("//site/types/type[@type='" . $type . "']/tab");
+
+            if ($tabs !== false) {
+                self::addXPathTabsToToolbar($tabs, $Tabbar);
+            }
         }
 
 
@@ -427,6 +429,22 @@ class Sites
     }
 
     /**
+     * @param iterable<mixed> $tabs
+     */
+    private static function addXPathTabsToToolbar(iterable $tabs, Bar $Tabbar): void
+    {
+        $tabElements = [];
+
+        foreach ($tabs as $Tab) {
+            if ($Tab instanceof DOMElement) {
+                $tabElements[] = $Tab;
+            }
+        }
+
+        QUI\Utils\DOM::addTabsToToolbar($tabElements, $Tabbar);
+    }
+
+    /**
      * Search sites
      *
      * $params['Project'] - \QUI\Projects\Project
@@ -439,7 +457,7 @@ class Sites
      *
      * @param array<string, mixed> $params
      *
-     * @return array<int, mixed>|int
+     * @return array<int, array<string, mixed>>|int
      *
      * @throws Exception
      */
@@ -515,7 +533,7 @@ class Sites
 
         foreach ($projects as $Project) {
             /* @var $Project Project */
-            $langs = $Project->getAttribute('langs');
+            $langs = $Project->getLanguages();
             $name = $Project->getName();
 
             foreach ($langs as $lang) {

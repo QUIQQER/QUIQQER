@@ -642,16 +642,16 @@ class Manager
     /**
      * Clears all or only a given entry from the cache.
      *
-     * @param boolean|string $key - optional; if no key is given the whole cache is cleared
+     * @param false|string $key - optional; if no key is given the whole cache is cleared
      */
-    public static function clear(bool | string $key = ""): void
+    public static function clear(false | string $key = ""): void
     {
         if (self::$noClearing) {
             return;
         }
 
         try {
-            self::getStash($key)->clear();
+            self::getStash($key ?: '')->clear();
 
             QUI::getEvents()->fireEvent('cacheClear', [$key]);
         } catch (\Exception $Exception) {
@@ -733,9 +733,9 @@ class Manager
     /**
      * Clears the project media cache
      *
-     * @param bool|string $projectName - optional, name of the project
+     * @param false|string $projectName - optional, name of the project
      */
-    public static function clearMediaCache(bool | string $projectName = false): void
+    public static function clearMediaCache(false | string $projectName = false): void
     {
         // clear all media cache
         if (empty($projectName)) {
@@ -936,16 +936,16 @@ class Manager
     /**
      * Clears all or only a given entry from the longtime cache.
      *
-     * @param boolean|string $key - optional; if no key is given the whole cache is cleared
+     * @param false|string $key - optional; if no key is given the whole cache is cleared
      */
-    public static function longTimeCacheClear(bool | string $key = ""): void
+    public static function longTimeCacheClear(false | string $key = ""): void
     {
         if (self::$noClearing) {
             return;
         }
 
         try {
-            LongTermCache::clear($key);
+            LongTermCache::clear($key ?: '');
 
             QUI::getEvents()->fireEvent('longTimeCacheClear', [$key]);
         } catch (\Exception $Exception) {

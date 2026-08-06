@@ -13,14 +13,14 @@ try {
     QUI\Permissions\Permission::checkAdminUser(QUI::getUserBySession());
 } catch (QUI\Exception $Exception) {
     QUI::getGlobalResponse()->setStatusCode($Exception->getCode());
-    QUI::getGlobalResponse()->setContent(json_encode($Exception->toArray()));
+    QUI::getGlobalResponse()->setContent((string)json_encode($Exception->toArray()));
     QUI::getGlobalResponse()->send();
     exit;
 }
 
 
 $body = file_get_contents('php://input');
-$body = json_decode($body, true);
+$body = json_decode((string)$body, true);
 
 if (
     !$body
@@ -42,7 +42,7 @@ if (isset($body['type']) && $body['type'] === 'pdf') {
     $output = ob_get_clean();
 
     $Document = new Document();
-    $Document->setContentHTML($output);
+    $Document->setContentHTML((string)$output);
     $pdfFile = $Document->createPDF();
     $name = 'export';
 
@@ -103,6 +103,28 @@ foreach ($body['data']['data'] as $entry) {
     $data[] = $entry;
 }
 
+$csvData = array_map(
+    static function (array $row): array {
+        return array_map(
+            static function (mixed $value): string | null {
+                if (is_string($value)) {
+                    return $value;
+                }
+
+                if ($value === false) {
+                    return null;
+                }
+
+                $encoded = json_encode($value);
+
+                return is_string($encoded) ? $encoded : null;
+            },
+            $row
+        );
+    },
+    $data
+);
+
 // name
 $name = 'export';
 
@@ -123,7 +145,7 @@ try {
     if ($type === 'xml') {
         $filename = $name . '.xml';
 
-        $Writer->insertAll($data);
+        $Writer->insertAll($csvData);
         $Reader = League\Csv\Reader::createFromString($Writer->toString());
         $Dom = (new League\Csv\XMLConverter())->convert($Reader);
         $output = $Dom->saveXML();
@@ -132,7 +154,7 @@ try {
         $output = json_encode($data);
     } else {
         $filename = $name . '.csv';
-        $Writer->insertAll($data);
+        $Writer->insertAll($csvData);
 
         $output = $Writer->toString();
         $output = str_replace($enclosure, '', $output);

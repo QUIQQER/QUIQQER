@@ -60,7 +60,10 @@ class Output extends \Symfony\Component\Console\Output\Output
     {
         $this->curLine .= $message;
 
-        if (strpos(json_encode($message), PHP_EOL) > 0 || strpos(json_encode($message), '\b') > 0) {
+        if (
+            strpos((string)json_encode($message), PHP_EOL) > 0
+            || strpos((string)json_encode($message), '\b') > 0
+        ) {
             $newline = true;
         }
 

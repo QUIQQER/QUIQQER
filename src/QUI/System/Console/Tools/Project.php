@@ -357,7 +357,7 @@ class Project extends QUI\System\Console\Tool
      * Prints a line to the output while using a locale variable of the 'quiqqer/core' group
      */
     protected function writeLnLocale(
-        bool | string $locale,
+        string $locale,
         bool | string $color = false,
         bool | string $background = false
     ): void {
@@ -530,7 +530,13 @@ class Project extends QUI\System\Console\Tool
 
         $RootSiteCopy = $this->copySite($TargetProject, $RootSite, $ParentSite?->getId());
 
-        foreach ($RootSite->getChildrenIds(['active' => '0&1']) as $siteId) {
+        $childrenIds = $RootSite->getChildrenIds(['active' => '0&1']);
+
+        if (!is_array($childrenIds)) {
+            $childrenIds = [];
+        }
+
+        foreach ($childrenIds as $siteId) {
             $Site = new QUI\Projects\Site\Edit($Project, $siteId);
             $this->copySiteLevel($Site, $langTo, $RootSiteCopy);
         }

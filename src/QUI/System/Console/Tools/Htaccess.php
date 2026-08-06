@@ -109,7 +109,7 @@ class Htaccess extends QUI\System\Console\Tool
     {
         $htaccessFile = CMS_DIR . '.htaccess';
 
-        return trim(file_get_contents($htaccessFile)) !== trim($this->generateHtaccessContent());
+        return trim((string)file_get_contents($htaccessFile)) !== trim($this->generateHtaccessContent());
     }
 
     private function generateHtaccessContent(): string
@@ -172,7 +172,7 @@ HTACCESS
             );
         }
 
-        return file_get_contents(self::CUSTOM_HTACCESS_FILE_PATH);
+        return (string)file_get_contents(self::CUSTOM_HTACCESS_FILE_PATH);
     }
 
     /**
@@ -192,7 +192,7 @@ HTACCESS
             return;
         }
 
-        $this->createCustomHtaccessFile(file_get_contents($legacyCustomHtaccessFile));
+        $this->createCustomHtaccessFile((string)file_get_contents($legacyCustomHtaccessFile));
         unlink($legacyCustomHtaccessFile);
     }
 

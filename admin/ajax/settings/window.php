@@ -36,7 +36,7 @@ QUI::$Ajax->registerFunction(
         }
 
 
-        $cacheName = 'quiqqer/package/quiqqer/core/menu/windows/' . md5(json_encode($files));
+        $cacheName = 'quiqqer/package/quiqqer/core/menu/windows/' . md5((string)json_encode($files));
         $Settings = QUI\Utils\XML\Settings::getInstance();
 
         if ($windowName) {

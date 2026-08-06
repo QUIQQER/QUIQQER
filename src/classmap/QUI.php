@@ -205,6 +205,12 @@ class QUI
         // load the main configuration
         $config = parse_ini_file(ETC_DIR . 'conf.ini.php', true);
 
+        if ($config === false) {
+            throw new Exception(
+                'Could not read configuration: ' . ETC_DIR . 'conf.ini.php'
+            );
+        }
+
         /**
          * load the constants
          */
@@ -289,8 +295,10 @@ class QUI
         $Config = new QUI\Config(ETC_DIR . 'conf.ini.php');
         self::$Conf = $Config;
 
-        if ($Config->getValue('globals', 'timezone')) {
-            date_default_timezone_set($Config->getValue('globals', 'timezone'));
+        $timezone = $Config->getValue('globals', 'timezone');
+
+        if (is_string($timezone) && $timezone !== '') {
+            date_default_timezone_set($timezone);
         }
 
 
@@ -726,15 +734,15 @@ class QUI
      * You can also use \QUI\Projects\Manager::getProject()
      *
      * @param array<string, mixed>|string $project - Project name | array('name' => , 'lang' => , 'template' => )
-     * @param boolean|string $lang - Project lang (optional)
-     * @param boolean|string $template - Project template (optional)
+     * @param false|string $lang - Project lang (optional)
+     * @param false|string $template - Project template (optional)
      *
      * @throws QUI\Exception
      */
     public static function getProject(
         array|string $project,
-        bool|string $lang = false,
-        bool|string $template = false
+        false|string $lang = false,
+        false|string $template = false
     ): Project {
         if (is_array($project)) {
             $lang = false;
@@ -925,7 +933,11 @@ class QUI
 
         if (self::$Session === null) {
             self::$Session = new Session();
-            self::getRequest()->setSession(self::$Session->getSymfonySession());
+            $SymfonySession = self::$Session->getSymfonySession();
+
+            if ($SymfonySession !== false) {
+                self::getRequest()->setSession($SymfonySession);
+            }
         }
 
         return self::$Session;
@@ -1056,6 +1068,9 @@ class QUI
         return self::$QueryBuilder;
     }
 
+    /**
+     * @return 'pdo_mysql'|'pdo_pgsql'
+     */
     private static function getDoctrineDatabaseDriver(string $driver): string
     {
         $driver = strtolower(trim($driver));

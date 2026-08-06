@@ -120,12 +120,12 @@ class LocalServer extends QUI\Utils\Singleton
         }
 
         $composerJson = $Zip->getFromName('composer.json');
-        $composerJson = json_decode($composerJson, true);
+        $composerJson = json_decode((string)$composerJson, true);
 
         if (empty($composerJson['version'])) {
             $composerJson['version'] = $version;
 
-            $Zip->addFromString('composer.json', json_encode($composerJson, JSON_PRETTY_PRINT));
+            $Zip->addFromString('composer.json', (string)json_encode($composerJson, JSON_PRETTY_PRINT));
         }
 
         $Zip->close();

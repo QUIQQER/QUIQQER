@@ -14,7 +14,7 @@ $Response->sendHeaders();
 
 if (isset($_REQUEST['beacon'])) {
     $input = file_get_contents('php://input');
-    parse_str($input, $_REQUEST);
+    parse_str((string)$input, $_REQUEST);
 }
 
 if (!isset($_REQUEST['_rf'])) {
@@ -45,10 +45,23 @@ if (!is_array($_rf_files)) {
     $_rf_files = [$_rf_files];
 }
 
+$requiredFiles = [];
+
+foreach ($_rf_files as $file) {
+    if (is_string($file)) {
+        $requiredFiles[] = $file;
+    }
+}
+
+$_rf_files = $requiredFiles;
+
 QUI::getAjax();
 
 // ajax package loader
-if (isset($_REQUEST['package'])) {
+if (
+    isset($_REQUEST['package'])
+    && is_string($_REQUEST['package'])
+) {
     $package = $_REQUEST['package'];
     $dir = OPT_DIR;
 
@@ -60,11 +73,11 @@ if (isset($_REQUEST['package'])) {
         $_rf_file = Orthos::clearPath($_rf_file);
         $_rf_file = realpath($_rf_file);
 
-        if (!str_contains($_rf_file, $dir)) {
+        if (!str_contains((string)$_rf_file, $dir)) {
             continue;
         }
 
-        if (!file_exists($_rf_file)) {
+        if (!file_exists((string)$_rf_file)) {
             continue;
         }
 
@@ -80,11 +93,11 @@ foreach ($_rf_files as $file) {
 
     $dir = OPT_DIR . 'quiqqer/core/admin/';
 
-    if (!str_contains($_rf_file, $dir)) {
+    if (!str_contains((string)$_rf_file, $dir)) {
         continue;
     }
 
-    if (!file_exists($_rf_file)) {
+    if (!file_exists((string)$_rf_file)) {
         continue;
     }
 
@@ -116,11 +129,11 @@ if (isset($_REQUEST['project'])) {
 
         $dir = $projectDir . '/lib/';
 
-        if (!str_contains($file, $dir)) {
+        if (!str_contains((string)$file, $dir)) {
             continue;
         }
 
-        if (!file_exists($file)) {
+        if (!file_exists((string)$file)) {
             continue;
         }
 
@@ -132,5 +145,16 @@ $result = QUI::getAjax()->call();
 
 // destroy current ob output, so ajax will be no longer destroyed
 @ob_clean();
+
+if (is_array($result)) {
+    $encodedResult = json_encode($result);
+
+    if ($encodedResult === false) {
+        exit;
+    }
+
+    $result = '<quiqqer>' . $encodedResult . '</quiqqer>';
+}
+
 echo $result;
 exit;

@@ -40,11 +40,13 @@ class Permission
 
     /**
      * has the User the permission
+     *
+     * @return bool|int|array<array-key, mixed>|string
      */
     public static function hasPermission(
         string $perm,
-        null | bool | User $User = null
-    ): Permission | bool | string {
+        null | false | User $User = null
+    ): bool | int | array | string {
         try {
             return self::checkPermission($perm, $User);
         } catch (QUI\Exception) {
@@ -56,12 +58,14 @@ class Permission
     /**
      * Checks whether the user has the permission
      *
+     * @return bool|int|array<array-key, mixed>|string
+     *
      * @throws Exception
      */
     public static function checkPermission(
         string $perm,
-        bool | User | null $User = null
-    ): Permission | bool | string {
+        false | User | null $User = null
+    ): bool | int | array | string {
         if (!$User) {
             $User = self::getUser();
         }
@@ -123,7 +127,7 @@ class Permission
     /**
      * Checks, if the user has the SuperUser flag
      */
-    public static function isSU(null | bool | User $User = null): bool
+    public static function isSU(null | false | User $User = null): bool
     {
         if (!$User) {
             $User = self::getUser();
@@ -135,23 +139,15 @@ class Permission
     /**
      * Checks if the user is allowed to enter the admin area
      *
-     * @param boolean|User $User - optional
+     * @param false|User $User - optional
      *
      * @throws \QUI\Exception
      */
-    public static function checkAdminUser(null | bool | User $User = null): void
+    public static function checkAdminUser(null | false | User $User = null): void
     {
-        $UserToCheck = false;
+        $UserToCheck = $User ?: self::getUser();
 
-        if (!$User) {
-            $UserToCheck = self::getUser();
-        }
-
-        if (!$User) {
-            self::checkUser();
-        } else {
-            self::checkUser($UserToCheck);
-        }
+        self::checkUser($UserToCheck);
 
         if (!self::isAdmin($UserToCheck)) {
             throw new Exception(
@@ -170,12 +166,12 @@ class Permission
     /**
      * Checks if the object is also a user object
      *
-     * @param boolean|User $User - optional
+     * @param false|User $User - optional
      *
      * @throws Exception
      * @throws \QUI\Exception
      */
-    public static function checkUser(null | bool | User $User = null): void
+    public static function checkUser(null | false | User $User = null): void
     {
         $UserToCheck = $User;
 
@@ -202,14 +198,14 @@ class Permission
     /**
      * Checks, if the user is an admin user
      */
-    public static function isAdmin(null | bool | User $User = null): bool
+    public static function isAdmin(null | false | User $User = null): bool
     {
         if (!$User) {
             $User = self::getUser();
         }
 
         try {
-            return self::checkPermission('quiqqer.admin', $User);
+            return (bool)self::checkPermission('quiqqer.admin', $User);
         } catch (QUI\Exception) {
         }
 
@@ -220,24 +216,16 @@ class Permission
      * Checks if the user is a SuperUser
      * if not, it throws an exception
      *
-     * @param boolean|User $User - optional
+     * @param false|User $User - optional
      *
      * @throws Exception
      * @throws \QUI\Exception
      */
-    public static function checkSU(null | bool | User $User = null): void
+    public static function checkSU(null | false | User $User = null): void
     {
-        $UserToCheck = false;
+        $UserToCheck = $User ?: self::getUser();
 
-        if (!$User) {
-            $UserToCheck = self::getUser();
-        }
-
-        if ($UserToCheck) {
-            self::checkUser($User);
-        } else {
-            self::checkUser();
-        }
+        self::checkUser($UserToCheck);
 
         if (!self::isSU($UserToCheck)) {
             throw new Exception(
@@ -256,7 +244,7 @@ class Permission
     /**
      * Checks if the permission is set
      */
-    public static function existsPermission(string $perm, null | bool | User $User = null): bool
+    public static function existsPermission(string $perm, null | false | User $User = null): bool
     {
         if (!$User) {
             $User = self::getUser();
@@ -440,7 +428,7 @@ class Permission
     public static function hasSitePermission(
         string $perm,
         Site $Site,
-        null | bool | User $User = null
+        null | false | User $User = null
     ): bool {
         try {
             return self::checkSitePermission($perm, $Site, $User);
@@ -458,7 +446,7 @@ class Permission
     public static function checkSitePermission(
         string $perm,
         Edit | Site $Site,
-        null | bool | User $User = null
+        null | false | User $User = null
     ): bool {
         if (!$User) {
             $User = self::getUser();
@@ -493,7 +481,7 @@ class Permission
                         throw $Exception;
                     }
 
-                    return self::checkPermission(
+                    return (bool)self::checkPermission(
                         'quiqqer.projects.sites.view',
                         $User
                     );
@@ -513,7 +501,7 @@ class Permission
                         throw $Exception;
                     }
 
-                    return self::checkPermission(
+                    return (bool)self::checkPermission(
                         'quiqqer.projects.sites.edit',
                         $User
                     );
@@ -533,7 +521,7 @@ class Permission
                         throw $Exception;
                     }
 
-                    return self::checkPermission(
+                    return (bool)self::checkPermission(
                         'quiqqer.projects.sites.del',
                         $User
                     );
@@ -553,7 +541,7 @@ class Permission
                         throw $Exception;
                     }
 
-                    return self::checkPermission(
+                    return (bool)self::checkPermission(
                         'quiqqer.projects.sites.new',
                         $User
                     );
@@ -573,7 +561,7 @@ class Permission
     public static function checkPermissionList(
         array $permissions,
         string $perm,
-        null | bool | User $User = null
+        null | false | User $User = null
     ): bool {
         if (!isset($permissions[$perm])) {
             QUI\System\Log::addNotice(
@@ -877,7 +865,7 @@ class Permission
     public static function checkProjectPermission(
         string $perm,
         Project $Project,
-        null | bool | User $User = null
+        null | false | User $User = null
     ): bool {
         if (!$User) {
             $User = self::getUser();
@@ -907,7 +895,7 @@ class Permission
                         $User
                     );
                 } catch (Exception) {
-                    return self::checkPermission(
+                    return (bool)self::checkPermission(
                         'quiqqer.projects.edit',
                         $User
                     );
@@ -922,7 +910,7 @@ class Permission
                         $User
                     );
                 } catch (Exception) {
-                    return self::checkPermission(
+                    return (bool)self::checkPermission(
                         'quiqqer.projects.destroy',
                         $User
                     );
@@ -937,7 +925,7 @@ class Permission
                         $User
                     );
                 } catch (Exception) {
-                    return self::checkPermission(
+                    return (bool)self::checkPermission(
                         'quiqqer.projects.setconfig',
                         $User
                     );
@@ -952,7 +940,7 @@ class Permission
                         $User
                     );
                 } catch (Exception) {
-                    return self::checkPermission(
+                    return (bool)self::checkPermission(
                         'quiqqer.projects.editCustomCSS',
                         $User
                     );
@@ -967,7 +955,7 @@ class Permission
                         $User
                     );
                 } catch (Exception) {
-                    return self::checkPermission(
+                    return (bool)self::checkPermission(
                         'quiqqer.projects.editCustomJS',
                         $User
                     );

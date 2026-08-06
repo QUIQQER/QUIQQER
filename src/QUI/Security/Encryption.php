@@ -10,6 +10,7 @@ use Exception;
 use QUI;
 
 use function bin2hex;
+use function ctype_digit;
 use function explode;
 use function hex2bin;
 use function openssl_cipher_iv_length;
@@ -41,11 +42,25 @@ class Encryption
         $sl = $Config->getValue('globals', 'saltlength');
         $givenData = $data;
 
+        if (!is_string($salt)) {
+            return $givenData;
+        }
+
+        if (!is_string($sl) || !ctype_digit($sl)) {
+            return $givenData;
+        }
+
+        $saltLength = (int)$sl;
+
         if (!$Config->getValue('openssl', 'iv')) {
             self::encrypt('');
         }
 
         $iv = $Config->getValue('openssl', 'iv');
+
+        if (!is_string($iv)) {
+            return $givenData;
+        }
 
         /**
          * multi key support
@@ -59,10 +74,10 @@ class Encryption
         foreach ($ivs as $iv) {
             try {
                 $iv = @hex2bin($iv);
-                $data = openssl_decrypt($givenData, 'aes-256-cbc', $salt, 0, $iv);
+                $data = openssl_decrypt($givenData, 'aes-256-cbc', $salt, 0, (string)$iv);
 
                 if ($data !== false) {
-                    return substr($data, -$sl) . substr($data, 0, -$sl);
+                    return substr($data, -$saltLength) . substr($data, 0, -$saltLength);
                 }
             } catch (Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
@@ -74,6 +89,8 @@ class Encryption
 
     /**
      * Encrypts data (Verschlüsselt Daten)
+     *
+     * @throws QUI\Exception
      */
     public static function encrypt(string|null $data): string
     {
@@ -82,6 +99,16 @@ class Encryption
         $salt = $Config->getValue('globals', 'salt');
         $sl = $Config->getValue('globals', 'saltlength');
         $iv = $Config->getValue('openssl', 'iv');
+
+        if (!is_string($salt)) {
+            throw new QUI\Exception(
+                'Invalid encryption salt configuration.'
+            );
+        }
+
+        if (!is_string($iv)) {
+            $iv = '';
+        }
 
         if (empty($iv)) {
             $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
@@ -109,6 +136,6 @@ class Encryption
 
         $data = substr($data, (int)$sl) . substr($data, 0, (int)$sl);
 
-        return openssl_encrypt($data, 'aes-256-cbc', $salt, 0, $iv);
+        return (string)openssl_encrypt($data, 'aes-256-cbc', $salt, 0, (string)$iv);
     }
 }

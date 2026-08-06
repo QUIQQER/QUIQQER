@@ -454,6 +454,10 @@ class Manager
             $relative = str_replace($folder, '', $path);
             $relative = str_replace('\\', '/', $relative);
 
+            if (!is_string($relative)) {
+                continue;
+            }
+
             if (!str_contains($relative, '/')) {
                 continue;
             }
@@ -462,7 +466,7 @@ class Manager
             $toolbar = array_pop($parts);
             $module = implode('/', $parts);
 
-            if (empty($module) || empty($toolbar)) {
+            if (empty($toolbar)) {
                 continue;
             }
 
@@ -740,7 +744,7 @@ class Manager
 
             $WYSIWYG = $Path->query("//wysiwyg");
 
-            if ($WYSIWYG->length) {
+            if ($WYSIWYG !== false && $WYSIWYG->length) {
                 $DomElement = $WYSIWYG->item(0);
 
                 if ($DomElement instanceof DOMElement) {
@@ -759,9 +763,9 @@ class Manager
         // template files
         $templates = [];
 
-        if ($Project->getAttribute('template')) {
+        if ($Project->getTemplate()) {
             try {
-                $Package = QUI::getPackage($Project->getAttribute('template'));
+                $Package = QUI::getPackage($Project->getTemplate());
                 $templates[] = OPT_DIR . $Package->getName() . '/settings.xml';
 
                 $TemplateParent = $Package->getTemplateParent();
@@ -916,7 +920,7 @@ class Manager
         $Path = new DOMXPath($Dom);
         $WYSIWYG = $Path->query("//wysiwyg");
 
-        if (!$WYSIWYG->length) {
+        if ($WYSIWYG === false || !$WYSIWYG->length) {
             return;
         }
 
@@ -1342,7 +1346,11 @@ class Manager
 
             $Tidy->parseString($html, $config, 'utf8');
             $Tidy->cleanRepair();
-            $html = $Tidy->html();
+            $cleanedHtml = $Tidy->value;
+
+            if ($cleanedHtml !== null) {
+                $html = $cleanedHtml;
+            }
         }
 
         return $html;

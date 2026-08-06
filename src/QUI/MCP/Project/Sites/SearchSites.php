@@ -37,10 +37,6 @@ class SearchSites extends AbstractTool
                         : [self::getProject($project, $lang)];
 
                     foreach ($projects as $Project) {
-                        if (!$Project instanceof Project) {
-                            continue;
-                        }
-
                         foreach (self::searchProject($Project, $query, $limit - count($results)) as $Site) {
                             $results[] = self::parseSite($Site);
 

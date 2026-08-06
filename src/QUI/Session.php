@@ -301,8 +301,8 @@ class Session
                 $server = $serverData[0];
                 $port = 11211;
 
-                if (isset($serverData[1])) {
-                    $port = $serverData[1];
+                if (isset($serverData[1]) && is_numeric($serverData[1])) {
+                    $port = (int)$serverData[1];
                 }
 
                 $Memcached->addServer($server, $port, 1000);
@@ -334,7 +334,8 @@ class Session
                 'db_id_col' => 'session_id',
                 'db_data_col' => 'session_value',
                 'db_time_col' => 'session_time',
-                'db_lifetime_col' => 'session_lifetime'
+                'db_lifetime_col' => 'session_lifetime',
+                'lock_mode' => PdoSessionHandler::LOCK_ADVISORY
             ]);
         }
 
@@ -562,7 +563,7 @@ class Session
         return $result !== false;
     }
 
-    public function getSymfonySession(): \Symfony\Component\HttpFoundation\Session\Session|bool
+    public function getSymfonySession(): \Symfony\Component\HttpFoundation\Session\Session|false
     {
         return $this->Session;
     }

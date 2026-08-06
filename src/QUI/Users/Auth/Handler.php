@@ -118,6 +118,8 @@ class Handler
     /**
      * Return all global active authenticators for the frontend authentication
      * - alias for getGlobalFrontendAuthenticators
+     *
+     * @return list<class-string<AuthenticatorInterface>>
      */
     public function getGlobalAuthenticators(): array
     {
@@ -126,6 +128,8 @@ class Handler
 
     /**
      * Return all global active authenticators for the frontend authentication
+     *
+     * @return list<class-string<AuthenticatorInterface>>
      */
     public function getGlobalFrontendAuthenticators(): array
     {
@@ -141,6 +145,9 @@ class Handler
         return array_values($authenticators);
     }
 
+    /**
+     * @return list<class-string<AuthenticatorInterface>>
+     */
     public function getGlobalFrontendSecondaryAuthenticators(): array
     {
         if (empty(QUI::conf('auth_frontend_secondary'))) {
@@ -155,6 +162,9 @@ class Handler
         return array_values($authenticators);
     }
 
+    /**
+     * @return list<class-string<AuthenticatorInterface>>
+     */
     protected function getAuthenticatorFromConfig(array $authenticatorConfig = []): array
     {
         if (empty($authenticatorConfig)) {
@@ -202,6 +212,8 @@ class Handler
 
     /**
      * Return all available authenticators
+     *
+     * @return list<class-string<AuthenticatorInterface>>
      */
     public function getAvailableAuthenticators(): array
     {
@@ -252,6 +264,8 @@ class Handler
 
     /**
      * Return all global active authenticators for the backend authentication
+     *
+     * @return list<class-string<AuthenticatorInterface>>
      */
     public function getGlobalBackendAuthenticators(): array
     {
@@ -269,6 +283,8 @@ class Handler
 
     /**
      * Return all global active authenticators for the backend authentication
+     *
+     * @return list<class-string<AuthenticatorInterface>>
      */
     public function getGlobalBackendSecondaryAuthenticators(): array
     {

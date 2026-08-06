@@ -12,7 +12,6 @@ use QUI\Projects\Project;
 use QUI\Utils\Security\Orthos;
 
 use function class_exists;
-use function class_implements;
 use function explode;
 use function file_exists;
 use function file_get_contents;
@@ -316,14 +315,13 @@ class Template extends QUI\QDOM
             $engine = $this->checkSmarty4Engine($engine);
         }
 
-        /* @var $Engine EngineInterface */
         $Engine = new $this->engines[$engine]($admin);
-        $implements = class_implements($Engine);
 
-        if (!isset($implements[EngineInterface::class])) {
-            QUI\System\Log::addError(
-                'The Template Engine implements not from QUI\Interfaces\Template\EngineInterface'
-            );
+        if (!$Engine instanceof EngineInterface) {
+            $message = 'The Template Engine implements not from QUI\Interfaces\Template\EngineInterface';
+            QUI\System\Log::addError($message);
+
+            throw new QUI\Exception($message);
         }
 
         $Engine->assign('__TEMPLATE__', $this);
@@ -364,7 +362,7 @@ class Template extends QUI\QDOM
                 if (!str_contains($templateIni, 'QUI\\Smarty\\Smarty4')) {
                     file_put_contents(
                         $templateIni,
-                        trim($iniContent) . PHP_EOL . 'smarty4="QUI\Smarty\Smarty4"'
+                        trim((string)$iniContent) . PHP_EOL . 'smarty4="QUI\Smarty\Smarty4"'
                     );
                 }
 
@@ -415,7 +413,7 @@ class Template extends QUI\QDOM
         $Locale = QUI::getLocale();
         $Template = $this;
 
-        $projectTemplate = $Project->getAttribute('template');
+        $projectTemplate = $Project->getTemplate();
         $hasTemplateParent = false;
 
         if ($Site->getAttribute('quiqqer.site.template')) {
@@ -525,8 +523,8 @@ class Template extends QUI\QDOM
             $tpl = $project_tpl;
 
             $Engine->assign([
-                'URL_TPL_DIR' => URL_USR_DIR . $Project->getAttribute('name') . '/',
-                'TPL_DIR' => USR_DIR . $Project->getAttribute('name') . '/',
+                'URL_TPL_DIR' => URL_USR_DIR . $Project->getName() . '/',
+                'TPL_DIR' => USR_DIR . $Project->getName() . '/',
             ]);
         }
 
@@ -534,8 +532,8 @@ class Template extends QUI\QDOM
         /*
         $suffix = $Rewrite->getSuffix();
 
-        if ( file_exists(USR_DIR .'lib/'. $Project->getAttribute('template') .'/index' . $suffix) ) {
-            $tpl = USR_DIR .'lib/'. $Project->getAttribute('template') .'/index' . $suffix;
+        if ( file_exists(USR_DIR .'lib/'. $Project->getTemplate() .'/index' . $suffix) ) {
+            $tpl = USR_DIR .'lib/'. $Project->getTemplate() .'/index' . $suffix;
         }
         */
 
@@ -572,7 +570,7 @@ class Template extends QUI\QDOM
             }
 
             // site template
-            $siteUsrScript = USR_DIR . $Project->getAttribute('name') . '/lib/' . $package . '/' . $type . '.php';
+            $siteUsrScript = USR_DIR . $Project->getName() . '/lib/' . $package . '/' . $type . '.php';
 
             if (file_exists($siteUsrScript)) {
                 $siteScript = $siteUsrScript;
@@ -586,7 +584,7 @@ class Template extends QUI\QDOM
 
         // includes
         if ($siteScript) {
-            $siteScript = Orthos::clearPath(realpath($siteScript));
+            $siteScript = Orthos::clearPath((string)realpath($siteScript));
 
             if ($siteScript) {
                 include $siteScript;
@@ -594,7 +592,7 @@ class Template extends QUI\QDOM
         }
 
         if ($projectScript) {
-            $projectScript = Orthos::clearPath(realpath($projectScript));
+            $projectScript = Orthos::clearPath((string)realpath($projectScript));
 
             if ($projectScript) {
                 include $projectScript;
@@ -922,7 +920,7 @@ class Template extends QUI\QDOM
 
         $templates = [];
 
-        $template = OPT_DIR . $Project->getAttribute('template');
+        $template = OPT_DIR . $Project->getTemplate();
         $siteXML = $template . '/site.xml';
 
         if (file_exists($siteXML)) {
@@ -930,11 +928,11 @@ class Template extends QUI\QDOM
         }
 
         try {
-            $Package = QUI::getPackage($Project->getAttribute('template'));
+            $Package = QUI::getPackage((string)$Project->getTemplate());
             $Parent = $Package->getTemplateParent();
 
             if ($Parent) {
-                $siteXML = $Parent->getXMLFilePath('site.xml');
+                $siteXML = (string)$Parent->getXMLFilePath('site.xml');
 
                 if (file_exists($siteXML)) {
                     $templates[] = OPT_DIR . $Parent->getName();
@@ -1006,13 +1004,13 @@ class Template extends QUI\QDOM
 
         if ($siteType[0] == 'standard') {
             // site template
-            $siteTemplate = OPT_DIR . $Project->getAttribute('template') . '/standard.html';
-            $siteStyle = OPT_DIR . $Project->getAttribute('template') . '/bin/standard.css';
+            $siteTemplate = OPT_DIR . $Project->getTemplate() . '/standard.html';
+            $siteStyle = OPT_DIR . $Project->getTemplate() . '/bin/standard.css';
 
             if (file_exists($siteStyle)) {
                 $Engine->assign(
                     'siteStyle',
-                    URL_OPT_DIR . $Project->getAttribute('template') . '/standard.css'
+                    URL_OPT_DIR . $Project->getTemplate() . '/standard.css'
                 );
             }
 

@@ -112,7 +112,7 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
      *
      * @return false
      */
-    public function getWidth(): bool
+    public function getWidth(): false
     {
         return false;
     }
@@ -122,7 +122,7 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
      *
      * @return false
      */
-    public function getHeight(): bool
+    public function getHeight(): false
     {
         return false;
     }
@@ -132,7 +132,7 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
      *
      * @see QUI\Interfaces\Projects\Media\File::createCache()
      */
-    public function createCache(): bool | string
+    public function createCache(): false | string
     {
         if (Media::$globalDisableMediaCacheCreation) {
             return false;
@@ -144,12 +144,12 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
     /**
      * Create a cache file with the new width and height
      *
-     * @param boolean|integer $width - (optional)
-     * @param boolean|integer $height - (optional)
+     * @param false|integer $width - (optional)
+     * @param false|integer $height - (optional)
      *
      * @return string - URL to the cache file
      */
-    public function createSizeCache(bool | int $width = false, bool | int $height = false): string
+    public function createSizeCache(false | int $width = false, false | int $height = false): string
     {
         return $this->image;
     }
@@ -217,7 +217,7 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
     /**
      * Return the Watermark image file
      */
-    public function getWatermark(): bool
+    public function getWatermark(): false
     {
         return false;
     }
@@ -225,12 +225,12 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
     /**
      * Return the Watermark image file
      */
-    public function getWatermarkPosition(): bool
+    public function getWatermarkPosition(): false
     {
         return false;
     }
 
-    public function getWatermarkRatio(): bool
+    public function getWatermarkRatio(): false
     {
         return false;
     }

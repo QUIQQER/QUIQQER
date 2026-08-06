@@ -14,22 +14,27 @@ use QUI\Control;
 QUI::$Ajax->registerFunction(
     'ajax_controls_get',
     static function ($control, $params = false): string {
-        try {
-            $Control = new $control();
-            $params = json_decode($params, true);
-
-            /* @var $Control QUI\Control */
-            if ($params) {
-                $Control->setAttributes($params);
-            }
-        } catch (QUI\Exception) {
+        if (
+            !is_string($control)
+            || !is_subclass_of($control, Control::class)
+        ) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/core', 'control.not.found'),
                 404
             );
         }
 
-        if (!is_subclass_of($Control, Control::class)) {
+        try {
+            $Control = new $control();
+
+            if (is_string($params)) {
+                $params = json_decode($params, true);
+            }
+
+            if (is_array($params)) {
+                $Control->setAttributes($params);
+            }
+        } catch (QUI\Exception) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/core', 'control.not.found'),
                 404

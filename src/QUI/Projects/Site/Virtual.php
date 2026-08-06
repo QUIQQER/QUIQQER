@@ -59,11 +59,11 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Lädt die Plugins der Seite
      *
-     * @param boolean|string $plugin - Plugin welches geladen werden soll, optional, ansonsten werden alle geladen
+     * @param false|string $plugin - Plugin welches geladen werden soll, optional, ansonsten werden alle geladen
      *
      * @return Virtual
      */
-    public function load(bool | string $plugin = false): QUI\Interfaces\Projects\Site
+    public function load(false | string $plugin = false): QUI\Interfaces\Projects\Site
     {
         return $this;
     }
@@ -73,7 +73,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function encode(): string
     {
-        return json_encode($this->getAttributes());
+        return (string)json_encode($this->getAttributes());
     }
 
     /**
@@ -98,7 +98,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Prüft ob es eine Verknüpfung ist
      */
-    public function isLinked(): bool | int
+    public function isLinked(): false | int
     {
         return false;
     }
@@ -292,11 +292,11 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Return the ID of the site,
      * or the ID of the sibling (linked) site of another language
      *
-     * @param boolean|string $lang - optional, if it is set, then the language of the wanted to be linked sibling site
+     * @param false|string $lang - optional, if it is set, then the language of the wanted to be linked sibling site
      *
      * @return integer
      */
-    public function getId(bool | string $lang = false): int
+    public function getId(false | string $lang = false): int
     {
         return $this->getAttribute('id');
     }
@@ -336,7 +336,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Gibt das erste Kind der Seite zurück
      */
-    public function firstChild(array $params = []): Site | bool
+    public function firstChild(array $params = []): Site | false
     {
         return false;
     }

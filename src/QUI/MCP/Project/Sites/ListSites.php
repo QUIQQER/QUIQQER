@@ -60,11 +60,15 @@ class ListSites extends AbstractTool
                     $Project = self::getProject($project, $lang);
                     $Parent = self::getEditSite($project, $parentId ?: 1, $lang);
 
-                    $children = self::parseChildren(
-                        $Parent->getChildren([
-                            'limit' => self::parseLimit($limit, $offset)
-                        ])
-                    );
+                    $children = $Parent->getChildren([
+                        'limit' => self::parseLimit($limit, $offset)
+                    ]);
+
+                    if (!is_array($children)) {
+                        $children = [];
+                    }
+
+                    $children = self::parseChildren($children);
 
                     return [
                         'project' => self::parseProject($Project),

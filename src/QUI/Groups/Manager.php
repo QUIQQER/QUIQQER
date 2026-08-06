@@ -64,9 +64,9 @@ class Manager extends QUI\QDOM
     protected array $data = [];
 
     /**
-     * @return object|bool|array<array-key, mixed>|string|null
+     * @return array<array-key, mixed>
      */
-    public static function getListOfExtraAttributes(): object | bool | array | string | null
+    public static function getListOfExtraAttributes(): array
     {
         if (self::$getListOfExtraAttributes !== null) {
             return self::$getListOfExtraAttributes;
@@ -342,7 +342,9 @@ class Manager extends QUI\QDOM
     /**
      * @param boolean $objects - as objects=true, as array=false
      *
-     * @return array<int, array<string, mixed>|Group|Everyone|Guest>
+     * @return ($objects is true
+     *     ? array<int, Group|Everyone|Guest>
+     *     : array<int, array<string, mixed>>)
      *
      * @throws QUI\Database\Exception
      */

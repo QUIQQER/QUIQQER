@@ -170,6 +170,12 @@ class GetSiteAttributes extends QUI\System\Console\Tool
 
         $fp = fopen($csvFile, 'w');
 
+        if ($fp === false) {
+            throw new QUI\Exception(
+                "Could not open CSV file for writing: $csvFile"
+            );
+        }
+
         foreach ($fetchedAttributes as $row) {
             fputcsv($fp, $row);
         }
@@ -179,6 +185,6 @@ class GetSiteAttributes extends QUI\System\Console\Tool
         $this->writeLn("\n\nCSV File: $csvFile\n");
 
         $this->writeLn("\n\nFinished.\n\n");
-        exit(1);
+        exit(0);
     }
 }
