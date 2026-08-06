@@ -123,10 +123,7 @@ abstract class Factory extends QUI\Utils\Singleton
         }
 
         $Child = new $childClass($result[0]['id'], $this);
-
-        if ($Child instanceof QUI\CRUD\Child) {
-            $Child->setAttributes($result[0]);
-        }
+        $Child->setAttributes($result[0]);
 
         return $Child;
     }
@@ -257,10 +254,7 @@ abstract class Factory extends QUI\Utils\Singleton
 
         foreach ($data as $entry) {
             $Child = new $childClass($entry['id'], $this);
-
-            if ($Child instanceof QUI\CRUD\Child) {
-                $Child->setAttributes($entry);
-            }
+            $Child->setAttributes($entry);
 
             $result[] = $Child;
         }

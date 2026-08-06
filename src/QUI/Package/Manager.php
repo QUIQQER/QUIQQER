@@ -46,13 +46,13 @@ use function curl_init;
 use function curl_setopt_array;
 use function current;
 use function date;
-use function date_interval_create_from_date_string;
 use function define;
 use function defined;
 use function explode;
 use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
+use function get_object_vars;
 use function hex2bin;
 use function http_build_query;
 use function is_array;
@@ -781,7 +781,9 @@ class Manager extends QUI\QDOM
             if (is_array($composerJson->require)) {
                 $composerJson->require["quiqqer/core"] = QUI::conf('globals', 'quiqqer_version');
             } elseif (is_object($composerJson->require)) {
-                $composerJson->require->{"quiqqer/core"} = QUI::conf('globals', 'quiqqer_version');
+                $require = get_object_vars($composerJson->require);
+                $require["quiqqer/core"] = QUI::conf('globals', 'quiqqer_version');
+                $composerJson->require = $require;
             } else {
                 $composerJson->require = [
                     "quiqqer/core" => QUI::conf('globals', 'quiqqer_version')
@@ -2504,7 +2506,7 @@ class Manager extends QUI\QDOM
 
             $isLicensed = !empty($response);
 
-            QUICacheManager::set($cacheName, $isLicensed, date_interval_create_from_date_string('1 day'));
+            QUICacheManager::set($cacheName, $isLicensed, new \DateInterval('P1D'));
 
             return $isLicensed;
         } catch (Exception $Exception) {

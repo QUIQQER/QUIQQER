@@ -103,7 +103,7 @@ class RenameProject extends Tool
      *
      * @return string
      */
-    protected function purgeProjectName($name): array|string
+    protected function purgeProjectName(string $name): string
     {
         $forbiddenCharacters = [
             '-',

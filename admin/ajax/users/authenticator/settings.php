@@ -15,14 +15,15 @@ QUI::$Ajax->registerFunction(
         $User = QUI::getUsers()->get($uid);
 
         if (QUI::isFrontend()) {
-            $available = QUI\Users\Auth\Handler::getInstance()->getAvailableAuthenticators();
+            $AuthHandler = QUI\Users\Auth\Handler::getInstance();
+            $available = $AuthHandler->getAvailableAuthenticators();
             $available = array_flip($available);
 
-            if (!isset($available[$authenticator]) && $available[$authenticator]) {
+            if (!isset($available[$authenticator])) {
                 return '';
             }
 
-            $Authenticator = new $authenticator($User);
+            $Authenticator = $AuthHandler->getAuthenticator($authenticator, $User);
         } else {
             $Authenticator = $User->getAuthenticator($authenticator);
         }

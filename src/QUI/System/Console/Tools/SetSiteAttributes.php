@@ -195,6 +195,6 @@ class SetSiteAttributes extends QUI\System\Console\Tool
         }
 
         $this->writeLn("\n\nFinished.\n\n");
-        exit(1);
+        exit(0);
     }
 }

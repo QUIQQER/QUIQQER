@@ -86,6 +86,11 @@ class Health
     public static function checkArray(string $md5CheckFile, array $fileList, string $dir): array
     {
         $md5Entries = file($md5CheckFile);
+
+        if ($md5Entries === false) {
+            $md5Entries = [];
+        }
+
         $md5List = [];
 
         $result = [];
@@ -194,6 +199,16 @@ class Health
         }
 
         $lines = file($md5hashFile);
+
+        if ($lines === false) {
+            throw new Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/core',
+                    'exception.system.health.not.writable'
+                )
+            );
+        }
+
         $notWritable = [];
 
         foreach ($lines as $line) {

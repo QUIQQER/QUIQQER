@@ -256,12 +256,13 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                 }
 
                 // ratio calc
-                if ($ratio) {
+                if (is_numeric($ratio)) {
+                    $ratio = (float)$ratio;
                     $imageHeight = $Image->height();
                     $imageWidth = $Image->width();
 
-                    $imageHeight = $imageHeight * ($ratio / 100);
-                    $imageWidth = $imageWidth * ($ratio / 100);
+                    $imageHeight = (int)($imageHeight * ($ratio / 100));
+                    $imageWidth = (int)($imageWidth * ($ratio / 100));
 
                     $WatermarkImage->scaleDown($imageWidth, $imageHeight);
                 }
