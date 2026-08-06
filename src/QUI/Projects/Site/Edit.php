@@ -1571,6 +1571,10 @@ class Edit extends Site
         $Project = $this->getProject();
         $Parent = $this->getParent();
 
+        if ($Parent === false) {
+            throw new QUI\Exception('The root site cannot be linked.', 703);
+        }
+
         $table = QUI::getDBTableName(
             $Project->getName() . '_' .
             $Project->getLang() . '_sites_relations'
@@ -1643,6 +1647,10 @@ class Edit extends Site
         );
 
         if (QUI\Utils\BoolHelper::JSBool($all)) {
+            if ($Parent === false) {
+                throw new QUI\Exception('The root site has no linked parent.', 703);
+            }
+
             // Seite löschen
             $this->delete();
 

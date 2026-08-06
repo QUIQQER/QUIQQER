@@ -118,7 +118,11 @@ class Bundler
             $data = QUI::getAjax()->callRequestFunction($fun, $request['params']);
 
             // session close -> performance
-            QUI::getSession()->getSymfonySession()->save();
+            $SymfonySession = QUI::getSession()->getSymfonySession();
+
+            if ($SymfonySession !== false) {
+                $SymfonySession->save();
+            }
 
             // maintenance flag
             $result[$fun] = $data;

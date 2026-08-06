@@ -47,24 +47,23 @@ class Sites
 
         $gl = 'quiqqer/core';
 
-        $Toolbar->appendChild(
-            new Button([
-                'name' => 'save',
-                'textimage' => 'fa fa-save',
-                'text' => QUI::getLocale()->get($gl, 'projects.project.site.btn.save.text'),
-                'onclick' => 'Panel.save',
-                'help' => QUI::getLocale()->get($gl, 'projects.project.site.btn.save.help'),
-                'alt' => QUI::getLocale()->get($gl, 'projects.project.site.btn.save.alt'),
-                'title' => QUI::getLocale()->get($gl, 'projects.project.site.btn.save.title')
-            ])
-        );
+        $SaveButton = new Button([
+            'name' => 'save',
+            'textimage' => 'fa fa-save',
+            'text' => QUI::getLocale()->get($gl, 'projects.project.site.btn.save.text'),
+            'onclick' => 'Panel.save',
+            'help' => QUI::getLocale()->get($gl, 'projects.project.site.btn.save.help'),
+            'alt' => QUI::getLocale()->get($gl, 'projects.project.site.btn.save.alt'),
+            'title' => QUI::getLocale()->get($gl, 'projects.project.site.btn.save.title')
+        ]);
+        $Toolbar->appendChild($SaveButton);
 
         // wenn die Seite bearbeitet wird
         if (
             $Site->isLockedFromOther()
             || !$Site->hasPermission('quiqqer.projects.site.edit')
         ) {
-            $Toolbar->getElementByName('save')->setDisable();
+            $SaveButton->setDisable();
         }
 
         // Wenn das Bearbeiten Recht vorhanden ist
@@ -122,17 +121,16 @@ class Sites
         );
 
         // delete site
-        $Toolbar->appendChild(
-            new Button([
-                'name' => 'delete',
-                'icon' => 'fa fa-trash-o',
-                //'text'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.delete.text' ),
-                'onclick' => 'Panel.del',
-                'help' => QUI::getLocale()->get($gl, 'projects.project.site.btn.delete.help'),
-                'title' => QUI::getLocale()->get($gl, 'projects.project.site.btn.delete.title'),
-                'alt' => QUI::getLocale()->get($gl, 'projects.project.site.btn.delete.alt')
-            ])
-        );
+        $DeleteButton = new Button([
+            'name' => 'delete',
+            'icon' => 'fa fa-trash-o',
+            //'text'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.delete.text' ),
+            'onclick' => 'Panel.del',
+            'help' => QUI::getLocale()->get($gl, 'projects.project.site.btn.delete.help'),
+            'title' => QUI::getLocale()->get($gl, 'projects.project.site.btn.delete.title'),
+            'alt' => QUI::getLocale()->get($gl, 'projects.project.site.btn.delete.alt')
+        ]);
+        $Toolbar->appendChild($DeleteButton);
 
         // Wenn die Seite bearbeitet wird
         // oder wenn das Löschen Recht nicht vorhanden ist
@@ -140,24 +138,23 @@ class Sites
             $Site->isLockedFromOther()
             || !$Site->hasPermission('quiqqer.projects.site.del')
         ) {
-            $Toolbar->getElementByName('delete')->setDisable();
+            $DeleteButton->setDisable();
         }
 
         // new sub site
-        $Toolbar->appendChild(
-            new Button([
-                'name' => 'new',
-                'icon' => 'fa fa-file-o',
-                //'text'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.new.text' ),
-                'onclick' => 'Panel.createNewChild',
-                'help' => QUI::getLocale()->get($gl, 'projects.project.site.btn.new.help'),
-                'alt' => QUI::getLocale()->get($gl, 'projects.project.site.btn.new.alt'),
-                'title' => QUI::getLocale()->get($gl, 'projects.project.site.btn.new.title')
-            ])
-        );
+        $NewButton = new Button([
+            'name' => 'new',
+            'icon' => 'fa fa-file-o',
+            //'text'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.new.text' ),
+            'onclick' => 'Panel.createNewChild',
+            'help' => QUI::getLocale()->get($gl, 'projects.project.site.btn.new.help'),
+            'alt' => QUI::getLocale()->get($gl, 'projects.project.site.btn.new.alt'),
+            'title' => QUI::getLocale()->get($gl, 'projects.project.site.btn.new.title')
+        ]);
+        $Toolbar->appendChild($NewButton);
 
         if (!$Site->hasPermission('quiqqer.projects.site.new')) {
-            $Toolbar->getElementByName('new')->setDisable();
+            $NewButton->setDisable();
         }
 
 

@@ -141,7 +141,9 @@ class Menu
         // projects settings
         $projects = QUI\Projects\Manager::getProjects();
         $Settings = $Menu->getElementByName('settings');
-        $Projects = $Settings->getElementByName('projects');
+        $Projects = $Settings === false
+            ? false
+            : $Settings->getElementByName('projects');
 
         foreach ($projects as $project) {
             if (!$User->isSU()) {
@@ -291,7 +293,10 @@ class Menu
                     }
 
                     if (!$menuParent) {
-                        $Settings->appendChild($Item);
+                        if ($Settings !== false) {
+                            $Settings->appendChild($Item);
+                        }
+
                         continue;
                     }
 

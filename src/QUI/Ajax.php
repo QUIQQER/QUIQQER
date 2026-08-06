@@ -190,16 +190,20 @@ class Ajax extends QUI\QDOM
             $result[$_rf] = $this->callRequestFunction($_rf);
         }
 
-        try {
-            QUI::getSession()->getSymfonySession()->save();
-        } catch (PDOException) {
-            // sometimes pdo transactions get lost. double saving helps.
-            // problem lies in the match between symfony and doctrine.
-            // unfortunately this is the only way to solve it
+        $SymfonySession = QUI::getSession()->getSymfonySession();
+
+        if ($SymfonySession !== false) {
             try {
-                QUI::getSession()->getSymfonySession()->save();
-            } catch (PDOException $e) {
-                QUI\System\Log::addWarning('Session Error :: ' . $e->getMessage());
+                $SymfonySession->save();
+            } catch (PDOException) {
+                // sometimes pdo transactions get lost. double saving helps.
+                // problem lies in the match between symfony and doctrine.
+                // unfortunately this is the only way to solve it
+                try {
+                    $SymfonySession->save();
+                } catch (PDOException $e) {
+                    QUI\System\Log::addWarning('Session Error :: ' . $e->getMessage());
+                }
             }
         }
 

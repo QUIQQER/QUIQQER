@@ -624,6 +624,13 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     {
         $Parent = $this->getParent();
         $Project = $this->getProject();
+
+        if ($Parent === false) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get('quiqqer/core', 'exception.site.no.next.sibling')
+            );
+        }
+
         $list = $Parent->getChildrenIds();
 
         foreach ($list as $key => $id) {
@@ -716,6 +723,11 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         $Parent = $this->getParent();
         $Project = $this->getProject();
+
+        if ($Parent === false) {
+            return [];
+        }
+
         $list = $Parent->getChildrenIds();
 
         foreach ($list as $key => $id) {
@@ -749,6 +761,13 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     {
         $Parent = $this->getParent();
         $Project = $this->getProject();
+
+        if ($Parent === false) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get('quiqqer/core', 'exception.site.no.previous.sibling')
+            );
+        }
+
         $list = $Parent->getChildrenIds();
 
         foreach ($list as $key => $id) {
@@ -779,6 +798,11 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         $Parent = $this->getParent();
         $Project = $this->getProject();
+
+        if ($Parent === false) {
+            return [];
+        }
+
         $list = $Parent->getChildrenIds();
 
         foreach ($list as $key => $id) {

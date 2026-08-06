@@ -375,7 +375,13 @@ class Manager
                 return;
             }
 
-            $sessionData = $Session->getSymfonySession()->all();
+            $SymfonySession = $Session->getSymfonySession();
+
+            if ($SymfonySession === false) {
+                return;
+            }
+
+            $sessionData = $SymfonySession->all();
 
             foreach (array_keys($sessionData) as $key) {
                 if (str_starts_with($key, 'auth-')) {
@@ -514,7 +520,12 @@ class Manager
         );
 
         $Session->set('uid', 0);
-        $Session->getSymfonySession()->clear();
+        $SymfonySession = $Session->getSymfonySession();
+
+        if ($SymfonySession !== false) {
+            $SymfonySession->clear();
+        }
+
         $Session->refresh();
         $Session->set('expired.from.other', 1);
 

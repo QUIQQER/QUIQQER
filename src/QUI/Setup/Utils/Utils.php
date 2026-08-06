@@ -71,6 +71,10 @@ class Utils
         $fileHashes = [];
         $directory = dir($dir);
 
+        if ($directory === false) {
+            return false;
+        }
+
         while (($entry = $directory->read()) !== false) {
             if ($entry == '.' || $entry == '..') {
                 continue;

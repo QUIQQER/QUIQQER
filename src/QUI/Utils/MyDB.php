@@ -101,8 +101,13 @@ class MyDB implements \Stringable
         }
 
         $query .= ';';
+        $Statement = $this->getPDO()->query($query);
 
-        return $this->getPDO()->query($query)->fetchAll();
+        if ($Statement === false) {
+            throw new QUI\Exception('Could not execute database query.');
+        }
+
+        return $Statement->fetchAll();
     }
 
     /**
