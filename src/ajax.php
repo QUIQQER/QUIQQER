@@ -45,10 +45,23 @@ if (!is_array($_rf_files)) {
     $_rf_files = [$_rf_files];
 }
 
+$requiredFiles = [];
+
+foreach ($_rf_files as $file) {
+    if (is_string($file)) {
+        $requiredFiles[] = $file;
+    }
+}
+
+$_rf_files = $requiredFiles;
+
 QUI::getAjax();
 
 // ajax package loader
-if (isset($_REQUEST['package'])) {
+if (
+    isset($_REQUEST['package'])
+    && is_string($_REQUEST['package'])
+) {
     $package = $_REQUEST['package'];
     $dir = OPT_DIR;
 
@@ -132,5 +145,16 @@ $result = QUI::getAjax()->call();
 
 // destroy current ob output, so ajax will be no longer destroyed
 @ob_clean();
+
+if (is_array($result)) {
+    $encodedResult = json_encode($result);
+
+    if ($encodedResult === false) {
+        exit;
+    }
+
+    $result = '<quiqqer>' . $encodedResult . '</quiqqer>';
+}
+
 echo $result;
 exit;

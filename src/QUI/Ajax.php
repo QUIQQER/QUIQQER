@@ -171,7 +171,7 @@ class Ajax extends QUI\QDOM
     {
         if (
             !isset($_REQUEST['_rf'])
-            || !is_string($_REQUEST['_rf']) && count($_REQUEST['_rf']) > 1
+            || !is_string($_REQUEST['_rf'])
         ) {
             return $this->writeException(
                 new Exception('Bad Request', 400)
