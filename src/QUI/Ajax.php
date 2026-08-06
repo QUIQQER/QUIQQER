@@ -459,6 +459,12 @@ class Ajax extends QUI\QDOM
                     )
                 ];
             } else {
+                if (!is_callable($_rf)) {
+                    return $this->writeException(
+                        new Exception('Bad Request', 400)
+                    );
+                }
+
                 $return = [
                     'result' => call_user_func_array($_rf, $params)
                 ];
@@ -486,7 +492,7 @@ class Ajax extends QUI\QDOM
      * @throws Exception
      * @throws \QUI\Permissions\Exception
      */
-    public static function checkPermissions(callable|string $reg_function): void
+    public static function checkPermissions(string $reg_function): void
     {
         if (!isset(self::$permissions[$reg_function])) {
             return;
