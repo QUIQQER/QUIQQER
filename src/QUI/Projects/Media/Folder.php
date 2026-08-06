@@ -1396,6 +1396,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 if ((!$width || !$height) && $viewBox) {
                     $parts = preg_split('/[\s,]+/', $viewBox);
 
+                    if (!is_array($parts)) {
+                        $parts = [];
+                    }
+
                     if (count($parts) === 4) {
                         if (!$width) {
                             $width = $parts[2];
