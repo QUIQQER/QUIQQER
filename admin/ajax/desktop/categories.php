@@ -11,6 +11,10 @@ use QUI\Package\Package;
 QUI::$Ajax->registerFunction(
     'ajax_desktop_categories',
     static function ($type) {
+        if (!is_string($type)) {
+            return [];
+        }
+
         $cache = 'quiqqer/package/quiqqer/core/desktopCategories/list/' . md5($type);
 
         try {
