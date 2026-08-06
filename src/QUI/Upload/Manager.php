@@ -80,6 +80,13 @@ class Manager
             return $function();
         }
 
+        if (!is_string($function)) {
+            throw new Exception(
+                'Unsupported upload callback type: ' . get_debug_type($function),
+                400
+            );
+        }
+
         if (str_starts_with($function, 'ajax_')) {
             // if the function is an ajax_function
             $_rf_file = OPT_DIR . 'quiqqer/core/admin/' . str_replace('_', '/', $function) . '.php';
@@ -278,9 +285,8 @@ class Manager
 
         if ($Handle) {
             fwrite($Handle, (string)$putdata);
+            fclose($Handle);
         }
-
-        fclose($Handle);
 
         // upload finish?
         $fileinfo = QUIFile::getInfo($tmp_name, [

@@ -232,12 +232,17 @@ class Console
 
         // check execute permissions with process user
         $ignorePermCheck = $this->getArgument('ignore-file-permissions');
-        $processUser = posix_getpwuid(posix_geteuid());
-        $processUser = $processUser['name'];
+        $processUserId = posix_geteuid();
+        $processUserData = posix_getpwuid($processUserId);
+        $processUser = $processUserData === false
+            ? (string)$processUserId
+            : $processUserData['name'];
 
-        $owner = (int)fileowner(__FILE__);
-        $owner = posix_getpwuid($owner);
-        $owner = $owner['name'];
+        $ownerId = (int)fileowner(__FILE__);
+        $ownerData = posix_getpwuid($ownerId);
+        $owner = $ownerData === false
+            ? (string)$ownerId
+            : $ownerData['name'];
 
         if (!$ignorePermCheck && $owner !== $processUser) {
             $this->write(
@@ -566,11 +571,13 @@ class Console
 
         // init tools
         foreach ($tools as $cls) {
-            if (!class_exists($cls)) {
+            if (
+                !class_exists($cls)
+                || !is_a($cls, Console\Tool::class, true)
+            ) {
                 continue;
             }
 
-            /* @var $Tool Console\Tool */
             $Tool = new $cls();
             $Tool->setAttribute('parent', $this);
 
@@ -580,7 +587,13 @@ class Console
                 }
             }
 
-            $this->tools[$Tool->getName()] = $Tool;
+            $name = $Tool->getName();
+
+            if (!is_string($name)) {
+                continue;
+            }
+
+            $this->tools[$name] = $Tool;
         }
 
         // grouping
@@ -618,11 +631,13 @@ class Console
         $class = explode(LIB_DIR, $class);
         $class = str_replace('/', '\\', $class[1]);
 
-        if (!class_exists($class)) {
+        if (
+            !class_exists($class)
+            || !is_a($class, Console\Tool::class, true)
+        ) {
             return;
         }
 
-        /* @var $Tool Console\Tool */
         $Tool = new $class();
         $Tool->setAttribute('parent', $this);
 
@@ -632,7 +647,13 @@ class Console
             }
         }
 
-        $this->tools[$Tool->getName()] = $Tool;
+        $name = $Tool->getName();
+
+        if (!is_string($name)) {
+            return;
+        }
+
+        $this->tools[$name] = $Tool;
     }
 
     /**
@@ -640,19 +661,19 @@ class Console
      *
      * @param boolean|string $tool - boolean true = all Tools | string = specific tool
      *
-     * @return array<string, Console\Tool>|Console\Tool|false
+     * @return ($tool is true ? array<string, Console\Tool> : Console\Tool|false)
      */
     public function get(bool | string $tool): false | array | Console\Tool
     {
-        if (isset($this->tools[$tool])) {
-            return $this->tools[$tool];
-        }
-
-        if ($tool) {
+        if ($tool === true) {
             return $this->tools;
         }
 
-        return false;
+        if ($tool === false) {
+            return false;
+        }
+
+        return $this->tools[$tool] ?? false;
     }
 
     /**
