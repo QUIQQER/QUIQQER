@@ -616,6 +616,13 @@ class Rewrite
                     $end = intval($matches[2]);
                 }
 
+                if ($start >= $size || $end < $start) {
+                    header('HTTP/1.1 416 Range Not Satisfiable');
+                    header("Content-Range: bytes */$size");
+                    exit;
+                }
+
+                $end = min($end, $size - 1);
                 $length = $end - $start + 1;
                 $httpStatus = '206 Partial Content';
                 header("HTTP/1.1 $httpStatus");
@@ -629,13 +636,25 @@ class Rewrite
         header('Content-Disposition: inline; filename="' . basename($file) . '"');
 
         $fp = fopen($file, 'rb');
+
+        if ($fp === false) {
+            header('HTTP/1.1 404 Not Found');
+            exit;
+        }
+
         fseek($fp, $start);
 
         $buffer = 8192;
         $bytesSent = 0;
 
         while (!feof($fp) && $bytesSent < $length) {
-            $readLength = min($buffer, $length - $bytesSent);
+            $remaining = $length - $bytesSent;
+
+            if ($remaining <= 0) {
+                break;
+            }
+
+            $readLength = min($buffer, $remaining);
             echo fread($fp, $readLength);
             $bytesSent += $readLength;
             @ob_flush();
