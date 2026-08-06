@@ -40,11 +40,13 @@ class Permission
 
     /**
      * has the User the permission
+     *
+     * @return bool|int|array<array-key, mixed>|string
      */
     public static function hasPermission(
         string $perm,
         null | false | User $User = null
-    ): Permission | bool | string {
+    ): bool | int | array | string {
         try {
             return self::checkPermission($perm, $User);
         } catch (QUI\Exception) {
@@ -56,12 +58,14 @@ class Permission
     /**
      * Checks whether the user has the permission
      *
+     * @return bool|int|array<array-key, mixed>|string
+     *
      * @throws Exception
      */
     public static function checkPermission(
         string $perm,
         false | User | null $User = null
-    ): Permission | bool | string {
+    ): bool | int | array | string {
         if (!$User) {
             $User = self::getUser();
         }
@@ -141,17 +145,9 @@ class Permission
      */
     public static function checkAdminUser(null | false | User $User = null): void
     {
-        $UserToCheck = false;
+        $UserToCheck = $User ?: self::getUser();
 
-        if (!$User) {
-            $UserToCheck = self::getUser();
-        }
-
-        if (!$User) {
-            self::checkUser();
-        } else {
-            self::checkUser($UserToCheck);
-        }
+        self::checkUser($UserToCheck);
 
         if (!self::isAdmin($UserToCheck)) {
             throw new Exception(
@@ -227,17 +223,9 @@ class Permission
      */
     public static function checkSU(null | false | User $User = null): void
     {
-        $UserToCheck = false;
+        $UserToCheck = $User ?: self::getUser();
 
-        if (!$User) {
-            $UserToCheck = self::getUser();
-        }
-
-        if ($UserToCheck) {
-            self::checkUser($User);
-        } else {
-            self::checkUser();
-        }
+        self::checkUser($UserToCheck);
 
         if (!self::isSU($UserToCheck)) {
             throw new Exception(

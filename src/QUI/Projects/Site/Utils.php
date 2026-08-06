@@ -637,17 +637,7 @@ class Utils
      */
     public static function isSiteObject(QUI\Interfaces\Projects\Site $Site): bool
     {
-        switch ($Site::class) {
-            case Projects\Site::class:
-            case Edit::class:
-            case OnlyDB::class:
-                break;
-
-            default:
-                return false;
-        }
-
-        return true;
+        return $Site instanceof Projects\Site;
     }
 
     /**

@@ -711,17 +711,17 @@ class Group extends QUI\QDOM
     /**
      * @deprecated
      *
-     * @return bool|array<array-key, mixed>|string
+     * @return bool|int|array<array-key, mixed>|string
      */
-    public function hasRight(string $right): bool | array | string
+    public function hasRight(string $right): bool | int | array | string
     {
         return $this->hasPermission($right);
     }
 
     /**
-     * @return bool|array<array-key, mixed>|string
+     * @return bool|int|array<array-key, mixed>|string
      */
-    public function hasPermission(string $permission): bool | array | string
+    public function hasPermission(string $permission): bool | int | array | string
     {
         return $this->rights[$permission] ?? false;
     }
