@@ -671,7 +671,7 @@ class Utils
                 705,
                 [
                     'method' => 'getSiteByLink',
-                    'class' => 'QUI/projects/Site/Utils',
+                    'class' => 'QUI/Projects/Site/Utils',
                     'link' => $link
                 ]
             );
@@ -688,13 +688,37 @@ class Utils
                 705,
                 [
                     'method' => 'getSiteByLink',
-                    'class' => 'QUI/projects/Site/Utils',
+                    'class' => 'QUI/Projects/Site/Utils',
                     'link' => $link
                 ]
             );
         }
 
         parse_str($parseUrl['query'], $urlQueryParams);
+
+        if (
+            !isset(
+                $urlQueryParams['project'],
+                $urlQueryParams['lang'],
+                $urlQueryParams['id']
+            )
+            || !is_string($urlQueryParams['project'])
+            || !is_string($urlQueryParams['lang'])
+            || !is_scalar($urlQueryParams['id'])
+        ) {
+            throw new Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/core',
+                    'exception.site.not.found'
+                ),
+                705,
+                [
+                    'method' => 'getSiteByLink',
+                    'class' => 'QUI/Projects/Site/Utils',
+                    'link' => $link
+                ]
+            );
+        }
 
         $Project = QUI::getProject(
             $urlQueryParams['project'],
@@ -872,11 +896,17 @@ class Utils
             }
 
             // by with parents, we use WHERE AND
-            return $Project->getSites([
+            $sites = $Project->getSites([
                 'where' => array_merge($where, $selectorWhere),
                 'limit' => $limit,
                 'order' => $order
             ]);
+
+            if (!is_array($sites)) {
+                $sites = [];
+            }
+
+            return $sites;
         }
 
         if (isset($params['count']) && $params['count']) {
@@ -895,20 +925,32 @@ class Utils
         }
 
         if (count($selectorWhere) <= 1) {
-            return $Project->getSites([
+            $sites = $Project->getSites([
                 'where' => array_merge($where, $selectorWhere),
                 'limit' => $limit,
                 'order' => $order
             ]);
+
+            if (!is_array($sites)) {
+                $sites = [];
+            }
+
+            return $sites;
         }
 
         // by no parents and mixed selectors, we use WHERE OR for the selectors only
-        return $Project->getSites([
+        $sites = $Project->getSites([
             'where' => $where,
             'where_or' => $selectorWhere,
             'limit' => $limit,
             'order' => $order
         ]);
+
+        if (!is_array($sites)) {
+            $sites = [];
+        }
+
+        return $sites;
     }
 
     /**
@@ -932,7 +974,7 @@ class Utils
                 705,
                 [
                     'method' => 'rewriteSiteLink',
-                    'class' => 'QUI/projects/Site/Utils',
+                    'class' => 'QUI/Projects/Site/Utils',
                     'link' => $link
                 ]
             );
@@ -949,7 +991,7 @@ class Utils
                 705,
                 [
                     'method' => 'rewriteSiteLink',
-                    'class' => 'QUI/projects/Site/Utils',
+                    'class' => 'QUI/Projects/Site/Utils',
                     'link' => $link
                 ]
             );
