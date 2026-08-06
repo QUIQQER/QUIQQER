@@ -145,7 +145,7 @@ class DBCheck extends QUI\System\Test
             // first check language independent project tables
             if (!empty($noLangTables)) {
                 foreach ($projects as $Project) {
-                    foreach ($langTables as $tblData) {
+                    foreach ($noLangTables as $tblData) {
                         $projectTable = QUI::getDBProjectTableName(
                             $tblData['table'],
                             $Project,
@@ -168,10 +168,14 @@ class DBCheck extends QUI\System\Test
 
                     foreach ($languages as $lang) {
                         foreach ($langTables as $tblData) {
+                            $LanguageProject = QUI::getProject(
+                                $Project->getName(),
+                                $lang
+                            );
+
                             $projectTable = QUI::getDBProjectTableName(
                                 $tblData['table'],
-                                $Project,
-                                $lang
+                                $LanguageProject
                             );
 
                             $this->checkTableIntegrity(
@@ -326,16 +330,16 @@ class DBCheck extends QUI\System\Test
         }
 
         // get table info from database
-        $dbKeys = $this->getTableKeys($table);
+        $dbKeyInfo = $this->getTableKeys($table);
+        $dbKeys = [];
 
         // get all primary keys
-        foreach ($dbKeys as $k => $columnInfo) {
+        foreach ($dbKeyInfo as $columnInfo) {
             if ($columnInfo['Key_name'] !== 'PRIMARY') {
-                unset($dbKeys[$k]);
                 continue;
             }
 
-            $dbKeys[$k] = $columnInfo['Column_name'];
+            $dbKeys[] = $columnInfo['Column_name'];
         }
 
         $_dbFields = $this->getTableFieldsInfos($table);
