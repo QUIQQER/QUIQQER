@@ -454,6 +454,10 @@ class Manager
             $relative = str_replace($folder, '', $path);
             $relative = str_replace('\\', '/', $relative);
 
+            if (!is_string($relative)) {
+                continue;
+            }
+
             if (!str_contains($relative, '/')) {
                 continue;
             }
@@ -462,7 +466,7 @@ class Manager
             $toolbar = array_pop($parts);
             $module = implode('/', $parts);
 
-            if (empty($module) || empty($toolbar)) {
+            if (empty($toolbar)) {
                 continue;
             }
 
@@ -1342,7 +1346,11 @@ class Manager
 
             $Tidy->parseString($html, $config, 'utf8');
             $Tidy->cleanRepair();
-            $html = $Tidy->html()?->value ?? $html;
+            $cleanedHtml = $Tidy->value;
+
+            if ($cleanedHtml !== null) {
+                $html = $cleanedHtml;
+            }
         }
 
         return $html;
