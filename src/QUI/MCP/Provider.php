@@ -47,6 +47,7 @@ use QUI\MCP\Project\Sites\SortSites;
 use QUI\MCP\Project\Sites\UpdateSite;
 use QUI\MCP\Project\UpdateSettings;
 use QUI\MCP\System\ClearCache;
+use QUI\MCP\System\GetSystemInfo;
 use QUI\MCP\System\Update;
 use QUI\MCP\VHost\CreateVHost;
 use QUI\MCP\VHost\DeleteVHost;
@@ -94,6 +95,7 @@ class Provider implements ProviderInterface
             new SortSites(),
             new SetSiteType(),
             new DeleteSite(),
+            new GetSystemInfo(),
             new ClearCache(),
             new Update(),
             new ListVHosts(),

@@ -12,6 +12,7 @@ use QUI\MCP\Project\GetSetting;
 use QUI\MCP\Project\ListSettings;
 use QUI\MCP\Project\SetSetting;
 use QUI\MCP\Project\UpdateSettings;
+use QUI\MCP\System\GetSystemInfo;
 use QUI\MCP\VHost\CreateVHost;
 use QUI\MCP\VHost\DeleteVHost;
 use QUI\MCP\VHost\GetVHost;
@@ -50,6 +51,11 @@ class ToolRegistrationTest extends TestCase
             new UpdateSettings(),
             'quiqqer_project_settings_update',
             ['project', 'settings']
+        ];
+        yield 'get system information' => [
+            new GetSystemInfo(),
+            'quiqqer_system_info_get',
+            []
         ];
         yield 'list VHosts' => [
             new ListVHosts(),

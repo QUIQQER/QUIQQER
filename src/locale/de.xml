@@ -155,6 +155,9 @@
         <locale name="permission.quiqqer.core.mcp.clearCache">
             <de><![CDATA[Darf den QUIQQER-Cache per MCP löschen]]></de>
         </locale>
+        <locale name="permission.quiqqer.core.mcp.viewSystemInfo">
+            <de><![CDATA[Darf geschützte Systeminformationen per MCP einsehen]]></de>
+        </locale>
         <locale name="permission.quiqqer.core.mcp.updateAllowed">
             <de><![CDATA[Darf QUIQQER-Updates per MCP ausführen]]></de>
         </locale>
