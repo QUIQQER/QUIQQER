@@ -1,4 +1,19 @@
-.quiqqer-quiqqer-group-mail-mailEditor > label {
+.quiqqer-quiqqer-group-mail-mailEditor {
+    box-sizing: border-box;
+    display: grid;
+    gap: 15px;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    max-width: 100%;
+    min-width: 0;
+    width: 100%;
+}
+
+.quiqqer-quiqqer-group-mail-mailEditor-fields,
+.quiqqer-quiqqer-group-mail-mailEditor-content {
+    min-width: 0;
+}
+
+.quiqqer-quiqqer-group-mail-mailEditor-fields > label {
     display: block;
     margin: 10px 0;
     width: 100%;
@@ -16,6 +31,39 @@
 
 .quiqqer-quiqqer-group-mail-mailEditor-content {
     height: 435px;
+}
+
+.quiqqer-quiqqer-group-mail-placeholders {
+    background: #f7f7f7;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    margin-top: 10px;
+    padding: 10px 12px;
+}
+
+.quiqqer-quiqqer-group-mail-placeholders > span {
+    font-weight: 600;
+}
+
+.quiqqer-quiqqer-group-mail-placeholders ul {
+    margin: 5px 0 0;
+    padding-left: 20px;
+}
+
+.quiqqer-quiqqer-group-mail-placeholders-hint {
+    color: #666;
+    font-size: 12px;
+    margin: 15px 0 0;
+}
+
+@media screen and (max-width: 700px) {
+    .quiqqer-quiqqer-group-mail-mailEditor {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .quiqqer-quiqqer-group-mail-placeholders {
+        margin-top: 0;
+    }
 }
 
 .quiqqer-quiqqer-group-mail-confirm {

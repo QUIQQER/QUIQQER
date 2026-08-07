@@ -6344,6 +6344,48 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         <locale name="controls.SendUserMail.tpl.labelMailContent">
             <de><![CDATA[Inhalt]]></de>
         </locale>
+        <locale name="controls.SendUserMail.tpl.labelPlaceholders">
+            <de><![CDATA[Verfügbare Platzhalter]]></de>
+        </locale>
+        <locale name="controls.SendUserMail.tpl.placeholdersHint">
+            <de><![CDATA[Adressdaten werden aus der Standard-Adresse bezogen. Felder können leer bleiben, wenn in der Adresse kein Wert hinterlegt ist. Platzhalter immer mit eckigen Klammern verwenden.]]></de>
+        </locale>
+        <locale name="controls.SendUserMail.placeholder.userUuid">
+            <de><![CDATA[Benutzer-UUID]]></de>
+        </locale>
+        <locale name="controls.SendUserMail.placeholder.userId">
+            <de><![CDATA[Benutzer-ID]]></de>
+        </locale>
+        <locale name="controls.SendUserMail.placeholder.userSalutation">
+            <de><![CDATA[Anrede]]></de>
+        </locale>
+        <locale name="controls.SendUserMail.placeholder.userFirstname">
+            <de><![CDATA[Vorname]]></de>
+        </locale>
+        <locale name="controls.SendUserMail.placeholder.userLastname">
+            <de><![CDATA[Nachname]]></de>
+        </locale>
+        <locale name="controls.SendUserMail.placeholder.userStreetNo">
+            <de><![CDATA[Straße und Hausnummer]]></de>
+        </locale>
+        <locale name="controls.SendUserMail.placeholder.userCity">
+            <de><![CDATA[Stadt]]></de>
+        </locale>
+        <locale name="controls.SendUserMail.placeholder.userCountry">
+            <de><![CDATA[Land]]></de>
+        </locale>
+        <locale name="controls.SendUserMail.placeholder.userEmail">
+            <de><![CDATA[Benutzer-E-Mail-Adresse]]></de>
+        </locale>
+        <locale name="controls.SendUserMail.placeholder.userCompany">
+            <de><![CDATA[Firma]]></de>
+        </locale>
+        <locale name="controls.SendUserMail.placeholder.userZip">
+            <de><![CDATA[Postleitzahl]]></de>
+        </locale>
+        <locale name="controls.SendUserMail.placeholder.userUsername">
+            <de><![CDATA[Benutzername]]></de>
+        </locale>
         <locale name="controls.SendUserMail.submit">
             <de><![CDATA[E-Mail jetzt versenden]]></de>
         </locale>
@@ -6369,6 +6411,57 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         </locale>
         <locale name="controls.SendGroupMail.tpl.labelMailContent">
             <de><![CDATA[Inhalt]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.tpl.labelPlaceholders">
+            <de><![CDATA[Verfügbare Platzhalter]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.tpl.placeholdersHint">
+            <de><![CDATA[Adressdaten werden aus der Standard-Adresse bezogen. Felder können leer bleiben, wenn in der Adresse kein Wert hinterlegt ist. Platzhalter immer mit eckigen Klammern verwenden.]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.userUuid">
+            <de><![CDATA[Benutzer-UUID]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.userId">
+            <de><![CDATA[Benutzer-ID]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.userSalutation">
+            <de><![CDATA[Anrede]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.userFirstname">
+            <de><![CDATA[Vorname]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.userLastname">
+            <de><![CDATA[Nachname]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.userStreetNo">
+            <de><![CDATA[Straße und Hausnummer]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.userCity">
+            <de><![CDATA[Stadt]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.userCountry">
+            <de><![CDATA[Land]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.userEmail">
+            <de><![CDATA[Benutzer-E-Mail-Adresse]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.userCompany">
+            <de><![CDATA[Firma]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.userZip">
+            <de><![CDATA[Postleitzahl]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.userUsername">
+            <de><![CDATA[Benutzername]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.groupTitle">
+            <de><![CDATA[Gruppen-Titel]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.groupUuid">
+            <de><![CDATA[Gruppen-UUID]]></de>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.groupId">
+            <de><![CDATA[Gruppen-ID]]></de>
         </locale>
         <locale name="controls.SendGroupMail.submit">
             <de><![CDATA[E-Mail mit Vorschau bestätigen]]></de>

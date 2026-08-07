@@ -24,7 +24,7 @@ define('controls/groups/mail/SendGroupMail', [
         options: {
             groupId: false,
             maxHeight: 820,
-            maxWidth : 900
+            maxWidth : 1000
         },
 
         initialize: function (options) {
@@ -70,6 +70,70 @@ define('controls/groups/mail/SendGroupMail', [
                         labelRecipientCount: QUILocale.get(lg, 'controls.SendGroupMail.tpl.labelRecipientCount'),
                         labelMailSubject   : QUILocale.get(lg, 'controls.SendGroupMail.tpl.labelMailSubject'),
                         labelMailContent   : QUILocale.get(lg, 'controls.SendGroupMail.tpl.labelMailContent'),
+                        labelPlaceholders  : QUILocale.get(lg, 'controls.SendGroupMail.tpl.labelPlaceholders'),
+                        placeholdersHint   : QUILocale.get(lg, 'controls.SendGroupMail.tpl.placeholdersHint'),
+                        placeholders       : [
+                            {
+                                token: 'user_uuid',
+                                label: QUILocale.get(lg, 'controls.SendGroupMail.placeholder.userUuid')
+                            },
+                            {
+                                token: 'user_id',
+                                label: QUILocale.get(lg, 'controls.SendGroupMail.placeholder.userId')
+                            },
+                            {
+                                token: 'user_salutation',
+                                label: QUILocale.get(lg, 'controls.SendGroupMail.placeholder.userSalutation')
+                            },
+                            {
+                                token: 'user_firstname',
+                                label: QUILocale.get(lg, 'controls.SendGroupMail.placeholder.userFirstname')
+                            },
+                            {
+                                token: 'user_lastname',
+                                label: QUILocale.get(lg, 'controls.SendGroupMail.placeholder.userLastname')
+                            },
+                            {
+                                token: 'user_street_no',
+                                label: QUILocale.get(lg, 'controls.SendGroupMail.placeholder.userStreetNo')
+                            },
+                            {
+                                token: 'user_city',
+                                label: QUILocale.get(lg, 'controls.SendGroupMail.placeholder.userCity')
+                            },
+                            {
+                                token: 'user_country',
+                                label: QUILocale.get(lg, 'controls.SendGroupMail.placeholder.userCountry')
+                            },
+                            {
+                                token: 'user_email',
+                                label: QUILocale.get(lg, 'controls.SendGroupMail.placeholder.userEmail')
+                            },
+                            {
+                                token: 'user_company',
+                                label: QUILocale.get(lg, 'controls.SendGroupMail.placeholder.userCompany')
+                            },
+                            {
+                                token: 'user_zip',
+                                label: QUILocale.get(lg, 'controls.SendGroupMail.placeholder.userZip')
+                            },
+                            {
+                                token: 'user_username',
+                                label: QUILocale.get(lg, 'controls.SendGroupMail.placeholder.userUsername')
+                            },
+                            {
+                                token: 'group_title',
+                                label: QUILocale.get(lg, 'controls.SendGroupMail.placeholder.groupTitle')
+                            },
+                            {
+                                token: 'group_uuid',
+                                label: QUILocale.get(lg, 'controls.SendGroupMail.placeholder.groupUuid')
+                            },
+                            {
+                                token: 'group_id',
+                                label: QUILocale.get(lg, 'controls.SendGroupMail.placeholder.groupId')
+                            }
+                        ],
                         groupName          : MailData.name,
                         recipientCount     : MailData.uniqueEmailCount
                     })

@@ -30,12 +30,25 @@
 </div>
 
 <div class="quiqqer-quiqqer-group-mail-mailEditor">
-    <label>
-        <span>{{labelMailSubject}}</span>
-        <input class="quiqqer-quiqqer-group-mail-mailEditor-subject" type="text"/>
-    </label>
-    <label>
-        <span>{{labelMailContent}}</span>
-        <div class="quiqqer-quiqqer-group-mail-mailEditor-content"></div>
-    </label>
+    <div class="quiqqer-quiqqer-group-mail-mailEditor-fields">
+        <label>
+            <span>{{labelMailSubject}}</span>
+            <input class="quiqqer-quiqqer-group-mail-mailEditor-subject" type="text"/>
+        </label>
+        <label>
+            <span>{{labelMailContent}}</span>
+            <div class="quiqqer-quiqqer-group-mail-mailEditor-content"></div>
+        </label>
+    </div>
+    <div class="quiqqer-quiqqer-group-mail-placeholders">
+        <span>{{labelPlaceholders}}</span>
+        <ul>
+            {{#placeholders}}
+            <li><code>[{{token}}]</code>: {{label}}</li>
+            {{/placeholders}}
+        </ul>
+        <p class="quiqqer-quiqqer-group-mail-placeholders-hint">
+            {{placeholdersHint}}
+        </p>
+    </div>
 </div>
