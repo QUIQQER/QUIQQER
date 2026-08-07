@@ -12,7 +12,9 @@ use QUI\AI\MCP\Server;
 use QUI\MCP\Project\AddLanguage;
 use QUI\MCP\Project\GetCustomCSS;
 use QUI\MCP\Project\GetCustomJavaScript;
+use QUI\MCP\Project\GetSetting;
 use QUI\MCP\Project\ListProjects;
+use QUI\MCP\Project\ListSettings;
 use QUI\MCP\Project\Media\ActivateMedia;
 use QUI\MCP\Project\Media\CreateUploadSession;
 use QUI\MCP\Project\Media\CreateFolder;
@@ -27,6 +29,7 @@ use QUI\MCP\Project\Media\UpdateMedia;
 use QUI\MCP\Project\Media\UploadMedia;
 use QUI\MCP\Project\SetCustomCSS;
 use QUI\MCP\Project\SetCustomJavaScript;
+use QUI\MCP\Project\SetSetting;
 use QUI\MCP\Project\Sites\ActivateSite;
 use QUI\MCP\Project\Sites\AddLanguageLink;
 use QUI\MCP\Project\Sites\CopySite;
@@ -42,6 +45,7 @@ use QUI\MCP\Project\Sites\SearchSites;
 use QUI\MCP\Project\Sites\SetSiteType;
 use QUI\MCP\Project\Sites\SortSites;
 use QUI\MCP\Project\Sites\UpdateSite;
+use QUI\MCP\Project\UpdateSettings;
 use QUI\MCP\System\ClearCache;
 use QUI\MCP\System\Update;
 use QUI\MCP\VHost\CreateVHost;
@@ -67,6 +71,10 @@ class Provider implements ProviderInterface
         $this->tools = [
             new ListProjects(),
             new AddLanguage(),
+            new ListSettings(),
+            new GetSetting(),
+            new SetSetting(),
+            new UpdateSettings(),
             new GetCustomCSS(),
             new SetCustomCSS(),
             new GetCustomJavaScript(),

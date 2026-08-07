@@ -58,6 +58,40 @@ use function unlink;
 class Manager
 {
     /**
+     * Built-in project configuration definitions.
+     *
+     * @var array<string, array{default: string|int, type: string}>
+     */
+    private const PROJECT_CONFIG_DEFINITIONS = [
+        'default_lang' => ['default' => 'de', 'type' => 'string'],
+        'langs' => ['default' => 'de', 'type' => 'string'],
+        'admin_mail' => ['default' => '', 'type' => 'string'],
+        'template' => ['default' => '', 'type' => 'string'],
+        'layout' => ['default' => '', 'type' => 'string'],
+        'image_text' => ['default' => '0', 'type' => 'boolean'],
+        'standard' => ['default' => '1', 'type' => 'boolean'],
+        'adminSitemapMax' => ['default' => 20, 'type' => 'integer'],
+        'media_watermark' => ['default' => '', 'type' => 'string'],
+        'media_watermark_position' => ['default' => '', 'type' => 'string'],
+        'media_watermark_ratio' => ['default' => '', 'type' => 'string'],
+        'media_image_library' => ['default' => '', 'type' => 'string'],
+        'media_maxUploadSize' => ['default' => 4000, 'type' => 'integer'],
+        'media_maxUploadFileSize' => ['default' => '', 'type' => 'string'],
+        'media_maxImageCacheSize' => ['default' => 4000, 'type' => 'integer'],
+        'media_createCacheOnSave' => ['default' => 1, 'type' => 'boolean'],
+        'media_useImageScale' => ['default' => 2, 'type' => 'integer'],
+        'placeholder' => ['default' => '', 'type' => 'string'],
+        'logo' => ['default' => '', 'type' => 'string'],
+        'emailLogo' => ['default' => '', 'type' => 'string'],
+        'favicon' => ['default' => '', 'type' => 'string'],
+        'convertRomanLetters' => ['default' => 0, 'type' => 'boolean'],
+        'publisher' => ['default' => '', 'type' => 'string'],
+        'publisher_type' => ['default' => '', 'type' => 'string'],
+        'publisher_image' => ['default' => '', 'type' => 'string'],
+        'publisher_url' => ['default' => '', 'type' => 'string']
+    ];
+
+    /**
      * Projects config
      */
     public static ?Config $Config = null;
@@ -398,34 +432,41 @@ class Manager
         } catch (QUI\Exception) {
         }
 
-        $config = [
-            'default_lang' => 'de',
-            'langs' => 'de',
-            'admin_mail' => '',
-            'template' => '',
-            'layout' => '',
-            'image_text' => '0',
-            'standard' => '1',
-            'adminSitemapMax' => 20,
-            'media_watermark' => '',
-            'media_watermark_position' => '',
-            'media_watermark_ratio' => '',
-            'media_image_library' => '',
-            'media_maxUploadSize' => 4000,
-            'media_maxUploadFileSize' => '',
-            'media_maxImageCacheSize' => 4000,
-            'media_createCacheOnSave' => 1,
-            'media_useImageScale' => 2,
-            'placeholder' => '',
-            'logo' => '',
-            'emailLogo' => '',
-            'favicon' => '',
-            'convertRomanLetters' => 0,
-            'publisher' => '',
-            'publisher_type' => '',
-            'publisher_image' => '',
-            'publisher_url' => ''
-        ];
+        $config = [];
+
+        foreach (self::getProjectConfigDefinitions($Project) as $key => $definition) {
+            $config[$key] = $definition['default'];
+        }
+
+        QUI\Cache\Manager::set($cache, $config);
+
+        return $config;
+    }
+
+    /**
+     * Return all available project configuration definitions, including
+     * project settings contributed by installed packages and templates.
+     *
+     * @return array<string, array{default: mixed, type: string, source: string}>
+     */
+    public static function getProjectConfigDefinitions(Project $Project): array
+    {
+        $cache = $Project->getCachePath() . '/configDefinitions';
+
+        try {
+            return QUI\Cache\Manager::get($cache);
+        } catch (QUI\Exception) {
+        }
+
+        $definitions = [];
+
+        foreach (self::PROJECT_CONFIG_DEFINITIONS as $key => $definition) {
+            $definitions[$key] = [
+                'default' => $definition['default'],
+                'type' => $definition['type'],
+                'source' => 'quiqqer/core'
+            ];
+        }
 
         // settings.xml
         $settingsXml = self::getRelatedSettingsXML($Project);
@@ -456,19 +497,35 @@ class Manager
 
                 foreach ($sections as $section => $entry) {
                     foreach ($entry as $key => $param) {
-                        $config[$settingsName . $section . '.' . $key] = '';
-
-                        if (isset($param['default'])) {
-                            $config[$settingsName . $section . '.' . $key] = $param['default'];
-                        }
+                        $definitionKey = $settingsName . $section . '.' . $key;
+                        $definitions[$definitionKey] = [
+                            'default' => $param['default'] ?? '',
+                            'type' => is_string($param['type'] ?? null) ? $param['type'] : 'string',
+                            'source' => self::getProjectSettingsSource($file, $Project)
+                        ];
                     }
                 }
             }
         }
 
-        QUI\Cache\Manager::set($cache, $config);
+        QUI\Cache\Manager::set($cache, $definitions);
 
-        return $config;
+        return $definitions;
+    }
+
+    private static function getProjectSettingsSource(string $file, Project $Project): string
+    {
+        if ($file === USR_DIR . $Project->getName() . '/settings.xml') {
+            return 'project/' . $Project->getName();
+        }
+
+        $packageDirectory = rtrim(OPT_DIR, '/\\') . '/';
+
+        if (str_starts_with($file, $packageDirectory) && str_ends_with($file, '/settings.xml')) {
+            return substr($file, strlen($packageDirectory), -strlen('/settings.xml'));
+        }
+
+        return 'unknown';
     }
 
     /**
