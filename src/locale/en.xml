@@ -6140,6 +6140,48 @@ After logging in you will be prompted to set a new password.
         <locale name="controls.SendUserMail.tpl.labelMailContent">
             <en><![CDATA[Content]]></en>
         </locale>
+        <locale name="controls.SendUserMail.tpl.labelPlaceholders">
+            <en><![CDATA[Available placeholders]]></en>
+        </locale>
+        <locale name="controls.SendUserMail.tpl.placeholdersHint">
+            <en><![CDATA[Address data is taken from the standard address. Fields may remain empty if no value is stored in the address. Always use placeholders with square brackets.]]></en>
+        </locale>
+        <locale name="controls.SendUserMail.placeholder.userUuid">
+            <en><![CDATA[User UUID]]></en>
+        </locale>
+        <locale name="controls.SendUserMail.placeholder.userId">
+            <en><![CDATA[User ID]]></en>
+        </locale>
+        <locale name="controls.SendUserMail.placeholder.userSalutation">
+            <en><![CDATA[Salutation]]></en>
+        </locale>
+        <locale name="controls.SendUserMail.placeholder.userFirstname">
+            <en><![CDATA[First name]]></en>
+        </locale>
+        <locale name="controls.SendUserMail.placeholder.userLastname">
+            <en><![CDATA[Last name]]></en>
+        </locale>
+        <locale name="controls.SendUserMail.placeholder.userStreetNo">
+            <en><![CDATA[Street and house number]]></en>
+        </locale>
+        <locale name="controls.SendUserMail.placeholder.userCity">
+            <en><![CDATA[City]]></en>
+        </locale>
+        <locale name="controls.SendUserMail.placeholder.userCountry">
+            <en><![CDATA[Country]]></en>
+        </locale>
+        <locale name="controls.SendUserMail.placeholder.userEmail">
+            <en><![CDATA[User email address]]></en>
+        </locale>
+        <locale name="controls.SendUserMail.placeholder.userCompany">
+            <en><![CDATA[Company]]></en>
+        </locale>
+        <locale name="controls.SendUserMail.placeholder.userZip">
+            <en><![CDATA[ZIP code]]></en>
+        </locale>
+        <locale name="controls.SendUserMail.placeholder.userUsername">
+            <en><![CDATA[Username]]></en>
+        </locale>
         <locale name="controls.SendUserMail.submit">
             <en><![CDATA[Send email now]]></en>
         </locale>
@@ -6165,6 +6207,57 @@ After logging in you will be prompted to set a new password.
         </locale>
         <locale name="controls.SendGroupMail.tpl.labelMailContent">
             <en><![CDATA[Content]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.tpl.labelPlaceholders">
+            <en><![CDATA[Available placeholders]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.tpl.placeholdersHint">
+            <en><![CDATA[Address data is taken from the standard address. Fields may remain empty if no value is stored in the address. Always use placeholders with square brackets.]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.userUuid">
+            <en><![CDATA[User UUID]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.userId">
+            <en><![CDATA[User ID]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.userSalutation">
+            <en><![CDATA[Salutation]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.userFirstname">
+            <en><![CDATA[First name]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.userLastname">
+            <en><![CDATA[Last name]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.userStreetNo">
+            <en><![CDATA[Street and house number]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.userCity">
+            <en><![CDATA[City]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.userCountry">
+            <en><![CDATA[Country]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.userEmail">
+            <en><![CDATA[User email address]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.userCompany">
+            <en><![CDATA[Company]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.userZip">
+            <en><![CDATA[ZIP code]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.userUsername">
+            <en><![CDATA[Username]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.groupTitle">
+            <en><![CDATA[Group title]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.groupUuid">
+            <en><![CDATA[Group UUID]]></en>
+        </locale>
+        <locale name="controls.SendGroupMail.placeholder.groupId">
+            <en><![CDATA[Group ID]]></en>
         </locale>
         <locale name="controls.SendGroupMail.submit">
             <en><![CDATA[Confirm email with preview]]></en>
