@@ -1,5 +1,6 @@
 <?php
 
+use QUI\Mail\UserMailPlaceholders;
 use QUI\Utils\Security\Orthos;
 
 QUI::$Ajax->registerFunction(
@@ -10,15 +11,47 @@ QUI::$Ajax->registerFunction(
         $mailContent = trim($mailContent);
 
         $users = $Group->getUsers([
-            'select' => 'email'
+            'select' => 'uuid, email'
         ]);
 
-        $emails = [];
+        $recipients = [];
 
         foreach ($users as $user) {
-            if (!isset($user['email'])) {
+            if (empty($user['uuid']) || !isset($user['email'])) {
                 continue;
             }
+
+            $User = QUI::getUsers()->get($user['uuid']);
+            $Address = $User->getStandardAddress();
+            $countryName = '';
+            $countryCode = (string)($Address?->getAttribute('country') ?? '');
+
+            if ($countryCode !== '') {
+                try {
+                    $countryName = QUI::getCountries()->get($countryCode)->getName();
+                } catch (QUI\Exception $Exception) {
+                    QUI\System\Log::writeDebugException($Exception);
+                }
+            }
+
+            $userPlaceholders = new UserMailPlaceholders(
+                [
+                    'uuid' => $User->getUUID(),
+                    'id' => $User->getId(),
+                    'email' => $User->getAttribute('email'),
+                    'username' => $User->getAttribute('username')
+                ],
+                [
+                    'salutation' => $Address?->getAttribute('salutation'),
+                    'firstname' => $Address?->getAttribute('firstname'),
+                    'lastname' => $Address?->getAttribute('lastname'),
+                    'street_no' => $Address?->getAttribute('street_no'),
+                    'city' => $Address?->getAttribute('city'),
+                    'company' => $Address?->getAttribute('company'),
+                    'zip' => $Address?->getAttribute('zip')
+                ],
+                $countryName
+            );
 
             $userEmails = explode(',', $user['email']);
 
@@ -29,11 +62,12 @@ QUI::$Ajax->registerFunction(
                     continue;
                 }
 
-                $emails[strtolower($email)] = $email;
+                $recipients[strtolower($email)] = [
+                    'email' => $email,
+                    'placeholders' => $userPlaceholders
+                ];
             }
         }
-
-        $recipients = array_values($emails);
 
         if (empty($recipients)) {
             throw new QUI\Exception(
@@ -41,12 +75,18 @@ QUI::$Ajax->registerFunction(
             );
         }
 
+        $groupPlaceholders = [
+            '[group_title]' => $Group->getName(),
+            '[group_uuid]' => $Group->getUUID(),
+            '[group_id]' => (string)$Group->getId()
+        ];
+
         foreach ($recipients as $recipient) {
             $Mailer = new \QUI\Mail\Mailer();
-            $Mailer->addRecipient($recipient);
-            $Mailer->setSubject($mailSubject);
+            $Mailer->addRecipient($recipient['email']);
+            $Mailer->setSubject($recipient['placeholders']->replace($mailSubject, $groupPlaceholders));
             $Mailer->setHTML(true);
-            $Mailer->setBody($mailContent);
+            $Mailer->setBody($recipient['placeholders']->replace($mailContent, $groupPlaceholders));
             $Mailer->send();
         }
 

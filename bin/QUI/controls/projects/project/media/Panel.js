@@ -1473,30 +1473,60 @@ define('controls/projects/project/media/Panel', [
             });
         },
 
-        $getMissingMediaMetaBadgesHtml: function (Child) {
+        $createMissingMediaMetaBadges: function (Child) {
             if (!this.$showMissingMetaBadges() || Child.type === 'folder') {
-                return '';
+                return null;
             }
 
-            let html = '';
+            const Container = document.createElement('div');
+            Container.className = 'qui-media-item-badges';
+
+            const appendBadge = function (text, label) {
+                const Badge = document.createElement('span');
+
+                Badge.className = 'qui-media-item-badge';
+                Badge.title = label;
+                Badge.setAttribute('aria-label', label);
+                Badge.textContent = text;
+
+                Container.appendChild(Badge);
+            };
 
             if (!this.$hasMediaFieldContent(Child.title)) {
-                html += '<span class="qui-media-item-badge" title="'
-                    + Locale.get(lg, 'projects.project.site.media.panel.badge.title.missing')
-                    + '">T</span>';
+                appendBadge(
+                    'T',
+                    Locale.get(lg, 'projects.project.site.media.panel.badge.title.missing')
+                );
             }
 
             if (!this.$hasMediaFieldContent(Child.alt)) {
-                html += '<span class="qui-media-item-badge" title="'
-                    + Locale.get(lg, 'projects.project.site.media.panel.badge.alt.missing')
-                    + '">A</span>';
+                appendBadge(
+                    'A',
+                    Locale.get(lg, 'projects.project.site.media.panel.badge.alt.missing')
+                );
             }
 
-            if (!html) {
-                return '';
+            if (!Container.children.length) {
+                return null;
             }
 
-            return '<div class="qui-media-item-badges">' + html + '</div>';
+            return Container;
+        },
+
+        $appendMediaItemContent: function (Elm, Child) {
+            const Badges = this.$createMissingMediaMetaBadges(Child);
+
+            if (Badges) {
+                Elm.appendChild(Badges);
+            }
+
+            const Title = document.createElement('span');
+
+            Title.className = 'title';
+            Title.setAttribute('data-name', 'title');
+            Title.textContent = Child.name;
+
+            Elm.appendChild(Title);
         },
 
         /**
@@ -1554,10 +1584,10 @@ define('controls/projects/project/media/Panel', [
                     'data-error': Child.error ? 1 : 0,
                     'data-mimetype': Child.mimetype,
                     'data-hidden': Child.isHidden ? 1 : 0,
+                    'data-extension': ext,
+                    'data-name': 'media-item',
 
                     'class': 'qui-media-item',
-                    html: this.$getMissingMediaMetaBadgesHtml(Child) +
-                        '<span class="title">' + Child.name + '</span>',
                     alt: Child.name + ext,
                     title: Child.name + ext,
 
@@ -1569,6 +1599,8 @@ define('controls/projects/project/media/Panel', [
                         contextmenu: this.$PanelContextMenu.show.bind(this.$PanelContextMenu)
                     }
                 });
+
+                this.$appendMediaItemContent(Elm, Child);
 
                 const ImgContainer = new Element('div', {
                     'class': 'qui-media-item-img'
@@ -1654,10 +1686,10 @@ define('controls/projects/project/media/Panel', [
                     'data-error': Child.error ? 1 : 0,
                     'data-mimetype': Child.mimetype,
                     'data-hidden': Child.isHidden ? 1 : 0,
+                    'data-extension': ext,
+                    'data-name': 'media-item',
 
                     'class': 'qui-media-item',
-                    html: this.$getMissingMediaMetaBadgesHtml(Child) +
-                        '<span class="title">' + Child.name + '</span>',
                     alt: Child.name + ext,
                     title: Child.name + ext,
 
@@ -1669,6 +1701,8 @@ define('controls/projects/project/media/Panel', [
                         contextmenu: this.$PanelContextMenu.show.bind(this.$PanelContextMenu)
                     }
                 });
+
+                this.$appendMediaItemContent(Elm, Child);
 
                 const ImgContainer = new Element('div', {
                     'class': 'qui-media-item-img'
@@ -2724,7 +2758,9 @@ define('controls/projects/project/media/Panel', [
             }
 
             const Content = this.getContent();
-            const Node = Content.getElement('[data-id="' + Item.getId() + '"]');
+            const Node = Content.querySelector(
+                '[data-name="media-item"][data-id="' + Item.getId() + '"]'
+            );
 
             if (!Node) {
                 return;
@@ -2737,9 +2773,12 @@ define('controls/projects/project/media/Panel', [
             Node.removeClass('qmi-active');
             Node.removeClass('qmi-deactive');
 
+            const itemName = Item.getAttribute('name');
+            const filename = itemName + (Node.getAttribute('data-extension') || '');
+
             Node.set({
-                alt: Item.getAttribute('name'),
-                title: Item.getAttribute('title'),
+                alt: filename,
+                title: filename,
                 'data-active': Item.isActive() ? 1 : 0
             });
 
@@ -2749,7 +2788,11 @@ define('controls/projects/project/media/Panel', [
                 Node.addClass('qmi-deactive');
             }
 
-            Node.getElement('span').set('html', Item.getAttribute('name'));
+            const Title = Node.querySelector('[data-name="title"]');
+
+            if (Title) {
+                Title.textContent = itemName;
+            }
 
             const itemId = parseInt(Item.getId()),
                 children = this.$children && this.$children.data ? this.$children.data : [];

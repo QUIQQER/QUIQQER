@@ -8,6 +8,11 @@ use Mcp\Server\Builder;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use QUI\MCP\Project\AddLanguage;
+use QUI\MCP\Project\GetSetting;
+use QUI\MCP\Project\ListSettings;
+use QUI\MCP\Project\SetSetting;
+use QUI\MCP\Project\UpdateSettings;
+use QUI\MCP\System\GetSystemInfo;
 use QUI\MCP\VHost\CreateVHost;
 use QUI\MCP\VHost\DeleteVHost;
 use QUI\MCP\VHost\GetVHost;
@@ -26,6 +31,31 @@ class ToolRegistrationTest extends TestCase
             new AddLanguage(),
             'quiqqer_projects_add_language',
             ['project', 'lang']
+        ];
+        yield 'list project settings' => [
+            new ListSettings(),
+            'quiqqer_project_settings_list',
+            ['project']
+        ];
+        yield 'get project setting' => [
+            new GetSetting(),
+            'quiqqer_project_setting_get',
+            ['project', 'key']
+        ];
+        yield 'set project setting' => [
+            new SetSetting(),
+            'quiqqer_project_setting_set',
+            ['project', 'key', 'value']
+        ];
+        yield 'update project settings' => [
+            new UpdateSettings(),
+            'quiqqer_project_settings_update',
+            ['project', 'settings']
+        ];
+        yield 'get system information' => [
+            new GetSystemInfo(),
+            'quiqqer_system_info_get',
+            []
         ];
         yield 'list VHosts' => [
             new ListVHosts(),
@@ -74,7 +104,7 @@ class ToolRegistrationTest extends TestCase
         self::assertFalse($tools[0]['inputSchema']['additionalProperties'] ?? false);
     }
 
-    public function testProviderContainsProjectLanguageAndVHostTools(): void
+    public function testProviderContainsRegisteredTools(): void
     {
         $Provider = new Provider();
         $tools = (new ReflectionProperty(Provider::class, 'tools'))->getValue($Provider);

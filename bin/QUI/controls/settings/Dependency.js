@@ -7,11 +7,16 @@
  *   data-dependency="<name of the controlling field>"
  *   data-dependency-options="valueA,valueB"   -> visible only for these values
  *   data-dependency-options="!valueA,!valueB" -> hidden for these values
+ *   data-dependency-options="*"                -> visible while the field is filled (non-empty)
+ *   data-dependency-options="!*"               -> visible while the field is empty
  *
- * Use either positive or negated entries per field, do not mix both.
+ * Use either positive or negated entries per field, do not mix both. The
+ * filled markers "*" / "!*" are evaluated on their own and take precedence
+ * over value lists, so they are not combined with concrete values.
  *
  * A checkbox is treated as the value "1" when checked and "0" otherwise, so
- * the same options apply:
+ * the same options apply. For "*" / "!*" a checkbox counts as filled while it
+ * is checked:
  *
  *   (no data-dependency-options) -> visible while the checkbox is checked
  *   data-dependency-options="1"  -> visible while the checkbox is checked
@@ -76,6 +81,9 @@ define('package/quiqqer/core/bin/QUI/controls/settings/Dependency', [
             const value = isCheckbox
                 ? (this.$Input.checked ? '1' : '0')
                 : (this.$Input.value || '');
+            const isFilled = isCheckbox
+                ? this.$Input.checked
+                : String(value).trim() !== '';
 
             this.$Fields.forEach(function (Field) {
                 const entries = (Field.getAttribute('data-dependency-options') || '')
@@ -89,7 +97,11 @@ define('package/quiqqer/core/bin/QUI/controls/settings/Dependency', [
 
                 let visible;
 
-                if (!entries.length) {
+                if (entries.indexOf('*') !== -1) {
+                    visible = isFilled;
+                } else if (entries.indexOf('!*') !== -1) {
+                    visible = !isFilled;
+                } else if (!entries.length) {
                     visible = isCheckbox ? this.$Input.checked : true;
                 } else {
                     const positives = entries.filter(function (entry) {

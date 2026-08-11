@@ -588,6 +588,7 @@ define('controls/projects/project/media/FolderViewer', [
                 'data-error': imageData.error ? 1 : 0,
                 'data-mimetype': imageData.mimetype,
                 'data-hidden': imageData.isHidden ? 1 : 0,
+                'data-name': 'media-item',
                 events: {
                     click: function () {
                         if (imageData.type === 'image') {
