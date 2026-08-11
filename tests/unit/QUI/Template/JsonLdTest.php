@@ -24,10 +24,10 @@ class JsonLdTest extends TestCase
         self::assertSame('de', $JsonLd->get('inLanguage'));
 
         $website = $JsonLd->get('isPartOf');
-        self::assertSame('https://example.com/de/#website', $website['@id']);
+        self::assertSame('https://example.com/#website', $website['@id']);
 
         $organization = $JsonLd->get('publisher');
-        self::assertSame('https://example.com/de/#organization', $organization['@id']);
+        self::assertSame('https://example.com/#organization', $organization['@id']);
 
         self::assertSame('WebSite', $JsonLd->getJsonLdNode('website')['@type']);
         self::assertSame('Example & website', $JsonLd->getJsonLdNode('website')['name']);
@@ -63,7 +63,7 @@ class JsonLdTest extends TestCase
         self::assertFalse($JsonLd->hasJsonLdNode('website'));
         self::assertFalse($JsonLd->hasJsonLdNode('organization'));
         self::assertSame(
-            ['@id' => 'https://example.com/de/#website'],
+            ['@id' => 'https://example.com/#website'],
             $JsonLd->get('isPartOf')
         );
 
@@ -95,10 +95,48 @@ class JsonLdTest extends TestCase
         self::assertStringContainsString('"@graph"', $JsonLd->getJsonLdSchema());
     }
 
-    private function createSite(int $siteId = 1): Site
+    public function testPathLanguageReferencesDomainWebsiteWithoutRepeatingSiteNodes(): void
     {
+        $Template = new AccessibleTemplate();
+        $Template->initializeJsonLd($this->createSite(1, 'https://example.com/de/', 'de'));
+        $JsonLd = $Template->getJsonLd();
+
+        self::assertSame(
+            ['@id' => 'https://example.com/#website'],
+            $JsonLd->get('isPartOf')
+        );
+        self::assertSame(
+            ['@id' => 'https://example.com/#organization'],
+            $JsonLd->get('publisher')
+        );
+        self::assertFalse($JsonLd->hasJsonLdNode('website'));
+        self::assertFalse($JsonLd->hasJsonLdNode('organization'));
+    }
+
+    public function testRootLanguageOnDedicatedDomainProvidesSiteNodes(): void
+    {
+        $Template = new AccessibleTemplate();
+        $Template->initializeJsonLd($this->createSite(1, 'https://de.example.com/'));
+        $JsonLd = $Template->getJsonLd();
+
+        self::assertSame(
+            'https://de.example.com/#website',
+            $JsonLd->getJsonLdNode('website')['@id']
+        );
+        self::assertSame(
+            'https://de.example.com/#organization',
+            $JsonLd->getJsonLdNode('organization')['@id']
+        );
+    }
+
+    private function createSite(
+        int $siteId = 1,
+        string $websiteBaseUrl = 'https://example.com/',
+        string $languagePath = ''
+    ): Site {
         $Project = $this->createMock(Project::class);
-        $Project->method('getVHostBaseUrl')->willReturn('https://example.com/de/');
+        $Project->method('getVHostBaseUrl')->willReturn($websiteBaseUrl);
+        $Project->method('getVHostPath')->willReturn($languagePath);
         $Project->method('getVHost')->willReturn('https://example.com');
         $Project->method('getTitle')->willReturn('Example &amp; website');
         $Project->method('getLang')->willReturn('de');

@@ -25,6 +25,8 @@ use function realpath;
 use function rtrim;
 use function str_starts_with;
 use function str_replace;
+use function strlen;
+use function substr;
 use function trim;
 
 use const ETC_DIR;
@@ -850,7 +852,7 @@ class Template extends QUI\QDOM
     {
         $Project = $Site->getProject();
         $JsonLd = new Utils\JsonLd();
-        $websiteUrl = rtrim($Project->getVHostBaseUrl(), '/') . '/';
+        $websiteUrl = $this->getWebsiteUrl($Project);
         $pageUrl = $this->getAbsoluteSiteUrl($Site);
         $projectTitle = $this->normalizeJsonLdText($Project->getTitle());
         $siteTitle = $this->normalizeJsonLdText((string)$Site->getAttribute('title'));
@@ -911,7 +913,7 @@ class Template extends QUI\QDOM
             $isHomePage = false;
         }
 
-        if ($isHomePage) {
+        if ($isHomePage && $Project->getVHostPath() === '') {
             $JsonLd->setJsonLdNode('organization', $organization);
             $JsonLd->setJsonLdNode('website', $website);
         }
@@ -980,6 +982,27 @@ class Template extends QUI\QDOM
         $host = rtrim($Site->getProject()->getVHost(true, true), '/');
 
         return $host . URL_DIR . ltrim($url, '/');
+    }
+
+    /**
+     * Return the domain-level website URL without a project language path.
+     */
+    protected function getWebsiteUrl(Project $Project): string
+    {
+        $websiteUrl = rtrim($Project->getVHostBaseUrl(), '/') . '/';
+        $languagePath = trim($Project->getVHostPath(), '/');
+
+        if ($languagePath === '') {
+            return $websiteUrl;
+        }
+
+        $languageSuffix = '/' . $languagePath . '/';
+
+        if (!str_ends_with($websiteUrl, $languageSuffix)) {
+            return $websiteUrl;
+        }
+
+        return substr($websiteUrl, 0, -strlen($languagePath . '/'));
     }
 
     /**
