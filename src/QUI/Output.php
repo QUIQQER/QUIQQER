@@ -41,6 +41,7 @@ use function preg_replace_callback;
 use function preg_split;
 use function set_time_limit;
 use function str_replace;
+use function strtr;
 use function strpos;
 use function strtolower;
 use function trim;
@@ -179,6 +180,18 @@ class Output extends Singleton
             $withDocumentOutput = true;
         }
 
+        $jsonLdPlaceholders = [];
+        $content = (string)preg_replace_callback(
+            '#(<script\b(?=[^>]*\btype\s*=\s*(["\x27])application/ld\+json\2)[^>]*>)(.*?)(</script\s*>)#is',
+            static function (array $matches) use (&$jsonLdPlaceholders): string {
+                $placeholder = '__QUI_JSON_LD_' . count($jsonLdPlaceholders) . '_' . md5($matches[3]) . '__';
+                $jsonLdPlaceholders[$placeholder] = $matches[3];
+
+                return $matches[1] . $placeholder . $matches[4];
+            },
+            $content
+        );
+
         // picture elements
         $executionTime = ini_get('max_execution_time');
         set_time_limit(100);
@@ -290,6 +303,10 @@ class Output extends Singleton
                     iterator_to_array($Body->childNodes)
                 )
             );
+        }
+
+        if ($jsonLdPlaceholders !== []) {
+            $result = strtr((string)$result, $jsonLdPlaceholders);
         }
 
         // reset to the normal limit

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace QUITests\Template;
 
+use JsonException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use QUI\Interfaces\Projects\Site;
 use QUI\Projects\Project;
@@ -136,8 +138,8 @@ class JsonLdTest extends TestCase
             2,
             'https://example.com/de/',
             'de',
-            'de/Blog/Kr&amp;uuml;melmonster-Tag',
-            'NerdSpot &amp;mdash; Stories for Curious Minds'
+            'de/Blog/Kr&uuml;melmonster-Tag',
+            'NerdSpot &mdash; Stories for Curious Minds'
         ));
 
         $schema = $Template->getJsonLd()->getJsonLdSchema();
@@ -147,6 +149,105 @@ class JsonLdTest extends TestCase
         self::assertStringNotContainsString('&mdash;', $schema);
         self::assertStringNotContainsString('&uuml;', $schema);
         self::assertStringNotContainsString('&amp;', $schema);
+    }
+
+    #[DataProvider('jsonLdEntityProvider')]
+    public function testJsonLdEntityVariantsAreDecoded(string $encoded, string $decoded): void
+    {
+        $Template = new AccessibleTemplate();
+        $Template->initializeJsonLd($this->createSite(
+            2,
+            'https://example.com/de/',
+            'de',
+            'de/Blog/' . $encoded,
+            $encoded
+        ));
+
+        $document = $this->decodeJsonLdSchema($Template->getJsonLd()->getJsonLdSchema());
+
+        self::assertSame($decoded, $document['@graph'][0]['name']);
+        self::assertSame(
+            'https://example.com/de/Blog/' . $decoded,
+            $document['@graph'][0]['url']
+        );
+        self::assertSame(
+            'https://example.com/de/Blog/' . $decoded . '#webpage',
+            $document['@graph'][0]['@id']
+        );
+    }
+
+    public function testNestedPageBlogPostingAndBreadcrumbEntitiesAreDecoded(): void
+    {
+        $Template = new AccessibleTemplate();
+        $Template->initializeJsonLd($this->createSite(
+            2,
+            'https://example.com/de/',
+            'de',
+            'de/Blog/Kr&uuml;melmonster-Tag',
+            'NerdSpot &mdash; Stories f&uuml;r Neugierige'
+        ));
+
+        $JsonLd = $Template->getJsonLd();
+        $JsonLd->setJsonLdNode('blogPosting', [
+            '@type' => 'BlogPosting',
+            '@id' => 'https://example.com/de/Blog/Kr&uuml;melmonster-Tag#article',
+            'url' => 'https://example.com/de/Blog/Kr&uuml;melmonster-Tag',
+            'headline' => 'Kr&uuml;melmonster &mdash; Gr&uuml;&szlig;e',
+            'mainEntityOfPage' => [
+                '@id' => 'https://example.com/de/Blog/Kr&uuml;melmonster-Tag#webpage'
+            ]
+        ]);
+        $JsonLd->setJsonLdNode('breadcrumb', [
+            '@type' => 'BreadcrumbList',
+            '@id' => 'https://example.com/de/Blog/Kr&uuml;melmonster-Tag#breadcrumb',
+            'itemListElement' => [[
+                '@type' => 'ListItem',
+                'position' => 1,
+                'name' => 'Kr&uuml;melmonster &mdash; Tag',
+                'item' => 'https://example.com/de/Blog/Kr&uuml;melmonster-Tag'
+            ]]
+        ]);
+
+        $document = $this->decodeJsonLdSchema($JsonLd->getJsonLdSchema());
+        $page = $document['@graph'][0];
+        $breadcrumb = $document['@graph'][1];
+        $blogPosting = $document['@graph'][2];
+
+        self::assertSame('NerdSpot — Stories für Neugierige', $page['name']);
+        self::assertSame('https://example.com/de/Blog/Krümelmonster-Tag', $page['url']);
+        self::assertSame(
+            'https://example.com/de/Blog/Krümelmonster-Tag#webpage',
+            $page['@id']
+        );
+        self::assertSame('Krümelmonster — Tag', $breadcrumb['itemListElement'][0]['name']);
+        self::assertSame(
+            'https://example.com/de/Blog/Krümelmonster-Tag',
+            $breadcrumb['itemListElement'][0]['item']
+        );
+        self::assertSame('Krümelmonster — Grüße', $blogPosting['headline']);
+        self::assertSame(
+            'https://example.com/de/Blog/Krümelmonster-Tag#article',
+            $blogPosting['@id']
+        );
+        self::assertSame(
+            'https://example.com/de/Blog/Krümelmonster-Tag',
+            $blogPosting['url']
+        );
+        self::assertSame(
+            ['@id' => 'https://example.com/de/Blog/Krümelmonster-Tag#webpage'],
+            $blogPosting['mainEntityOfPage']
+        );
+    }
+
+    /**
+     * @return iterable<string, array{string, string}>
+     */
+    public static function jsonLdEntityProvider(): iterable
+    {
+        yield 'unicode' => ['Krümelmonster — Grüße', 'Krümelmonster — Grüße'];
+        yield 'named entities' => ['Kr&uuml;melmonster &mdash; Gr&uuml;&szlig;e', 'Krümelmonster — Grüße'];
+        yield 'decimal entities' => ['Kr&#252;melmonster &#8212; Gr&#252;&#223;e', 'Krümelmonster — Grüße'];
+        yield 'hexadecimal entities' => ['Kr&#xFC;melmonster &#x2014; Gr&#xFC;&#xDF;e', 'Krümelmonster — Grüße'];
     }
 
     public function testEmptyWebsiteTitleFallsBackToProjectName(): void
@@ -161,6 +262,21 @@ class JsonLdTest extends TestCase
             'nerdspott',
             $Template->getJsonLd()->getJsonLdNode('website')['name']
         );
+    }
+
+    /**
+     * @return array<string, mixed>
+     * @throws JsonException
+     */
+    private function decodeJsonLdSchema(string $schema): array
+    {
+        $json = preg_replace(
+            '#^<script type="application/ld\+json">|</script>$#',
+            '',
+            $schema
+        );
+
+        return json_decode((string)$json, true, 512, JSON_THROW_ON_ERROR);
     }
 
     private function createSite(
