@@ -19,7 +19,7 @@ class JsonLdTest extends TestCase
         $JsonLd = $Template->getJsonLd();
 
         self::assertSame('WebPage', $JsonLd->get('type'));
-        self::assertSame('Example page', $JsonLd->get('name'));
+        self::assertSame('Example — page', $JsonLd->get('name'));
         self::assertSame('Description from meta settings', $JsonLd->get('description'));
         self::assertSame('de', $JsonLd->get('inLanguage'));
 
@@ -30,6 +30,7 @@ class JsonLdTest extends TestCase
         self::assertSame('https://example.com/de/#organization', $organization['@id']);
 
         self::assertSame('WebSite', $JsonLd->getJsonLdNode('website')['@type']);
+        self::assertSame('Example & website', $JsonLd->getJsonLdNode('website')['name']);
         self::assertSame('Organization', $JsonLd->getJsonLdNode('organization')['@type']);
         self::assertSame('Example Publisher', $JsonLd->getJsonLdNode('organization')['name']);
     }
@@ -85,7 +86,7 @@ class JsonLdTest extends TestCase
                 [
                     '@type' => 'ListItem',
                     'position' => 2,
-                    'name' => 'Example page',
+                    'name' => 'Example — page',
                     'item' => 'https://example.com/de/example'
                 ]
             ],
@@ -99,7 +100,7 @@ class JsonLdTest extends TestCase
         $Project = $this->createMock(Project::class);
         $Project->method('getVHostBaseUrl')->willReturn('https://example.com/de/');
         $Project->method('getVHost')->willReturn('https://example.com');
-        $Project->method('getTitle')->willReturn('Example website');
+        $Project->method('getTitle')->willReturn('Example &amp; website');
         $Project->method('getLang')->willReturn('de');
         $Project->method('getConfig')->willReturnCallback(static function (false | string $name): string {
             return match ($name) {
@@ -116,7 +117,7 @@ class JsonLdTest extends TestCase
         $Site->method('getUrlRewritten')->willReturn('de/example');
         $Site->method('getAttribute')->willReturnCallback(static function (string $name): string {
             return match ($name) {
-                'title' => 'Example page',
+                'title' => 'Example &mdash; page',
                 'meta.description' => 'Description from meta settings',
                 'short' => 'Fallback description',
                 default => ''

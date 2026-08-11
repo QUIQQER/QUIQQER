@@ -17,6 +17,7 @@ use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
 use function htmlspecialchars;
+use function html_entity_decode;
 use function implode;
 use function is_array;
 use function ltrim;
@@ -851,6 +852,8 @@ class Template extends QUI\QDOM
         $JsonLd = new Utils\JsonLd();
         $websiteUrl = rtrim($Project->getVHostBaseUrl(), '/') . '/';
         $pageUrl = $this->getAbsoluteSiteUrl($Site);
+        $projectTitle = $this->normalizeJsonLdText($Project->getTitle());
+        $siteTitle = $this->normalizeJsonLdText((string)$Site->getAttribute('title'));
 
         $JsonLd->set('type', 'WebPage');
 
@@ -863,7 +866,7 @@ class Template extends QUI\QDOM
         $organization['@id'] = $organizationId;
 
         if (empty($organization['name'])) {
-            $organization['name'] = $Project->getTitle();
+            $organization['name'] = $projectTitle;
         }
 
         if (empty($organization['url'])) {
@@ -874,7 +877,7 @@ class Template extends QUI\QDOM
             '@type' => 'WebSite',
             '@id' => $websiteId,
             'url' => $websiteUrl,
-            'name' => $Project->getTitle(),
+            'name' => $projectTitle,
             'inLanguage' => $Project->getLang(),
             'publisher' => [
                 '@id' => $organizationId
@@ -883,7 +886,7 @@ class Template extends QUI\QDOM
 
         $JsonLd->add('@id', $pageUrl . '#webpage');
         $JsonLd->add('url', $pageUrl);
-        $JsonLd->add('name', (string)$Site->getAttribute('title'));
+        $JsonLd->add('name', $siteTitle);
         $JsonLd->add('inLanguage', $Project->getLang());
         $JsonLd->add('isPartOf', [
             '@id' => $websiteId
@@ -892,10 +895,10 @@ class Template extends QUI\QDOM
             '@id' => $organizationId
         ]);
 
-        $description = trim((string)$Site->getAttribute('meta.description'));
+        $description = $this->normalizeJsonLdText((string)$Site->getAttribute('meta.description'));
 
         if ($description === '') {
-            $description = trim((string)$Site->getAttribute('short'));
+            $description = $this->normalizeJsonLdText((string)$Site->getAttribute('short'));
         }
 
         if ($description !== '') {
@@ -923,10 +926,10 @@ class Template extends QUI\QDOM
         $itemListElements = [];
 
         foreach ($breadcrumbSites as $BreadcrumbSite) {
-            $name = trim((string)$BreadcrumbSite->getAttribute('title'));
+            $name = $this->normalizeJsonLdText((string)$BreadcrumbSite->getAttribute('title'));
 
             if ($name === '') {
-                $name = trim((string)$BreadcrumbSite->getAttribute('name'));
+                $name = $this->normalizeJsonLdText((string)$BreadcrumbSite->getAttribute('name'));
             }
 
             if ($name === '') {
@@ -977,6 +980,14 @@ class Template extends QUI\QDOM
         $host = rtrim($Site->getProject()->getVHost(true, true), '/');
 
         return $host . URL_DIR . ltrim($url, '/');
+    }
+
+    /**
+     * Normalize textual content for JSON-LD output.
+     */
+    protected function normalizeJsonLdText(string $text): string
+    {
+        return trim(html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
     }
 
     /**

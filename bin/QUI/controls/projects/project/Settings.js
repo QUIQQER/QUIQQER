@@ -84,6 +84,7 @@ define('controls/projects/project/Settings', [
             );
 
             this.$Control = null;
+            this.$ProjectTitle = null;
             this.$Prefix = null;
             this.$Suffix = null;
 
@@ -281,6 +282,12 @@ define('controls/projects/project/Settings', [
 
             var promises = [Project.setConfig(this.$config)];
 
+            if (this.$ProjectTitle) {
+                promises.push(
+                    this.$ProjectTitle.save()
+                );
+            }
+
             if (this.$Suffix) {
                 promises.push(
                     this.$Suffix.save()
@@ -346,6 +353,7 @@ define('controls/projects/project/Settings', [
             return new Promise(function (resolve) {
                 self.$hideBody().then(function () {
                     return Promise.all([
+                        self.$getLocaleData('project/' + self.$Project.getName(), 'title', 'quiqqer/core'),
                         self.$getLocaleData('project/' + self.$Project.getName(), 'template.prefix', 'quiqqer/core'),
                         self.$getLocaleData('project/' + self.$Project.getName(), 'template.suffix', 'quiqqer/core')
                     ]);
@@ -373,13 +381,24 @@ define('controls/projects/project/Settings', [
                             }).inject(Langs);
                         }
 
+                        // project title
+                        self.$ProjectTitle = new Translation({
+                            'group'  : 'project/' + self.$Project.getName(),
+                            'var'    : 'title',
+                            'type'   : 'php,js',
+                            'package': 'quiqqer/core',
+                            'data'   : localeData[0]
+                        }).inject(
+                            Body.getElement('.project-title-settings-container')
+                        );
+
                         // prefix
                         self.$Prefix = new Translation({
                             'group'  : 'project/' + self.$Project.getName(),
                             'var'    : 'template.prefix',
                             'type'   : 'php,js',
                             'package': 'quiqqer/core',
-                            'data'   : localeData[0]
+                            'data'   : localeData[1]
                         }).inject(
                             Body.getElement('.prefix-settings-container')
                         );
@@ -390,7 +409,7 @@ define('controls/projects/project/Settings', [
                             'var'    : 'template.suffix',
                             'type'   : 'php,js',
                             'package': 'quiqqer/core',
-                            'data'   : localeData[1]
+                            'data'   : localeData[2]
                         }).inject(
                             Body.getElement('.suffix-settings-container')
                         );
@@ -616,6 +635,11 @@ define('controls/projects/project/Settings', [
                 return Promise.resolve();
             }
 
+
+            if (this.$ProjectTitle && noHide) {
+                this.$ProjectTitle.destroy();
+                this.$ProjectTitle = null;
+            }
 
             if (this.$Prefix && noHide) {
                 this.$Prefix.destroy();
