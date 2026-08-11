@@ -285,7 +285,7 @@ define('controls/projects/project/Settings', [
 
             if (this.$ProjectTitle) {
                 localeSaving = localeSaving.then(function () {
-                    return self.$ProjectTitle.save();
+                    return self.$saveProjectTitle();
                 });
             }
 
@@ -356,7 +356,7 @@ define('controls/projects/project/Settings', [
             return new Promise(function (resolve) {
                 self.$hideBody().then(function () {
                     return Promise.all([
-                        self.$getLocaleData('project/' + self.$Project.getName(), 'title', false),
+                        self.$Project.getTitleLocaleData(),
                         self.$getLocaleData('project/' + self.$Project.getName(), 'template.prefix', 'quiqqer/core'),
                         self.$getLocaleData('project/' + self.$Project.getName(), 'template.suffix', 'quiqqer/core')
                     ]);
@@ -896,6 +896,28 @@ define('controls/projects/project/Settings', [
                     'pkg'    : p
                 });
             });
+        },
+
+        /**
+         * Save the project title without changing original package locale values.
+         *
+         * @return {Promise}
+         */
+        $saveProjectTitle: function () {
+            const translations = {};
+            const inputs = this.$ProjectTitle.getElm().getElements('input');
+
+            for (let i = 0, len = inputs.length; i < len; i++) {
+                if (!inputs[i].name.match(/^[a-z]{2}$/)) {
+                    continue;
+                }
+
+                translations[inputs[i].name] = inputs[i].value;
+            }
+
+            return this.$Project.setTitleLocaleData(translations).then(function (localeData) {
+                this.$ProjectTitle.setAttribute('data', localeData);
+            }.bind(this));
         }
     });
 });

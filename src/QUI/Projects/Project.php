@@ -34,7 +34,9 @@ use function is_writable;
 use function json_encode;
 use function str_replace;
 use function strlen;
+use function strtolower;
 use function substr;
+use function trim;
 
 use const USR_DIR;
 
@@ -488,6 +490,87 @@ class Project implements \Stringable
         }
 
         return $this->getName();
+    }
+
+    /**
+     * Return the package-independent locale entry used for the project title.
+     *
+     * @return array<string, mixed>
+     * @throws QUI\Database\Exception
+     */
+    public function getTitleLocaleData(): array
+    {
+        $entries = QUI\Translator::get(
+            'project/' . $this->getName(),
+            'title'
+        );
+
+        foreach ($entries as $entry) {
+            if (empty($entry['package'])) {
+                return $entry;
+            }
+        }
+
+        return [];
+    }
+
+    /**
+     * Save customized project titles to the user-edit locale fields.
+     *
+     * Original locale values must remain untouched because package setup may
+     * import them again during an update.
+     *
+     * @param array<string, mixed> $translations
+     *
+     * @throws QUI\Database\Exception
+     * @throws QUI\Exception
+     */
+    public function setTitleLocaleData(array $translations): void
+    {
+        Permission::checkProjectPermission(
+            'quiqqer.projects.setconfig',
+            $this
+        );
+
+        $group = 'project/' . $this->getName();
+        $entry = $this->getTitleLocaleData();
+
+        if (!isset($entry['id'])) {
+            QUI\Translator::add($group, 'title');
+            $entry = $this->getTitleLocaleData();
+        }
+
+        if (!isset($entry['id'])) {
+            throw new QUI\Exception('Could not create the project title locale entry.');
+        }
+
+        $availableLanguages = QUI::availableLanguages();
+        $localeData = [];
+
+        foreach ($translations as $language => $value) {
+            $language = strtolower(trim($language));
+
+            if (!in_array($language, $availableLanguages, true)) {
+                continue;
+            }
+
+            if (!is_string($value)) {
+                continue;
+            }
+
+            $localeData[$language . '_edit'] = $value;
+        }
+
+        if ($localeData === []) {
+            return;
+        }
+
+        $localeData['groups'] = $group;
+        $localeData['var'] = 'title';
+        $localeData['package'] = $entry['package'] ?? '';
+
+        QUI\Translator::editById((int)$entry['id'], $localeData);
+        QUI\Translator::publish($group);
     }
 
     /**
