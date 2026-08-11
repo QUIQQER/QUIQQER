@@ -38,6 +38,7 @@ use function mb_substr;
 use function mb_substr_count;
 use function parse_url;
 use function pathinfo;
+use function rawurldecode;
 use function str_contains;
 use function str_replace;
 use function str_starts_with;
@@ -870,7 +871,7 @@ class Rewrite
         $target = $targetScheme . '://' . $targetHost . $targetPath;
         $target = self::appendPublicQueryString($target, $Request);
 
-        $current = $Request->getSchemeAndHttpHost() . $Request->getRequestUri();
+        $current = self::buildCurrentProjectLanguageRouteUrl($Request);
 
         if ($target === $current) {
             return;
@@ -882,6 +883,17 @@ class Rewrite
         $Redirect->setStatusCode(Response::HTTP_MOVED_PERMANENTLY);
         $Redirect->send();
         exit;
+    }
+
+    /**
+     * Build the current request URL for comparison with a project language route.
+     */
+    private static function buildCurrentProjectLanguageRouteUrl(Request $Request): string
+    {
+        $current = $Request->getSchemeAndHttpHost()
+            . rawurldecode($Request->getPathInfo());
+
+        return self::appendPublicQueryString($current, $Request);
     }
 
     /**

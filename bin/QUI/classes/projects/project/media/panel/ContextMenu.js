@@ -51,14 +51,10 @@ define('classes/projects/project/media/panel/ContextMenu', [
             event.stop();
 
             let Menu;
-            let Elm = event.target;
+            const Elm = event.target.closest('[data-name="media-item"]');
 
-            if (Elm.nodeName === 'SPAN') {
-                Elm = Elm.getParent('div');
-            }
-
-            if (Elm.getParent('.qui-project-media-folderViewer-item')) {
-                Elm = Elm.getParent('.qui-project-media-folderViewer-item');
+            if (!Elm) {
+                return;
             }
 
             if (Elm.get('data-type') === 'folder') {

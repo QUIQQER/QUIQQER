@@ -34,7 +34,7 @@ define('controls/users/mail/SendUserMail', [
             userId: false,  // QUIQQER user ID
 
             maxHeight: 820,
-            maxWidth: 900
+            maxWidth: 1000
         },
 
         initialize: function (options) {
@@ -80,6 +80,58 @@ define('controls/users/mail/SendUserMail', [
                         labelUserEmail: QUILocale.get(lg, 'email'),
                         labelMailSubject: QUILocale.get(lg, 'controls.SendUserMail.tpl.labelMailSubject'),
                         labelMailContent: QUILocale.get(lg, 'controls.SendUserMail.tpl.labelMailContent'),
+                        labelPlaceholders: QUILocale.get(lg, 'controls.SendUserMail.tpl.labelPlaceholders'),
+                        placeholdersHint: QUILocale.get(lg, 'controls.SendUserMail.tpl.placeholdersHint'),
+                        placeholders: [
+                            {
+                                token: 'user_uuid',
+                                label: QUILocale.get(lg, 'controls.SendUserMail.placeholder.userUuid')
+                            },
+                            {
+                                token: 'user_id',
+                                label: QUILocale.get(lg, 'controls.SendUserMail.placeholder.userId')
+                            },
+                            {
+                                token: 'user_salutation',
+                                label: QUILocale.get(lg, 'controls.SendUserMail.placeholder.userSalutation')
+                            },
+                            {
+                                token: 'user_firstname',
+                                label: QUILocale.get(lg, 'controls.SendUserMail.placeholder.userFirstname')
+                            },
+                            {
+                                token: 'user_lastname',
+                                label: QUILocale.get(lg, 'controls.SendUserMail.placeholder.userLastname')
+                            },
+                            {
+                                token: 'user_street_no',
+                                label: QUILocale.get(lg, 'controls.SendUserMail.placeholder.userStreetNo')
+                            },
+                            {
+                                token: 'user_city',
+                                label: QUILocale.get(lg, 'controls.SendUserMail.placeholder.userCity')
+                            },
+                            {
+                                token: 'user_country',
+                                label: QUILocale.get(lg, 'controls.SendUserMail.placeholder.userCountry')
+                            },
+                            {
+                                token: 'user_email',
+                                label: QUILocale.get(lg, 'controls.SendUserMail.placeholder.userEmail')
+                            },
+                            {
+                                token: 'user_company',
+                                label: QUILocale.get(lg, 'controls.SendUserMail.placeholder.userCompany')
+                            },
+                            {
+                                token: 'user_zip',
+                                label: QUILocale.get(lg, 'controls.SendUserMail.placeholder.userZip')
+                            },
+                            {
+                                token: 'user_username',
+                                label: QUILocale.get(lg, 'controls.SendUserMail.placeholder.userUsername')
+                            }
+                        ],
                         userName: MailData.name,
                         userLang: MailData.lang,
                         userEmail: MailData.email

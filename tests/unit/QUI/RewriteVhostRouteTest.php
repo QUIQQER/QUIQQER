@@ -68,6 +68,23 @@ class RewriteVhostRouteTest extends TestCase
         );
     }
 
+    public function testCurrentProjectLanguageRouteUrlDecodesUnicodePath(): void
+    {
+        $buildCurrentRouteUrl = new ReflectionMethod(
+            Rewrite::class,
+            'buildCurrentProjectLanguageRouteUrl'
+        );
+        $Request = Request::create(
+            'https://nerdspot.events/de/Blog/Kr%C3%BCmelmonster-Tag'
+            . '?_url=de%2FBlog%2FKr%C3%BCmelmonster-Tag&currency=EUR'
+        );
+
+        self::assertSame(
+            'https://nerdspot.events/de/Blog/Krümelmonster-Tag?currency=EUR',
+            $buildCurrentRouteUrl->invoke(null, $Request)
+        );
+    }
+
     private function getExpectedPath(string $path): string
     {
         $installationPath = trim(URL_DIR, '/');

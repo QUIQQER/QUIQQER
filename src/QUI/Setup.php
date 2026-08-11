@@ -54,10 +54,7 @@ class Setup
             !isset($_SERVER['argv'])
             || (isset($_SERVER['argv'][0]) && !str_contains($_SERVER['argv'][0], 'phpunit'))
         ) {
-            // nur Super User und system user darf dies
-            if (!QUI::getUsers()->isSystemUser(QUI::getUserBySession())) {
-                Permissions\Permission::checkSU(QUI::getUserBySession());
-            }
+            self::checkSetupPermission();
         }
 
         $Output->writeLn('> Start Session setup');
@@ -95,6 +92,17 @@ class Setup
 
         QUI::getEvents()->fireEvent('setupAllEnd', [$Output]);
         $Output->writeLn('> Done');
+    }
+
+    protected static function checkSetupPermission(): void
+    {
+        $User = QUI::getUserBySession();
+
+        // Fresh installations configure their root user via Permission::setUser()
+        // before an authenticated session user is available.
+        if (!QUI::getUsers()->isSystemUser($User)) {
+            Permissions\Permission::checkSU();
+        }
     }
 
     /**
