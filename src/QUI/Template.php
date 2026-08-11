@@ -973,7 +973,7 @@ class Template extends QUI\QDOM
      */
     protected function getAbsoluteSiteUrl(Interfaces\Projects\Site $Site): string
     {
-        $url = trim($Site->getUrlRewritten());
+        $url = $this->normalizeJsonLdText($Site->getUrlRewritten());
 
         if (str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
             return $url;
@@ -1010,7 +1010,14 @@ class Template extends QUI\QDOM
      */
     protected function normalizeJsonLdText(string $text): string
     {
-        return trim(html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+        $text = trim($text);
+
+        do {
+            $previous = $text;
+            $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        } while ($text !== $previous);
+
+        return $text;
     }
 
     /**

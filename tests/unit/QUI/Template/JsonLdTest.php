@@ -129,10 +129,32 @@ class JsonLdTest extends TestCase
         );
     }
 
+    public function testHtmlEntitiesAreFullyDecodedInTextAndUrls(): void
+    {
+        $Template = new AccessibleTemplate();
+        $Template->initializeJsonLd($this->createSite(
+            2,
+            'https://example.com/de/',
+            'de',
+            'de/Blog/Kr&amp;uuml;melmonster-Tag',
+            'NerdSpot &amp;mdash; Stories for Curious Minds'
+        ));
+
+        $schema = $Template->getJsonLd()->getJsonLdSchema();
+
+        self::assertStringContainsString('NerdSpot — Stories for Curious Minds', $schema);
+        self::assertStringContainsString('https://example.com/de/Blog/Krümelmonster-Tag', $schema);
+        self::assertStringNotContainsString('&mdash;', $schema);
+        self::assertStringNotContainsString('&uuml;', $schema);
+        self::assertStringNotContainsString('&amp;', $schema);
+    }
+
     private function createSite(
         int $siteId = 1,
         string $websiteBaseUrl = 'https://example.com/',
-        string $languagePath = ''
+        string $languagePath = '',
+        string $rewrittenUrl = 'de/example',
+        string $siteTitle = 'Example &mdash; page'
     ): Site {
         $Project = $this->createMock(Project::class);
         $Project->method('getVHostBaseUrl')->willReturn($websiteBaseUrl);
@@ -152,10 +174,10 @@ class JsonLdTest extends TestCase
         $Site = $this->createMock(\QUI\Projects\Site::class);
         $Site->method('getProject')->willReturn($Project);
         $Site->method('getId')->willReturn($siteId);
-        $Site->method('getUrlRewritten')->willReturn('de/example');
-        $Site->method('getAttribute')->willReturnCallback(static function (string $name): string {
+        $Site->method('getUrlRewritten')->willReturn($rewrittenUrl);
+        $Site->method('getAttribute')->willReturnCallback(static function (string $name) use ($siteTitle): string {
             return match ($name) {
-                'title' => 'Example &mdash; page',
+                'title' => $siteTitle,
                 'meta.description' => 'Description from meta settings',
                 'short' => 'Fallback description',
                 default => ''
