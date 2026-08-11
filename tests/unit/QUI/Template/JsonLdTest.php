@@ -149,18 +149,35 @@ class JsonLdTest extends TestCase
         self::assertStringNotContainsString('&amp;', $schema);
     }
 
+    public function testEmptyWebsiteTitleFallsBackToProjectName(): void
+    {
+        $Template = new AccessibleTemplate();
+        $Template->initializeJsonLd($this->createSite(
+            projectTitle: '',
+            projectName: 'nerdspott'
+        ));
+
+        self::assertSame(
+            'nerdspott',
+            $Template->getJsonLd()->getJsonLdNode('website')['name']
+        );
+    }
+
     private function createSite(
         int $siteId = 1,
         string $websiteBaseUrl = 'https://example.com/',
         string $languagePath = '',
         string $rewrittenUrl = 'de/example',
-        string $siteTitle = 'Example &mdash; page'
+        string $siteTitle = 'Example &mdash; page',
+        string $projectTitle = 'Example &amp; website',
+        string $projectName = 'example'
     ): Site {
         $Project = $this->createMock(Project::class);
         $Project->method('getVHostBaseUrl')->willReturn($websiteBaseUrl);
         $Project->method('getVHostPath')->willReturn($languagePath);
         $Project->method('getVHost')->willReturn('https://example.com');
-        $Project->method('getTitle')->willReturn('Example &amp; website');
+        $Project->method('getTitle')->willReturn($projectTitle);
+        $Project->method('getName')->willReturn($projectName);
         $Project->method('getLang')->willReturn('de');
         $Project->method('getConfig')->willReturnCallback(static function (false | string $name): string {
             return match ($name) {

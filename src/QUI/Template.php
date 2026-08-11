@@ -857,6 +857,10 @@ class Template extends QUI\QDOM
         $projectTitle = $this->normalizeJsonLdText($Project->getTitle());
         $siteTitle = $this->normalizeJsonLdText((string)$Site->getAttribute('title'));
 
+        if ($projectTitle === '') {
+            $projectTitle = $this->normalizeJsonLdText($Project->getName());
+        }
+
         $JsonLd->set('type', 'WebPage');
 
         $organizationId = $websiteUrl . '#organization';

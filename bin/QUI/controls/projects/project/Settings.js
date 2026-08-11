@@ -280,25 +280,28 @@ define('controls/projects/project/Settings', [
             }
 
 
-            var promises = [Project.setConfig(this.$config)];
+            var promises     = [Project.setConfig(this.$config)],
+                localeSaving = Promise.resolve();
 
             if (this.$ProjectTitle) {
-                promises.push(
-                    this.$ProjectTitle.save()
-                );
+                localeSaving = localeSaving.then(function () {
+                    return self.$ProjectTitle.save();
+                });
             }
 
             if (this.$Suffix) {
-                promises.push(
-                    this.$Suffix.save()
-                );
+                localeSaving = localeSaving.then(function () {
+                    return self.$Suffix.save();
+                });
             }
 
             if (this.$Prefix) {
-                promises.push(
-                    this.$Prefix.save()
-                );
+                localeSaving = localeSaving.then(function () {
+                    return self.$Prefix.save();
+                });
             }
+
+            promises.push(localeSaving);
 
             return Promise.all(promises).then(loadHide).catch(loadHide);
         },
@@ -353,7 +356,7 @@ define('controls/projects/project/Settings', [
             return new Promise(function (resolve) {
                 self.$hideBody().then(function () {
                     return Promise.all([
-                        self.$getLocaleData('project/' + self.$Project.getName(), 'title', 'quiqqer/core'),
+                        self.$getLocaleData('project/' + self.$Project.getName(), 'title', false),
                         self.$getLocaleData('project/' + self.$Project.getName(), 'template.prefix', 'quiqqer/core'),
                         self.$getLocaleData('project/' + self.$Project.getName(), 'template.suffix', 'quiqqer/core')
                     ]);
@@ -386,7 +389,7 @@ define('controls/projects/project/Settings', [
                             'group'  : 'project/' + self.$Project.getName(),
                             'var'    : 'title',
                             'type'   : 'php,js',
-                            'package': 'quiqqer/core',
+                            'package': false,
                             'data'   : localeData[0]
                         }).inject(
                             Body.getElement('.project-title-settings-container')
