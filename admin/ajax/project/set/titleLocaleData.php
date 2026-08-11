@@ -11,7 +11,7 @@
  */
 
 QUI::$Ajax->registerFunction(
-    'ajax_project_set_title_locale_data',
+    'ajax_project_set_titleLocaleData',
     static function (string $project, string $translations): array {
         $translations = json_decode($translations, true);
 

@@ -247,7 +247,7 @@ define('classes/projects/Project', [
          */
         getTitleLocaleData: function () {
             return new Promise(function (resolve, reject) {
-                Ajax.get('ajax_project_get_title_locale_data', resolve, {
+                Ajax.get('ajax_project_get_titleLocaleData', resolve, {
                     project: this.getName(),
                     onError: reject
                 });
@@ -264,7 +264,7 @@ define('classes/projects/Project', [
             const self = this;
 
             return new Promise(function (resolve, reject) {
-                Ajax.post('ajax_project_set_title_locale_data', function (result) {
+                Ajax.post('ajax_project_set_titleLocaleData', function (result) {
                     const group = 'project/' + self.getName();
 
                     Object.each(translations, function (title, language) {
