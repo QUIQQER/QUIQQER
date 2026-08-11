@@ -32,7 +32,7 @@ define('controls/projects/project/Settings', [
              Translation) {
     "use strict";
 
-    var lg = 'quiqqer/core';
+    const lg = 'quiqqer/core';
 
     /**
      * The Project settings panel
@@ -114,7 +114,7 @@ define('controls/projects/project/Settings', [
          * @method controls/projects/project/Settings#$onCreate
          */
         $onCreate: function () {
-            var self = this;
+            const self = this;
 
             this.Loader.show();
             this.getContent().addClass('qui-project-settings');
@@ -199,7 +199,7 @@ define('controls/projects/project/Settings', [
 
 
             Ajax.get('ajax_project_panel_categories_get', function (list) {
-                for (var i = 0, len = list.length; i < len; i++) {
+                for (let i = 0, len = list.length; i < len; i++) {
                     self.addCategory(list[i]);
                 }
 
@@ -215,7 +215,7 @@ define('controls/projects/project/Settings', [
         refreshData: function () {
             this.Loader.show();
 
-            var self = this;
+            const self = this;
 
             Promise.all([
                 this.getProject().getConfig(),
@@ -235,7 +235,7 @@ define('controls/projects/project/Settings', [
                 self.Loader.hide();
 
                 if (self.getAttribute('category')) {
-                    var Wanted = self.getCategoryBar().getElement(
+                    const Wanted = self.getCategoryBar().getElement(
                         self.getAttribute('category')
                     );
 
@@ -256,18 +256,18 @@ define('controls/projects/project/Settings', [
          * @return {Promise}
          */
         save: function () {
-            var self = this;
+            const self = this;
 
             this.Loader.show();
             this.$onCategoryLeave(false);
             
-            var Project  = this.getProject(),
-                name     = Project.getName(),
-                loadHide = function () {
+            const Project  = this.getProject(),
+                  name     = Project.getName(),
+                  loadHide = function () {
                     self.Loader.hide();
                 };
 
-            for (var project in Projects.$projects) {
+            for (const project in Projects.$projects) {
                 if (!Projects.$projects.hasOwnProperty(project)) {
                     continue;
                 }
@@ -280,8 +280,8 @@ define('controls/projects/project/Settings', [
             }
 
 
-            var promises     = [Project.setConfig(this.$config)],
-                localeSaving = Promise.resolve();
+            const promises = [Project.setConfig(this.$config)];
+            let localeSaving = Promise.resolve();
 
             if (this.$ProjectTitle) {
                 localeSaving = localeSaving.then(function () {
@@ -310,7 +310,7 @@ define('controls/projects/project/Settings', [
          * Opens the delete dialog
          */
         del: function () {
-            var self = this;
+            const self = this;
 
             new QUIConfirm({
                 icon       : 'fa fa-exclamation-circle',
@@ -350,8 +350,8 @@ define('controls/projects/project/Settings', [
          * @return {Promise}
          */
         openSettings: function () {
-            var self = this,
-                Body = this.$Container;
+            const self = this,
+                  Body = this.$Container;
 
             return new Promise(function (resolve) {
                 self.$hideBody().then(function () {
@@ -365,14 +365,14 @@ define('controls/projects/project/Settings', [
                         Body.set('html', result);
 
                         // set data
-                        var Form     = Body.getElement('Form'),
-                            Standard = Form.elements.default_lang,
-                            Template = Form.elements.template,
-                            Langs    = Form.elements.langs,
+                        const Form     = Body.getElement('Form'),
+                              Standard = Form.elements.default_lang,
+                              Template = Form.elements.template,
+                              Langs    = Form.elements.langs,
 
-                            langs    = self.$config.langs.split(',');
+                              langs = self.$config.langs.split(',');
 
-                        for (var i = 0, len = langs.length; i < len; i++) {
+                        for (let i = 0, len = langs.length; i < len; i++) {
                             new Element('option', {
                                 html : langs[i],
                                 value: langs[i]
@@ -482,8 +482,8 @@ define('controls/projects/project/Settings', [
          */
         openAdminSettings: function () {
             return new Promise(function (resolve) {
-                var self = this,
-                    Body = this.$Container;
+                const self = this,
+                      Body = this.$Container;
 
                 this.$onCategoryLeave().then(function () {
                     UtilsTemplate.get('project/settingsAdmin', function (result) {
@@ -582,8 +582,8 @@ define('controls/projects/project/Settings', [
          */
         openMediaSettings: function () {
             return this.$onCategoryLeave().then(function () {
-                var self      = this,
-                    Container = this.$Container;
+                const self      = this,
+                      Container = this.$Container;
 
                 Container.set('html', '');
 
@@ -685,12 +685,12 @@ define('controls/projects/project/Settings', [
          * @param {String} lang
          */
         addLangToProject: function (lang) {
-            var self = this;
+            const self = this;
 
             self.Loader.show();
 
             this.$Project.getConfig(function (config) {
-                var langs = config.langs.split(',');
+                const langs = config.langs.split(',');
                 langs.push(lang);
 
                 self.$Project.setConfig({
@@ -714,8 +714,8 @@ define('controls/projects/project/Settings', [
          * @return {Promise}
          */
         $onCategoryEnter: function (Panel, Category) {
-            var self = this,
-                name = Category.getAttribute('name');
+            const self = this,
+                  name = Category.getAttribute('name');
 
             switch (name) {
                 case "settings":
@@ -731,7 +731,7 @@ define('controls/projects/project/Settings', [
 
                 return new Promise(function (resolve) {
                     Ajax.get('ajax_project_panel_categories_category', function (result) {
-                        var Body = self.$Container;
+                        const Body = self.$Container;
 
                         if (!result) {
                             result = '';
@@ -740,7 +740,7 @@ define('controls/projects/project/Settings', [
                         Body.set('html', '<form>' + result + '</form>');
                         Body.getElements('tr td:first-child').addClass('first');
 
-                        var Form = Body.getElement('form');
+                        const Form = Body.getElement('form');
 
                         Form.name = Category.getAttribute('name');
                         Form.addEvent('submit', function (event) {
@@ -751,7 +751,7 @@ define('controls/projects/project/Settings', [
                         QUIFormUtils.setDataToForm(self.$config, Form);
 
                         Form.getElements('input').each(function (Input) {
-                            var name = Input.get('name');
+                            const name = Input.get('name');
                             if (name in self.$defaults) {
                                 Input.set('data-qui-options-defaultcolor', self.$defaults[name]);
                             }
@@ -761,8 +761,8 @@ define('controls/projects/project/Settings', [
                             QUI.parse(Body),
                             ControlUtils.parse(Body)
                         ]).then(function () {
-                            var i, len, Control;
-                            var quiids = Body.getElements('[data-quiid]');
+                            let i, len, Control;
+                            const quiids = Body.getElements('[data-quiid]');
 
                             for (i = 0, len = quiids.length; i < len; i++) {
                                 Control = QUI.Controls.getById(quiids[i].get('data-quiid'));
@@ -792,9 +792,9 @@ define('controls/projects/project/Settings', [
          * @param {Object} Btn
          */
         $openCreatePageStructureDialog: function (Btn) {
-            var self = this;
+            const self = this;
 
-            var defaultButtonText = Locale.get(
+            const defaultButtonText = Locale.get(
                 'quiqqer/core',
                 'projects.project.settings.panel.defaultSitestructure.button'
             );
@@ -864,7 +864,7 @@ define('controls/projects/project/Settings', [
          * @returns {Promise}
          */
         $showBody: function () {
-            var Body = this.$Container;
+            const Body = this.$Container;
 
             Body.setStyles({
                 top: -50
