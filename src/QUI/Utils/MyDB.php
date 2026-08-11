@@ -77,6 +77,8 @@ class MyDB implements \Stringable
 
     public function getPDO(): ?\PDO
     {
+        // MyDB is the deprecated compatibility bridge and must keep returning PDO for legacy consumers.
+        // nosemgrep: quiqqer.forbid-legacy-database-access
         return QUI::getPDO();
     }
 
