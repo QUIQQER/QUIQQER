@@ -163,7 +163,7 @@ class Manager
      */
     public function setup(): void
     {
-        // moved to migration v2
+        Install::user();
     }
 
     /**
