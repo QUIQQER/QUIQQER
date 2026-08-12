@@ -49,7 +49,7 @@ class InstallSqliteTest extends TestCase
         $LegacyTable->addIndex(['address'], 'address');
         $SchemaManager->createTable($LegacyTable);
 
-        Install::user();
+        (new Manager())->setup();
 
         $MigratedTable = $SchemaManager->introspectTable($tableName);
         $AddressColumn = $MigratedTable->getColumn('address');
