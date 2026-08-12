@@ -901,6 +901,21 @@ class Template extends QUI\QDOM
             '@id' => $organizationId
         ]);
 
+        $datePublished = Utils\StructuredData::getValidDate($Site->getAttribute('release_from'))
+            ?? Utils\StructuredData::getValidDate($Site->getAttribute('c_date'));
+        $dateModified = Utils\StructuredData::getModificationDate(
+            $Site->getAttribute('c_date'),
+            $Site->getAttribute('e_date')
+        );
+
+        if ($datePublished !== null) {
+            $JsonLd->add('datePublished', $datePublished);
+        }
+
+        if ($dateModified !== null) {
+            $JsonLd->add('dateModified', $dateModified);
+        }
+
         $description = $this->normalizeJsonLdText((string)$Site->getAttribute('meta.description'));
 
         if ($description === '') {

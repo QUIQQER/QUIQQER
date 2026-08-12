@@ -24,6 +24,8 @@ class JsonLdTest extends TestCase
         self::assertSame('Example — page', $JsonLd->get('name'));
         self::assertSame('Description from meta settings', $JsonLd->get('description'));
         self::assertSame('de', $JsonLd->get('inLanguage'));
+        self::assertSame('2026-08-12 10:00:00', $JsonLd->get('datePublished'));
+        self::assertSame('2026-08-12 11:00:00', $JsonLd->get('dateModified'));
 
         $website = $JsonLd->get('isPartOf');
         self::assertSame('https://example.com/#website', $website['@id']);
@@ -54,6 +56,25 @@ class JsonLdTest extends TestCase
         self::assertSame('Custom collection', $JsonLd->get('name'));
         self::assertSame('BreadcrumbList', $JsonLd->get('breadcrumb')['@type']);
         self::assertStringContainsString('"@type":"CollectionPage"', $JsonLd->getJsonLdSchema());
+    }
+
+    public function testTemplateOmitsUnchangedOrInvalidModificationDates(): void
+    {
+        $Template = new AccessibleTemplate();
+        $Template->initializeJsonLd($this->createSite(
+            creationDate: '2026-08-12 10:00:00',
+            editDate: '2026-08-12 10:00:00'
+        ));
+
+        self::assertNull($Template->getJsonLd()->get('dateModified'));
+
+        $Template = new AccessibleTemplate();
+        $Template->initializeJsonLd($this->createSite(
+            creationDate: '2026-08-12 10:00:00',
+            editDate: 'not-a-date'
+        ));
+
+        self::assertNull($Template->getJsonLd()->get('dateModified'));
     }
 
     public function testInternalPageReferencesSiteNodesAndAddsBreadcrumbs(): void
@@ -286,7 +307,9 @@ class JsonLdTest extends TestCase
         string $rewrittenUrl = 'de/example',
         string $siteTitle = 'Example &mdash; page',
         string $projectTitle = 'Example &amp; website',
-        string $projectName = 'example'
+        string $projectName = 'example',
+        string $creationDate = '2026-08-12 10:00:00',
+        string $editDate = '2026-08-12 11:00:00'
     ): Site {
         $Project = $this->createMock(Project::class);
         $Project->method('getVHostBaseUrl')->willReturn($websiteBaseUrl);
@@ -308,11 +331,17 @@ class JsonLdTest extends TestCase
         $Site->method('getProject')->willReturn($Project);
         $Site->method('getId')->willReturn($siteId);
         $Site->method('getUrlRewritten')->willReturn($rewrittenUrl);
-        $Site->method('getAttribute')->willReturnCallback(static function (string $name) use ($siteTitle): string {
+        $Site->method('getAttribute')->willReturnCallback(static function (string $name) use (
+            $siteTitle,
+            $creationDate,
+            $editDate
+        ): string {
             return match ($name) {
                 'title' => $siteTitle,
                 'meta.description' => 'Description from meta settings',
                 'short' => 'Fallback description',
+                'release_from', 'c_date' => $creationDate,
+                'e_date' => $editDate,
                 default => ''
             };
         });
