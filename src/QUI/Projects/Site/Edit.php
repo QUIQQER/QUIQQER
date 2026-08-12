@@ -951,6 +951,8 @@ class Edit extends Site
         }
 
         // save main data
+        $editDate = date('Y-m-d H:i:s');
+
         try {
             QUI::getDataBaseConnection()->update(
                 $this->TABLE,
@@ -962,6 +964,7 @@ class Edit extends Site
                     'type' => $this->getAttribute('type'),
                     'layout' => $this->getAttribute('layout'),
                     'nav_hide' => $this->getAttribute('nav_hide') ? 1 : 0,
+                    'e_date' => $editDate,
                     'e_user' => $SaveUser->getUUID(),
                     // ORDER
                     'order_type' => $order_type,
@@ -1466,10 +1469,13 @@ class Edit extends Site
 
         $childCount = $this->hasChildren(true);
 
+        $creationDate = date('Y-m-d H:i:s');
+
         $_params = [
             'name' => $new_name,
             'title' => $new_name,
-            'c_date' => date('Y-m-d H:i:s'),
+            'c_date' => $creationDate,
+            'e_date' => $creationDate,
             'e_user' => $User->getUUID(),
             'c_user' => $User->getUUID(),
             'c_user_ip' => QUI\Utils\System::getClientIP(),

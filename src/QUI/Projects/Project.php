@@ -1676,6 +1676,8 @@ class Project implements \Stringable
                 ->fetchOne();
 
             if (!$firstChildExists) {
+                $creationDate = date('Y-m-d H:i:s');
+
                 $Connection->insert($table, [
                     'id' => 1,
                     'active' => 1,
@@ -1683,7 +1685,8 @@ class Project implements \Stringable
                     'name' => 'start',
                     'title' => 'Start',
                     'type' => 'standard',
-                    'c_date' => date('Y-m-d H:i:s'),
+                    'c_date' => $creationDate,
+                    'e_date' => $creationDate,
                     'c_user' => $User->getUUID(),
                     'c_user_ip' => QUI\Utils\System::getClientIP()
                 ]);
