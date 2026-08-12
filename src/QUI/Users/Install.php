@@ -37,6 +37,11 @@ class Install
                 "default" => ""
             ]);
             self::ensureColumnDefinition($Connection, $table, "birthday", "date", ["notnull" => false]);
+            self::ensureColumnDefinition($Connection, $table, "address", "string", [
+                "length" => 50,
+                "notnull" => false,
+                "default" => null
+            ]);
 
             if (!$Platform instanceof AbstractMySQLPlatform) {
                 return;
