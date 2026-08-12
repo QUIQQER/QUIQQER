@@ -3,9 +3,29 @@
 namespace QUI\Projects;
 
 use QUI;
+use QUI\Interfaces\Projects\Site as SiteInterface;
 
 class ProjectSiteDbalTest extends ProjectIntegrationTestCase
 {
+    public function testSiteRewrittenUrlSupportsQueryParametersThroughInterface(): void
+    {
+        /** @var SiteInterface $Site */
+        $Site = self::getTestProject()->firstChild();
+
+        $url = $Site->getUrlRewritten([], [
+            'checkout' => '1',
+            'return' => 'basket overview'
+        ]);
+        $query = [];
+
+        parse_str((string)parse_url($url, PHP_URL_QUERY), $query);
+
+        self::assertSame([
+            'checkout' => '1',
+            'return' => 'basket overview'
+        ], $query);
+    }
+
     public function testSiteChildCanBeCreatedAndLoadedFromTestProject(): void
     {
         $Project = self::getTestProject();
