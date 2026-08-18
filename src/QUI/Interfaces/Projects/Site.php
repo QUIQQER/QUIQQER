@@ -194,8 +194,9 @@ interface Site extends QUI\QDOMInterface
 
     /**
      * @param array<string, mixed> $params
+     * @param array<string, mixed> $getParams
      */
-    public function getUrlRewritten(array $params = []): string;
+    public function getUrlRewritten(array $params = [], array $getParams = []): string;
 
     public function getParentId(): int;
 

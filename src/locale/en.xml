@@ -5443,6 +5443,15 @@ After logging in you will be prompted to set a new password.
         <locale name="projects.project.settings.panel.admin.email">
             <en><![CDATA[Administration E-mail]]></en>
         </locale>
+        <locale name="projects.project.settings.panel.projectTitle">
+            <en><![CDATA[Website / project name]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.projectTitle.description">
+            <en><![CDATA[
+            Language-specific display name of the project. Among other uses, this is the website name in structured
+            data. If left empty, the internal project name is used.
+            ]]></en>
+        </locale>
         <locale name="projects.project.settings.panel.set.standard">
             <en><![CDATA[Set as default project]]></en>
         </locale>

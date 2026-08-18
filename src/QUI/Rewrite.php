@@ -34,6 +34,7 @@ use function is_array;
 use function is_string;
 use function ltrim;
 use function mb_strlen;
+use function mb_strtolower;
 use function mb_substr;
 use function mb_substr_count;
 use function parse_url;
@@ -589,8 +590,58 @@ class Rewrite
         }
 
         if ($request_url != $url) {
+            $redirectUrl = self::getCanonicalCaseRedirectUrl(
+                $request_url,
+                $url,
+                QUI::getRequest()
+            );
+
+            if ($redirectUrl !== null) {
+                $Redirect = new RedirectResponse(
+                    $redirectUrl,
+                    Response::HTTP_MOVED_PERMANENTLY
+                );
+                $Redirect->send();
+                exit;
+            }
+
             $this->site->setAttribute('canonical', $url);
         }
+    }
+
+    /**
+     * Return the canonical URL when request and target paths differ only by case.
+     */
+    private static function getCanonicalCaseRedirectUrl(
+        string $requestUrl,
+        string $canonicalUrl,
+        Request $Request
+    ): ?string {
+        if (
+            !$Request->isMethod(Request::METHOD_GET)
+            && !$Request->isMethod(Request::METHOD_HEAD)
+        ) {
+            return null;
+        }
+
+        $requestPath = parse_url($requestUrl, PHP_URL_PATH);
+        $canonicalPath = parse_url($canonicalUrl, PHP_URL_PATH);
+
+        if (!is_string($requestPath) || !is_string($canonicalPath)) {
+            return null;
+        }
+
+        // The request URL is already decoded in exec(); decoding it again could change encoded path delimiters.
+        $canonicalPath = rawurldecode($canonicalPath);
+
+        if (
+            $requestPath === $canonicalPath
+            || mb_strtolower($requestPath, 'UTF-8') !== mb_strtolower($canonicalPath, 'UTF-8')
+        ) {
+            return null;
+        }
+
+        return self::appendPublicQueryString($canonicalUrl, $Request);
     }
 
     /**

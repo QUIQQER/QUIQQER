@@ -3,9 +3,29 @@
 namespace QUI\Projects;
 
 use QUI;
+use QUI\Interfaces\Projects\Site as SiteInterface;
 
 class ProjectSiteDbalTest extends ProjectIntegrationTestCase
 {
+    public function testSiteRewrittenUrlSupportsQueryParametersThroughInterface(): void
+    {
+        /** @var SiteInterface $Site */
+        $Site = self::getTestProject()->firstChild();
+
+        $url = $Site->getUrlRewritten([], [
+            'checkout' => '1',
+            'return' => 'basket overview'
+        ]);
+        $query = [];
+
+        parse_str((string)parse_url($url, PHP_URL_QUERY), $query);
+
+        self::assertSame([
+            'checkout' => '1',
+            'return' => 'basket overview'
+        ], $query);
+    }
+
     public function testSiteChildCanBeCreatedAndLoadedFromTestProject(): void
     {
         $Project = self::getTestProject();
@@ -29,6 +49,48 @@ class ProjectSiteDbalTest extends ProjectIntegrationTestCase
         $this->assertSame($siteTitle, $Site->getAttribute('title'));
         $this->assertSame('PHPUnit short text', $Site->getAttribute('short'));
         $this->assertSame('<p>PHPUnit content</p>', $Site->getAttribute('content'));
+    }
+
+    public function testSiteCreationAndSavePersistEditDates(): void
+    {
+        $Project = self::getTestProject();
+        $Root = $Project->firstChild()->getEdit();
+
+        $siteId = ProjectTestHelper::runAsSystemUser(static function () use ($Root): int {
+            return $Root->createChild([
+                'name' => 'phpunit-edit-date-' . uniqid(),
+                'title' => 'PHPUnit Edit Date'
+            ]);
+        });
+
+        $Site = new Site\Edit($Project, $siteId);
+        $creationDate = (string)$Site->getAttribute('c_date');
+
+        $this->assertSame($creationDate, $Site->getAttribute('e_date'));
+        $this->assertNotFalse(\DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $creationDate));
+
+        $historicDate = '2000-01-01 00:00:00';
+        QUI::getDataBaseConnection()->update(
+            $Project->table(),
+            [
+                'c_date' => $historicDate,
+                'e_date' => null
+            ],
+            ['id' => $siteId]
+        );
+
+        ProjectTestHelper::runAsSystemUser(static function () use ($Project, $siteId): void {
+            $Site = new Site\Edit($Project, $siteId);
+            $Site->setAttribute('title', 'PHPUnit Edit Date Updated');
+            $Site->save();
+        });
+
+        $Site = new Site\Edit($Project, $siteId);
+        $editDate = (string)$Site->getAttribute('e_date');
+
+        $this->assertSame($historicDate, $Site->getAttribute('c_date'));
+        $this->assertNotFalse(\DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $editDate));
+        $this->assertGreaterThan(strtotime($historicDate), strtotime($editDate));
     }
 
     public function testProjectSitesIdsCanFilterCountAndLimitCreatedSite(): void

@@ -17,10 +17,16 @@ use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
 use function htmlspecialchars;
+use function html_entity_decode;
 use function implode;
 use function is_array;
+use function ltrim;
 use function realpath;
+use function rtrim;
+use function str_starts_with;
 use function str_replace;
+use function strlen;
+use function substr;
 use function trim;
 
 use const ETC_DIR;
@@ -73,6 +79,11 @@ class Template extends QUI\QDOM
     protected ?Package\Package $TemplateParent = null;
 
     protected ?Projects\Project $Project = null;
+
+    /**
+     * Page-scoped structured data.
+     */
+    protected ?Utils\JsonLd $jsonLd = null;
 
     /**
      * Project template list
@@ -134,6 +145,21 @@ class Template extends QUI\QDOM
     public function getExtendHeader(): array
     {
         return $this->header;
+    }
+
+    /**
+     * Return the structured data for the current page.
+     *
+     * Site type scripts can add or override properties before the template
+     * header is rendered. Use set('type', ...) to replace the WebPage default.
+     */
+    public function getJsonLd(): Utils\JsonLd
+    {
+        if ($this->jsonLd === null) {
+            $this->jsonLd = new Utils\JsonLd();
+        }
+
+        return $this->jsonLd;
     }
 
     public function extendHeaderWithCSSFile(string $cssPath, int $priority = 3): void
@@ -436,6 +462,7 @@ class Template extends QUI\QDOM
         $this->setAttribute('Project', $Project);
         $this->setAttribute('Site', $Site);
         $this->setAttribute('Engine', $Engine);
+        $this->jsonLd = $this->createDefaultJsonLd($Site);
 
         $Engine->assign([
             'URL_DIR' => URL_DIR,
@@ -740,6 +767,8 @@ class Template extends QUI\QDOM
         $headers = $this->header;
         $headerExtend = implode('', $headers);
 
+        $headerExtend .= $this->getJsonLd()->getJsonLdSchema();
+
         // custom CSS
         $customCSS = $Project->getName() . '/bin/custom.css';
         $customJS = $Project->getName() . '/bin/custom.js';
@@ -814,6 +843,200 @@ class Template extends QUI\QDOM
         }
 
         return $Engine->fetch(LIB_DIR . 'templates/header.html');
+    }
+
+    /**
+     * Build the general structured data shared by all frontend site types.
+     */
+    protected function createDefaultJsonLd(Interfaces\Projects\Site $Site): Utils\JsonLd
+    {
+        $Project = $Site->getProject();
+        $JsonLd = new Utils\JsonLd();
+        $websiteUrl = $this->getWebsiteUrl($Project);
+        $pageUrl = $this->getAbsoluteSiteUrl($Site);
+        $projectTitle = $this->normalizeJsonLdText($Project->getTitle());
+        $siteTitle = $this->normalizeJsonLdText((string)$Site->getAttribute('title'));
+
+        if ($projectTitle === '') {
+            $projectTitle = $this->normalizeJsonLdText($Project->getName());
+        }
+
+        $JsonLd->set('type', 'WebPage');
+
+        $organizationId = $websiteUrl . '#organization';
+        $websiteId = $websiteUrl . '#website';
+
+        $Publisher = new Controls\Utils\MetaList\Publisher();
+        $Publisher->importFromProject($Project);
+        $organization = $Publisher->toArray();
+        $organization['@id'] = $organizationId;
+
+        if (empty($organization['name'])) {
+            $organization['name'] = $projectTitle;
+        }
+
+        if (empty($organization['url'])) {
+            $organization['url'] = $websiteUrl;
+        }
+
+        $website = [
+            '@type' => 'WebSite',
+            '@id' => $websiteId,
+            'url' => $websiteUrl,
+            'name' => $projectTitle,
+            'inLanguage' => $Project->getLang(),
+            'publisher' => [
+                '@id' => $organizationId
+            ]
+        ];
+
+        $JsonLd->add('@id', $pageUrl . '#webpage');
+        $JsonLd->add('url', $pageUrl);
+        $JsonLd->add('name', $siteTitle);
+        $JsonLd->add('inLanguage', $Project->getLang());
+        $JsonLd->add('isPartOf', [
+            '@id' => $websiteId
+        ]);
+        $JsonLd->add('publisher', [
+            '@id' => $organizationId
+        ]);
+
+        $datePublished = Utils\StructuredData::getValidDate($Site->getAttribute('release_from'))
+            ?? Utils\StructuredData::getValidDate($Site->getAttribute('c_date'));
+        $dateModified = Utils\StructuredData::getModificationDate(
+            $Site->getAttribute('c_date'),
+            $Site->getAttribute('e_date')
+        );
+
+        if ($datePublished !== null) {
+            $JsonLd->add('datePublished', $datePublished);
+        }
+
+        if ($dateModified !== null) {
+            $JsonLd->add('dateModified', $dateModified);
+        }
+
+        $description = $this->normalizeJsonLdText((string)$Site->getAttribute('meta.description'));
+
+        if ($description === '') {
+            $description = $this->normalizeJsonLdText((string)$Site->getAttribute('short'));
+        }
+
+        if ($description !== '') {
+            $JsonLd->add('description', $description);
+        }
+
+        try {
+            $isHomePage = $Site->getId() === $Project->firstChild()->getId();
+        } catch (QUI\Exception) {
+            $isHomePage = false;
+        }
+
+        if ($isHomePage && $Project->getVHostPath() === '') {
+            $JsonLd->setJsonLdNode('organization', $organization);
+            $JsonLd->setJsonLdNode('website', $website);
+        }
+
+        try {
+            $breadcrumbSites = $Site->getParents();
+        } catch (QUI\Exception) {
+            $breadcrumbSites = [];
+        }
+
+        $breadcrumbSites[] = $Site;
+        $itemListElements = [];
+
+        foreach ($breadcrumbSites as $BreadcrumbSite) {
+            $name = $this->normalizeJsonLdText((string)$BreadcrumbSite->getAttribute('title'));
+
+            if ($name === '') {
+                $name = $this->normalizeJsonLdText((string)$BreadcrumbSite->getAttribute('name'));
+            }
+
+            if ($name === '') {
+                continue;
+            }
+
+            try {
+                $itemUrl = $this->getAbsoluteSiteUrl($BreadcrumbSite);
+            } catch (QUI\Exception) {
+                continue;
+            }
+
+            $itemListElements[] = [
+                '@type' => 'ListItem',
+                'position' => count($itemListElements) + 1,
+                'name' => $name,
+                'item' => $itemUrl
+            ];
+        }
+
+        if (count($itemListElements) > 1) {
+            $breadcrumbId = $pageUrl . '#breadcrumb';
+
+            $JsonLd->set('breadcrumb', [
+                '@id' => $breadcrumbId
+            ]);
+            $JsonLd->setJsonLdNode('breadcrumb', [
+                '@type' => 'BreadcrumbList',
+                '@id' => $breadcrumbId,
+                'itemListElement' => $itemListElements
+            ]);
+        }
+
+        return $JsonLd;
+    }
+
+    /**
+     * Return the absolute rewritten URL of a site.
+     */
+    protected function getAbsoluteSiteUrl(Interfaces\Projects\Site $Site): string
+    {
+        $url = $this->normalizeJsonLdText($Site->getUrlRewritten());
+
+        if (str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
+            return $url;
+        }
+
+        $host = rtrim($Site->getProject()->getVHost(true, true), '/');
+
+        return $host . URL_DIR . ltrim($url, '/');
+    }
+
+    /**
+     * Return the domain-level website URL without a project language path.
+     */
+    protected function getWebsiteUrl(Project $Project): string
+    {
+        $websiteUrl = rtrim($Project->getVHostBaseUrl(), '/') . '/';
+        $languagePath = trim($Project->getVHostPath(), '/');
+
+        if ($languagePath === '') {
+            return $websiteUrl;
+        }
+
+        $languageSuffix = '/' . $languagePath . '/';
+
+        if (!str_ends_with($websiteUrl, $languageSuffix)) {
+            return $websiteUrl;
+        }
+
+        return substr($websiteUrl, 0, -strlen($languagePath . '/'));
+    }
+
+    /**
+     * Normalize textual content for JSON-LD output.
+     */
+    protected function normalizeJsonLdText(string $text): string
+    {
+        $text = trim($text);
+
+        do {
+            $previous = $text;
+            $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        } while ($text !== $previous);
+
+        return $text;
     }
 
     /**

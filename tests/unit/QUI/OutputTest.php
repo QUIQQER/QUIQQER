@@ -4,6 +4,7 @@ namespace QUI;
 
 use PHPUnit\Framework\TestCase;
 use QUI\Projects\Project;
+use QUI\Utils\JsonLd;
 use ReflectionMethod;
 
 class OutputTest extends TestCase
@@ -95,5 +96,23 @@ class OutputTest extends TestCase
             'alt="Test">',
             $Output->parse($html)
         );
+    }
+
+    public function testParsePreservesUnicodeInsideJsonLd(): void
+    {
+        $JsonLd = new JsonLd();
+        $JsonLd->set('type', 'WebPage');
+        $JsonLd->set('name', 'Kr&uuml;melmonster — Grüße');
+        $JsonLd->set('url', 'https://example.com/Kr&uuml;melmonster');
+
+        $html = '<!doctype html><html><head>' . $JsonLd->getJsonLdSchema() . '</head>' .
+            '<body><img src="/media/image.jpg" alt="Krümelmonster"></body></html>';
+
+        $result = (new Output())->parse($html);
+
+        self::assertStringContainsString('Krümelmonster — Grüße', $result);
+        self::assertStringContainsString('https://example.com/Krümelmonster', $result);
+        self::assertStringNotContainsString('Kr&uuml;melmonster', $result);
+        self::assertStringNotContainsString('&mdash;', $result);
     }
 }
