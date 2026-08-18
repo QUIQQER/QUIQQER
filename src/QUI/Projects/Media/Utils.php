@@ -953,10 +953,10 @@ class Utils
     public static function stripFolderName(string $str): string
     {
         $str = QUI\Utils\Convert::convertRoman($str);
-        $str = preg_replace('/[^0-9a-zA-Z\-]/', '_', $str);
+        $str = preg_replace('/[^0-9a-zA-Z\-]/', '_', $str) ?? $str;
 
         // clean double _
-        return preg_replace('/[_]{2,}/', "_", $str);
+        return preg_replace('/[_]{2,}/', "_", $str) ?? $str;
     }
 
     /**
@@ -1022,14 +1022,14 @@ class Utils
             $str
         );
 
-        $str = preg_replace('/[^0-9_a-zA-Z\ \.\-]/', '', $str);
+        $str = preg_replace('/[^0-9_a-zA-Z\ \.\-]/', '', $str) ?? $str;
 
         // delete the dots but not the last dot
         $str = str_replace('.', '_', $str);
         $str = StringUtils::replaceLast('_', '.', $str);
 
         // FIX
-        return preg_replace('/[_]{2,}/', "_", $str);
+        return preg_replace('/[_]{2,}/', "_", $str) ?? $str;
     }
 
     /**
@@ -1325,7 +1325,7 @@ class Utils
                 }
 
                 $result[] = [
-                    'attribute' => trim($Attribute->nodeValue),
+                    'attribute' => trim($Attribute->nodeValue ?? ''),
                     'default' => $Attribute->getAttribute('default')
                 ];
             }

@@ -68,14 +68,22 @@ class Autoloader
      *
      * Initializes the class by loading the composer autoloader if not already loaded.
      */
-    public static function init(): void
+    public static function init(): ClassLoader
     {
         if (self::$ComposerLoader) {
-            return;
+            return self::$ComposerLoader;
         }
 
-        self::$ComposerLoader = require dirname(__FILE__, 5) . '/autoload.php';
+        $ComposerLoader = require dirname(__FILE__, 5) . '/autoload.php';
+
+        if (!$ComposerLoader instanceof ClassLoader) {
+            throw new \RuntimeException('Composer autoloader could not be initialized.');
+        }
+
+        self::$ComposerLoader = $ComposerLoader;
         require_once dirname(__FILE__, 2) . '/classmap/QUI.php';
+
+        return $ComposerLoader;
     }
 
     /**
@@ -87,7 +95,7 @@ class Autoloader
      */
     public static function load(string $classname): bool
     {
-        self::init();
+        $ComposerLoader = self::init();
 
         if (class_exists($classname, false)) {
             return true;
@@ -119,7 +127,7 @@ class Autoloader
             }
         }
 
-        $composerLoaded = (bool)self::$ComposerLoader->loadClass($classname);
+        $composerLoaded = (bool)$ComposerLoader->loadClass($classname);
 
         if ($composerLoaded) {
             return true;

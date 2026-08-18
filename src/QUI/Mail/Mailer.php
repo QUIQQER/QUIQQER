@@ -42,7 +42,7 @@ class Mailer extends QUI\QDOM
     /**
      * Mail template
      */
-    public ?Template $Template = null;
+    public Template $Template;
 
     /**
      * list of recipients
@@ -465,8 +465,8 @@ class Mailer extends QUI\QDOM
 
         $html = $Output->parse($html);
 
-        $html = preg_replace('#<picture([^>]*)>#i', '', $html);
-        $html = preg_replace('#<source([^>]*)>#i', '', $html);
+        $html = preg_replace('#<picture([^>]*)>#i', '', $html) ?? $html;
+        $html = preg_replace('#<source([^>]*)>#i', '', $html) ?? $html;
 
         return str_replace('</picture>', '', $html);
     }

@@ -563,9 +563,11 @@ class Manager
     public static function getHandler(bool | string $type = false): Stash\Interfaces\DriverInterface | null
     {
         if ($type) {
-            $handlers = self::$handlers;
+            if (self::$handlers === null) {
+                self::$handlers = self::getHandlers();
+            }
 
-            foreach ($handlers as $Handler) {
+            foreach (self::$handlers as $Handler) {
                 if ($Handler::class == $type) {
                     return $Handler;
                 }
@@ -845,7 +847,17 @@ class Manager
      */
     public static function purge(): void
     {
-        self::$Stash->purge();
+        if (self::$Stash === null) {
+            self::getStash();
+        }
+
+        $Stash = self::$Stash;
+
+        if ($Stash === null) {
+            throw new \LogicException('Cache pool was not initialized.');
+        }
+
+        $Stash->purge();
 
         try {
             QUI::getEvents()->fireEvent('cachePurge');

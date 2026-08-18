@@ -997,7 +997,7 @@ class Manager
                 $val = (string)$val;
 
                 if (!Uuid::isValid($val)) {
-                    $val = preg_replace('/[^0-9]/', '', $val);
+                    $val = preg_replace('/[^0-9]/', '', $val) ?? $val;
                 }
                 break;
 

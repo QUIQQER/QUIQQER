@@ -369,7 +369,7 @@ class Manager
      */
     protected function getUserUploadDir(null | QUI\Interfaces\Users\User $User = null): string
     {
-        if (!QUI::getUsers()->isUser($User)) {
+        if ($User === null || !QUI::getUsers()->isUser($User)) {
             $User = QUI::getUserBySession();
         }
 

@@ -41,7 +41,7 @@ QUI::getAjax()->registerFunction(
                 continue;
             }
 
-            $type = preg_replace('/[^\x09\x0A\x0D\x20-\x{D7FF}\x{E000}-\x{FFFD}]/u', '', $type);
+            $type = preg_replace('/[^\x09\x0A\x0D\x20-\x{D7FF}\x{E000}-\x{FFFD}]/u', '', $type) ?? $type;
             $type = str_replace(['"', "'"], '-', $type);
             $type = str_replace(['&', '<', '>'], '-', $type);
 

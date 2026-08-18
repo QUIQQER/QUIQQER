@@ -787,7 +787,7 @@ class Manager
      */
     public static function clearUsername(string $username): string
     {
-        return preg_replace('/[^a-zA-Z0-9-_äöüß@\.\+]/', '', $username);
+        return preg_replace('/[^a-zA-Z0-9-_äöüß@\.\+]/', '', $username) ?? $username;
     }
 
     /**

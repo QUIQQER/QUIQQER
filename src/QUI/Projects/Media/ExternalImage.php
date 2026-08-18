@@ -73,7 +73,13 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
      */
     public function getProject(): Project
     {
-        return QUI::getRewrite()->getProject();
+        $Project = QUI::getRewrite()->getProject();
+
+        if ($Project === null) {
+            throw new Exception('No project is available for the external image.');
+        }
+
+        return $Project;
     }
 
     /**

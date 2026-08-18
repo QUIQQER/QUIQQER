@@ -106,7 +106,7 @@ class Locale implements \Stringable
      */
     public function setCurrent(string $lang): void
     {
-        $lang = preg_replace('/[^a-zA-Z_]/', '', $lang);
+        $lang = preg_replace('/[^a-zA-Z_]/', '', $lang) ?? $lang;
         $lang = trim($lang);
 
         if (!empty($lang)) {
@@ -239,7 +239,7 @@ class Locale implements \Stringable
      */
     public function getTranslationFile(string $lang, string $group): string
     {
-        $lang = preg_replace('/[^a-zA-Z]/', '', $lang);
+        $lang = preg_replace('/[^a-zA-Z]/', '', $lang) ?? $lang;
         $locale = StringHelper::toLower($lang);//. '_' . StringHelper::toUpper($lang);
         $group = str_replace('/', '_', $group);
 

@@ -465,8 +465,8 @@ class Queue
             $Output->setSetting('parse-to-picture-elements', false);
             $html = $Output->parse($html);
 
-            $html = preg_replace('#<picture([^>]*)>#i', '', $html);
-            $html = preg_replace('#<source([^>]*)>#i', '', $html);
+            $html = preg_replace('#<picture([^>]*)>#i', '', $html) ?? $html;
+            $html = preg_replace('#<source([^>]*)>#i', '', $html) ?? $html;
             $html = str_replace('</picture>', '', $html);
 
             $PhpMailer->From = $params['from'];

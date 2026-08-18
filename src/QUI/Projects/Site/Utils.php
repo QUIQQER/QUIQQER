@@ -230,7 +230,12 @@ class Utils
 
                 for ($f = 0, $fLen = $fields->length; $f < $fLen; $f++) {
                     $Field = $fields->item($f);
-                    $attribute = trim($Field->nodeValue);
+
+                    if ($Field === null) {
+                        continue;
+                    }
+
+                    $attribute = trim($Field->nodeValue ?? '');
 
                     $data[] = $attribute;
                 }
@@ -381,7 +386,7 @@ class Utils
                 }
 
                 $result[] = [
-                    'attribute' => trim($Attribute->nodeValue),
+                    'attribute' => trim($Attribute->nodeValue ?? ''),
                     'default' => $Attribute->getAttribute('default')
                 ];
             }
@@ -408,7 +413,7 @@ class Utils
                     }
 
                     $result[] = [
-                        'attribute' => trim($Attribute->nodeValue),
+                        'attribute' => trim($Attribute->nodeValue ?? ''),
                         'default' => $Attribute->getAttribute('default')
                     ];
                 }
@@ -442,7 +447,7 @@ class Utils
                     }
 
                     $result[] = [
-                        'attribute' => trim($Attribute->nodeValue),
+                        'attribute' => trim($Attribute->nodeValue ?? ''),
                         'default' => $Attribute->getAttribute('default')
                     ];
                 }

@@ -531,7 +531,7 @@ class Manager
     /**
      * Returns the current project
      */
-    public static function get(): ?Project
+    public static function get(): Project
     {
         $Rewrite = QUI::getRewrite();
 
@@ -570,7 +570,7 @@ class Manager
      *
      * @throws QUI\Exception
      */
-    public static function getStandard(): ?Project
+    public static function getStandard(): Project
     {
         if (self::$Standard !== null) {
             return self::$Standard;
@@ -1300,7 +1300,7 @@ class Manager
                 "~^" . QUI_DB_PRFX . $oldName . "_~m",
                 QUI_DB_PRFX . $newName . "_",
                 $oldTableName
-            );
+            ) ?? $oldTableName;
 
             $sql = $Platform->getRenameTableSQL(
                 $Platform->quoteSingleIdentifier($oldTableName),

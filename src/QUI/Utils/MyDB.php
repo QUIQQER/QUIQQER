@@ -75,11 +75,22 @@ class MyDB implements \Stringable
         return $data;
     }
 
-    public function getPDO(): ?\PDO
+    public function getPDO(): \PDO
     {
         // MyDB is the deprecated compatibility bridge and must keep returning PDO for legacy consumers.
         // nosemgrep: quiqqer.forbid-legacy-database-access
         return QUI::getPDO();
+    }
+
+    private function getDatabaseTables(): \QUI\Database\Tables
+    {
+        $Tables = $this->DB->table();
+
+        if ($Tables === null) {
+            throw new \LogicException('Database table manager was not initialized.');
+        }
+
+        return $Tables;
     }
 
     /**
@@ -181,7 +192,7 @@ class MyDB implements \Stringable
      */
     public function getFields($table)
     {
-        return $this->DB->table()->getColumns($table);
+        return $this->getDatabaseTables()->getColumns($table);
     }
 
     /**
@@ -191,7 +202,7 @@ class MyDB implements \Stringable
      */
     public function getTables()
     {
-        return $this->DB->table()->getTables();
+        return $this->getDatabaseTables()->getTables();
     }
 
     /**
@@ -272,7 +283,7 @@ class MyDB implements \Stringable
     {
         $this->DB->exec($params);
 
-        return $this->DB->getPDO()->lastInsertId();
+        return $this->getPDO()->lastInsertId();
     }
 
     /**
@@ -300,7 +311,7 @@ class MyDB implements \Stringable
      */
     public function optimize($tables): void
     {
-        $this->DB->table()->optimize($tables);
+        $this->getDatabaseTables()->optimize($tables);
     }
 
     /**
@@ -311,7 +322,7 @@ class MyDB implements \Stringable
      */
     public function createTable($table, $fields): void
     {
-        $this->DB->table()->create($table, $fields);
+        $this->getDatabaseTables()->create($table, $fields);
     }
 
     /**
@@ -323,7 +334,7 @@ class MyDB implements \Stringable
      */
     public function createTableFields($table, $fields): void
     {
-        $this->DB->table()->addColumn($table, $fields);
+        $this->getDatabaseTables()->addColumn($table, $fields);
     }
 
     /**
@@ -334,7 +345,7 @@ class MyDB implements \Stringable
      */
     public function deleteTableFields($table, $fields): void
     {
-        $this->DB->table()->deleteFields($table, $fields);
+        $this->getDatabaseTables()->deleteFields($table, $fields);
     }
 
     /**
@@ -346,7 +357,7 @@ class MyDB implements \Stringable
      */
     public function existTable($table): bool
     {
-        return $this->DB->table()->exist($table);
+        return $this->getDatabaseTables()->exist($table);
     }
 
     /**
@@ -356,7 +367,7 @@ class MyDB implements \Stringable
      */
     public function deleteTable($table): void
     {
-        $this->DB->table()->delete($table);
+        $this->getDatabaseTables()->delete($table);
     }
 
     /**
@@ -369,7 +380,7 @@ class MyDB implements \Stringable
      */
     public function existRowInTable($table, $row): bool
     {
-        return $this->DB->table()->existColumnInTable($table, $row);
+        return $this->getDatabaseTables()->existColumnInTable($table, $row);
     }
 
     /**
@@ -381,7 +392,7 @@ class MyDB implements \Stringable
      */
     public function getRowsFromTable($table)
     {
-        return $this->DB->table()->getColumns($table);
+        return $this->getDatabaseTables()->getColumns($table);
     }
 
     /**
@@ -392,7 +403,7 @@ class MyDB implements \Stringable
      */
     public function deleteRow($table, $row): void
     {
-        $this->DB->table()->deleteColumn($table, $row);
+        $this->getDatabaseTables()->deleteColumn($table, $row);
     }
 
     /**
@@ -404,7 +415,7 @@ class MyDB implements \Stringable
      */
     public function getKeys($table)
     {
-        return $this->DB->table()->getKeys($table);
+        return $this->getDatabaseTables()->getKeys($table);
     }
 
     /**
@@ -417,7 +428,7 @@ class MyDB implements \Stringable
      */
     public function issetPrimaryKey($table, $key): bool
     {
-        return $this->DB->table()->issetPrimaryKey($table, $key);
+        return $this->getDatabaseTables()->issetPrimaryKey($table, $key);
     }
 
     /**
@@ -430,7 +441,7 @@ class MyDB implements \Stringable
      */
     public function setPrimaryKey($table, $key): bool
     {
-        return $this->DB->table()->setPrimaryKey($table, $key);
+        return $this->getDatabaseTables()->setPrimaryKey($table, $key);
     }
 
     /**
@@ -443,7 +454,7 @@ class MyDB implements \Stringable
      */
     public function issetIndex($table, $key): bool
     {
-        return $this->DB->table()->issetIndex($table, $key);
+        return $this->getDatabaseTables()->issetIndex($table, $key);
     }
 
     /**
@@ -455,7 +466,7 @@ class MyDB implements \Stringable
      */
     public function getIndex($table)
     {
-        return $this->DB->table()->getIndex($table);
+        return $this->getDatabaseTables()->getIndex($table);
     }
 
     /**
@@ -468,7 +479,7 @@ class MyDB implements \Stringable
      */
     public function setIndex($table, $index): bool
     {
-        return $this->DB->table()->setIndex($table, $index);
+        return $this->getDatabaseTables()->setIndex($table, $index);
     }
 
     /**
@@ -481,7 +492,7 @@ class MyDB implements \Stringable
      */
     public function setFulltext($table, $index): bool
     {
-        return $this->DB->table()->setFulltext($table, $index);
+        return $this->getDatabaseTables()->setFulltext($table, $index);
     }
 
     /**
@@ -494,7 +505,7 @@ class MyDB implements \Stringable
      */
     public function issetFulltext($table, $key): bool
     {
-        return $this->DB->table()->issetFulltext($table, $key);
+        return $this->getDatabaseTables()->issetFulltext($table, $key);
     }
 
     /**

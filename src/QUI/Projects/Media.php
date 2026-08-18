@@ -782,7 +782,7 @@ class Media extends QUI\QDOM
             $name = $info['basename'];
             $name = trim($name, "_ \t\n\r\0\x0B"); // Trim the default characters and underscores
             $name = str_replace(' ', '_', $name);
-            $name = preg_replace('#(_){2,}#', "$1", $name);
+            $name = preg_replace('#(_){2,}#', "$1", $name) ?? $name;
             $name = Utils::stripMediaName($name);
         }
 

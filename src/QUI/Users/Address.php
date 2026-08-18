@@ -808,7 +808,7 @@ class Address extends QUI\QDOM
         }
 
         $result = "$salutation $firstName $lastName";
-        $result = preg_replace('/[  ]{2,}/', ' ', $result);
+        $result = preg_replace('/[  ]{2,}/', ' ', $result) ?? $result;
 
         return trim($result);
     }

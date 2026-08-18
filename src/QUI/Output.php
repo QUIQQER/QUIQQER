@@ -112,27 +112,27 @@ class Output extends Singleton
             '#(src|data\-image|data\-href|data\-link|data\-src)="(image.php)\?([^"]*)"#',
             $this->dataImages(...),
             $content
-        );
+        ) ?? $content;
 
         // rewrite files
         $content = preg_replace_callback(
             '#(href|src|value)="(image.php)\?([^"]*)"#',
             $this->files(...),
             $content
-        );
+        ) ?? $content;
 
         // rewrite links
         $content = preg_replace_callback(
             '#(data\-href|data\-link)="(index.php)\?([^"]*)"#',
             $this->dataLinks(...),
             $content
-        );
+        ) ?? $content;
 
         $content = preg_replace_callback(
             '#(href|src|action|value)="(index.php)\?([^"]*)"#',
             $this->links(...),
             $content
-        );
+        ) ?? $content;
 
         // search empty <a> links
         if ($this->settings['remove-deleted-links']) {
@@ -140,7 +140,7 @@ class Output extends Singleton
                 '/<a[ ]*?>(.*?)<\/a>/ims',
                 $this->cleanEmptyLinks(...),
                 $content
-            );
+            ) ?? $content;
         }
 
         // search css files
@@ -148,14 +148,14 @@ class Output extends Singleton
             '#<link([^>]*)>#',
             $this->cssLinkHref(...),
             $content
-        );
+        ) ?? $content;
 
         // search css files
         $content = preg_replace_callback(
             '#<script([^>]*)>#',
             $this->scripts(...),
             $content
-        );
+        ) ?? $content;
 
         if ($this->settings['use-absolute-urls']) {
             $content = $this->parseAbsoluteUrls($content);
@@ -280,11 +280,11 @@ class Output extends Singleton
                     '#<img([^>]*)>#i',
                     $this->images(...),
                     $image
-                );
+                ) ?? $image;
 
                 $Picture = $getPicture($html);
 
-                if ($Picture) {
+                if ($Picture && $Image->parentNode !== null) {
                     $Picture = $Dom->importNode($Picture, true);
                     $Image->parentNode->replaceChild($Picture, $Image);
                 }
@@ -340,7 +340,7 @@ class Output extends Singleton
                 return 'title="' . $title . '"';
             },
             $result
-        );
+        ) ?? $result;
 
         $result = preg_replace_callback(
             '#alt="([^"]*)"#i',
@@ -356,7 +356,7 @@ class Output extends Singleton
                 return 'alt="' . $alt . '"';
             },
             $result
-        );
+        ) ?? $result;
 
         $result = preg_replace_callback(
             '#href="([^"]*)"#i',
@@ -372,7 +372,7 @@ class Output extends Singleton
                 return 'href="' . $href . '"';
             },
             $result
-        );
+        ) ?? $result;
 
         return $result;
     }
@@ -980,13 +980,13 @@ class Output extends Singleton
 
         // find image
         $html = str_replace("\n", ' ', $html);
-        $html = preg_replace('!\s+!', ' ', $html);
+        $html = preg_replace('!\s+!', ' ', $html) ?? $html;
 
         $html = preg_replace_callback(
             '#<img([^>]*)>#i',
             $this->images(...),
             $html
-        );
+        ) ?? $html;
 
         return $html;
     }
@@ -1098,13 +1098,13 @@ class Output extends Singleton
             '#(href|src)="([^"]*)"#i',
             $this->absoluteUrls(...),
             $content
-        );
+        ) ?? $content;
 
         return preg_replace_callback(
             '#srcset="([^"]*)"#i',
             $this->absoluteSrcsetUrls(...),
             $content
-        );
+        ) ?? $content;
     }
 
     /**
