@@ -271,6 +271,10 @@ class Session
                     );
                 } catch (RedisClusterException $Exception) {
                     Log::addAlert($Exception->getMessage());
+
+                    return new NativeFileSessionHandler(
+                        VAR_DIR . 'sessions'
+                    );
                 }
 
                 return new RedisSessionHandler($RedisCluster);

@@ -1503,7 +1503,7 @@ class Manager
             }
         }
 
-        if (count($everyonePermissions)) {
+        if ($Everyone !== null && count($everyonePermissions)) {
             try {
                 $this->setPermissions($Everyone, $everyonePermissions);
             } catch (QUI\Exception $Exception) {
@@ -1511,7 +1511,7 @@ class Manager
             }
         }
 
-        if (count($guestPermissions)) {
+        if ($Guest !== null && count($guestPermissions)) {
             try {
                 $this->setPermissions($Guest, $guestPermissions);
             } catch (QUI\Exception $Exception) {
