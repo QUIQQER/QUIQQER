@@ -1552,7 +1552,11 @@ class User implements QUIUserInterface
         }
 
         if (class_exists('QUI\ERP\Currency\Handler')) {
-            return Currencies::getDefaultCurrency()->getCode();
+            $Currency = Currencies::getDefaultCurrency();
+
+            if ($Currency !== null) {
+                return $Currency->getCode();
+            }
         }
 
         return 'EUR';

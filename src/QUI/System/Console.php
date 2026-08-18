@@ -1192,7 +1192,10 @@ class Console
             }
         }
 
-        if (!QUI::getUsers()->isUser($this->User)) {
+        if (
+            $this->User === null
+            || !QUI::getUsers()->isUser($this->User)
+        ) {
             throw new QUI\Users\Exception(
                 ['quiqqer/core', 'exception.login.fail'],
                 401

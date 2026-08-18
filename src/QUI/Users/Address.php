@@ -592,7 +592,12 @@ class Address extends QUI\QDOM
             QUI\System\Log::writeDebugException($Exception);
         }
 
-        if ($User->getStandardAddress()->getUUID() === $this->getUUID()) {
+        $StandardAddress = $User->getStandardAddress();
+
+        if (
+            $StandardAddress !== null
+            && $StandardAddress->getUUID() === $this->getUUID()
+        ) {
             $mailList = $this->getMailList();
 
             if (count($mailList)) {
