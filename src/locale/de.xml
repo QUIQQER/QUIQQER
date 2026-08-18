@@ -7004,6 +7004,21 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         <locale name="dialog.projects.media.rename.information">
             <de><![CDATA[Bitte geben Sie einen neuen Namen für den Ordner oder Datei ein.]]></de>
         </locale>
+        <locale name="projects.project.media.upload.conflict.title">
+            <de><![CDATA[Datei bereits vorhanden]]></de>
+        </locale>
+        <locale name="projects.project.media.upload.conflict.text">
+            <de><![CDATA[Möchten Sie die neu hochgeladene Datei umbenennen?]]></de>
+        </locale>
+        <locale name="projects.project.media.upload.conflict.information" html="true">
+            <de><![CDATA[Die folgenden Namen sind bereits vorhanden. Beim Umbenennen werden freie Namen verwendet: [files]]]></de>
+        </locale>
+        <locale name="projects.project.media.upload.conflict.rename">
+            <de><![CDATA[Umbenennen]]></de>
+        </locale>
+        <locale name="projects.project.media.upload.conflict.overwrite">
+            <de><![CDATA[Überschreiben]]></de>
+        </locale>
         <locale name="dialog.projects.media.file.replace.title">
             <de><![CDATA[Datei ersetzen]]></de>
         </locale>

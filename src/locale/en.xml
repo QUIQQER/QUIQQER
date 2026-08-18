@@ -6801,6 +6801,21 @@ After logging in you will be prompted to set a new password.
         <locale name="dialog.projects.media.rename.information">
             <en><![CDATA[Please enter a new name for the folder or file.]]></en>
         </locale>
+        <locale name="projects.project.media.upload.conflict.title">
+            <en><![CDATA[File already exists]]></en>
+        </locale>
+        <locale name="projects.project.media.upload.conflict.text">
+            <en><![CDATA[Would you like to rename the newly uploaded file?]]></en>
+        </locale>
+        <locale name="projects.project.media.upload.conflict.information" html="true">
+            <en><![CDATA[The following names already exist. Renaming will use available names: [files]]]></en>
+        </locale>
+        <locale name="projects.project.media.upload.conflict.rename">
+            <en><![CDATA[Rename]]></en>
+        </locale>
+        <locale name="projects.project.media.upload.conflict.overwrite">
+            <en><![CDATA[Overwrite]]></en>
+        </locale>
         <locale name="dialog.projects.media.file.replace.title">
             <en><![CDATA[Replace file]]></en>
         </locale>
