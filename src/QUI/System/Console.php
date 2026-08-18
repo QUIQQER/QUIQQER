@@ -33,15 +33,19 @@ use function is_null;
 use function is_object;
 use function key;
 use function ksort;
+use function max;
 use function ob_end_clean;
 use function php_sapi_name;
 use function phpversion;
 use function posix_geteuid;
 use function posix_getpwuid;
 use function realpath;
+use function rtrim;
 use function sort;
+use function str_repeat;
 use function str_replace;
 use function strtolower;
+use function strlen;
 use function time;
 use function trim;
 
@@ -227,6 +231,10 @@ class Console
         sort($systemTools);
         $this->systemTools = $systemTools;
 
+        if ($this->getArgument('_complete')) {
+            $this->outputCompletionSuggestions();
+        }
+
         $args = $this->readArgv();
         $isSystemTool = key($args);
 
@@ -356,7 +364,7 @@ class Console
         $lastUpdate = QUI::getPackageManager()->getLastUpdateDate();
         $lastUpdate = QUI::getLocale()->formatDate($lastUpdate);
 
-        if (isset($params['--noLogo'])) {
+        if (isset($params['--noLogo']) || isset($params['_complete'])) {
             return;
         }
 
@@ -681,6 +689,23 @@ class Console
         }
 
         return $this->tools[$tool] ?? false;
+    }
+
+    private function outputCompletionSuggestions(): never
+    {
+        $command = $this->getArgument('command');
+        $currentWord = $this->getArgument('word');
+        $Provider = new Console\CompletionProvider($this->systemTools, $this->tools);
+        $suggestions = $Provider->getSuggestions(
+            is_string($command) ? $command : '',
+            is_string($currentWord) ? $currentWord : ''
+        );
+
+        if ($suggestions) {
+            echo implode(PHP_EOL, $suggestions) . PHP_EOL;
+        }
+
+        exit;
     }
 
     /**
@@ -1119,45 +1144,99 @@ class Console
      */
     protected function displayToolsForGroups($group): void
     {
-        if (empty($this->groupedTools[$group])) {
-            $this->writeLn('No tools found!', 'red');
-            $this->writeLn();
-            $this->resetMsg();
+        $group = rtrim((string)$group, ':');
 
-            exit(2);
+        if (!empty($this->groupedTools[$group])) {
+            $tools = $this->groupedTools[$group];
+            ksort($tools);
+
+            $commands = array_values(array_map(
+                static fn(Console\Tool $Tool): string => (string)$Tool->getName(),
+                $tools
+            ));
+
+            $this->displayCommandTable('Available Commands for ' . $group, $commands);
+            return;
         }
 
-        $tools = $this->groupedTools[$group];
+        $Provider = new Console\CompletionProvider($this->systemTools, $this->tools);
+        $commands = $Provider->getSuggestions('', $group);
+
+        if ($commands) {
+            $this->displayCommandTable('Did you mean?', $commands);
+            return;
+        }
+
+        $this->writeLn('No command found!', 'red');
+        $this->writeLn();
+        $this->resetMsg();
+
+        exit(2);
+    }
+
+    /**
+     * @param array<int, string> $commands
+     */
+    private function displayCommandTable(string $title, array $commands): void
+    {
+        $commandWidth = strlen('Command');
+        $rows = [];
+
+        $this->writeLn();
 
         $Climate = new CLImate();
-        $Climate->blue()->out("Available Tools for " . $group);
-        $Climate->blue()->out("=============================================================");
+        $Climate->blue()->out($title);
+        $Climate->blue()->out(str_repeat('=', strlen($title)));
 
-        $data = [
-            ['           Short Command', 'Command', 'Description'],
-            ['-------------', '-------', '-----------'],
-            ['', '']
-        ];
+        foreach ($commands as $name) {
+            $Tool = $this->get($name);
+            $description = $Tool instanceof Console\Tool
+                ? $Tool->getDescription()
+                : QUI::getLocale()->get('quiqqer/core', 'console.systemtool.' . $name);
 
-        foreach ($tools as $Tool) {
-            /* @var $Tool Console\Tool */
-            $name = $Tool->getName();
-            $description = $Tool->getDescription();
+            $parts = explode(':', $name, 2);
 
-            $parts = explode(':', (string)$name);
-            $command = ':' . $parts[1];
+            if (isset($parts[1])) {
+                $shortCommand = ':' . $parts[1];
+                $coloredCommand = $parts[0]
+                    . "\033[" . $this->colors['green'] . "m"
+                    . $shortCommand
+                    . "\033[0m";
+            } else {
+                $coloredCommand = "\033[" . $this->colors['green'] . "m" . $name . "\033[0m";
+            }
 
-
-            $data[] = [
-                "\033[" . $this->colors['green'] . "m" . $command . "\033[0m",
-                $name,
-                trim((string)$description)
+            $commandWidth = max($commandWidth, strlen($name));
+            $rows[] = [
+                'plainCommand' => $name,
+                'coloredCommand' => $coloredCommand,
+                'description' => trim((string)$description)
             ];
         }
 
-        $Climate->out('');
-        $Climate->columns($data);
-        $Climate->out('');
+        $commandWidth += 4;
+
+        $this->writeLn(
+            'Command'
+            . str_repeat(' ', $commandWidth - strlen('Command'))
+            . 'Description'
+        );
+        $this->writeLn(
+            '-------'
+            . str_repeat(' ', $commandWidth - strlen('-------'))
+            . '-----------'
+        );
+        $this->writeLn();
+
+        foreach ($rows as $row) {
+            $this->writeLn(
+                $row['coloredCommand']
+                . str_repeat(' ', $commandWidth - strlen($row['plainCommand']))
+                . $row['description']
+            );
+        }
+
+        $this->writeLn();
     }
 
     /**
@@ -1313,7 +1392,7 @@ class Console
                 return;
             }
         } else {
-            $this->writeLn('Tool not found!', 'red');
+            $this->writeLn('Command not found!', 'red');
             $this->clearMsg();
         }
 
@@ -1336,7 +1415,7 @@ class Console
         if ($Tool = $this->get($this->getArgument('tool'))) {
             try {
                 if (is_array($Tool)) {
-                    throw new QUI\Exception('Tool not found', 404);
+                    throw new QUI\Exception('Command not found', 404);
                 }
 
                 if ($this->getArgument('help')) {
@@ -1356,7 +1435,7 @@ class Console
             return;
         }
 
-        $this->writeLn('Tool not found', 'red');
+        $this->writeLn('Command not found', 'red');
         $this->writeLn();
     }
 }

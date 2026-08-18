@@ -132,6 +132,16 @@ abstract class Tool extends QUI\QDOM implements QUI\Interfaces\System\SystemOutp
     }
 
     /**
+     * Return the available command arguments.
+     *
+     * @return array<string, array{param: string, description: string, short: false|string, optional: bool}>
+     */
+    public function getArgumentDefinitions(): array
+    {
+        return $this->paramsList;
+    }
+
+    /**
      * Output the tool help
      *
      * @return $this
