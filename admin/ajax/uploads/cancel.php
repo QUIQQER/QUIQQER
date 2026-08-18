@@ -7,7 +7,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_uploads_cancel',
     static function ($file): void {
         $UploadManager = new QUI\Upload\Manager();

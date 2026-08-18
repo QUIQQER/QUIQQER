@@ -9,7 +9,7 @@
  * @return boolean
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_save',
     static function ($uid, $attributes): array {
         $User = QUI::getUsers()->get($uid);

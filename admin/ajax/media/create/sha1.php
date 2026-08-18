@@ -6,7 +6,7 @@
  * @param string $project - JSON project data
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_media_create_sha1',
     static function ($project): void {
         $Project = QUI\Projects\Manager::decode($project);

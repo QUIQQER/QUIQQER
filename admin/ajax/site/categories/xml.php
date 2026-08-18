@@ -8,7 +8,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_site_categories_xml',
     static function ($project, $id, $category) {
         $Project = QUI::getProjectManager()->decode($project);

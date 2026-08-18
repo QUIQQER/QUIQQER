@@ -1,6 +1,6 @@
 <?php
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_authenticator_getSecondaryAuthenticators',
     static function () {
         $Auth = QUI\Users\Auth\Handler::getInstance();

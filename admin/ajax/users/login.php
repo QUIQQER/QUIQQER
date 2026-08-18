@@ -3,7 +3,7 @@
 use QUI\Interfaces\Users\User;
 use QUI\System\Log;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_login',
     static function ($authenticator, $params, $authStep, null | string | array $authenticators = null) {
         QUI::getEvents()->fireEvent('userLoginAjaxStart');

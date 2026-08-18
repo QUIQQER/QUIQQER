@@ -7,7 +7,7 @@
  * @return Bool
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_groups_activate',
     static function ($gid): array {
         $gid = json_decode($gid, true);

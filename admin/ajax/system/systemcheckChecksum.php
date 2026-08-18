@@ -7,7 +7,7 @@
  * @return String
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_systemcheckChecksum',
     static function ($packageName) {
         $Package = QUI::getPackage('quiqqer/requirements');

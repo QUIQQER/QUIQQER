@@ -7,7 +7,7 @@
  * @return string
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_getLastUpdate',
     static function ($formatted) {
         $date = QUI::getPackageManager()->getLastUpdateDate();

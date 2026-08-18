@@ -7,7 +7,7 @@
  * @throws QUI\Users\Exception
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_authenticator_enableTwoFactorBySession',
     static function ($authenticator): bool {
         $User = QUI::getUserBySession();

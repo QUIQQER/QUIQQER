@@ -9,7 +9,7 @@
  * @return string User UUID
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_invite',
     static function ($email, $groups): string {
         $groups = json_decode($groups, true);

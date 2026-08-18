@@ -9,7 +9,7 @@
 
 use QUI\System\Log;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_settings_save',
     static function ($file, $params): void {
         $jsonFiles = json_decode($file, true);

@@ -13,7 +13,7 @@
 use QUI\Projects\Media\Image;
 use QUI\Projects\Media\Utils as Utils;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_media_url_resized',
     static function ($fileurl, $maxWidth, $maxHeight) {
         if (Utils::isMediaUrl($fileurl) === false) {

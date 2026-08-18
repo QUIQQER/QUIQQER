@@ -9,7 +9,7 @@
  * @return string
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_address_display',
     static function ($uid, $aid): string {
         $User = QUI::getUsers()->get($uid);

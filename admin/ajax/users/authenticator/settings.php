@@ -9,7 +9,7 @@
  * @throws \QUI\Users\Exception
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_authenticator_settings',
     static function ($uid, $authenticator): string {
         $User = QUI::getUsers()->get($uid);

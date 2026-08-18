@@ -9,7 +9,7 @@
 use QUI\Config;
 use QUI\System\License;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_licenseKey_get',
     static function () {
         $licenseConfigFile = CMS_DIR . 'etc/license.ini.php';

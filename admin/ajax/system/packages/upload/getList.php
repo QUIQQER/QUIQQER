@@ -6,7 +6,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_packages_upload_getList',
     static function (): array {
         return QUI\Package\LocalServer::getInstance()->getPackageList();

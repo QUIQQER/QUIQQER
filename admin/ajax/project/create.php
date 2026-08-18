@@ -8,7 +8,7 @@
  * @return string - Name of the project
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_project_create',
     static function ($params): string {
         $params = json_decode($params, true);

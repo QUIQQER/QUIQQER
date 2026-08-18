@@ -7,7 +7,7 @@
  * @throws QUI\Exception
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_project_delete',
     static function ($project): void {
         QUI::getProjectManager()->deleteProject(

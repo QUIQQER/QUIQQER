@@ -9,7 +9,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_address_setstandard',
     static function ($uid, $aid): void {
         $User = QUI::getUsers()->get($uid);

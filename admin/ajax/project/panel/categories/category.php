@@ -7,7 +7,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_project_panel_categories_category',
     static function ($file, $category) {
         if (file_exists($file)) {

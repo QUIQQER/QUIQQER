@@ -7,7 +7,7 @@
  * @return array - Group-IDs which have been deleted
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_groups_delete',
     static function ($gids): array {
         $gids = json_decode($gids, true);

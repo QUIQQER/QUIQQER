@@ -10,7 +10,7 @@
  * @throws \QUI\Exception
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_permissions_getCompleteList',
     static function ($params, $btype): array {
         $params = json_decode($params, true);

@@ -7,7 +7,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_vhosts_getHostByProject',
     static function ($project): string {
         $Project = QUI::getProjectManager()->decode($project);

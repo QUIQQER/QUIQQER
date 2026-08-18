@@ -7,7 +7,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_vhosts_remove',
     static function ($vhost): void {
         $VhostManager = new QUI\System\VhostManager();

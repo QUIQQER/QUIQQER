@@ -8,7 +8,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_search_lastEditSites',
     static function ($params) {
         $params = json_decode($params, true);

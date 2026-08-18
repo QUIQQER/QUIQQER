@@ -6,7 +6,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_update_getOutdated',
     static function ($force): array {
         if (!isset($force)) {

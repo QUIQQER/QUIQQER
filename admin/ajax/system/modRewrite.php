@@ -6,7 +6,7 @@
  * @return integer
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_modRewrite',
     static function (): int {
         // quiqqer check

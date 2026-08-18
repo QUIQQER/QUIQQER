@@ -8,7 +8,7 @@
  * @return array<string, mixed>
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_project_get_titleLocaleData',
     static function (string $project): array {
         return QUI\Projects\Manager::getProject($project)->getTitleLocaleData();

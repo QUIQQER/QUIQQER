@@ -8,7 +8,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_editor_get_toolbarsFromUser',
     static function ($uid, $assignedToolbars): array {
         $User = QUI::getUsers()->get($uid);

@@ -10,7 +10,7 @@
  * @throws QUI\Exception
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_set_password',
     static function ($uid, $pw1, $pw2): void {
         if (empty($pw1) || empty($pw2)) {

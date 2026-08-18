@@ -8,7 +8,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_project_sites_navigation',
     static function ($project, $id): array {
         $Project = QUI::getProjectManager()->decode($project);

@@ -4,7 +4,7 @@
  * Update a package or the entire system
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_update',
     static function ($package): void {
         QUI::getPackageManager()->update($package);

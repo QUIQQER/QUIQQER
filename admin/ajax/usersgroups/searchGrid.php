@@ -7,7 +7,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_usersgroups_searchGrid',
     static function ($search, $fields, $params): array {
         $fields = json_decode($fields, true);

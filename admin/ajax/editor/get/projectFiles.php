@@ -8,7 +8,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_editor_get_projectFiles',
     static function ($project): array {
         try {

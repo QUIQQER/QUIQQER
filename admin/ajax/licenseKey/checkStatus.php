@@ -9,7 +9,7 @@
 
 use QUI\System\License;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_licenseKey_checkStatus',
     static function (): bool|array {
         try {

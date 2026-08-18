@@ -6,7 +6,7 @@
  * @param string|array $packages - Name of the package
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_packages_setup',
     static function ($package): void {
         QUI::getPackageManager()->setup($package);

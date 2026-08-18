@@ -7,7 +7,7 @@
 use QUI\InstallationWizard\InstallationWizardInterface;
 use QUI\InstallationWizard\ProviderHandler;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_installationWizard_cancel',
     static function ($providers): void {
         if (is_string($providers)) {

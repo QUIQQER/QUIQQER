@@ -10,7 +10,7 @@
 use QUI\Controls\Navigating\Pagination;
 use QUI\Utils\Security\Orthos;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_media_folder_getPagination',
     static function ($attributes) {
         $attributes = Orthos::clearArray(json_decode($attributes, true));

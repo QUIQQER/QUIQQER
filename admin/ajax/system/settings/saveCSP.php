@@ -4,7 +4,7 @@
  * Return te CSP Settings
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_settings_saveCSP',
     static function ($data): void {
         $data = json_decode($data, true);

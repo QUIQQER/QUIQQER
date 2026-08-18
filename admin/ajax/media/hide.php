@@ -9,7 +9,7 @@
  * @throws \QUI\Exception
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_media_hide',
     static function ($project, $ids): void {
         $Project = QUI\Projects\Manager::getProject($project);

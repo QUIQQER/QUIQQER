@@ -10,7 +10,7 @@
  * @return integer
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_address_save',
     static function ($uid, $aid, $data): ?string {
         $data = json_decode($data, true);

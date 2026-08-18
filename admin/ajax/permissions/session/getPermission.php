@@ -7,7 +7,7 @@
  * @param $ruleset
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_permissions_session_getPermission',
     static function ($permission, $ruleset) {
         return QUI::getUserBySession()->getPermission($permission, $ruleset);

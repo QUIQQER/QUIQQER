@@ -10,7 +10,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_site_unlink',
     static function ($project, $id, $parentId, $all): void {
         $Project = QUI::getProjectManager()->decode($project);

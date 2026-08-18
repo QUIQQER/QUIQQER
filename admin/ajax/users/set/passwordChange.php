@@ -10,7 +10,7 @@
  * @throws QUI\Exception
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_set_passwordChange',
     static function ($uid, $newPassword, $passwordRepeat, $oldPassword): void {
         $Users = QUI::getUsers();

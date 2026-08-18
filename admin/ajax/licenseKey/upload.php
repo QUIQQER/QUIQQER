@@ -10,7 +10,7 @@
 
 use QUI\System\License;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_licenseKey_upload',
     static function ($File): void {
         try {

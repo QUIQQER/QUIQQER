@@ -1,6 +1,6 @@
 <?php
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_systemInfo',
     static function (): array {
         $connection = QUI::getDataBaseConnection();

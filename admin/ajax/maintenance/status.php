@@ -6,7 +6,7 @@
  * @return Bool
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_maintenance_status',
     static function () {
         return QUI::conf('globals', 'maintenance');

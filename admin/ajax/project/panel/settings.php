@@ -7,7 +7,7 @@
  * @return string
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_project_panel_settings',
     static function ($project): string {
         $Engine = QUI::getTemplateManager()->getEngine(true);

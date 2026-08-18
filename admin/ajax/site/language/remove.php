@@ -8,7 +8,7 @@
  * @param string $linkedParams - JSON Array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_site_language_remove',
     static function ($project, $id, $linkedParams): void {
         $linkedParams = json_decode($linkedParams, true);

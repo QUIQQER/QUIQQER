@@ -7,7 +7,7 @@
  * @return bool|int|array<array-key, mixed>|string
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_permissions_session_hasPermission',
     static function (string $permission): bool | int | array | string {
         return QUI\Permissions\Permission::hasPermission($permission);

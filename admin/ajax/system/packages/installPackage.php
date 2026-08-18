@@ -12,7 +12,7 @@
 
 use QUI\Package\PackageInstallException;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_packages_installPackage',
     static function ($packageName, $packageVersion, $server): bool {
         $Packages = QUI::getPackageManager();

@@ -8,7 +8,7 @@
  * @param string $linkedParams - JSON Array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_site_language_add',
     static function ($project, $id, $linkedParams): void {
         $Project = QUI::getProjectManager()->decode($project);

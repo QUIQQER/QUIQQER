@@ -7,7 +7,7 @@
  * @return string
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_setup',
     static function ($package): void {
         if (!empty($package)) {

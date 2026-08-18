@@ -4,7 +4,7 @@
  * Return list of packages which needs a setup
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_installationWizard_get',
     static function (): array {
         if (!QUI::getUserBySession()->isSU()) {

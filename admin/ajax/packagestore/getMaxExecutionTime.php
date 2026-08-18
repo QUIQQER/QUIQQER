@@ -6,7 +6,7 @@
  * @return int
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_packagestore_getMaxExecutionTime',
     static function (): int {
         return (int)ini_get('max_execution_time');

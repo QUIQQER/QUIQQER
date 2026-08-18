@@ -8,7 +8,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_editor_get_toolbarsFromGroup',
     static function ($gid, $assignedToolbars): array {
         $Group = QUI::getGroups()->get($gid);

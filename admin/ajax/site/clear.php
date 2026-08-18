@@ -9,7 +9,7 @@
  * @return string
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_site_clear',
     static function ($project, $name): string {
         return QUI\Projects\Site\Utils::clearUrl(

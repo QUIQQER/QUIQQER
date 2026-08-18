@@ -6,7 +6,7 @@
  * @param string $ids - Workspace IDs, json array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_desktop_workspace_delete',
     static function ($ids): void {
         $User = QUI::getUserBySession();

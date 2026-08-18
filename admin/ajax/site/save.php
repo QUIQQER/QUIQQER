@@ -10,7 +10,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_site_save',
     static function ($project, $id, $attributes) {
         $Project = QUI::getProjectManager()->decode($project);
@@ -40,7 +40,7 @@ QUI::$Ajax->registerFunction(
         try {
             require_once __DIR__ . '/get.php';
 
-            $result = QUI::$Ajax->callRequestFunction('ajax_site_get', [
+            $result = QUI::getAjax()->callRequestFunction('ajax_site_get', [
                 'project' => json_encode($Project->toArray()),
                 'id' => $id
             ]);

@@ -8,7 +8,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_vhosts_save',
     static function ($vhost, $data): void {
         $data = json_decode($data, true);

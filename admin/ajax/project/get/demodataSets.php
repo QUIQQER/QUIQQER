@@ -8,7 +8,7 @@
  * @return array<string, array<string, string>>
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_project_get_demodataSets',
     static function ($template): array {
         if (empty($template)) {

@@ -7,7 +7,7 @@
  * @return string
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_project_types_get_title',
     static function ($sitetype): string {
         return QUI::getPackageManager()->getSiteTypeName($sitetype);

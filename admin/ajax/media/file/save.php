@@ -11,7 +11,7 @@
 
 use QUI\Projects\Media\Folder;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_media_file_save',
     static function ($project, $fileid, $attributes): array {
         $Project = QUI\Projects\Manager::getProject($project);

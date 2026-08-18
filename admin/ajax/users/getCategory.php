@@ -10,7 +10,7 @@
  * @return string
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_getCategory',
     static function ($uid, $plugin, $tab): string {
         return QUI\Users\Utils::getTab($uid, $plugin, $tab);

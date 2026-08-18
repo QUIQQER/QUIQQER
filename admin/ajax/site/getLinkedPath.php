@@ -10,7 +10,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_site_getLinkedPath',
     static function ($project, $id, $parentId): string {
         $Project = QUI::getProjectManager()->decode($project);

@@ -6,7 +6,7 @@
  * @param string $project - Name of the project
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_trash_media_clear',
     static function ($project): void {
         $Project = QUI::getProjectManager()->decode($project);

@@ -14,7 +14,7 @@ use QUI\Projects\Manager;
 use QUI\Projects\Media\Folder;
 use QUI\Projects\Media\Utils;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_media_move',
     static function ($project, $to, $ids): void {
         $Project = Manager::getProject($project);

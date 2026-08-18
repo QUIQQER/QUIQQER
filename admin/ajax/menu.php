@@ -9,7 +9,7 @@
  *
  * @return array
  */
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_menu',
     static function (): array {
         $Menu = new QUI\Workspace\Menu();

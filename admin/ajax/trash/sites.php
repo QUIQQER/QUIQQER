@@ -9,7 +9,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_trash_sites',
     static function ($project, $params): array {
         $Project = QUI::getProjectManager()->decode($project);

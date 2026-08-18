@@ -13,7 +13,7 @@ use QUI\Mail\Mailer;
 use QUI\Mail\UserMailPlaceholders;
 use QUI\Utils\Security\Orthos;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_user_sendMail',
     static function ($userId, $mailSubject, $mailContent): void {
         $User = QUI::getUsers()->get($userId);

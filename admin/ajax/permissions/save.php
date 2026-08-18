@@ -9,7 +9,7 @@
  * @throws \QUI\Exception
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_permissions_save',
     static function ($params, $btype, $permissions): void {
         $Manager = QUI::getPermissionManager();

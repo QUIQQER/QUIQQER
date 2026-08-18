@@ -10,7 +10,7 @@
  * @throws QUI\Exception
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_project_set_titleLocaleData',
     static function (string $project, string $translations): array {
         $translations = json_decode($translations, true);

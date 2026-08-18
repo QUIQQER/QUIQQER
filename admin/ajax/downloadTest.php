@@ -7,7 +7,7 @@
  * @throws \QUI\Exception
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_downloadTest',
     static function (): void {
         sleep(2);

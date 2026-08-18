@@ -6,7 +6,7 @@
 
 use QUI\Users\Auth\VerifiedMail2FA;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_authenticator_mail2fa_sendEnableMail',
     static function (): void {
         VerifiedMail2FA::sendEnableMailToSessionUser();

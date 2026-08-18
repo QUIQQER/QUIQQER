@@ -8,7 +8,7 @@
  * @param integer $from - Sheet number
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_site_children_sort',
     static function ($project, $parent, $ids, $from, $sortType): void {
         $Project = QUI::getProjectManager()->decode($project);

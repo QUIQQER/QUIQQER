@@ -9,7 +9,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_site_buttons_get',
     static function ($project, $id): array {
         $Project = QUI::getProjectManager()->decode($project);

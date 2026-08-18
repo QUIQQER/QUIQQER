@@ -6,7 +6,7 @@
 
 use QUI\System\Tests\RedisCheck;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_cache_redisCheck',
     static function ($server) {
         $status  = RedisCheck::checkServer($server);

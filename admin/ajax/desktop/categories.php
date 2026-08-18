@@ -8,7 +8,7 @@
 
 use QUI\Package\Package;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_desktop_categories',
     static function ($type) {
         if (!is_string($type)) {

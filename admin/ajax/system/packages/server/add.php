@@ -8,7 +8,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_packages_server_add',
     static function ($server, $params): void {
         QUI::getPackageManager()->addServer(

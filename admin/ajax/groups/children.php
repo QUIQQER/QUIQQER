@@ -7,7 +7,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_groups_children',
     static function ($gid): array {
         $Groups = QUI::getGroups();

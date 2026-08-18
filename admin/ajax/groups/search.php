@@ -7,7 +7,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_groups_search',
     static function ($fields, $params): array {
         $Groups = QUI::getGroups();
