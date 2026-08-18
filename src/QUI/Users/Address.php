@@ -46,7 +46,7 @@ class Address extends QUI\QDOM
      */
     protected array $customData = [];
 
-    protected ?QUIUserInterface $User = null;
+    protected QUIUserInterface $User;
 
     /**
      * @throws Exception|QUI\ExceptionStack
