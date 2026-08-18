@@ -380,7 +380,7 @@ class Template extends QUI\QDOM
                 $Config->setValue('template', 'engine', 'smarty4');
                 $Config->save();
 
-                QUI::$Conf->reload();
+                QUI::getConfig('etc/conf.ini.php')->reload();
 
                 $templateIni = ETC_DIR . 'templates.ini.php';
                 $iniContent = file_get_contents($templateIni);

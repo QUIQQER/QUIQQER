@@ -26,9 +26,11 @@ class Server
     private const SESSION_CREATE = 'quiqqer.webauthn.create';
     private const SESSION_GET = 'quiqqer.webauthn.get';
 
-    public function __construct(private ?CredentialRepository $credentials = null)
+    private CredentialRepository $credentials;
+
+    public function __construct(?CredentialRepository $credentials = null)
     {
-        $this->credentials ??= new CredentialRepository();
+        $this->credentials = $credentials ?? new CredentialRepository();
     }
 
     /**

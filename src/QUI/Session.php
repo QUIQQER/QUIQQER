@@ -124,8 +124,9 @@ class Session
             // Implode the array of characters to a string
             $sessionName = implode('', $randomCharacters);
 
-            QUI::$Conf->set('session', 'name', $sessionName);
-            QUI::$Conf->save();
+            $Config = QUI::getConfig('etc/conf.ini.php');
+            $Config->set('session', 'name', $sessionName);
+            $Config->save();
         }
 
         $storageOptions = [

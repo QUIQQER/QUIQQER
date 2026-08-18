@@ -398,7 +398,7 @@ class Manager extends QUI\QDOM
 
         $this->version = $version;
 
-        $Config = QUI::$Conf;
+        $Config = QUI::getConfig('etc/conf.ini.php');
         $Config->setValue('globals', 'quiqqer_version', $this->version);
         $Config->save();
         $Config->reload();

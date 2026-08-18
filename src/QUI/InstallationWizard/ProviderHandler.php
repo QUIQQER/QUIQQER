@@ -106,7 +106,7 @@ class ProviderHandler
     /**
      * @throws QUI\Exception
      */
-    public static function getConfig(): ?QUI\Config
+    public static function getConfig(): QUI\Config
     {
         if (!file_exists(ETC_DIR . 'installationWizard.ini.php')) {
             file_put_contents(ETC_DIR . 'installationWizard.ini.php', '');

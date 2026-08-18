@@ -192,7 +192,7 @@ class Manager
      *
      * @throws QUI\Exception
      */
-    public static function getConf(): ?Config
+    public static function getConf(): Config
     {
         if (!self::$Config) {
             self::$Config = QUI::getConfig('etc/wysiwyg/conf.ini.php');

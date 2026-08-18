@@ -104,7 +104,7 @@ QUI::getAjax()->registerFunction(
             }
 
             QUI\Utils\Text\XML::setConfigFromXml($file, $params);
-            QUI::$Conf->reload();
+            QUI::getConfig('etc/conf.ini.php')->reload();
 
             QUI::getMessagesHandler()->addSuccess(
                 QUI::getLocale()->get('quiqqer/core', 'message.config.saved')
