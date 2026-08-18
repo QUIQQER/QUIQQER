@@ -241,6 +241,48 @@ define('classes/projects/Project', [
         },
 
         /**
+         * Return the package-independent locale data for the project title.
+         *
+         * @return {Promise<Object>}
+         */
+        getTitleLocaleData: function () {
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_project_get_titleLocaleData', resolve, {
+                    project: this.getName(),
+                    onError: reject
+                });
+            }.bind(this));
+        },
+
+        /**
+         * Save localized project titles as user-edit locale values.
+         *
+         * @param {Object} translations
+         * @return {Promise<Object>}
+         */
+        setTitleLocaleData: function (translations) {
+            const self = this;
+
+            return new Promise(function (resolve, reject) {
+                Ajax.post('ajax_project_set_titleLocaleData', function (result) {
+                    const group = 'project/' + self.getName();
+
+                    Object.each(translations, function (title, language) {
+                        QUILocale.set(language, group, {
+                            title: title
+                        });
+                    });
+
+                    resolve(result);
+                }, {
+                    project     : self.getName(),
+                    translations: JSON.encode(translations),
+                    onError     : reject
+                });
+            });
+        },
+
+        /**
          * Return the Media Object for the Project
          *
          * @method classes/projects/Project#getMedia

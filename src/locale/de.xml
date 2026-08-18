@@ -5619,6 +5619,15 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
         <locale name="projects.project.settings.panel.admin.email">
             <de><![CDATA[Administrations E-Mail]]></de>
         </locale>
+        <locale name="projects.project.settings.panel.projectTitle">
+            <de><![CDATA[Website- / Projektname]]></de>
+        </locale>
+        <locale name="projects.project.settings.panel.projectTitle.description">
+            <de><![CDATA[
+            Sprachabhängiger Anzeigename des Projekts. Wird unter anderem als Website-Name in strukturierten Daten
+            verwendet. Ohne Angabe wird der interne Projektname verwendet.
+            ]]></de>
+        </locale>
         <locale name="projects.project.settings.panel.set.standard">
             <de><![CDATA[Als standard Projekt setzen]]></de>
         </locale>

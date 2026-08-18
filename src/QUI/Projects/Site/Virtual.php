@@ -11,8 +11,13 @@ use QUI\Exception;
 use QUI\Interfaces\Projects\Site;
 use QUI\Projects\Project;
 
+use function http_build_query;
 use function json_decode;
 use function json_encode;
+use function str_contains;
+use function str_ends_with;
+use function strpos;
+use function substr;
 
 /**
  * Virtual site object
@@ -266,12 +271,38 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getUrl(array $params = [], array $getParams = []): string
     {
-        return $this->getAttribute('url');
+        return $this->appendGetParams((string)$this->getAttribute('url'), $getParams);
     }
 
-    public function getUrlRewritten(array $params = []): string
+    public function getUrlRewritten(array $params = [], array $getParams = []): string
     {
-        return $this->getAttribute('url');
+        return $this->appendGetParams((string)$this->getAttribute('url'), $getParams);
+    }
+
+    /**
+     * @param array<string, mixed> $getParams
+     */
+    private function appendGetParams(string $url, array $getParams): string
+    {
+        if ($getParams === []) {
+            return $url;
+        }
+
+        $fragment = '';
+        $fragmentPosition = strpos($url, '#');
+
+        if ($fragmentPosition !== false) {
+            $fragment = substr($url, $fragmentPosition);
+            $url = substr($url, 0, $fragmentPosition);
+        }
+
+        if (str_ends_with($url, '?') || str_ends_with($url, '&')) {
+            $separator = '';
+        } else {
+            $separator = str_contains($url, '?') ? '&' : '?';
+        }
+
+        return $url . $separator . http_build_query($getParams) . $fragment;
     }
 
     /**
