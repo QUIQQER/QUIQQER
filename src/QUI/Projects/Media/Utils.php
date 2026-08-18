@@ -798,6 +798,13 @@ class Utils
         // if the element (image) is resized
         $fileName = array_pop($parts);
 
+        if ($fileName === null || $fileName === '') {
+            throw new QUI\Exception(
+                'File not found',
+                ErrorCodes::FILE_NOT_FOUND
+            );
+        }
+
         if (str_contains($fileName, '__')) {
             $lastpos_ul = strrpos($fileName, '__') + 2;
             $pos_dot = strpos($fileName, '.', $lastpos_ul);

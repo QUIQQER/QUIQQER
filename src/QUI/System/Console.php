@@ -186,7 +186,11 @@ class Console
             } elseif (isset($languages['de'])) {
                 QUI::getLocale()->setCurrent('de');
             } else {
-                QUI::getLocale()->setCurrent(key($languages));
+                $defaultLanguage = key($languages);
+
+                if ($defaultLanguage !== null) {
+                    QUI::getLocale()->setCurrent($defaultLanguage);
+                }
             }
         }
 
@@ -226,7 +230,10 @@ class Console
         $args = $this->readArgv();
         $isSystemTool = key($args);
 
-        if (in_array($isSystemTool, $this->systemTools)) {
+        if (
+            is_string($isSystemTool)
+            && in_array($isSystemTool, $this->systemTools, true)
+        ) {
             $this->setArgument('#system-tool', $isSystemTool);
         }
 

@@ -951,13 +951,13 @@ class Manager
                             return $val;
                         }
 
-                        return preg_replace('/[^0-9,ug]/', '', $val);
+                        return preg_replace('/[^0-9,ug]/', '', $val) ?? $val;
                     }, $val);
                     $val = array_filter($val);
                     $val = implode(',', $val);
                 } else {
                     if (!Uuid::isValid(mb_substr($val, 1))) {
-                        $val = preg_replace('/[^0-9,ug]/', '', $val);
+                        $val = preg_replace('/[^0-9,ug]/', '', $val) ?? $val;
                     }
                 }
                 break;
@@ -977,13 +977,13 @@ class Manager
                             return $val;
                         }
 
-                        return preg_replace('/[^0-9]/', '', $val);
+                        return preg_replace('/[^0-9]/', '', $val) ?? $val;
                     }, $val);
                     $val = array_filter($val);
                     $val = implode(',', $val);
                 } else {
                     if (!Uuid::isValid($val)) {
-                        $val = preg_replace('/[^0-9,]/', '', $val);
+                        $val = preg_replace('/[^0-9,]/', '', $val) ?? $val;
                     }
                 }
                 break;

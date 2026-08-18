@@ -587,6 +587,10 @@ class Locale implements \Stringable
 
         $parts = $this->getPartsOfLocaleString($title);
 
+        if ($parts[0] === null || $parts[1] === null) {
+            return $title;
+        }
+
         return $this->get($parts[0], $parts[1]);
     }
 

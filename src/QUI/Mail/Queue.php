@@ -458,7 +458,7 @@ class Queue
             }
 
             // remove picture elements
-            $html = $params['body'];
+            $html = $params['body'] ?? '';
 
             $Output = new QUI\Output();
             $Output->setSetting('use-absolute-urls', true);
