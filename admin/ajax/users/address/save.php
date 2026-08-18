@@ -52,6 +52,12 @@ QUI::getAjax()->registerFunction(
             $Address = $User->addAddress($data);
         }
 
+        if ($Address === null) {
+            throw new QUI\Users\Exception(
+                'User address could not be loaded or created.'
+            );
+        }
+
         $Address->clearMail();
         $Address->clearPhone();
 
@@ -82,7 +88,12 @@ QUI::getAjax()->registerFunction(
             $User->save();
         }
 
-        if ($Address->getUUID() === $User->getStandardAddress()->getUUID()) {
+        $StandardAddress = $User->getStandardAddress();
+
+        if (
+            $StandardAddress !== null
+            && $Address->getUUID() === $StandardAddress->getUUID()
+        ) {
             $User->save();
         }
 
