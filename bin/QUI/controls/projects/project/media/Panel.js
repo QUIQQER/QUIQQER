@@ -703,18 +703,16 @@ define('controls/projects/project/media/Panel', [
                 autoclose: false,
                 events: {
                     onSubmit: function (Win) {
-                        Win.Loader.show();
+                        Win.close();
                         self.Loader.show();
 
                         CurrentFile.uploadFiles(Files).then(function () {
                             return self.openID(CurrentFile.getId(), true);
                         }).then(function () {
                             self.Loader.hide();
-                            Win.close();
                         }).catch(function (Exception) {
                             console.error(Exception);
                             self.Loader.hide();
-                            Win.Loader.hide();
                         });
                     }
                 }

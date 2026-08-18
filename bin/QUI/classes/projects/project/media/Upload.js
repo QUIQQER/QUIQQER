@@ -206,11 +206,11 @@ define('classes/projects/project/media/Upload', [
          */
         prepare: function (uploadFiles, project, parentId, conflictBehavior) {
             const files = Array.from(uploadFiles);
-            const isFrontend = typeof window !== 'undefined' &&
-                typeof window.QUIQQER_FRONTEND !== 'undefined' &&
-                window.QUIQQER_FRONTEND;
+            const isBackend = typeof window !== 'undefined' &&
+                typeof window.QUIQQER !== 'undefined' &&
+                window.QUIQQER.inAdministration;
 
-            conflictBehavior = conflictBehavior || (isFrontend ? CONFLICT_REPLACE : CONFLICT_ASK);
+            conflictBehavior = conflictBehavior || (isBackend ? CONFLICT_ASK : CONFLICT_REPLACE);
 
             if (conflictBehavior === CONFLICT_REPLACE) {
                 return Promise.resolve(files);
@@ -271,7 +271,11 @@ define('classes/projects/project/media/Upload', [
                             index: index,
                             info: info,
                             existingNames: children.map(function (item) {
-                                return item.name;
+                                if (item.type === 'folder' || !item.extension) {
+                                    return item.name;
+                                }
+
+                                return item.name + '.' + item.extension;
                             })
                         };
                     });
