@@ -85,8 +85,17 @@ try {
     $Rewrite = QUI::getRewrite();
     $Rewrite->exec();
 
+    $Project = $Rewrite->getProject();
+    $Site = $Rewrite->getSite();
+
+    if ($Project === null || $Site === null) {
+        throw new RuntimeException(
+            'Rewrite did not initialize a project and site.'
+        );
+    }
+
     QUI::getLocale()->setCurrent(
-        $Rewrite->getProject()->getLang()
+        $Project->getLang()
     );
 
 
@@ -95,9 +104,6 @@ try {
         $Response->headers->set('X-Robots-Tag', 'noindex, nofollow');
         QUI::getLocale()->no_translation = true;
     }
-
-    $Project = $Rewrite->getProject();
-    $Site = $Rewrite->getSite();
 
     QUI::getTemplateManager()->assignGlobalParam('Project', $Project);
     QUI::getTemplateManager()->assignGlobalParam('Site', $Site);

@@ -479,7 +479,13 @@ class Mailer extends QUI\QDOM
             return $body;
         }
 
-        $baseUrl = QUI::getRewrite()->getProject()->get(1)->getUrlRewrittenWithHost();
+        $Project = QUI::getRewrite()->getProject();
+
+        if ($Project === null) {
+            return $body;
+        }
+
+        $baseUrl = $Project->get(1)->getUrlRewrittenWithHost();
         $baseUrl = rtrim($baseUrl, '/');
 
         foreach ($matches[1] as $mediaUrl) {
