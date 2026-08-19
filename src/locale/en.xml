@@ -5036,6 +5036,30 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="projects.project.site.select.btn.addTypes">
             <en><![CDATA[Add a site type]]></en>
         </locale>
+        <locale name="projects.project.site.select.entry.site">
+            <en><![CDATA[Site]]></en>
+        </locale>
+        <locale name="projects.project.site.select.entry.type">
+            <en><![CDATA[Site type]]></en>
+        </locale>
+        <locale name="projects.project.site.select.entry.children">
+            <en><![CDATA[Source site]]></en>
+        </locale>
+        <locale name="projects.project.site.select.entry.typeWildcard">
+            <en><![CDATA[Site types]]></en>
+        </locale>
+        <locale name="projects.project.site.select.entry.children.title">
+            <en><![CDATA[All subpages of [title]]]></en>
+        </locale>
+        <locale name="projects.project.site.select.entry.typeWildcard.title">
+            <en><![CDATA[All site types from [title]]]></en>
+        </locale>
+        <locale name="projects.project.site.select.entry.children.badge">
+            <en><![CDATA[All subpages]]></en>
+        </locale>
+        <locale name="projects.project.site.select.entry.typeWildcard.badge">
+            <en><![CDATA[All site types]]></en>
+        </locale>
         <locale name="packages.panel.category.system">
             <en><![CDATA[System Check]]></en>
         </locale>
