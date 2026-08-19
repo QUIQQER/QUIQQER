@@ -5108,6 +5108,24 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             3x und mehr steht für noch höher auflösende Displays. (Standard: 2x)
             ]]></de>
         </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.imageCacheSizeRounding">
+            <de><![CDATA[Cache-Bildgrößen zusammenfassen]]></de>
+        </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.imageCacheSizeRounding.description">
+            <de><![CDATA[
+            Rundet größere Cache-Bildgrößen auf feste Stufen, um die Anzahl erzeugter Varianten zu begrenzen.
+            Ist die Option deaktiviert, werden alle angeforderten Größen exakt erzeugt.
+            ]]></de>
+        </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.imageCacheExactSizeThreshold">
+            <de><![CDATA[Exakte Cache-Bildgrößen bis]]></de>
+        </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.imageCacheExactSizeThreshold.description">
+            <de><![CDATA[
+            Bilder, deren kürzere Zielkante diesen Wert nicht überschreitet, werden nicht gerundet.
+            Dadurch bleiben insbesondere kleine Logos und Icons scharf. Mit 0 wird diese Ausnahme deaktiviert.
+            ]]></de>
+        </locale>
 
 
         <locale name="watermark.position.bottom.right">

@@ -4952,6 +4952,24 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
             3x and more stands for even higher resolution displays. (Default: 2x)
             ]]></en>
         </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.imageCacheSizeRounding">
+            <en><![CDATA[Group cache image sizes]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.imageCacheSizeRounding.description">
+            <en><![CDATA[
+            Rounds larger cache image sizes to fixed steps to limit the number of generated variants.
+            If this option is disabled, every requested size is generated exactly.
+            ]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.imageCacheExactSizeThreshold">
+            <en><![CDATA[Exact cache image sizes up to]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.imageCacheExactSizeThreshold.description">
+            <en><![CDATA[
+            Images whose shorter target edge does not exceed this value are not rounded.
+            This keeps small logos and icons sharp. Set the value to 0 to disable this exception.
+            ]]></en>
+        </locale>
 
 
         <locale name="watermark.position.bottom.right">
