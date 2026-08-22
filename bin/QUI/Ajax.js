@@ -335,6 +335,50 @@ define('Ajax', [
         },
 
         /**
+         * Send a POST request that may continue while the page unloads.
+         *
+         * The request uses window.fetch intentionally, allowing packages to
+         * extend it with security headers.
+         *
+         * @param {String} call
+         * @param {Object} [params]
+         * @return {Boolean}
+         */
+        keepalive: function(call, params = {}) {
+            if (typeof window.fetch !== 'function') {
+                return false;
+            }
+
+            const requestParams = Object.assign({}, params, {
+                _rf      : JSON.stringify([call]),
+                _FRONTEND: window.QUIQQER_FRONTEND || 0
+            });
+            const body = new URLSearchParams();
+
+            Object.entries(requestParams).forEach(function([name, value]) {
+                if (typeof value === 'undefined') {
+                    return;
+                }
+
+                body.append(
+                    name,
+                    typeof value === 'string' ? value : JSON.stringify(value)
+                );
+            });
+
+            window.fetch(this.$url + '?beacon=1', {
+                method     : 'POST',
+                body       : body,
+                credentials: 'same-origin',
+                keepalive  : true
+            }).catch(function() {
+                // The page may already be unloading.
+            });
+
+            return true;
+        },
+
+        /**
          * Method to open the login
          *
          * API
