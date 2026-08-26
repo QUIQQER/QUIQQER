@@ -8,7 +8,7 @@
 
 use QUI\System\License;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_licenseKey_activate',
     static function (): array {
         try {

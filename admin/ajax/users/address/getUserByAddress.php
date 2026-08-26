@@ -9,7 +9,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_address_getUserByAddress',
     static function ($aid): string|int {
         $addressField = is_numeric($aid) ? "id" : "uuid";

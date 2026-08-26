@@ -6,7 +6,7 @@
  * @return String
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_getQuiqqerVersions',
     static function (): array {
         $packages = @file_get_contents('https://update.quiqqer.com/packages.json');

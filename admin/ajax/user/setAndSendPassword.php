@@ -13,7 +13,7 @@
 
 use QUI\Mail\Mailer;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_user_setAndSendPassword',
     static function ($userId, $newPassword, $forceNew): void {
         $User = QUI::getUsers()->get($userId);

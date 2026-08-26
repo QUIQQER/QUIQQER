@@ -5,9 +5,10 @@ define('classes/projects/project/media/Folder', [
 
     'classes/projects/project/media/Item',
     'Ajax',
-    'UploadManager'
+    'UploadManager',
+    'classes/projects/project/media/Upload'
 
-], function (MediaItem, Ajax, UploadManager) {
+], function (MediaItem, Ajax, UploadManager, MediaUpload) {
     'use strict';
 
     /**
@@ -99,23 +100,31 @@ define('classes/projects/project/media/Folder', [
          *
          * @param {Array|Object} files - Array | Filelist
          * @param {Function} [onfinish] - callback function
+         * @param {String} [conflictBehavior] - "ask" or "replace"; defaults to the current application context
          *
          * @return Promise
          */
-        uploadFiles: function (files, onfinish) {
-            return new Promise((resolve) => {
-                UploadManager.uploadFiles(files, 'ajax_media_upload', {
-                    project: this.getMedia().getProject().getName(),
-                    parentid: this.getId(),
-                    events: {
-                        onComplete: function (uploadedFiles) {
-                            if (typeof onfinish === 'function') {
-                                onfinish(uploadedFiles);
-                            }
+        uploadFiles: function (files, onfinish, conflictBehavior) {
+            return MediaUpload.prepare(
+                files,
+                this.getMedia().getProject().getName(),
+                this.getId(),
+                conflictBehavior
+            ).then((preparedFiles) => {
+                return new Promise((resolve) => {
+                    UploadManager.uploadFiles(preparedFiles, 'ajax_media_upload', {
+                        project: this.getMedia().getProject().getName(),
+                        parentid: this.getId(),
+                        events: {
+                            onComplete: function (uploadedFiles) {
+                                if (typeof onfinish === 'function') {
+                                    onfinish(uploadedFiles);
+                                }
 
-                            resolve(uploadedFiles);
+                                resolve(uploadedFiles);
+                            }
                         }
-                    }
+                    });
                 });
             });
         },

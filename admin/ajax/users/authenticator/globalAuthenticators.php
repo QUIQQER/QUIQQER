@@ -10,7 +10,7 @@
 use QUI\System\Log;
 use QUI\Users\AuthenticatorInterface;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_authenticator_globalAuthenticators',
     static function () {
         $User = QUI::getUserBySession();

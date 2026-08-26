@@ -6,7 +6,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_desktop_workspace_getAvailablePanels',
     static function (): array {
         return QUI\Workspace\Manager::getAvailablePanels();

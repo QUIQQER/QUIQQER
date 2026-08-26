@@ -9,7 +9,7 @@
  * @throws \QUI\Exception
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_media_file_download',
     static function ($project, $fileid): void {
         $Project = QUI\Projects\Manager::getProject($project);

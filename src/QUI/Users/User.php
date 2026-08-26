@@ -541,11 +541,11 @@ class User implements QUIUserInterface
      * Return the standard address from the user
      * If no standard address set, the first address will be returned
      *
-     * @return Address|null
+     * @return Address
      * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
-    public function getStandardAddress(): null | Address
+    public function getStandardAddress(): Address
     {
         $Address = $this->getStandardAddressHelper();
         $mailList = $Address->getMailList();
@@ -1139,6 +1139,11 @@ class User implements QUIUserInterface
 
         /* @var $Attributes DOMElement */
         $Attributes = $Attr->item(0);
+
+        if ($Attributes === null) {
+            return [];
+        }
+
         $list = $Attributes->getElementsByTagName('attribute');
 
         if (!$list->length) {
@@ -1150,12 +1155,12 @@ class User implements QUIUserInterface
         for ($c = 0; $c < $list->length; $c++) {
             $Attribute = $list->item($c);
 
-            if ($Attribute->nodeName == '#text') {
+            if ($Attribute === null || $Attribute->nodeName == '#text') {
                 continue;
             }
 
             $attributes[] = [
-                'name' => trim($Attribute->nodeValue),
+                'name' => trim($Attribute->nodeValue ?? ''),
                 'encrypt' => (bool)$Attribute->getAttribute('encrypt'),
                 'no-auto-save' => (bool)$Attribute->getAttribute('no-auto-save')
             ];
@@ -1547,7 +1552,11 @@ class User implements QUIUserInterface
         }
 
         if (class_exists('QUI\ERP\Currency\Handler')) {
-            return Currencies::getDefaultCurrency()->getCode();
+            $Currency = Currencies::getDefaultCurrency();
+
+            if ($Currency !== null) {
+                return $Currency->getCode();
+            }
         }
 
         return 'EUR';
@@ -1567,9 +1576,7 @@ class User implements QUIUserInterface
         try {
             $Standard = $this->getStandardAddress();
 
-            if ($Standard) {
-                return $Standard->getCountry();
-            }
+            return $Standard->getCountry();
         } catch (QUI\Exception) {
         }
 

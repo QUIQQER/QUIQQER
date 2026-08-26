@@ -12,7 +12,7 @@
 
 use QUI\Projects\Media\Utils as Utils;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_media_url_getImageSize',
     static function ($fileurl) {
         if (Utils::isMediaUrl($fileurl) === false) {

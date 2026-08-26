@@ -62,7 +62,7 @@ abstract class Item extends QUI\QDOM
     /**
      * internal media object
      */
-    protected null | Media $Media = null;
+    protected Media $Media;
 
     /**
      * internal parent id (use ->getParentId())

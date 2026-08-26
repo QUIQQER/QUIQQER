@@ -4,7 +4,7 @@
  * Return update process state.
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_update_status',
     static function ($id): array {
         $Repository = new QUI\System\Update\RunRepository(VAR_DIR . 'update/runs/');

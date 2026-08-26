@@ -240,6 +240,10 @@ class Site
 
         $url = implode('/', $urlParts);
 
+        if ($Project === null) {
+            throw new Exception('Project not found', 404);
+        }
+
         try {
             return QUI\Projects\Site\Utils::getSiteByUrl($Project, $url);
         } catch (Exception) {

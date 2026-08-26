@@ -12,7 +12,7 @@
 
 use QUI\Projects\Media\Folder;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_media_folder_setPriorities',
     static function ($project, $folderId, $priorities): void {
         $Project = QUI\Projects\Manager::getProject($project);

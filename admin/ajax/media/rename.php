@@ -10,7 +10,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_media_rename',
     static function ($project, $id, $newname) {
         $Project = QUI\Projects\Manager::getProject($project);

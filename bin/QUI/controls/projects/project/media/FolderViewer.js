@@ -18,6 +18,7 @@ define('controls/projects/project/media/FolderViewer', [
     'classes/projects/project/media/panel/ContextMenu',
     'classes/projects/project/media/panel/DOMEvents',
     'controls/upload/Form',
+    'classes/projects/project/media/Upload',
     'utils/Panels',
     'Projects',
     'Locale',
@@ -37,6 +38,7 @@ define('controls/projects/project/media/FolderViewer', [
     MediaContextMenu,
     DOMEvents,
     UploadForm,
+    MediaUpload,
     PanelUtils,
     Projects,
     QUILocale,
@@ -500,6 +502,13 @@ define('controls/projects/project/media/FolderViewer', [
                     multiple: true,
                     sendbutton: true,
                     cancelbutton: true,
+                    prepareFiles: (files) => {
+                        return MediaUpload.prepare(
+                            files,
+                            this.getAttribute('project'),
+                            this.getAttribute('folderId')
+                        );
+                    },
                     styles: {
                         height: '95%'
                     },

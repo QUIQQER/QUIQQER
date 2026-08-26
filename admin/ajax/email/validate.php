@@ -9,7 +9,7 @@
 
 use QUI\Utils\Security\Orthos;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_email_validate',
     static function ($mail): bool {
         return Orthos::checkMailSyntax($mail);

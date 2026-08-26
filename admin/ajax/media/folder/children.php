@@ -14,7 +14,7 @@ use QUI\Projects\Media\Folder;
 use QUI\Utils\Grid;
 use QUI\Utils\Security\Orthos;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_media_folder_children',
     static function ($project, $folderid, $params): array {
         $Project = QUI\Projects\Manager::getProject($project);

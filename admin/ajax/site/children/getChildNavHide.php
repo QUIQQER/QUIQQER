@@ -1,6 +1,6 @@
 <?php
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_site_children_getChildNavHide',
     static function ($project, $siteId): int {
         $Project = QUI::getProjectManager()->decode($project);

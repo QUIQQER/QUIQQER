@@ -8,7 +8,7 @@
  * @return integer - the new group id
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_groups_create',
     static function ($groupname, $pid): string {
         $Groups = QUI::getGroups();

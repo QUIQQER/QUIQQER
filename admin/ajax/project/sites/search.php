@@ -9,7 +9,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_project_sites_search',
     static function ($project, $search, $params): array {
         $params = json_decode($params, true);

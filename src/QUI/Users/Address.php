@@ -46,7 +46,7 @@ class Address extends QUI\QDOM
      */
     protected array $customData = [];
 
-    protected ?QUIUserInterface $User = null;
+    protected QUIUserInterface $User;
 
     /**
      * @throws Exception|QUI\ExceptionStack
@@ -592,7 +592,12 @@ class Address extends QUI\QDOM
             QUI\System\Log::writeDebugException($Exception);
         }
 
-        if ($User->getStandardAddress()->getUUID() === $this->getUUID()) {
+        $StandardAddress = $User->getStandardAddress();
+
+        if (
+            $StandardAddress !== null
+            && $StandardAddress->getUUID() === $this->getUUID()
+        ) {
             $mailList = $this->getMailList();
 
             if (count($mailList)) {
@@ -808,7 +813,7 @@ class Address extends QUI\QDOM
         }
 
         $result = "$salutation $firstName $lastName";
-        $result = preg_replace('/[  ]{2,}/', ' ', $result);
+        $result = preg_replace('/[  ]{2,}/', ' ', $result) ?? $result;
 
         return trim($result);
     }

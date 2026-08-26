@@ -42,7 +42,7 @@ class Mailer extends QUI\QDOM
     /**
      * Mail template
      */
-    public ?Template $Template = null;
+    public Template $Template;
 
     /**
      * list of recipients
@@ -465,8 +465,8 @@ class Mailer extends QUI\QDOM
 
         $html = $Output->parse($html);
 
-        $html = preg_replace('#<picture([^>]*)>#i', '', $html);
-        $html = preg_replace('#<source([^>]*)>#i', '', $html);
+        $html = preg_replace('#<picture([^>]*)>#i', '', $html) ?? $html;
+        $html = preg_replace('#<source([^>]*)>#i', '', $html) ?? $html;
 
         return str_replace('</picture>', '', $html);
     }
@@ -479,7 +479,13 @@ class Mailer extends QUI\QDOM
             return $body;
         }
 
-        $baseUrl = QUI::getRewrite()->getProject()->get(1)->getUrlRewrittenWithHost();
+        $Project = QUI::getRewrite()->getProject();
+
+        if ($Project === null) {
+            return $body;
+        }
+
+        $baseUrl = $Project->get(1)->getUrlRewrittenWithHost();
         $baseUrl = rtrim($baseUrl, '/');
 
         foreach ($matches[1] as $mediaUrl) {

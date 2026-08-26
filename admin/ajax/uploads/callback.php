@@ -4,7 +4,7 @@
  * Upload callback if a file is finished uploaded
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_uploads_callback',
     static function ($File, $callable): void {
         if (!isset($callable)) {

@@ -9,7 +9,7 @@
  * @param string $filetype - File type
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_media_checkreplace',
     static function ($project, $fileid, $filename, $filetype): void {
         $Project = QUI\Projects\Manager::getProject($project);

@@ -11,7 +11,7 @@
 
 use QUI\Users\Auth\Handler;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_authenticator_sendPasswordResetConfirmMail',
     static function ($email): void {
         try {

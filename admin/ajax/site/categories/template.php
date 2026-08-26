@@ -9,7 +9,7 @@
  * @return string
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_site_categories_template',
     static function ($project, $id, $tab): string {
         $Project = QUI::getProjectManager()->decode($project);

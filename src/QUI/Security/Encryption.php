@@ -94,6 +94,8 @@ class Encryption
      */
     public static function encrypt(string|null $data): string
     {
+        $data ??= '';
+
         $Config = QUI::getConfig('etc/conf.ini.php');
 
         $salt = $Config->getValue('globals', 'salt');

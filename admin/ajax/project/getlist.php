@@ -6,7 +6,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_project_getlist',
     static function (): array {
         return QUI\Projects\Manager::getConfig()->toArray();

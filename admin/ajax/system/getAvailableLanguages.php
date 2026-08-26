@@ -6,7 +6,7 @@
  * @return String
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_getAvailableLanguages',
     static function (): array {
         return QUI::availableLanguages();

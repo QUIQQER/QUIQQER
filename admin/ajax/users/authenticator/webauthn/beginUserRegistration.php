@@ -2,7 +2,7 @@
 
 use QUI\Users\Auth\WebAuthn\Server;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_authenticator_webauthn_beginUserRegistration',
     static function ($username, $displayName = '', $name = ''): array {
         $username = trim($username);

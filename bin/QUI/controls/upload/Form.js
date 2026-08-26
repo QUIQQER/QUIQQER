@@ -58,6 +58,7 @@ define('controls/upload/Form', [
             pauseAllowed: true,
             contextMenu: true, // context menu for the file upload
             showErrors: true, // use message handler to show error
+            prepareFiles: false, // optional async file preparation before upload
 
             // look
             typeOfLook: 'DragDrop',    // DragDrop, Icon, Single
@@ -957,38 +958,50 @@ define('controls/upload/Form', [
                 onComplete: this.finish.bind(this)
             };
 
-            if ('extract' in params && params.extract) {
-                const extract = {};
-
-                for (let i = 0, len = files.length; i < len; i++) {
-
-                    extract[files[i].name] = true;
-                }
-
-                params.extract = extract;
-            }
-
             if (!files.length) {
                 return;
             }
 
-            require(['classes/request/BulkUpload'], (BulkUpload) => {
-                self.fireEvent('begin', [self]);
+            const startUpload = function (preparedFiles) {
+                if ('extract' in params && params.extract) {
+                    const extract = {};
 
-                new BulkUpload({
-                    parentId: params.parentid,
-                    project: params.project,
-                    phpOnFinish: params.onfinish,
-                    phpOnStart: params.onstart,
-                    params: params,
-                    events: {
-                        onFinish: (Instance, uploadedFiles) => {
-                            this.fireEvent('finished', [this, uploadedFiles, Instance]);
-                            this.fireEvent('complete', [this, uploadedFiles, Instance]);
-                        }
+                    for (let i = 0, len = preparedFiles.length; i < len; i++) {
+                        extract[preparedFiles[i].name] = true;
                     }
-                }).upload(files);
-            });
+
+                    params.extract = extract;
+                }
+
+                require(['classes/request/BulkUpload'], (BulkUpload) => {
+                    self.fireEvent('begin', [self]);
+
+                    new BulkUpload({
+                        parentId: params.parentid,
+                        project: params.project,
+                        phpOnFinish: params.onfinish,
+                        phpOnStart: params.onstart,
+                        params: params,
+                        events: {
+                            onFinish: (Instance, uploadedFiles) => {
+                                this.fireEvent('finished', [this, uploadedFiles, Instance]);
+                                this.fireEvent('complete', [this, uploadedFiles, Instance]);
+                            }
+                        }
+                    }).upload(preparedFiles);
+                });
+            };
+
+            const prepareFiles = this.getAttribute('prepareFiles');
+
+            if (typeof prepareFiles === 'function') {
+                Promise.resolve(prepareFiles(files, this)).then(startUpload).catch(function () {
+                    self.Loader.hide();
+                });
+                return;
+            }
+
+            startUpload(files);
         },
 
         /**

@@ -6,7 +6,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_template_getlist',
     static function (): array {
         return QUI::getPackageManager()->searchInstalledPackages([

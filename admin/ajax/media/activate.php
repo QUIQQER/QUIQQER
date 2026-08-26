@@ -10,7 +10,7 @@
  * @throws \QUI\Exception
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_media_activate',
     static function ($project, $fileid) {
         $fileid = json_decode($fileid, true);

@@ -4,7 +4,7 @@
  * test mail settings
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_mailTest',
     static function ($params): void {
         $params = json_decode($params, true);

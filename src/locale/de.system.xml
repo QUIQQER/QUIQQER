@@ -3563,6 +3563,30 @@
         <locale name="projects.project.site.select.btn.addTypes">
             <de><![CDATA[Seitentyp hinzufügen ]]></de>
         </locale>
+        <locale name="projects.project.site.select.entry.site">
+            <de><![CDATA[Seite]]></de>
+        </locale>
+        <locale name="projects.project.site.select.entry.type">
+            <de><![CDATA[Seitentyp]]></de>
+        </locale>
+        <locale name="projects.project.site.select.entry.children">
+            <de><![CDATA[Ausgangsseite]]></de>
+        </locale>
+        <locale name="projects.project.site.select.entry.typeWildcard">
+            <de><![CDATA[Seitentypen]]></de>
+        </locale>
+        <locale name="projects.project.site.select.entry.children.title">
+            <de><![CDATA[Alle Unterseiten von [title]]]></de>
+        </locale>
+        <locale name="projects.project.site.select.entry.typeWildcard.title">
+            <de><![CDATA[Alle Seitentypen aus [title]]]></de>
+        </locale>
+        <locale name="projects.project.site.select.entry.children.badge">
+            <de><![CDATA[Alle Unterseiten]]></de>
+        </locale>
+        <locale name="projects.project.site.select.entry.typeWildcard.badge">
+            <de><![CDATA[Alle Seitentypen]]></de>
+        </locale>
         <locale name="packages.panel.category.systemcheck.execbutton">
             <de><![CDATA[System Check ausführen]]></de>
         </locale>

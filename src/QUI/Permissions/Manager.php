@@ -27,6 +27,8 @@ use function json_decode;
 use function json_encode;
 use function method_exists;
 use function preg_replace;
+use function str_replace;
+use function strtolower;
 use function trim;
 
 /**
@@ -161,8 +163,8 @@ class Manager
                 $Table->addColumn($name, $definition["type"], $definition["options"] ?? []);
             }
 
-            foreach ($indexes as $indexName) {
-                $Table->addIndex([$indexName], $indexName);
+            foreach ($indexes as $columnName) {
+                $Table->addIndex([$columnName]);
             }
 
             $SchemaManager->createTable($Table);
@@ -189,18 +191,46 @@ class Manager
             $Table = $SchemaManager->introspectTable($tableName);
         }
 
-        foreach ($indexes as $indexName) {
-            if ($Table->hasIndex($indexName)) {
+        $TargetTable = clone $Table;
+
+        foreach ($indexes as $columnName) {
+            if (self::hasSingleColumnIndex($TargetTable, $columnName)) {
                 continue;
             }
 
-            $Table->addIndex([$indexName], $indexName);
-            $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff(
-                $Table,
-                addedIndexes: [$Table->getIndex($indexName)]
-            ));
-            $Table = $SchemaManager->introspectTable($tableName);
+            $TargetTable->addIndex([$columnName]);
         }
+
+        $Diff = $SchemaManager->createComparator()->compareTables($Table, $TargetTable);
+
+        if (!$Diff->isEmpty()) {
+            $SchemaManager->alterTable($Diff);
+        }
+    }
+
+    private static function hasSingleColumnIndex(
+        \Doctrine\DBAL\Schema\Table $Table,
+        string $columnName
+    ): bool {
+        $columnName = strtolower(str_replace(['`', '"', '[', ']'], '', $columnName));
+
+        foreach ($Table->getIndexes() as $Index) {
+            $indexedColumns = $Index->getIndexedColumns();
+
+            if (count($indexedColumns) !== 1) {
+                continue;
+            }
+
+            $indexedColumnName = strtolower(
+                $indexedColumns[0]->getColumnName()->getIdentifier()->getValue()
+            );
+
+            if ($indexedColumnName === $columnName) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -951,13 +981,13 @@ class Manager
                             return $val;
                         }
 
-                        return preg_replace('/[^0-9,ug]/', '', $val);
+                        return preg_replace('/[^0-9,ug]/', '', $val) ?? $val;
                     }, $val);
                     $val = array_filter($val);
                     $val = implode(',', $val);
                 } else {
                     if (!Uuid::isValid(mb_substr($val, 1))) {
-                        $val = preg_replace('/[^0-9,ug]/', '', $val);
+                        $val = preg_replace('/[^0-9,ug]/', '', $val) ?? $val;
                     }
                 }
                 break;
@@ -977,13 +1007,13 @@ class Manager
                             return $val;
                         }
 
-                        return preg_replace('/[^0-9]/', '', $val);
+                        return preg_replace('/[^0-9]/', '', $val) ?? $val;
                     }, $val);
                     $val = array_filter($val);
                     $val = implode(',', $val);
                 } else {
                     if (!Uuid::isValid($val)) {
-                        $val = preg_replace('/[^0-9,]/', '', $val);
+                        $val = preg_replace('/[^0-9,]/', '', $val) ?? $val;
                     }
                 }
                 break;
@@ -997,7 +1027,7 @@ class Manager
                 $val = (string)$val;
 
                 if (!Uuid::isValid($val)) {
-                    $val = preg_replace('/[^0-9]/', '', $val);
+                    $val = preg_replace('/[^0-9]/', '', $val) ?? $val;
                 }
                 break;
 
@@ -1503,7 +1533,7 @@ class Manager
             }
         }
 
-        if (count($everyonePermissions)) {
+        if ($Everyone !== null && count($everyonePermissions)) {
             try {
                 $this->setPermissions($Everyone, $everyonePermissions);
             } catch (QUI\Exception $Exception) {
@@ -1511,7 +1541,7 @@ class Manager
             }
         }
 
-        if (count($guestPermissions)) {
+        if ($Guest !== null && count($guestPermissions)) {
             try {
                 $this->setPermissions($Guest, $guestPermissions);
             } catch (QUI\Exception $Exception) {

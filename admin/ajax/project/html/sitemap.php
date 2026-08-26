@@ -7,7 +7,7 @@
  * @return string
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_project_html_sitemap',
     static function ($project): string {
         $Project = QUI::getProjectManager()->decode($project);

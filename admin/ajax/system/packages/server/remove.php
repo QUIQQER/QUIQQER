@@ -7,7 +7,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_packages_server_remove',
     static function ($server): void {
         QUI::getPackageManager()->removeServer($server);

@@ -11,7 +11,7 @@
  * @throws QUI\Exception
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_permissions_add',
     static function ($permission, $permissiontype, $area): bool {
         $Manager = QUI::getPermissionManager();

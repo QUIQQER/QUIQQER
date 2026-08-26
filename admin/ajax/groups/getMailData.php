@@ -1,6 +1,6 @@
 <?php
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_groups_getMailData',
     static function ($groupId) {
         $Group = QUI::getGroups()->get($groupId);

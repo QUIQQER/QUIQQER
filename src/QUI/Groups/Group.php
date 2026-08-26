@@ -251,11 +251,19 @@ class Group extends QUI\QDOM
      */
     public function getId(): int
     {
+        if ($this->id === null) {
+            throw new \LogicException('Group ID was not initialized.');
+        }
+
         return $this->id;
     }
 
     public function getUUID(): string
     {
+        if ($this->uuid === null) {
+            throw new \LogicException('Group UUID was not initialized.');
+        }
+
         return $this->uuid;
     }
 
@@ -293,7 +301,7 @@ class Group extends QUI\QDOM
      */
     public function getParentIds(): array
     {
-        if ($this->parentIds) {
+        if ($this->parentIds !== null) {
             return $this->parentIds;
         }
 
@@ -329,7 +337,7 @@ class Group extends QUI\QDOM
             $this->getParentIdsHelper($result[0]['parent']);
         }
 
-        return $this->parentIds;
+        return $this->parentIds ?? [];
     }
 
     private function getParentIdsHelper(int | string $id): void
@@ -409,7 +417,7 @@ class Group extends QUI\QDOM
         };
 
         try {
-            $children = $this->getChildrenIds(true);
+            $children = $this->getChildrenIds(true) ?? [];
 
             foreach ($children as $child) {
                 QUI::getDataBaseConnection()->delete(
@@ -442,7 +450,7 @@ class Group extends QUI\QDOM
      * @param boolean $recursive - recursive true / false
      * @param array<string, mixed> $params - SQL Params (limit, order)
      *
-     * @return array<int, int|string>|null
+     * @return array<int, int|string>
      *
      * @throws Exception
      */
@@ -553,7 +561,7 @@ class Group extends QUI\QDOM
             $Project = QUI::getProjectManager()->getStandard();
             $Media = $Project->getMedia();
 
-            return $Media->getPlaceholderImage();
+            return $Media->getPlaceholderImage() ?? false;
         }
 
         try {
@@ -565,7 +573,7 @@ class Group extends QUI\QDOM
         $Project = QUI::getProjectManager()->getStandard();
         $Media = $Project->getMedia();
 
-        return $Media->getPlaceholderImage();
+        return $Media->getPlaceholderImage() ?? false;
     }
 
     /**
@@ -1007,7 +1015,7 @@ class Group extends QUI\QDOM
     public function isParent(int | string $id, bool $recursive = false): bool
     {
         if ($recursive) {
-            if (in_array($id, $this->parentIds)) {
+            if (in_array($id, $this->getParentIds(), true)) {
                 return true;
             }
 
@@ -1042,7 +1050,7 @@ class Group extends QUI\QDOM
     public function getChildren(array $params = []): array
     {
         try {
-            $ids = $this->getChildrenIds(false, $params);
+            $ids = $this->getChildrenIds(false, $params) ?? [];
         } catch (\Exception $exception) {
             QUI\System\Log::addError($exception->getMessage());
             return [];

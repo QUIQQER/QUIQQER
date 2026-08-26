@@ -9,7 +9,7 @@
  * @throws QUI\Exception
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_user_getMailData',
     static function ($userId) {
         $User = QUI::getUsers()->get($userId);

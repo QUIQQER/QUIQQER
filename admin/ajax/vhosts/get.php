@@ -7,7 +7,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_vhosts_get',
     static function ($vhost): bool|array {
         $VhostManager = new QUI\System\VhostManager();

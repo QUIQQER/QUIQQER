@@ -39,6 +39,11 @@ class Utils
         }
 
         $Editors = $editors->item(0);
+
+        if ($Editors === null) {
+            return [];
+        }
+
         $list = $Editors->getElementsByTagName('editor');
 
         if (!$list->length) {
@@ -50,7 +55,7 @@ class Utils
         for ($c = 0; $c < $list->length; $c++) {
             $Editor = $list->item($c);
 
-            if ($Editor->nodeName == '#text') {
+            if ($Editor === null || $Editor->nodeName == '#text') {
                 continue;
             }
 
@@ -89,7 +94,7 @@ class Utils
             }
 
             if (empty($definition['name'])) {
-                $definition['name'] = trim($Editor->nodeValue);
+                $definition['name'] = trim($Editor->nodeValue ?? '');
             }
 
             $result[] = $definition;

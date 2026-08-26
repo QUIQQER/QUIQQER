@@ -9,7 +9,7 @@
  * @return integer
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_media_file_getParentId',
     static function ($project, $fileid): int {
         $Project = QUI\Projects\Manager::getProject($project);

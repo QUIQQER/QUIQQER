@@ -458,15 +458,15 @@ class Queue
             }
 
             // remove picture elements
-            $html = $params['body'];
+            $html = $params['body'] ?? '';
 
             $Output = new QUI\Output();
             $Output->setSetting('use-absolute-urls', true);
             $Output->setSetting('parse-to-picture-elements', false);
             $html = $Output->parse($html);
 
-            $html = preg_replace('#<picture([^>]*)>#i', '', $html);
-            $html = preg_replace('#<source([^>]*)>#i', '', $html);
+            $html = preg_replace('#<picture([^>]*)>#i', '', $html) ?? $html;
+            $html = preg_replace('#<source([^>]*)>#i', '', $html) ?? $html;
             $html = str_replace('</picture>', '', $html);
 
             $PhpMailer->From = $params['from'];

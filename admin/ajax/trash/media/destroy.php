@@ -7,7 +7,7 @@
  * @param string $ids - JSON Array, List of IDs
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_trash_media_destroy',
     static function ($project, $ids): void {
         $Project = QUI::getProjectManager()->decode($project);

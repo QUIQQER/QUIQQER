@@ -10,7 +10,7 @@
  * @throws \QUI\Exception
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_media_url_get',
     static function ($project, $fileid): string {
         $Project = QUI\Projects\Manager::getProject($project);

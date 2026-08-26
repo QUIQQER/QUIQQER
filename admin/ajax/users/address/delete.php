@@ -9,7 +9,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_address_delete',
     static function ($uid, $aid): void {
         if (!isset($uid) || !$uid) {

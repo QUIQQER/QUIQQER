@@ -6,7 +6,7 @@
 
 use QUI\Cache\QuiqqerMongoDriver;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_cache_mongoCheck',
     static function ($host, $database, $collection, $username, $password): void {
         try {

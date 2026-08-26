@@ -8,7 +8,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_address_deleteAddressList',
     static function ($ids): array {
         $ids = json_decode($ids, true);

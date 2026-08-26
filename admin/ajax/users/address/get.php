@@ -9,7 +9,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_address_get',
     static function ($uid, $aid) {
         if (!isset($uid) || !$uid) {

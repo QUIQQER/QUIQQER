@@ -470,8 +470,10 @@ class Project extends QUI\System\Console\Tool
         }
 
         // Target project bricks cleanup
-        if ($this->quiqqerBricksInstalled && $this->BricksManager) {
-            $targetProjectBricks = $this->BricksManager->getBricksFromProject($TargetProject);
+        $BricksManager = $this->BricksManager;
+
+        if ($this->quiqqerBricksInstalled && $BricksManager !== null) {
+            $targetProjectBricks = $BricksManager->getBricksFromProject($TargetProject);
 
             if (!empty($targetProjectBricks)) {
                 $this->writeLn(" === ATTENTION ===");
@@ -493,7 +495,7 @@ class Project extends QUI\System\Console\Tool
                     // Fetch brick IDs from database (because Brick class does not offer ->getId())
                     $result = QUI::getDataBaseConnection()->createQueryBuilder()
                         ->select('id')
-                        ->from($this->BricksManager::getTable())
+                        ->from($BricksManager::getTable())
                         ->where('project = :project')
                         ->andWhere('lang = :lang')
                         ->setParameter('project', $TargetProject->getName())
@@ -502,7 +504,7 @@ class Project extends QUI\System\Console\Tool
                         ->fetchAllAssociative();
 
                     foreach ($result as $row) {
-                        $this->BricksManager->deleteBrick($row['id']);
+                        $BricksManager->deleteBrick($row['id']);
                     }
 
                     $this->writeLn(" SUCCESS!");
@@ -580,7 +582,9 @@ class Project extends QUI\System\Console\Tool
         $this->writeLn(" -> Copy successful");
 
         // Bricks
-        if ($this->quiqqerBricksInstalled && $this->BricksManager) {
+        $BricksManager = $this->BricksManager;
+
+        if ($this->quiqqerBricksInstalled && $BricksManager !== null) {
             $this->writeLn(" -> Copying bricks...");
 
             $siteAreas = $Site->getAttribute('quiqqer.bricks.areas');
@@ -593,9 +597,9 @@ class Project extends QUI\System\Console\Tool
                     $newSiteAreas[$area] = [];
 
                     foreach ($bricks as $brick) {
-                        $Brick = $this->BricksManager->getBrickById($brick['brickId']);
+                        $Brick = $BricksManager->getBrickById($brick['brickId']);
 
-                        $copyBrickId = $this->BricksManager->copyBrick(
+                        $copyBrickId = $BricksManager->copyBrick(
                             $brick['brickId'],
                             ['lang' => $langTo]
                         );

@@ -7,7 +7,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_packages_get',
     static function ($package): array {
         $Package = QUI::getPackageManager()->getInstalledPackage($package);

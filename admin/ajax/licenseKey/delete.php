@@ -6,7 +6,7 @@
  * @return bool - success
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_licenseKey_delete',
     static function (): bool {
         try {

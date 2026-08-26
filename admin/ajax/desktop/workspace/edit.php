@@ -7,7 +7,7 @@
  * @param string $data - JSON Data Array; Workspace data
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_desktop_workspace_edit',
     static function ($id, $data): void {
         $User = QUI::getUserBySession();

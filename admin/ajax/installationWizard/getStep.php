@@ -6,7 +6,7 @@
 
 use QUI\InstallationWizard\InstallationWizardInterface;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_installationWizard_getStep',
     static function ($provider, $step): string {
         if (

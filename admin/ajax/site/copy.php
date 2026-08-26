@@ -10,7 +10,7 @@
  * @return integer - new site id
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_site_copy',
     static function ($project, $id, $newParent): int {
         $Project = QUI::getProjectManager()->decode($project);

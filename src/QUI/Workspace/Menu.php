@@ -385,19 +385,23 @@ class Menu
 
         $params = $Node->getElementsByTagName('params');
 
-        if (!$params->item(0)) {
+        $Params = $params->item(0);
+
+        if ($Params === null) {
             return;
         }
 
-        $icon = $params->item(0)->getElementsByTagName('icon');
+        $icon = $Params->getElementsByTagName('icon');
 
-        if (!$icon->item(0)) {
+        $Icon = $icon->item(0);
+
+        if ($Icon === null || $Icon->nodeValue === null) {
             return;
         }
 
         $MenuItem->setAttribute(
             'icon',
-            QUI\Utils\DOM::parseVar($icon->item(0)->nodeValue)
+            QUI\Utils\DOM::parseVar($Icon->nodeValue)
         );
     }
 

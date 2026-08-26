@@ -11,12 +11,17 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_packages_getConfig',
     static function ($package) {
         $Package = QUI::getPackageManager()->getInstalledPackage($package);
+        $Config = $Package->getConfig();
 
-        return $Package->getConfig()->toArray();
+        if ($Config === null) {
+            return [];
+        }
+
+        return $Config->toArray();
     },
     ['package'],
     [

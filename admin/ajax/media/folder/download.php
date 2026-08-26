@@ -11,7 +11,7 @@
 
 use QUI\Projects\Media\Folder;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_media_folder_download',
     static function ($project, $folderId): void {
         $Project = QUI\Projects\Manager::getProject($project);

@@ -6,7 +6,7 @@
  * @param string $project - JSON Project Array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_project_createDefaultStructure',
     static function ($project): void {
         QUI\Utils\Project::createDefaultStructure(

@@ -2,12 +2,17 @@
 
 use QUI\Interfaces\Users\User;
 use QUI\System\Log;
+use QUI\Users\Auth\SessionFailureCounter;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_login',
     static function ($authenticator, $params, $authStep, null | string | array $authenticators = null) {
         QUI::getEvents()->fireEvent('userLoginAjaxStart');
         QUI::getSession()->set('inAuthentication', 1);
+
+        $currentAuthStep = $authStep === SessionFailureCounter::STEP_SECONDARY
+            ? SessionFailureCounter::STEP_SECONDARY
+            : SessionFailureCounter::STEP_PRIMARY;
 
         if (is_string($authenticators)) {
             $authenticators = json_decode($authenticators, true);
@@ -17,7 +22,7 @@ QUI::$Ajax->registerFunction(
             $authenticators = [];
         }
 
-        if ($authStep === 'primary' || empty($authStep)) {
+        if ($currentAuthStep === SessionFailureCounter::STEP_PRIMARY) {
             if (QUI::isFrontend()) {
                 $allowedPrimaryAuthenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalFrontendAuthenticators();
             } else {
@@ -55,6 +60,8 @@ QUI::$Ajax->registerFunction(
             $authParams = [];
         }
 
+        $FailureCounter = new SessionFailureCounter(QUI::getSession());
+
         try {
             QUI::getUsers()->authenticate(
                 $authenticator,
@@ -68,6 +75,13 @@ QUI::$Ajax->registerFunction(
                 );
             }
 
+            if (
+                $Exception instanceof QUI\Users\UserAuthException
+                && $Exception->getAttribute('reason') === QUI\Users\Manager::AUTH_ERROR_AUTH_ERROR
+            ) {
+                $FailureCounter->recordFailure($currentAuthStep);
+            }
+
             throw $Exception;
         } catch (\Exception $Exception) {
             Log::writeException($Exception);
@@ -78,7 +92,9 @@ QUI::$Ajax->registerFunction(
             );
         }
 
-        if ($authStep === 'primary' || empty($authStep)) {
+        $FailureCounter->reset($currentAuthStep);
+
+        if ($currentAuthStep === SessionFailureCounter::STEP_PRIMARY) {
             QUI::getSession()->set('auth-primary', 1);
             QUI::getSession()->set('auth-secondary', 0);
 
@@ -89,7 +105,7 @@ QUI::$Ajax->registerFunction(
             }
         }
 
-        if ($authStep === 'secondary') {
+        if ($currentAuthStep === SessionFailureCounter::STEP_SECONDARY) {
             QUI::getSession()->set('auth-secondary', 1);
         }
 

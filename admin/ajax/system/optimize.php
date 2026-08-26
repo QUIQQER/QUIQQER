@@ -4,7 +4,7 @@
  * System Tabellen optimieren
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_optimize',
     static function (): void {
         $Connection = QUI::getDataBaseConnection();

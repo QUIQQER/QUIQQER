@@ -4,7 +4,7 @@
  * Return update runner history.
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_update_history',
     static function ($limit): array {
         $Repository = new QUI\System\Update\RunRepository(VAR_DIR . 'update/runs/');

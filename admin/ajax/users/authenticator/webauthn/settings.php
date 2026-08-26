@@ -2,7 +2,7 @@
 
 use QUI\Users\Auth\WebAuthn as WebAuthnAuthenticator;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_authenticator_webauthn_settings',
     static function ($userUuid = ''): string {
         $User = QUI::getUserBySession();

@@ -1,6 +1,6 @@
 <?php
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_site_children_getChildLayout',
     static function ($project, $siteId): string {
         $Project = QUI::getProjectManager()->decode($project);

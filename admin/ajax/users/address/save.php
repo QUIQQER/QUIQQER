@@ -10,7 +10,7 @@
  * @return integer
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_address_save',
     static function ($uid, $aid, $data): ?string {
         $data = json_decode($data, true);
@@ -52,6 +52,12 @@ QUI::$Ajax->registerFunction(
             $Address = $User->addAddress($data);
         }
 
+        if ($Address === null) {
+            throw new QUI\Users\Exception(
+                'User address could not be loaded or created.'
+            );
+        }
+
         $Address->clearMail();
         $Address->clearPhone();
 
@@ -82,7 +88,12 @@ QUI::$Ajax->registerFunction(
             $User->save();
         }
 
-        if ($Address->getUUID() === $User->getStandardAddress()->getUUID()) {
+        $StandardAddress = $User->getStandardAddress();
+
+        if (
+            $StandardAddress !== null
+            && $Address->getUUID() === $StandardAddress->getUUID()
+        ) {
             $User->save();
         }
 

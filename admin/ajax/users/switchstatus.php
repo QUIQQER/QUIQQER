@@ -8,7 +8,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_switchstatus',
     static function ($uid): array {
         $uid = json_decode($uid, true);

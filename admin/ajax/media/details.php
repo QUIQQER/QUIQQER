@@ -11,7 +11,7 @@
 
 use QUI\Projects\Media\Utils;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_media_details',
     static function ($project, $fileid) {
         $Project = QUI\Projects\Manager::getProject($project);

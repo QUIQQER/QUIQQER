@@ -14,6 +14,7 @@ use QUI\Projects\Media\Utils as MediaUtils;
 use QUI\Utils\StringHelper;
 use QUI\Utils\System\File as FileUtils;
 
+use function array_key_exists;
 use function array_map;
 use function bin2hex;
 use function date;
@@ -33,6 +34,8 @@ use function is_numeric;
 use function mb_strlen;
 use function mb_substr;
 use function md5_file;
+use function max;
+use function min;
 use function pathinfo;
 use function preg_match;
 use function preg_match_all;
@@ -56,6 +59,10 @@ use const VAR_DIR;
  */
 class Image extends Item implements QUI\Interfaces\Projects\Media\File
 {
+    private const IMAGE_CACHE_SIZE_ALIGNMENT = 8;
+    private const IMAGE_CACHE_SIZE_STEP = 16;
+    private const IMAGE_CACHE_EXACT_SIZE_THRESHOLD = 100;
+
     /**
      * Max image width & width for image cache creation
      */
@@ -129,6 +136,12 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             $height = $this->IMAGE_MAX_SIZE;
         }
 
+        if ($this->getAttribute('mime_type') != 'image/svg+xml' && ($width || $height)) {
+            $resizeSize = $this->getSizeCacheDimensions($width, $height);
+            $width = $resizeSize['width'];
+            $height = $resizeSize['height'];
+        }
+
         $Media = $this->Media;
         $original = $this->getFullPath();
         $cacheFile = $this->getSizeCachePath($width, $height);
@@ -160,16 +173,6 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
             return $cacheFile;
         }
-
-        // resize the proportions
-        if ($width && !($width % 8 === 0)) {
-            $width = QUI\Utils\Math::ceilUp($width, 100);
-        }
-
-        if ($height && !($width % 8 === 0)) {
-            $height = QUI\Utils\Math::ceilUp($height, 100);
-        }
-
 
         // create image
         $time = ini_get('max_execution_time');
@@ -332,27 +335,9 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         $extra = '';
-        $params = $this->getResizeSize($maxWidth, $maxHeight);
-
-        if ($params['height'] > $params['width']) {
-            if (!($params['height'] % 8 === 0)) {
-                $tempParams = $this->getResizeSize(
-                    false,
-                    (int)QUI\Utils\Math::ceilUp($params['height'], 16)
-                );
-            } else {
-                $tempParams = $this->getResizeSize(false, $params['height']);
-            }
-        } elseif (!($params['width'] % 8 === 0)) {
-            $tempParams = $this->getResizeSize(
-                (int)QUI\Utils\Math::ceilUp($params['width'], 16)
-            );
-        } else {
-            $tempParams = $this->getResizeSize($params['width']);
-        }
-
-        $height = $tempParams['height'];
-        $width = $tempParams['width'];
+        $params = $this->getSizeCacheDimensions($maxWidth, $maxHeight);
+        $height = $params['height'];
+        $width = $params['width'];
 
         if ($this->getAttribute('reflection')) {
             $extra = '_reflection';
@@ -381,6 +366,72 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         return $cacheFile;
+    }
+
+    /**
+     * Return the canonical dimensions used for the cache path and generated image.
+     *
+     * Small target sizes remain exact to avoid visible quality loss for logos and
+     * icons. Larger sizes retain the cache-size bucketing that limits the number
+     * of generated variants.
+     *
+     * @return array{width: int, height: int}
+     *
+     * @throws QUI\Exception
+     */
+    private function getSizeCacheDimensions(
+        bool | string | int $maxWidth = false,
+        bool | string | int $maxHeight = false
+    ): array {
+        $params = $this->getResizeSize($maxWidth, $maxHeight);
+        $width = (int)$params['width'];
+        $height = (int)$params['height'];
+        $projectConfig = $this->getProject()->getConfig();
+
+        if (!is_array($projectConfig)) {
+            $projectConfig = [];
+        }
+
+        $roundingEnabled = true;
+        $exactSizeThreshold = self::IMAGE_CACHE_EXACT_SIZE_THRESHOLD;
+
+        if (array_key_exists('media_imageCacheSizeRounding', $projectConfig)) {
+            $roundingEnabled = (int)$projectConfig['media_imageCacheSizeRounding'] !== 0;
+        }
+
+        if (array_key_exists('media_imageCacheExactSizeThreshold', $projectConfig)) {
+            $configuredThreshold = (int)$projectConfig['media_imageCacheExactSizeThreshold'];
+            $exactSizeThreshold = max(0, $configuredThreshold);
+        }
+
+        if (
+            !$roundingEnabled
+            || ($exactSizeThreshold > 0 && min($width, $height) <= $exactSizeThreshold)
+        ) {
+            return [
+                'width' => $width,
+                'height' => $height
+            ];
+        }
+
+        if ($height > $width) {
+            if ($height % self::IMAGE_CACHE_SIZE_ALIGNMENT !== 0) {
+                $height = (int)QUI\Utils\Math::ceilUp($height, self::IMAGE_CACHE_SIZE_STEP);
+            }
+
+            $params = $this->getResizeSize(false, $height);
+        } else {
+            if ($width % self::IMAGE_CACHE_SIZE_ALIGNMENT !== 0) {
+                $width = (int)QUI\Utils\Math::ceilUp($width, self::IMAGE_CACHE_SIZE_STEP);
+            }
+
+            $params = $this->getResizeSize($width);
+        }
+
+        return [
+            'width' => (int)$params['width'],
+            'height' => (int)$params['height']
+        ];
     }
 
     /**

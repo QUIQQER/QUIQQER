@@ -3,7 +3,7 @@
 use QUI\Users\Auth\WebAuthn as WebAuthnAuthenticator;
 use QUI\Users\Auth\WebAuthn\CredentialRepository;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_authenticator_webauthn_cleanupEmpty',
     static function ($userUuid = ''): array {
         $User = QUI::getUserBySession();

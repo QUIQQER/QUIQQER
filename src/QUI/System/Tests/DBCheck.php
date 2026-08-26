@@ -475,7 +475,7 @@ class DBCheck extends QUI\System\Test
             $isDatatype = trim($isDatatype);
 
             // correct things like "varchar( 20 )" to "varchar(20)" to match the column information
-            $fieldData = preg_replace('#\(\D*(\d+)\D*\)#i', '($1)', $fieldData);
+            $fieldData = preg_replace('#\(\D*(\d+)\D*\)#i', '($1)', $fieldData) ?? $fieldData;
 
             if (
                 $fieldData === 'int'

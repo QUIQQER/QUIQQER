@@ -8,7 +8,7 @@
  * @return bool
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_site_activate',
     static function ($project, $id): int {
         $Project = QUI::getProjectManager()->decode($project);

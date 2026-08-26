@@ -8,7 +8,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_project_parent',
     static function ($project, $id): int {
         $Project = QUI::getProjectManager()->decode($project);
