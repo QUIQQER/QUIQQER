@@ -4,7 +4,7 @@
  * Return current workspace
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_desktop_workspace_load',
     static function (): array {
         $list = QUI\Workspace\Manager::getWorkspacesByUser(QUI::getUserBySession());

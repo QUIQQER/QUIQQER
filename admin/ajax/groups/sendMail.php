@@ -3,7 +3,7 @@
 use QUI\Mail\UserMailPlaceholders;
 use QUI\Utils\Security\Orthos;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_groups_sendMail',
     static function ($groupId, $mailSubject, $mailContent): void {
         $Group = QUI::getGroups()->get($groupId);

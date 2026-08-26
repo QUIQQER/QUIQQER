@@ -8,7 +8,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_site_unlock',
     static function ($project, $id): void {
         $Project = QUI::getProjectManager()->decode($project);

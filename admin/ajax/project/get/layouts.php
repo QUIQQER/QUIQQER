@@ -6,7 +6,7 @@
  * @return string
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_project_get_layouts',
     static function ($project): array {
         return QUI\Projects\Manager::decode($project)->getLayouts();

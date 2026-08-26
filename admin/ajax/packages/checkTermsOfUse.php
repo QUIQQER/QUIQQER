@@ -8,7 +8,7 @@
  * @throws QUI\Exception
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_packages_checkTermsOfUse',
     static function (): bool {
         $Config = new QUI\Config(ETC_DIR . 'conf.ini.php');

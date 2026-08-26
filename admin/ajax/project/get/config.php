@@ -8,7 +8,7 @@
  * @return array|string
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_project_get_config',
     static function ($project, $param) {
         $Project = QUI\Projects\Manager::getProject($project);

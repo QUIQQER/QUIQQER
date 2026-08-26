@@ -9,7 +9,7 @@
 
 use QUI\System\Log;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_settings_save',
     static function ($file, $params): void {
         $jsonFiles = json_decode($file, true);
@@ -104,7 +104,7 @@ QUI::$Ajax->registerFunction(
             }
 
             QUI\Utils\Text\XML::setConfigFromXml($file, $params);
-            QUI::$Conf->reload();
+            QUI::getConfig('etc/conf.ini.php')->reload();
 
             QUI::getMessagesHandler()->addSuccess(
                 QUI::getLocale()->get('quiqqer/core', 'message.config.saved')

@@ -8,7 +8,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_groups_addUsers',
     static function ($gid, $userIds): void {
         $userIds = json_decode($userIds, true);

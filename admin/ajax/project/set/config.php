@@ -7,7 +7,7 @@
  * @param string $params - JSON Array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_project_set_config',
     static function ($project, $params): void {
         $Project = QUI\Projects\Manager::getProject($project);

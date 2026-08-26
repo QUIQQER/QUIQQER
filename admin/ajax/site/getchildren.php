@@ -10,7 +10,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_site_getchildren',
     static function ($project, $id, $params) {
         $Project = QUI::getProjectManager()->decode($project);

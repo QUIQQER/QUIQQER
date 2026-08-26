@@ -7,7 +7,7 @@
  * @param string $key
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_lock_unlock',
     static function ($package, $key): void {
         if (empty($package)) {

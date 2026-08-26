@@ -75,9 +75,13 @@ class Manager extends QUI\QDOM
         $cache = 'quiqqer/groups/plugin-attribute-list';
 
         try {
-            self::$getListOfExtraAttributes = QUI\Cache\Manager::get($cache);
+            $attributes = QUI\Cache\Manager::get($cache);
 
-            return self::$getListOfExtraAttributes;
+            if (is_array($attributes)) {
+                self::$getListOfExtraAttributes = $attributes;
+
+                return $attributes;
+            }
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addDebug($Exception->getMessage());
         }
@@ -178,6 +182,11 @@ class Manager extends QUI\QDOM
 
         /* @var $Attributes DOMElement */
         $Attributes = $Attr->item(0);
+
+        if ($Attributes === null) {
+            return [];
+        }
+
         $list = $Attributes->getElementsByTagName('attribute');
 
         if (!$list->length) {
@@ -189,11 +198,11 @@ class Manager extends QUI\QDOM
         for ($c = 0; $c < $list->length; $c++) {
             $Attribute = $list->item($c);
 
-            if ($Attribute->nodeName == '#text') {
+            if ($Attribute === null || $Attribute->nodeName == '#text') {
                 continue;
             }
 
-            $attributes[] = trim($Attribute->nodeValue);
+            $attributes[] = trim($Attribute->nodeValue ?? '');
         }
 
         return $attributes;

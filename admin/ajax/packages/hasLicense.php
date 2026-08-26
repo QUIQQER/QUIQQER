@@ -7,7 +7,7 @@
  * @return bool
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_packages_hasLicense',
     static function ($licensePackage): bool {
         return QUI::getPackageManager()->hasLicense(\QUI\Utils\Security\Orthos::clear($licensePackage));

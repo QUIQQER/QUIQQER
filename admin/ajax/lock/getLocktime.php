@@ -9,7 +9,7 @@
  * @return string
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_lock_getLocktime',
     static function ($package, $key): int {
         if (empty($package)) {

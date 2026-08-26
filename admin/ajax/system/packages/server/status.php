@@ -8,7 +8,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_packages_server_status',
     static function ($server, $status): void {
         QUI::getPackageManager()->setServerStatus($server, $status);

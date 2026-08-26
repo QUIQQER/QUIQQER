@@ -30,6 +30,33 @@ class MediaSchemaTest extends TestCase
         }
     }
 
+    public function testMediaIndexesUseDistinctGeneratedNamesAcrossTables(): void
+    {
+        $FirstTable = $this->createMediaTable('first_project_media');
+        $SecondTable = $this->createMediaTable('second_project_media');
+
+        $this->assertCount(9, $FirstTable->getIndexes());
+        $this->assertCount(9, $SecondTable->getIndexes());
+        $this->assertSame(
+            [],
+            array_intersect(array_keys($FirstTable->getIndexes()), array_keys($SecondTable->getIndexes()))
+        );
+        $this->assertFalse($FirstTable->hasIndex('name'));
+        $this->assertFalse($SecondTable->hasIndex('name'));
+    }
+
+    public function testMediaIndexesRecognizeExistingIndexByColumn(): void
+    {
+        $Table = new Table('project_media');
+        $this->invokeAddMediaColumns($Table);
+        $Table->addIndex(['name'], 'legacy_media_name_index');
+
+        $this->invokeAddMediaIndexes($Table);
+
+        $this->assertCount(9, $Table->getIndexes());
+        $this->assertTrue($Table->hasIndex('legacy_media_name_index'));
+    }
+
     /**
      * @return list<AbstractPlatform>
      */
@@ -47,5 +74,21 @@ class MediaSchemaTest extends TestCase
         $Reflection = new ReflectionClass(Media::class);
         $Method = $Reflection->getMethod('addMediaColumns');
         $Method->invoke(null, $Table);
+    }
+
+    private function invokeAddMediaIndexes(Table $Table): void
+    {
+        $Reflection = new ReflectionClass(Media::class);
+        $Method = $Reflection->getMethod('addMediaIndexes');
+        $Method->invoke(null, $Table);
+    }
+
+    private function createMediaTable(string $tableName): Table
+    {
+        $Table = new Table($tableName);
+        $this->invokeAddMediaColumns($Table);
+        $this->invokeAddMediaIndexes($Table);
+
+        return $Table;
     }
 }

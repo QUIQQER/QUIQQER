@@ -271,6 +271,10 @@ class Template extends QUI\QDOM
      */
     public function getTemplateUrl($path): string
     {
+        if ($this->TemplatePackage === null) {
+            return $path;
+        }
+
         $template = $this->TemplatePackage->getName();
         $absolute = OPT_DIR . $template . '/' . $path;
 
@@ -295,6 +299,10 @@ class Template extends QUI\QDOM
      */
     public function getTemplatePath(): string
     {
+        if ($this->TemplatePackage === null) {
+            return '';
+        }
+
         $template = $this->TemplatePackage->getName();
 
         return OPT_DIR . $template . '/';
@@ -380,7 +388,7 @@ class Template extends QUI\QDOM
                 $Config->setValue('template', 'engine', 'smarty4');
                 $Config->save();
 
-                QUI::$Conf->reload();
+                QUI::getConfig('etc/conf.ini.php')->reload();
 
                 $templateIni = ETC_DIR . 'templates.ini.php';
                 $iniContent = file_get_contents($templateIni);
@@ -529,11 +537,19 @@ class Template extends QUI\QDOM
         $template_tpl = OPT_DIR . $projectTemplate . '/index.html';
         $template_index = OPT_DIR . $projectTemplate . '/index.php';
 
-        if (!file_exists($template_tpl) && $hasTemplateParent) {
+        if (
+            !file_exists($template_tpl)
+            && $hasTemplateParent
+            && $this->TemplateParent !== null
+        ) {
             $template_tpl = OPT_DIR . $this->TemplateParent->getName() . '/index.html';
         }
 
-        if (!file_exists($template_index) && $hasTemplateParent) {
+        if (
+            !file_exists($template_index)
+            && $hasTemplateParent
+            && $this->TemplateParent !== null
+        ) {
             $template_index = OPT_DIR . $this->TemplateParent->getName() . '/index.php';
         }
 
@@ -1054,6 +1070,10 @@ class Template extends QUI\QDOM
         $layout = $this->getLayoutType();
 
         if (!$layout) {
+            return $this->getBody($params);
+        }
+
+        if ($this->TemplatePackage === null) {
             return $this->getBody($params);
         }
 

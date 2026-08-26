@@ -4,7 +4,7 @@
  * cache purging
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_cache_purge',
     static function (): void {
         QUI\Cache\Manager::purge();

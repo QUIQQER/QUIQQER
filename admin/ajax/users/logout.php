@@ -4,7 +4,7 @@
  * Destroy user session
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_logout',
     static function (): void {
         QUI::getUserBySession()->logout();

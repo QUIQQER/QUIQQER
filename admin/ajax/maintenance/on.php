@@ -4,7 +4,7 @@
  * switches the maintenance on
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_maintenance_on',
     static function (): void {
         $Config = QUI::getConfig('etc/conf.ini.php');

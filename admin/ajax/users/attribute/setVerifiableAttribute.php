@@ -1,6 +1,6 @@
 <?php
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_attribute_setVerifiableAttribute',
     static function ($userUuid, $value, $type, $status) {
         $User = QUI::getUsers()->get($userUuid);

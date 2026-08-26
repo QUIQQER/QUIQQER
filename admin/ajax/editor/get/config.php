@@ -6,7 +6,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_editor_get_config',
     static function (): array {
         return QUI\Editor\Manager::getConfig();

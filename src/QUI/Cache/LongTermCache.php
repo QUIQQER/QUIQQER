@@ -64,7 +64,7 @@ class LongTermCache
     /**
      * @return Stash\Pool
      */
-    protected static function getPool(): ?Stash\Pool
+    protected static function getPool(): Stash\Pool
     {
         if (self::$Pool === null) {
             self::$Pool = new Stash\Pool(self::getDriver());
@@ -78,7 +78,7 @@ class LongTermCache
     /**
      * Return the current driver
      */
-    protected static function getDriver(): ?DriverInterface
+    protected static function getDriver(): DriverInterface
     {
         if (self::$Driver !== null) {
             return self::$Driver;

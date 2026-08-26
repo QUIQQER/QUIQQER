@@ -58,6 +58,10 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
     public function getProject(): QUI\Projects\Project
     {
+        if ($this->Project === null) {
+            throw new \LogicException('Virtual site has no project.');
+        }
+
         return $this->Project;
     }
 
@@ -358,7 +362,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     public function getParent(): QUI\Interfaces\Projects\Site
     {
         if (!$this->Parent) {
-            return $this->Project->firstChild();
+            return $this->getProject()->firstChild();
         }
 
         return $this->Parent;

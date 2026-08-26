@@ -237,7 +237,7 @@ define('controls/projects/project/site/MultiLangSelect', [
                     continue;
                 }
 
-                Input = this.getElm().getElement('[name="' + lang + '"]');
+                Input = this.$Container.getElement('[name="' + lang + '"]');
 
                 if (Input) {
                     Input.value = inputData[lang];

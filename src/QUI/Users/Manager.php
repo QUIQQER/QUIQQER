@@ -787,7 +787,7 @@ class Manager
      */
     public static function clearUsername(string $username): string
     {
-        return preg_replace('/[^a-zA-Z0-9-_äöüß@\.\+]/', '', $username);
+        return preg_replace('/[^a-zA-Z0-9-_äöüß@\.\+]/', '', $username) ?? $username;
     }
 
     /**
@@ -1404,11 +1404,14 @@ class Manager
 
             QUI::getEvents()->fireEvent('userLoginError', [$userId, $Exception, $authenticator]);
 
-            throw new QUI\Users\UserAuthException(
+            $UserAuthException = new QUI\Users\UserAuthException(
                 $Exception->getMessage(),
                 $Exception->getCode(),
                 $Exception->getContext()
             );
+            $UserAuthException->setAttribute('reason', self::AUTH_ERROR_AUTH_ERROR);
+
+            throw $UserAuthException;
         } catch (Throwable $Exception) {
             QUI\System\Log::write(
                 'Login failed: ' . $username,

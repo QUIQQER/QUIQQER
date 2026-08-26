@@ -9,6 +9,9 @@ use QUI\Exception;
 use QUI\ExceptionStack;
 
 use function array_filter;
+use function count;
+use function str_replace;
+use function strtolower;
 
 use const OPT_DIR;
 
@@ -277,14 +280,41 @@ class Install
 
         $Table = $SchemaManager->introspectTable($tableName);
 
-        if ($Table->hasIndex($columnName)) {
+        if (self::hasSingleColumnIndex($Table, $columnName)) {
             return;
         }
 
-        $Table->addIndex([$columnName], $columnName);
-        $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff(
-            $Table,
-            addedIndexes: [$Table->getIndex($columnName)]
-        ));
+        $TargetTable = clone $Table;
+        $TargetTable->addIndex([$columnName]);
+        $Diff = $SchemaManager->createComparator()->compareTables($Table, $TargetTable);
+
+        if (!$Diff->isEmpty()) {
+            $SchemaManager->alterTable($Diff);
+        }
+    }
+
+    private static function hasSingleColumnIndex(
+        \Doctrine\DBAL\Schema\Table $Table,
+        string $columnName
+    ): bool {
+        $columnName = strtolower(str_replace(['`', '"', '[', ']'], '', $columnName));
+
+        foreach ($Table->getIndexes() as $Index) {
+            $indexedColumns = $Index->getIndexedColumns();
+
+            if (count($indexedColumns) !== 1) {
+                continue;
+            }
+
+            $indexedColumnName = strtolower(
+                $indexedColumns[0]->getColumnName()->getIdentifier()->getValue()
+            );
+
+            if ($indexedColumnName === $columnName) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

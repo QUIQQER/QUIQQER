@@ -8,7 +8,7 @@
  * @return boolean
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_site_delete',
     static function ($project, $id): bool {
         $Project = QUI::getProjectManager()->decode($project);

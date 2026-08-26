@@ -8,7 +8,7 @@
  * @return integer User-ID
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_create',
     static function ($username): string|int {
         $Users = QUI::getUsers();

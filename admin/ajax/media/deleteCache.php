@@ -4,7 +4,7 @@
  * Delete cache of a media item
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_media_deleteCache',
     static function ($project, $fileId): void {
         $Project = QUI\Projects\Manager::getProject($project);

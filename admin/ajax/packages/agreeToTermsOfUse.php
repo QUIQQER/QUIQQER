@@ -6,7 +6,7 @@
  * @return void
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_packages_agreeToTermsOfUse',
     static function (): void {
         $Config = new QUI\Config(ETC_DIR . 'conf.ini.php');

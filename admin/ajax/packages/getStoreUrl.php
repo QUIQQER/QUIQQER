@@ -8,7 +8,7 @@
  * @throws QUI\Exception
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_packages_getStoreUrl',
     static function () {
         $packageStoreUrls = QUI::conf('packagestore', 'url');

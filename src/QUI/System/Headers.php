@@ -20,7 +20,7 @@ use function str_replace;
  */
 class Headers
 {
-    protected ?Response $Response = null;
+    protected Response $Response;
 
     /**
      * Default HSTS settings
@@ -49,11 +49,7 @@ class Headers
      */
     public function __construct(?Response $Response = null)
     {
-        if ($Response) {
-            $this->Response = $Response;
-        } else {
-            $this->Response = QUI::getGlobalResponse();
-        }
+        $this->Response = $Response ?? QUI::getGlobalResponse();
 
         // default HSTS
         if (QUI::conf('securityHeaders_hsts', 'max_age')) {
@@ -224,7 +220,7 @@ class Headers
     /**
      * Return the response object
      */
-    public function getResponse(): ?Response
+    public function getResponse(): Response
     {
         return $this->Response;
     }

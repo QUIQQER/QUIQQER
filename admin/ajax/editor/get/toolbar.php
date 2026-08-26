@@ -8,7 +8,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_editor_get_toolbar',
     static function ($toolbar): array {
         if (isset($toolbar) && !empty($toolbar)) {

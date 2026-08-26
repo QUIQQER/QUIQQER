@@ -6,7 +6,7 @@
  * @param integer $id - Workspace-ID
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_desktop_workspace_setStandard',
     static function ($id): void {
         QUI\Workspace\Manager::setStandardWorkspace(

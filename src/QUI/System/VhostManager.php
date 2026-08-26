@@ -77,7 +77,7 @@ class VhostManager
     /**
      * @throws Exception
      */
-    protected function getConfig(): ?Config
+    protected function getConfig(): Config
     {
         if (!file_exists(ETC_DIR . 'vhosts.ini.php')) {
             file_put_contents(ETC_DIR . 'vhosts.ini.php', '');

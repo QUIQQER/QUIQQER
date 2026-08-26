@@ -9,7 +9,7 @@
  * @return bool
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_lock_isLocked',
     static function ($package, $key) {
         if (empty($package)) {

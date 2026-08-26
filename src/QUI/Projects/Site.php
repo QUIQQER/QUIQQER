@@ -509,7 +509,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @throws QUI\Exception
      */
-    public function getEdit(): ?Site\Edit
+    public function getEdit(): Site\Edit
     {
         if ($this::class === Edit::class) {
             /* @var Edit $this */
@@ -1098,12 +1098,21 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         /* @var $Projects DOMElement */
         $Projects = $projects->item(0);
+
+        if ($Projects === null) {
+            return;
+        }
+
         $tables = $Projects->getElementsByTagName('table');
 
         for ($i = 0; $i < $tables->length; $i++) {
             /* @var $tables DOMNodeList */
             /* @var $Table DOMElement */
             $Table = $tables->item($i);
+
+            if ($Table === null) {
+                continue;
+            }
 
             if ((int)$Table->getAttribute('no-site-reference') == 1) {
                 continue;
@@ -1717,7 +1726,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         $Output = QUI::getRewrite()->getOutput();
 
-        if (QUI::getRewrite()->getProject()->toArray() != $this->getProject()->toArray()) {
+        $RewriteProject = QUI::getRewrite()->getProject();
+
+        if ($RewriteProject === null || $RewriteProject->toArray() != $this->getProject()->toArray()) {
             $Output = new QUI\Output();
             $Output->setProject($this->getProject());
         }

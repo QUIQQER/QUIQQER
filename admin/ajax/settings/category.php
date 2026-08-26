@@ -9,7 +9,7 @@
  * @return String
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_settings_category',
     static function ($file, $category, $windowName) {
         if (file_exists($file)) {

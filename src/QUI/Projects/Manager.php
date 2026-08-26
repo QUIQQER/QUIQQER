@@ -79,6 +79,8 @@ class Manager
         'media_maxUploadFileSize' => ['default' => '', 'type' => 'string'],
         'media_maxImageCacheSize' => ['default' => 4000, 'type' => 'integer'],
         'media_createCacheOnSave' => ['default' => 1, 'type' => 'boolean'],
+        'media_imageCacheSizeRounding' => ['default' => 1, 'type' => 'boolean'],
+        'media_imageCacheExactSizeThreshold' => ['default' => 100, 'type' => 'integer'],
         'media_useImageScale' => ['default' => 2, 'type' => 'integer'],
         'placeholder' => ['default' => '', 'type' => 'string'],
         'logo' => ['default' => '', 'type' => 'string'],
@@ -281,7 +283,25 @@ class Manager
                 !isset($config['media_watermark'])
                 && !isset($config['media_watermark_position'])
                 && !isset($config['media_image_library'])
+                && !isset($config['media_imageCacheSizeRounding'])
+                && !isset($config['media_imageCacheExactSizeThreshold'])
             ) {
+                return;
+            }
+
+            if (
+                isset($oldConfig['media_imageCacheSizeRounding'])
+                && $config['media_imageCacheSizeRounding'] != $oldConfig['media_imageCacheSizeRounding']
+            ) {
+                $Project->getMedia()->clearCache();
+                return;
+            }
+
+            if (
+                isset($oldConfig['media_imageCacheExactSizeThreshold'])
+                && $config['media_imageCacheExactSizeThreshold'] != $oldConfig['media_imageCacheExactSizeThreshold']
+            ) {
+                $Project->getMedia()->clearCache();
                 return;
             }
 
@@ -531,7 +551,7 @@ class Manager
     /**
      * Returns the current project
      */
-    public static function get(): ?Project
+    public static function get(): Project
     {
         $Rewrite = QUI::getRewrite();
 
@@ -570,7 +590,7 @@ class Manager
      *
      * @throws QUI\Exception
      */
-    public static function getStandard(): ?Project
+    public static function getStandard(): Project
     {
         if (self::$Standard !== null) {
             return self::$Standard;
@@ -1300,7 +1320,7 @@ class Manager
                 "~^" . QUI_DB_PRFX . $oldName . "_~m",
                 QUI_DB_PRFX . $newName . "_",
                 $oldTableName
-            );
+            ) ?? $oldTableName;
 
             $sql = $Platform->getRenameTableSQL(
                 $Platform->quoteSingleIdentifier($oldTableName),

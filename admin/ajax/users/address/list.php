@@ -8,7 +8,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_address_list',
     static function ($uid): array {
         $User = QUI::getUsers()->get($uid);

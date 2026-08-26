@@ -9,7 +9,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_packages_search',
     static function ($search): array {
         return QUI::getPackageManager()->searchNewPackages($search);

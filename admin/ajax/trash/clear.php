@@ -6,7 +6,7 @@
  * @param string $project - Project data, JSON Array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_trash_clear',
     static function ($project): void {
         $Project = QUI::getProjectManager()->decode($project);

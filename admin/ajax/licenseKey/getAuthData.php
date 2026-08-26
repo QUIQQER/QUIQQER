@@ -9,7 +9,7 @@
 use QUI\Config;
 use QUI\Security\Encryption;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_licenseKey_getAuthData',
     static function () {
         $licenseConfigFile = CMS_DIR . 'etc/license.ini.php';

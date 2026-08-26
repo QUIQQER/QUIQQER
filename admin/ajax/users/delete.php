@@ -8,7 +8,7 @@
  * @return boolean
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_delete',
     static function ($uid): bool {
         $Users = QUI::getUsers();

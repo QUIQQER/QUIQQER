@@ -12,7 +12,7 @@
  * @throws QUI\Exception
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_template_get',
     static function ($template, $package, $params = ''): string {
         $current = QUI::getLocale()->getCurrent();

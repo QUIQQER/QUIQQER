@@ -38,6 +38,44 @@
             <td>
                 <label class="field-container">
                     <span class="field-container-item">
+                        {locale group="quiqqer/core"
+                        var="projects.project.settings.panel.mediaSettings.imageCacheSizeRounding"}
+                    </span>
+                    <span class="field-container-field">
+                        <input type="checkbox" name="media_imageCacheSizeRounding"/>
+                    </span>
+                </label>
+                <div class="field-container-item-desc">
+                    {locale group="quiqqer/core"
+                    var="projects.project.settings.panel.mediaSettings.imageCacheSizeRounding.description"}
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/core"
+                        var="projects.project.settings.panel.mediaSettings.imageCacheExactSizeThreshold"}
+                    </span>
+                    <span class="field-container-field field-container-field-no-padding">
+                        <input type="number"
+                               min="0"
+                               name="media_imageCacheExactSizeThreshold"
+                        />
+                        <span style="line-height: 30px; padding-left: 10px;">px</span>
+                    </span>
+                </label>
+                <div class="field-container-item-desc">
+                    {locale group="quiqqer/core"
+                    var="projects.project.settings.panel.mediaSettings.imageCacheExactSizeThreshold.description"}
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
                         {locale
                             group="quiqqer/core"
                             var="projects.project.settings.panel.mediaSettings.createCacheOnSave"

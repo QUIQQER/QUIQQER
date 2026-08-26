@@ -6,7 +6,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_update_check',
     static function (): bool {
         return QUI::getPackageManager()->checkUpdates();

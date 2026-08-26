@@ -8,7 +8,7 @@
  * @return boolean
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_exists',
     static function ($username): bool {
         return QUI::getUsers()->usernameExists($username);

@@ -7,7 +7,7 @@
  * @return string
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_vhosts_add',
     static function ($vhost): string {
         $VhostManager = new QUI\System\VhostManager();

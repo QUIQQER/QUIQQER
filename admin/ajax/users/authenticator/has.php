@@ -8,7 +8,7 @@
  * @throws \QUI\Users\Exception
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_authenticator_has',
     static function ($uid, $authenticator): bool {
         return QUI::getUsers()->get($uid)->hasAuthenticator($authenticator);

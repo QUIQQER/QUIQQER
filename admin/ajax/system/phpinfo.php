@@ -7,7 +7,7 @@
  * @return String
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_phpinfo',
     static function (): string {
         ob_start();

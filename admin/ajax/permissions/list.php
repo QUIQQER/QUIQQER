@@ -6,7 +6,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_permissions_list',
     static function (): array {
         return QUI::getPermissionManager()->getPermissionList();

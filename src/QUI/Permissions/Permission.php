@@ -105,7 +105,7 @@ class Permission
         );
     }
 
-    protected static function getUser(): QUI\Interfaces\Users\User | null
+    protected static function getUser(): QUI\Interfaces\Users\User
     {
         if (!is_null(self::$User)) {
             return self::$User;

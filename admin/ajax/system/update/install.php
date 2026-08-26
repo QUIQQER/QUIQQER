@@ -6,7 +6,7 @@
  * @return String
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_update_install',
     static function ($File): void {
     },

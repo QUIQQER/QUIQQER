@@ -7,7 +7,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_project_get_defaults',
     static function ($project): array {
         $Project = QUI\Projects\Manager::decode($project);

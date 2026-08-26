@@ -178,7 +178,7 @@ class Update extends QUI\System\Console\Tool
 
                 if ($status && isset($status['active']) && $status['active'] === false) {
                     $message = QUI::getLocale()->get('quiqqer/core', 'update.log.message.licenseActivation');
-                    $message = preg_replace('#([ ]){2,}#', "$1", $message);
+                    $message = preg_replace('#([ ]){2,}#', "$1", $message) ?? $message;
                     $message = str_replace(PHP_EOL . " ", PHP_EOL, $message);
                     $message = trim($message);
 

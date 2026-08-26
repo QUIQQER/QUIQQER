@@ -9,7 +9,7 @@
  * @return string
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_media_delete',
     static function ($project, $fileid): void {
         $fileid = json_decode($fileid, true);

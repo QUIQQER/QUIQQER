@@ -65,7 +65,7 @@ class QuiqqerProvider extends AbstractInstallationWizard
      */
     public function execute(array $data = []): void
     {
-        $Config = QUI::$Conf;
+        $Config = QUI::getConfig('etc/conf.ini.php');
 
         // check if all data are available what we needed
         if (isset($data['quiqqer-country'])) {

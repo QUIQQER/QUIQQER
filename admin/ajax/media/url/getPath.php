@@ -10,7 +10,7 @@
  * @return string
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_media_url_getPath',
     static function ($fileurl) {
         if (QUI\Projects\Media\Utils::isMediaUrl($fileurl) === false) {

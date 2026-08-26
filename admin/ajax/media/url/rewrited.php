@@ -8,7 +8,7 @@
  * @return string
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_media_url_rewrited',
     static function ($fileurl, $params) {
         if (QUI\Projects\Media\Utils::isMediaUrl($fileurl) === false) {

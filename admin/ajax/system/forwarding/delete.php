@@ -6,7 +6,7 @@
  * @param string $from
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_forwarding_delete',
     static function ($from): void {
         QUI\System\Forwarding::delete(

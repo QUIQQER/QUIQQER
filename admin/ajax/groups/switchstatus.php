@@ -7,7 +7,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_groups_switchstatus',
     static function ($gid): array {
         $gid = json_decode($gid, true);

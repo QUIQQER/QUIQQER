@@ -192,7 +192,7 @@ class Manager
      *
      * @throws QUI\Exception
      */
-    public static function getConf(): ?Config
+    public static function getConf(): Config
     {
         if (!self::$Config) {
             self::$Config = QUI::getConfig('etc/wysiwyg/conf.ini.php');
@@ -204,9 +204,9 @@ class Manager
     /**
      * Return all available toolbars
      *
-     * @return array<int, string>|null
+     * @return array<int, string>
      */
-    public static function getToolbars(): ?array
+    public static function getToolbars(): array
     {
         if (self::$toolbars !== null) {
             return self::$toolbars;
@@ -1170,11 +1170,21 @@ class Manager
             return [];
         }
 
-        $children = $toolbar->item(0)->childNodes;
+        $Toolbar = $toolbar->item(0);
+
+        if ($Toolbar === null) {
+            return [];
+        }
+
+        $children = $Toolbar->childNodes;
         $result = [];
 
         for ($i = 0; $i < $children->length; $i++) {
             $Param = $children->item($i);
+
+            if ($Param === null) {
+                continue;
+            }
 
             if ($Param->nodeName == '#text') {
                 continue;
@@ -1211,6 +1221,10 @@ class Manager
         for ($i = 0; $i < $children->length; $i++) {
             $Param = $children->item($i);
 
+            if ($Param === null) {
+                continue;
+            }
+
             if ($Param->nodeName == '#text') {
                 continue;
             }
@@ -1240,6 +1254,10 @@ class Manager
         for ($i = 0; $i < $children->length; $i++) {
             $Param = $children->item($i);
 
+            if ($Param === null) {
+                continue;
+            }
+
             if ($Param->nodeName == 'separator') {
                 $result[] = [
                     'type' => 'separator'
@@ -1251,7 +1269,7 @@ class Manager
             if ($Param->nodeName == 'button') {
                 $result[] = [
                     'type' => 'button',
-                    'button' => trim($Param->nodeValue)
+                    'button' => trim($Param->nodeValue ?? '')
                 ];
             }
         }
@@ -1268,7 +1286,7 @@ class Manager
             '#(src)="([^"]*)"#',
             $this->cleanAdminSrc(...),
             $html
-        );
+        ) ?? $html;
 
         foreach ($this->plugins as $p) {
             if (method_exists($p, 'onLoad')) {
@@ -1293,13 +1311,13 @@ class Manager
             '#(src)="([^"]*)"#',
             $this->cleanSrc(...),
             $html
-        );
+        ) ?? $html;
 
         $html = preg_replace_callback(
             '#(href)="([^"]*)"#',
             $this->cleanHref(...),
             $html
-        );
+        ) ?? $html;
 
         foreach ($this->plugins as $p) {
             if (method_exists($p, 'onSave')) {
@@ -1314,7 +1332,7 @@ class Manager
             '#(<)(.*?)(>)#',
             $this->deleteLineBreaksInHtml(...),
             $html
-        );
+        ) ?? $html;
     }
 
     /**
@@ -1322,7 +1340,7 @@ class Manager
      */
     public function cleanHTML(string $html): string
     {
-        $html = preg_replace('/<!--\[if gte mso.*?-->/s', '', $html);
+        $html = preg_replace('/<!--\[if gte mso.*?-->/s', '', $html) ?? $html;
 
         $search = [
             'font-family: Arial',

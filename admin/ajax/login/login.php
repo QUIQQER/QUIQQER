@@ -10,7 +10,7 @@
  */
 
 // @deprecated
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_login_login',
     static function ($username, $password): array {
         QUI::getUsers()->login($username, $password);

@@ -1,6 +1,6 @@
 <?php
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_user_getHasSeen2faInformation',
     static function (): int {
         $User = QUI::getUserBySession();

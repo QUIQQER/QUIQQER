@@ -24,6 +24,7 @@ define('controls/projects/project/media/Panel', [
     'utils/Media',
     'Projects',
     'Permissions',
+    'classes/projects/project/media/Upload',
     'qui/controls/loader/Loader',
 
     'css!controls/projects/project/media/Panel.css'
@@ -53,7 +54,8 @@ define('controls/projects/project/media/Panel', [
         Locale = arguments[13],
         MediaUtils = arguments[14],
         Projects = arguments[15],
-        Permissions = arguments[16];
+        Permissions = arguments[16],
+        MediaUpload = arguments[17];
 
     /**
      * A Media-Panel, opens the Media in an Apppanel
@@ -701,18 +703,16 @@ define('controls/projects/project/media/Panel', [
                 autoclose: false,
                 events: {
                     onSubmit: function (Win) {
-                        Win.Loader.show();
+                        Win.close();
                         self.Loader.show();
 
                         CurrentFile.uploadFiles(Files).then(function () {
                             return self.openID(CurrentFile.getId(), true);
                         }).then(function () {
                             self.Loader.hide();
-                            Win.close();
                         }).catch(function (Exception) {
                             console.error(Exception);
                             self.Loader.hide();
-                            Win.Loader.hide();
                         });
                     }
                 }
@@ -1059,6 +1059,13 @@ define('controls/projects/project/media/Panel', [
                             margin: '20px 0 0'
                         },
                         fileid: self.getAttribute('fileid'),
+                        prepareFiles: function (files) {
+                            return MediaUpload.prepare(
+                                files,
+                                self.$Media.getProject().getName(),
+                                self.getAttribute('fileid')
+                            );
+                        },
                         events: {
                             onDragenter: function (event, Elm) {
                                 if (!Elm.hasClass('qui-panel-sheet-body')) {

@@ -80,6 +80,8 @@ define('controls/projects/project/settings/Media', [
                 const config = Object.merge({
                     media_maxUploadSize: 4000,
                     media_maxImageCacheSize: 4000,
+                    media_imageCacheSizeRounding: 1,
+                    media_imageCacheExactSizeThreshold: 100,
                     media_useImageScale: 2
                 }, self.getAttribute('config') || {});
 
@@ -94,6 +96,12 @@ define('controls/projects/project/settings/Media', [
                         config[configKey] = defaultValue;
                     }
                 });
+
+                const exactSizeThreshold = parseInt(config.media_imageCacheExactSizeThreshold, 10);
+
+                if (isNaN(exactSizeThreshold) || exactSizeThreshold < 0) {
+                    config.media_imageCacheExactSizeThreshold = 100;
+                }
 
                 QUIFormUtils.setDataToForm(config, Form);
 

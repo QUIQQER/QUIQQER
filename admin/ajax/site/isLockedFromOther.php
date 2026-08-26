@@ -8,7 +8,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_site_isLockedFromOther',
     static function ($project, $id): bool|int|string {
         $Project = QUI::getProjectManager()->decode($project);

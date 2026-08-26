@@ -4,7 +4,7 @@
  * Prepare a web update process.
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_update_prepare',
     static function (): array {
         $Repository = new QUI\System\Update\RunRepository(VAR_DIR . 'update/runs/');

@@ -10,7 +10,7 @@
  * @return string
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_groups_panel_category',
     static function ($gid, $plugin, $tab): string {
         return QUI\Groups\Utils::getTab($gid, $plugin, $tab);

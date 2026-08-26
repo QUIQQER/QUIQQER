@@ -8,7 +8,7 @@
  * @param string|integer $parentid - Site-ID
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_trash_restore',
     static function ($project, $ids, $parentid): void {
         $Project = QUI::getProjectManager()->decode($project);

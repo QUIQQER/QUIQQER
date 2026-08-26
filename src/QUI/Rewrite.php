@@ -515,7 +515,7 @@ class Rewrite
             }
         }
 
-        $this->first_child = $this->getProject()->firstChild();
+        $this->first_child = $this->getRequiredProject()->firstChild();
         if ($this->site === null) {
             $this->site = $this->first_child;
         }
@@ -527,7 +527,7 @@ class Rewrite
             } catch (QUI\Exception) {
                 $Site = $this->existRegisterPath(
                     $_REQUEST['_url'],
-                    $this->getProject()
+                    $this->getRequiredProject()
                 );
 
                 if ($Site) {
@@ -1168,10 +1168,6 @@ class Rewrite
 
         $Standard = QUI::getProjectManager()->getStandard();
 
-        if (!$Standard) {
-            throw new QUI\Exception('Error Site not exist', 404);
-        }
-
         return $Standard->firstChild();
     }
 
@@ -1248,6 +1244,17 @@ class Rewrite
         $this->lang = $Project->getLang();
 
         QUI::getLocale()->setCurrent($Project->getLang());
+
+        return $Project;
+    }
+
+    private function getRequiredProject(): Project
+    {
+        $Project = $this->getProject();
+
+        if ($Project === null) {
+            throw new \LogicException('Rewrite project was not initialized.');
+        }
 
         return $Project;
     }
@@ -1360,7 +1367,7 @@ class Rewrite
                     $this->site_params[0]
                 );
 
-                $Site = $this->getProject()->get($id);
+                $Site = $this->getRequiredProject()->get($id);
 
                 if ($setPath) {
                     $this->setIntoPath($Site);
@@ -1401,7 +1408,7 @@ class Rewrite
                 }
 
                 $id = $Child->getChildIdByName($val);
-                $Child = $this->getProject()->get($id);
+                $Child = $this->getRequiredProject()->get($id);
 
                 if ($setPath) {
                     $this->setIntoPath($Child);
@@ -1535,7 +1542,7 @@ class Rewrite
             return $this->site;
         }
 
-        return $this->getProject()->firstChild();
+        return $this->getRequiredProject()->firstChild();
     }
 
     /**
@@ -1606,7 +1613,7 @@ class Rewrite
      */
     public function outputFilter(string $output): string
     {
-        $this->Output->setProject($this->getProject());
+        $this->Output->setProject($this->getRequiredProject());
 
         QUI::getEvents()->fireEvent('rewriteOutputBegin', [
             'Rewrite' => $this,

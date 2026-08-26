@@ -7,7 +7,7 @@
  * @return String
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_systemcheckResultsFromCache',
     static function (): string {
         if (!isset($_REQUEST['lang'])) {

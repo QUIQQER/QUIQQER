@@ -1,6 +1,6 @@
 <?php
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_users_authenticator_getProfileUrl',
     static function ($project): string {
         $Project = QUI\Projects\Manager::decode($project);

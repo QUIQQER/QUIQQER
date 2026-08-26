@@ -1,0 +1,15 @@
+.qui-character-counter {
+    color: var(--qui-colors-secondary, #6c757d);
+    display: block;
+    font-size: 0.85em;
+    margin-top: 0.25rem;
+    text-align: right;
+}
+
+.qui-character-counter--warning {
+    color: var(--qui-colors-warning-600, #e6bc40);
+}
+
+.qui-character-counter--error {
+    color: var(--qui-colors-danger, #dc4139);
+}

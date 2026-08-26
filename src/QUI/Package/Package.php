@@ -719,7 +719,7 @@ class Package extends QUI\QDOM
             }
 
 
-            $languages = QUI\Translator::getAvailableLanguages();
+            $languages = QUI\Translator::getAvailableLanguages() ?? [];
 
             $data = [
                 'datatype' => 'php,js',

@@ -9,7 +9,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_site_children_create',
     static function ($project, $id, $attributes): array {
         $attributes = json_decode($attributes, true);

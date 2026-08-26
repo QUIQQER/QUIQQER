@@ -5,7 +5,7 @@
  * @return String
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_project_get_customJavaScript',
     static function ($project): string {
         $Project = QUI\Projects\Manager::decode($project);

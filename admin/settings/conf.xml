@@ -180,6 +180,26 @@
                 <conf name="password">
                     <type><![CDATA[string]]></type>
                 </conf>
+                <conf name="path">
+                    <type><![CDATA[string]]></type>
+                    <defaultvalue>etc/database/quiqqer.sqlite</defaultvalue>
+                </conf>
+                <conf name="foreign_keys">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue>1</defaultvalue>
+                </conf>
+                <conf name="busy_timeout">
+                    <type><![CDATA[integer]]></type>
+                    <defaultvalue>5000</defaultvalue>
+                </conf>
+                <conf name="journal_mode">
+                    <type><![CDATA[string]]></type>
+                    <defaultvalue>WAL</defaultvalue>
+                </conf>
+                <conf name="synchronous">
+                    <type><![CDATA[string]]></type>
+                    <defaultvalue>NORMAL</defaultvalue>
+                </conf>
             </section>
 
             <section name="mail">

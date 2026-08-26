@@ -315,6 +315,10 @@ class Manager extends QUI\QDOM
 
         $package = current($package);
 
+        if (!is_array($package) || !isset($package['version'])) {
+            return '';
+        }
+
         $this->version = $package['version'];
 
         return $this->version;
@@ -398,7 +402,7 @@ class Manager extends QUI\QDOM
 
         $this->version = $version;
 
-        $Config = QUI::$Conf;
+        $Config = QUI::getConfig('etc/conf.ini.php');
         $Config->setValue('globals', 'quiqqer_version', $this->version);
         $Config->save();
         $Config->reload();
@@ -1167,6 +1171,10 @@ class Manager extends QUI\QDOM
     protected function calculatePackageFolderSize(bool $doNotCache = false): int
     {
         $packageFolderSize = QUI\Utils\System\Folder::getFolderSize($this->dir, true);
+
+        if ($packageFolderSize === null) {
+            throw new \LogicException('Package folder size could not be calculated.');
+        }
 
         if ($doNotCache) {
             return $packageFolderSize;
@@ -2431,13 +2439,19 @@ class Manager extends QUI\QDOM
         $loc = $Type->getElementsByTagName('locale');
 
         if ($loc->length) {
+            $Locale = $loc->item(0);
+
+            if ($Locale === null) {
+                return false;
+            }
+
             $data['locale'] = [
-                'group' => $loc->item(0)->getAttribute('group'),
-                'var' => $loc->item(0)->getAttribute('var')
+                'group' => $Locale->getAttribute('group'),
+                'var' => $Locale->getAttribute('var')
             ];
         }
 
-        $data['value'] = trim($Type->nodeValue);
+        $data['value'] = trim($Type->nodeValue ?? '');
 
         QUI\Cache\LongTermCache::set($cache, $data);
 

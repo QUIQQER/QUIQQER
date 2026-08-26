@@ -233,7 +233,7 @@ define('controls/projects/project/media/FolderPanel', [
                 autoclose: false,
                 events: {
                     onSubmit: function (Win) {
-                        Win.Loader.show();
+                        Win.close();
                         self.Loader.show();
 
                         self.$Folder.uploadFiles(Files).then(function () {
@@ -250,11 +250,9 @@ define('controls/projects/project/media/FolderPanel', [
                             return self.$Folder.refresh();
                         }).then(function () {
                             self.Loader.hide();
-                            Win.close();
                         }).catch(function (Exception) {
                             console.error(Exception);
                             self.Loader.hide();
-                            Win.Loader.hide();
                         });
                     }
                 }

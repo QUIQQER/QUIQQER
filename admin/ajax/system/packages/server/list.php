@@ -6,7 +6,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_packages_server_list',
     static function (): array {
         $list = QUI::getPackageManager()->getServerList();

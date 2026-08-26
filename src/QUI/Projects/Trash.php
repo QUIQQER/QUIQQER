@@ -22,7 +22,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
     /**
      * The Project of the trash
      */
-    protected ?Project $Project = null;
+    protected Project $Project;
 
     public function __construct(Project $Project)
     {

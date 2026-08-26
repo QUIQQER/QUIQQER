@@ -229,7 +229,9 @@ class CopyLanguageSites extends QUI\System\Console\Tool
      */
     protected function copyBricks(QUI\Projects\Project $SourceProject, QUI\Projects\Project $TargetProject): void
     {
-        if (!$this->BricksManager) {
+        $BricksManager = $this->BricksManager;
+
+        if ($BricksManager === null) {
             return;
         }
 
@@ -237,7 +239,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
 
         $sourceBricks = QUI::getDataBaseConnection()->createQueryBuilder()
             ->select('id')
-            ->from($this->BricksManager->getTable())
+            ->from($BricksManager->getTable())
             ->where('project = :project')
             ->andWhere('lang = :lang')
             ->setParameter('project', $SourceProject->getName())
@@ -251,7 +253,7 @@ class CopyLanguageSites extends QUI\System\Console\Tool
             $this->writeLn("Copy brick #" . $sourceBrickId . "...");
 
             try {
-                $targetBrickId = $this->BricksManager->copyBrick(
+                $targetBrickId = $BricksManager->copyBrick(
                     $sourceBrickId,
                     [
                         'project' => $TargetProject->getName(),

@@ -11,7 +11,7 @@
 
 use QUI\Control;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_controls_get',
     static function ($control, $params = false): string {
         if (

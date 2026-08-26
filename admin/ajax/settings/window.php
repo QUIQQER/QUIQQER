@@ -7,7 +7,7 @@
  * @return array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_settings_window',
     static function ($file, $windowName) {
         if (!isset($windowName) || str_contains($windowName, '.xml')) {

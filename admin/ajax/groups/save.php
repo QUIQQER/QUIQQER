@@ -8,7 +8,7 @@
  * @param string $rights - Rights, json array
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_groups_save',
     static function ($gid, $attributes, $rights): void {
         $Groups = QUI::getGroups();

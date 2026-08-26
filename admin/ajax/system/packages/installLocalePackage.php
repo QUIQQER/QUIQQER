@@ -6,7 +6,7 @@
  * @param string|array $packages - Name of the package
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_system_packages_installLocalePackage',
     static function ($packages): void {
         $json = json_decode($packages, true);

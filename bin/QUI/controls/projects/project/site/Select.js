@@ -8,6 +8,7 @@ define('controls/projects/project/site/Select', [
     'controls/projects/TypeWindow',
     'controls/projects/Popup',
     'Projects',
+    'Ajax',
     'Locale',
 
     'css!controls/projects/project/site/Select.css'
@@ -20,6 +21,7 @@ define('controls/projects/project/site/Select', [
              TypeWindow,
              ProjectWindow,
              Projects,
+             Ajax,
              QUILocale) {
     "use strict";
 
@@ -60,6 +62,10 @@ define('controls/projects/project/site/Select', [
             this.$ButtonTypes = false;
             this.$ButtonSite = false;
             this.$ButtonParents = false;
+
+            this.$labelCache = {};
+            this.$labelProject = '';
+            this.$isSettingValue = false;
 
             this.addEvents({
                 onImport: this.$onImport
@@ -104,22 +110,16 @@ define('controls/projects/project/site/Select', [
                 selectidsLocale    = '',
                 selectparentLocale = '';
 
-            var buttons = 0;
-            var width = '100%';
-
             if (this.getAttribute('selecttypes')) {
                 selecttypesLocale = QUILocale.get(lg, 'projects.project.site.select.description.site_types');
-                buttons++;
             }
 
             if (this.getAttribute('selectids')) {
                 selectidsLocale = QUILocale.get(lg, 'projects.project.site.select.description.sites');
-                buttons++;
             }
 
             if (this.getAttribute('selectparent')) {
                 selectparentLocale = QUILocale.get(lg, 'projects.project.site.select.description.site_children');
-                buttons++;
             }
 
             new QUIHelp({
@@ -130,29 +130,26 @@ define('controls/projects/project/site/Select', [
                 })
             }).inject(this.$Description);
 
-            switch (buttons) {
-                case 1:
-                    width = '100%';
-                    break;
-
-                case 2:
-                    width = '50%';
-                    break;
-
-                case 3:
-                    width = '33%';
-                    break;
+            if (this.getAttribute('selectids')) {
+                this.$ButtonSite = new QUIButton({
+                    name     : 'add-site',
+                    text     : QUILocale.get(lg, 'projects.project.site.select.btn.addSite'),
+                    title    : QUILocale.get(lg, 'projects.project.site.select.btn.addSite'),
+                    textimage: 'fa fa-file-o',
+                    events   : {
+                        onClick: this.openSitemap
+                    },
+                    disabled: true
+                }).inject(this.$Buttons);
             }
 
             if (this.getAttribute('selecttypes')) {
                 this.$ButtonTypes = new QUIButton({
-                    name    : 'add-types',
-                    text    : QUILocale.get(lg, 'projects.project.site.select.btn.addTypes'),
-                    title   : QUILocale.get(lg, 'projects.project.site.select.btn.addTypes'),
-                    styles  : {
-                        width: width
-                    },
-                    events  : {
+                    name     : 'add-types',
+                    text     : QUILocale.get(lg, 'projects.project.site.select.btn.addTypes'),
+                    title    : QUILocale.get(lg, 'projects.project.site.select.btn.addTypes'),
+                    textimage: 'fa fa-puzzle-piece',
+                    events   : {
                         onClick: this.openSiteTypes
                     },
                     disabled: true
@@ -161,29 +158,12 @@ define('controls/projects/project/site/Select', [
 
             if (this.getAttribute('selectparent')) {
                 this.$ButtonParents = new QUIButton({
-                    name    : 'add-parent',
-                    text    : QUILocale.get(lg, 'projects.project.site.select.btn.addParent'),
-                    title   : QUILocale.get(lg, 'projects.project.site.select.btn.addParent'),
-                    styles  : {
-                        width: width
-                    },
-                    events  : {
+                    name     : 'add-parent',
+                    text     : QUILocale.get(lg, 'projects.project.site.select.btn.addParent'),
+                    title    : QUILocale.get(lg, 'projects.project.site.select.btn.addParent'),
+                    textimage: 'fa fa-sitemap',
+                    events   : {
                         onClick: this.openParentSitemap
-                    },
-                    disabled: true
-                }).inject(this.$Buttons);
-            }
-
-            if (this.getAttribute('selectids')) {
-                this.$ButtonSite = new QUIButton({
-                    name    : 'add-site',
-                    text    : QUILocale.get(lg, 'projects.project.site.select.btn.addSite'),
-                    title   : QUILocale.get(lg, 'projects.project.site.select.btn.addSite'),
-                    styles  : {
-                        width: width
-                    },
-                    events  : {
-                        onClick: this.openSitemap
                     },
                     disabled: true
                 }).inject(this.$Buttons);
@@ -259,8 +239,17 @@ define('controls/projects/project/site/Select', [
          * @param {String} [lang] - Language of the Project
          */
         setProject: function (project, lang) {
+            var projectKey;
+
             if (typeOf(project) === 'classes/projects/Project') {
                 this.$Project = project;
+
+                projectKey = project.getName() + ':' + project.getLang();
+
+                if (projectKey !== this.$labelProject) {
+                    this.$labelProject = projectKey;
+                    this.$labelCache = {};
+                }
 
                 if (this.$ButtonTypes) {
                     this.$ButtonTypes.enable();
@@ -274,17 +263,14 @@ define('controls/projects/project/site/Select', [
                     this.$ButtonParents.enable();
                 }
 
+                this.$loadEntryLabels();
                 return;
             }
 
             this.setAttribute('projectName', project);
             this.setAttribute('projectLang', lang);
 
-            if (project === '') {
-                return;
-            }
-
-            if (lang === '') {
+            if (!project || !lang) {
                 return;
             }
 
@@ -292,6 +278,13 @@ define('controls/projects/project/site/Select', [
                 this.getAttribute('projectName'),
                 this.getAttribute('projectLang')
             );
+
+            projectKey = this.$Project.getName() + ':' + this.$Project.getLang();
+
+            if (projectKey !== this.$labelProject) {
+                this.$labelProject = projectKey;
+                this.$labelCache = {};
+            }
 
 
             if (this.$ButtonTypes) {
@@ -305,6 +298,8 @@ define('controls/projects/project/site/Select', [
             if (this.$ButtonParents) {
                 this.$ButtonParents.enable();
             }
+
+            this.$loadEntryLabels();
         },
 
         /**
@@ -316,15 +311,17 @@ define('controls/projects/project/site/Select', [
             var i, len, val;
             var values = value.split(';');
 
+            this.$isSettingValue = true;
+
             for (i = 0, len = values.length; i < len; i++) {
                 val = values[i];
 
-                if (val.match(':') && val.match('/')) {
+                if (val.match(':') || val.match('%')) {
                     this.addSiteType(val);
                     continue;
                 }
 
-                if (val.match('p')) {
+                if (/^p[0-9]+$/.test(val)) {
                     this.addParentSiteId(val);
                     continue;
                 }
@@ -335,6 +332,9 @@ define('controls/projects/project/site/Select', [
                     this.addSiteId(val);
                 }
             }
+
+            this.$isSettingValue = false;
+            this.$loadEntryLabels();
         },
 
         /**
@@ -431,14 +431,11 @@ define('controls/projects/project/site/Select', [
 
             var Elm = this.createEntry(siteId).inject(this.$Container);
 
-            new Element('span', {
-                'class': 'fa fa-file-o'
-            }).inject(Elm.getElement('.control-site-select-entry-text'));
-
-            Elm.inject(this.$Container);
-
-
             this.refreshValues();
+
+            if (!this.$isSettingValue) {
+                this.$loadEntryLabels([Elm]);
+            }
         },
 
         /**
@@ -460,14 +457,11 @@ define('controls/projects/project/site/Select', [
             var value = 'p' + siteId.toString(),
                 Elm   = this.createEntry(value).inject(this.$Container);
 
-            new Element('span', {
-                'class': 'fa fa-file'
-            }).inject(Elm.getElement('.control-site-select-entry-text'));
-
-            Elm.inject(this.$Container);
-
-
             this.refreshValues();
+
+            if (!this.$isSettingValue) {
+                this.$loadEntryLabels([Elm]);
+            }
         },
 
         /**
@@ -489,16 +483,184 @@ define('controls/projects/project/site/Select', [
                 type = type + ':%';
             }
 
-            var Elm = this.createEntry(type);
-
-            new Element('span', {
-                'class': 'fa fa-magic'
-            }).inject(Elm.getElement('.control-site-select-entry-text'));
-
-            Elm.inject(this.$Container);
-
+            var Elm = this.createEntry(type).inject(this.$Container);
 
             this.refreshValues();
+
+            if (!this.$isSettingValue) {
+                this.$loadEntryLabels([Elm]);
+            }
+        },
+
+        /**
+         * Return display information which is available without a request
+         *
+         * @param {String|Number} value
+         * @returns {Object}
+         */
+        $getEntryDisplay: function (value) {
+            value = value.toString();
+
+            var data = {
+                badge   : '',
+                icon     : 'fa fa-puzzle-piece',
+                kind     : 'type',
+                title    : value,
+                metaLabel: QUILocale.get(lg, 'projects.project.site.select.entry.type'),
+                technical: value
+            };
+
+            if (/^[0-9]+$/.test(value)) {
+                data.icon = 'fa fa-file-o';
+                data.kind = 'site';
+                data.title = '#' + value;
+                data.metaLabel = QUILocale.get(lg, 'projects.project.site.select.entry.site');
+                data.technical = '#' + value;
+
+                return data;
+            }
+
+            if (/^p[0-9]+$/.test(value)) {
+                data.icon = 'fa fa-sitemap';
+                data.kind = 'children';
+                data.technical = '#' + value.substring(1);
+                data.metaLabel = QUILocale.get(lg, 'projects.project.site.select.entry.children');
+                data.title = data.technical;
+                data.badge = QUILocale.get(lg, 'projects.project.site.select.entry.children.badge');
+
+                return data;
+            }
+
+            if (value.indexOf('%') !== -1) {
+                data.icon = 'fa fa-layer-group';
+                data.kind = 'typeWildcard';
+                data.metaLabel = QUILocale.get(lg, 'projects.project.site.select.entry.typeWildcard');
+                data.title = value;
+                data.badge = QUILocale.get(lg, 'projects.project.site.select.entry.typeWildcard.badge');
+            }
+
+            return data;
+        },
+
+        /**
+         * Update the visible information of an entry
+         *
+         * @param {HTMLElement} Entry
+         * @param {Object} result
+         */
+        $applyEntryLabel: function (Entry, result) {
+            if (!Entry) {
+                return;
+            }
+
+            var value = Entry.get('data-value'),
+                data  = this.$getEntryDisplay(value);
+
+            if (result && result.value === value) {
+                if (result.kind) {
+                    data.kind = result.kind;
+                }
+
+                if (result.icon) {
+                    data.icon = result.icon;
+                }
+
+                if (result.title) {
+                    data.title = result.title;
+                }
+            }
+
+            Entry.set('data-kind', data.kind);
+            Entry.removeClass('control-site-select-entry--loading');
+
+            Entry.getElement('.control-site-select-entry-icon span').set('class', data.icon);
+            Entry.getElement('.control-site-select-entry-title').set({
+                text : data.title,
+                title: data.title
+            });
+
+            var Badge = Entry.getElement('.control-site-select-entry-badge');
+
+            Badge.set('text', data.badge);
+            Badge.setStyle('display', data.badge ? null : 'none');
+
+            Entry.getElement('.control-site-select-entry-meta-label').set('text', data.metaLabel + ' ·');
+            Entry.getElement('.control-site-select-entry-technical').set({
+                text : data.technical,
+                title: data.technical
+            });
+            Entry.set('title', data.title + ' — ' + data.metaLabel + ' · ' + data.technical);
+        },
+
+        /**
+         * Load the visible labels for entries
+         *
+         * @param {Array<HTMLElement>} [entries]
+         */
+        $loadEntryLabels: function (entries) {
+            if (!this.$Project || !this.$Container) {
+                return;
+            }
+
+            entries = entries || this.$Container.getElements('.control-site-select-entry');
+
+            var self = this,
+                values = [],
+                requestEntries = [];
+
+            Array.from(entries).each(function (Entry) {
+                var value = Entry.get('data-value');
+
+                if (self.$labelCache[value]) {
+                    self.$applyEntryLabel(Entry, self.$labelCache[value]);
+                    return;
+                }
+
+                if (!values.contains(value)) {
+                    values.push(value);
+                }
+
+                requestEntries.push(Entry);
+                Entry.addClass('control-site-select-entry--loading');
+            });
+
+            if (!values.length) {
+                return;
+            }
+
+            var projectKey = this.$labelProject;
+
+            Ajax.get('ajax_site_getSelectLabels', function (result) {
+                if (projectKey !== self.$labelProject) {
+                    return;
+                }
+
+                Object.each(result || {}, function (entryData, value) {
+                    self.$labelCache[value] = entryData;
+                });
+
+                requestEntries.each(function (Entry) {
+                    if (!Entry.parentNode) {
+                        return;
+                    }
+
+                    var value = Entry.get('data-value');
+
+                    self.$applyEntryLabel(Entry, self.$labelCache[value] || null);
+                });
+            }, {
+                project  : this.$Project.encode(),
+                selectors: JSON.encode(values),
+                onError  : function () {
+                    requestEntries.each(function (Entry) {
+                        if (!Entry.parentNode) {
+                            return;
+                        }
+
+                        self.$applyEntryLabel(Entry, null);
+                    });
+                }
+            });
         },
 
         /**
@@ -512,15 +674,51 @@ define('controls/projects/project/site/Select', [
 
             var Item = new Element('div', {
                 'class'     : 'control-site-select-entry',
-                html        : '<div class="control-site-select-entry-text">' + value + '</div>' +
-                              '<div class="control-site-select-entry-delete">' +
-                              '<span class="fa fa-remove"></span>' +
-                              '</div>',
                 "data-value": value
             });
 
+            new Element('div', {
+                'class': 'control-site-select-entry-icon',
+                html   : '<span></span>'
+            }).inject(Item);
 
-            Item.getElement('.fa-remove').addEvent('click', function () {
+            var Content = new Element('div', {
+                'class': 'control-site-select-entry-content'
+            }).inject(Item);
+
+            new Element('div', {
+                'class': 'control-site-select-entry-text'
+            }).adopt(
+                new Element('span', {
+                    'class': 'control-site-select-entry-title'
+                }),
+                new Element('span', {
+                    'class': 'control-site-select-entry-badge'
+                })
+            ).inject(Content);
+
+            var Meta = new Element('div', {
+                'class': 'control-site-select-entry-meta'
+            }).inject(Content);
+
+            new Element('span', {
+                'class': 'control-site-select-entry-meta-label'
+            }).inject(Meta);
+
+            new Element('code', {
+                'class': 'control-site-select-entry-technical'
+            }).inject(Meta);
+
+            var Delete = new Element('button', {
+                'class': 'control-site-select-entry-delete',
+                type   : 'button',
+                title  : QUILocale.get(lg, 'delete'),
+                html   : '<span class="fa fa-remove"></span>'
+            }).inject(Item);
+
+            this.$applyEntryLabel(Item, null);
+
+            Delete.addEvent('click', function () {
                 this.getParent('.control-site-select-entry').destroy();
 
                 self.refreshValues();

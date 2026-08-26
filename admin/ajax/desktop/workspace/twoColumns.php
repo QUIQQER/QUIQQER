@@ -6,7 +6,7 @@
  * @return string
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_desktop_workspace_twoColumns',
     static function (): string {
         return QUI\Workspace\Manager::getTwoColumnDefault();

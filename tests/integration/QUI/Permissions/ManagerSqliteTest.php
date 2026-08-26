@@ -2,6 +2,7 @@
 
 namespace QUI\Permissions;
 
+use Doctrine\DBAL\Schema\Table;
 use PHPUnit\Framework\MockObject\MockObject;
 use QUI;
 use QUI\Groups\Group;
@@ -20,10 +21,15 @@ class ManagerSqliteTest extends SqlitePermissionTestCase
 {
     public function testSetupCreatesPermissionSchema(): void
     {
+        $SchemaManager = $this->Connection->createSchemaManager();
+        $OtherTable = new Table('other_names');
+        $OtherTable->addColumn('name', 'string');
+        $OtherTable->addIndex(['name'], 'name');
+        $SchemaManager->createTable($OtherTable);
+
         $this->createPermissionSchema();
 
         $table = Manager::table();
-        $SchemaManager = $this->Connection->createSchemaManager();
 
         $this->assertTrue($SchemaManager->tablesExist([
             $table,
@@ -33,7 +39,15 @@ class ManagerSqliteTest extends SqlitePermissionTestCase
             $table . '2projects',
             $table . '2media'
         ]));
-        $this->assertTrue($SchemaManager->introspectTable($table)->hasIndex('name'));
+
+        $PermissionTable = $SchemaManager->introspectTable($table);
+        $permissionNameIndexes = array_filter(
+            $PermissionTable->getIndexes(),
+            static fn ($Index): bool => $Index->getColumns() === ['name']
+        );
+
+        $this->assertCount(1, $permissionNameIndexes);
+        $this->assertFalse($PermissionTable->hasIndex('name'));
     }
 
     public function testSetupCanRunMoreThanOnce(): void

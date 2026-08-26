@@ -10,7 +10,7 @@
  * @throws QUI\Exception
  */
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'ajax_trash_media_restore',
     static function ($project, $ids, $parentid): void {
         $Project = QUI::getProjectManager()->decode($project);
