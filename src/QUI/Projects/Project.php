@@ -19,6 +19,7 @@ use QUI\Utils\Text\XML;
 use function array_merge;
 use function array_reverse;
 use function array_unique;
+use function count;
 use function date;
 use function defined;
 use function dirname;
@@ -1472,7 +1473,7 @@ class Project implements \Stringable
         $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff($Table, addedColumns: [$Column]));
     }
 
-    private static function ensureSitesTable(string $tableName): void
+    private static function ensureSitesTable(string $tableName): bool
     {
         $SchemaManager = QUI::getSchemaManager();
 
@@ -1483,7 +1484,7 @@ class Project implements \Stringable
             $Table->setPrimaryKey(["id"]);
             self::addSitesIndexes($Table);
             $SchemaManager->createTable($Table);
-            return;
+            return true;
         }
 
         $Table = $SchemaManager->introspectTable($tableName);
@@ -1507,13 +1508,18 @@ class Project implements \Stringable
             $Table = $SchemaManager->introspectTable($tableName);
         }
 
-        foreach (["name", "active", "deleted", "deleted_at", "order_field", "type", "c_date", "e_date"] as $indexName) {
-            if (!$Table->hasIndex($indexName)) {
-                $Table->addIndex([$indexName], $indexName);
-                $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff($Table, addedIndexes: [$Table->getIndex($indexName)]));
-                $Table = $SchemaManager->introspectTable($tableName);
-            }
+        $TargetTable = clone $Table;
+        self::addMissingSingleColumnIndexes(
+            $TargetTable,
+            ["name", "active", "deleted", "deleted_at", "order_field", "type", "c_date", "e_date"]
+        );
+        $Diff = $SchemaManager->createComparator()->compareTables($Table, $TargetTable);
+
+        if (!$Diff->isEmpty()) {
+            $SchemaManager->alterTable($Diff);
         }
+
+        return false;
     }
 
     private static function ensureSitesRelationTable(string $tableName): void
@@ -1526,8 +1532,7 @@ class Project implements \Stringable
             $Table->addColumn("parent", "bigint", ["notnull" => false]);
             $Table->addColumn("child", "bigint", ["notnull" => false]);
             $Table->addColumn("oparent", "bigint", ["notnull" => false]);
-            $Table->addIndex(["parent"], "parent");
-            $Table->addIndex(["child"], "child");
+            self::addMissingSingleColumnIndexes($Table, ["parent", "child"]);
             $SchemaManager->createTable($Table);
             return;
         }
@@ -1550,12 +1555,12 @@ class Project implements \Stringable
             $Table = $SchemaManager->introspectTable($tableName);
         }
 
-        foreach (["parent", "child"] as $indexName) {
-            if (!$Table->hasIndex($indexName)) {
-                $Table->addIndex([$indexName], $indexName);
-                $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff($Table, addedIndexes: [$Table->getIndex($indexName)]));
-                $Table = $SchemaManager->introspectTable($tableName);
-            }
+        $TargetTable = clone $Table;
+        self::addMissingSingleColumnIndexes($TargetTable, ["parent", "child"]);
+        $Diff = $SchemaManager->createComparator()->compareTables($Table, $TargetTable);
+
+        if (!$Diff->isEmpty()) {
+            $SchemaManager->alterTable($Diff);
         }
     }
 
@@ -1568,9 +1573,51 @@ class Project implements \Stringable
 
     private static function addSitesIndexes(\Doctrine\DBAL\Schema\Table $Table): void
     {
-        foreach (["name", "active", "deleted", "deleted_at", "order_field", "type", "c_date", "e_date"] as $indexName) {
-            $Table->addIndex([$indexName], $indexName);
+        self::addMissingSingleColumnIndexes(
+            $Table,
+            ["name", "active", "deleted", "deleted_at", "order_field", "type", "c_date", "e_date"]
+        );
+    }
+
+    /**
+     * @param list<string> $columnNames
+     */
+    private static function addMissingSingleColumnIndexes(
+        \Doctrine\DBAL\Schema\Table $Table,
+        array $columnNames
+    ): void {
+        foreach ($columnNames as $columnName) {
+            if (self::hasSingleColumnIndex($Table, $columnName)) {
+                continue;
+            }
+
+            $Table->addIndex([$columnName]);
         }
+    }
+
+    private static function hasSingleColumnIndex(
+        \Doctrine\DBAL\Schema\Table $Table,
+        string $columnName
+    ): bool {
+        $columnName = strtolower(str_replace(['`', '"', '[', ']'], '', $columnName));
+
+        foreach ($Table->getIndexes() as $Index) {
+            $indexedColumns = $Index->getIndexedColumns();
+
+            if (count($indexedColumns) !== 1) {
+                continue;
+            }
+
+            $indexedColumnName = strtolower(
+                $indexedColumns[0]->getColumnName()->getIdentifier()->getValue()
+            );
+
+            if ($indexedColumnName === $columnName) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -1662,7 +1709,7 @@ class Project implements \Stringable
         foreach ($this->langs as $lang) {
             $table = QUI_DB_PRFX . $this->name . '_' . $lang . '_sites';
 
-            self::ensureSitesTable($table);
+            $sitesTableCreated = self::ensureSitesTable($table);
             self::clearInvalidReleaseDates($Connection, $table);
 
             // create first site -> id 1 if not exist
@@ -1678,8 +1725,7 @@ class Project implements \Stringable
             if (!$firstChildExists) {
                 $creationDate = date('Y-m-d H:i:s');
 
-                $Connection->insert($table, [
-                    'id' => 1,
+                $firstSiteData = [
                     'active' => 1,
                     'deleted' => 0,
                     'name' => 'start',
@@ -1689,7 +1735,14 @@ class Project implements \Stringable
                     'e_date' => $creationDate,
                     'c_user' => $User->getUUID(),
                     'c_user_ip' => QUI\Utils\System::getClientIP()
-                ]);
+                ];
+
+                // Let auto-increment assign ID 1 and advance a fresh PostgreSQL sequence.
+                if (!$sitesTableCreated) {
+                    $firstSiteData['id'] = 1;
+                }
+
+                $Connection->insert($table, $firstSiteData);
             }
 
             // Beziehungen

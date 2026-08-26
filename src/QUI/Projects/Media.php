@@ -13,6 +13,7 @@ use QUI\Projects\Media\Utils;
 use QUI\Utils\System\File as FileUtils;
 
 use function class_exists;
+use function count;
 use function date;
 use function explode;
 use function file_exists;
@@ -22,6 +23,7 @@ use function json_encode;
 use function md5;
 use function preg_replace;
 use function str_replace;
+use function strtolower;
 use function trim;
 
 /**
@@ -170,7 +172,7 @@ class Media extends QUI\QDOM
     {
         $table = $this->getTable();
         $Connection = QUI::getDataBaseConnection();
-        self::ensureMediaTable($table);
+        $mediaTableCreated = self::ensureMediaTable($table);
 
         try {
             $entries = $Connection->createQueryBuilder()
@@ -203,15 +205,21 @@ class Media extends QUI\QDOM
             ->fetchAssociative();
 
         if ($firstChildResult === false) {
-            $Connection->insert($table, [
-                'id' => 1,
+            $firstMediaData = [
                 'name' => 'Media',
                 'title' => 'Media',
                 'c_date' => date('Y-m-d H:i:s'),
                 'c_user' => QUI::getUserBySession()->getUUID(),
                 'type' => 'folder',
                 'pathHash' => md5('')
-            ]);
+            ];
+
+            // Let auto-increment assign ID 1 and advance a fresh PostgreSQL sequence.
+            if (!$mediaTableCreated) {
+                $firstMediaData['id'] = 1;
+            }
+
+            $Connection->insert($table, $firstMediaData);
         } elseif ($firstChildResult["type"] != "folder") {
             // check if id 1 is a folder, id 1 MUST BE a folder
             $Connection->update(
@@ -292,7 +300,7 @@ class Media extends QUI\QDOM
         }
     }
 
-    private static function ensureMediaTable(string $tableName): void
+    private static function ensureMediaTable(string $tableName): bool
     {
         $SchemaManager = QUI::getSchemaManager();
 
@@ -303,7 +311,7 @@ class Media extends QUI\QDOM
             $Table->setPrimaryKey(["id"]);
             self::addMediaIndexes($Table);
             $SchemaManager->createTable($Table);
-            return;
+            return true;
         }
 
         $Table = $SchemaManager->introspectTable($tableName);
@@ -326,13 +334,18 @@ class Media extends QUI\QDOM
             $Table = $SchemaManager->introspectTable($tableName);
         }
 
-        foreach (["name", "type", "active", "deleted", "deleted_at", "e_date", "order", "hidden", "pathHash"] as $indexName) {
-            if (!$Table->hasIndex($indexName)) {
-                $Table->addIndex([$indexName], $indexName);
-                $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff($Table, addedIndexes: [$Table->getIndex($indexName)]));
-                $Table = $SchemaManager->introspectTable($tableName);
-            }
+        $TargetTable = clone $Table;
+        self::addMissingSingleColumnIndexes(
+            $TargetTable,
+            ["name", "type", "active", "deleted", "deleted_at", "e_date", "order", "hidden", "pathHash"]
+        );
+        $Diff = $SchemaManager->createComparator()->compareTables($Table, $TargetTable);
+
+        if (!$Diff->isEmpty()) {
+            $SchemaManager->alterTable($Diff);
         }
+
+        return false;
     }
 
     private static function ensureMediaRelationsTable(string $tableName): void
@@ -344,8 +357,7 @@ class Media extends QUI\QDOM
             self::addUtf8Options($Table);
             $Table->addColumn("parent", "bigint");
             $Table->addColumn("child", "bigint");
-            $Table->addIndex(["parent"], "parent");
-            $Table->addIndex(["child"], "child");
+            self::addMissingSingleColumnIndexes($Table, ["parent", "child"]);
             $SchemaManager->createTable($Table);
             return;
         }
@@ -367,12 +379,12 @@ class Media extends QUI\QDOM
             $Table = $SchemaManager->introspectTable($tableName);
         }
 
-        foreach (["parent", "child"] as $indexName) {
-            if (!$Table->hasIndex($indexName)) {
-                $Table->addIndex([$indexName], $indexName);
-                $SchemaManager->alterTable(new \Doctrine\DBAL\Schema\TableDiff($Table, addedIndexes: [$Table->getIndex($indexName)]));
-                $Table = $SchemaManager->introspectTable($tableName);
-            }
+        $TargetTable = clone $Table;
+        self::addMissingSingleColumnIndexes($TargetTable, ["parent", "child"]);
+        $Diff = $SchemaManager->createComparator()->compareTables($Table, $TargetTable);
+
+        if (!$Diff->isEmpty()) {
+            $SchemaManager->alterTable($Diff);
         }
     }
 
@@ -410,9 +422,51 @@ class Media extends QUI\QDOM
 
     private static function addMediaIndexes(\Doctrine\DBAL\Schema\Table $Table): void
     {
-        foreach (["name", "type", "active", "deleted", "deleted_at", "e_date", "order", "hidden", "pathHash"] as $indexName) {
-            $Table->addIndex([$indexName], $indexName);
+        self::addMissingSingleColumnIndexes(
+            $Table,
+            ["name", "type", "active", "deleted", "deleted_at", "e_date", "order", "hidden", "pathHash"]
+        );
+    }
+
+    /**
+     * @param list<string> $columnNames
+     */
+    private static function addMissingSingleColumnIndexes(
+        \Doctrine\DBAL\Schema\Table $Table,
+        array $columnNames
+    ): void {
+        foreach ($columnNames as $columnName) {
+            if (self::hasSingleColumnIndex($Table, $columnName)) {
+                continue;
+            }
+
+            $Table->addIndex([$columnName]);
         }
+    }
+
+    private static function hasSingleColumnIndex(
+        \Doctrine\DBAL\Schema\Table $Table,
+        string $columnName
+    ): bool {
+        $columnName = strtolower(str_replace(['`', '"', '[', ']'], '', $columnName));
+
+        foreach ($Table->getIndexes() as $Index) {
+            $indexedColumns = $Index->getIndexedColumns();
+
+            if (count($indexedColumns) !== 1) {
+                continue;
+            }
+
+            $indexedColumnName = strtolower(
+                $indexedColumns[0]->getColumnName()->getIdentifier()->getValue()
+            );
+
+            if ($indexedColumnName === $columnName) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
