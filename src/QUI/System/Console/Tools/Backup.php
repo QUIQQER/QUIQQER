@@ -7,6 +7,7 @@
 namespace QUI\System\Console\Tools;
 
 use QUI;
+use Throwable;
 
 /**
  * Class Backup
@@ -16,11 +17,14 @@ use QUI;
  */
 class Backup extends QUI\System\Console\Tool
 {
+    private string $backupDirectory;
+
     /**
      * Cleanup constructor.
      */
-    public function __construct()
+    public function __construct(?string $backupDirectory = null)
     {
+        $this->backupDirectory = rtrim($backupDirectory ?? VAR_DIR . 'backup/', '/\\') . DIRECTORY_SEPARATOR;
         $this->systemTool = true;
 
         $this->setName('quiqqer:backup')
@@ -66,7 +70,7 @@ class Backup extends QUI\System\Console\Tool
     {
         $this->writeLn('Start database backup ...');
 
-        $path = VAR_DIR . 'backup/';
+        $path = $this->backupDirectory;
         $driver = QUI::conf('db', 'driver');
         $host = QUI::conf('db', 'host');
         $database = QUI::conf('db', 'database');
@@ -74,12 +78,11 @@ class Backup extends QUI\System\Console\Tool
         $password = QUI::conf('db', 'password');
 
         if (!is_dir($path)) {
-            mkdir($path, 0777, true);
+            mkdir($path, 0770, true);
         }
 
-        $filename = $path . 'backup_' . date('Y_m_d__H_i_s') . '.sql';
-
         if ($driver === 'mysql') {
+            $filename = $this->getAvailableBackupFilename($path, 'sql');
             $command = sprintf(
                 'mysqldump --user=%s --password=%s --host=%s %s > %s 2>/dev/null',
                 escapeshellarg($user),
@@ -98,9 +101,30 @@ class Backup extends QUI\System\Console\Tool
             $this->writeLn('Database backup created: ' . $filename, 'green');
             $this->writeLn('');
             $this->resetColor();
-        } else {
-            throw new QUI\Exception('Unsupported DB driver: ' . $driver);
+            return;
         }
+
+        if (in_array(strtolower((string)$driver), ['sqlite', 'sqlite3', 'pdo_sqlite'], true)) {
+            $filename = $this->getAvailableBackupFilename($path, 'sqlite');
+
+            try {
+                $Connection = QUI::getDataBaseConnection();
+                $Connection->executeStatement('VACUUM INTO ' . $Connection->quote($filename));
+            } catch (Throwable $Exception) {
+                throw new QUI\Exception('Backup failed: ' . $Exception->getMessage());
+            }
+
+            if (!is_file($filename)) {
+                throw new QUI\Exception('Backup failed');
+            }
+
+            $this->writeLn('Database backup created: ' . $filename, 'green');
+            $this->writeLn('');
+            $this->resetColor();
+            return;
+        }
+
+        throw new QUI\Exception('Unsupported DB driver: ' . $driver);
     }
 
     /**
@@ -110,11 +134,11 @@ class Backup extends QUI\System\Console\Tool
     {
         $this->writeLn('Start filesystem backup ...');
 
-        $path = VAR_DIR . 'backup/';
-        $filename = $path . 'backup_' . date('Y_m_d__H_i_s') . '.tar.gz';
+        $path = $this->backupDirectory;
+        $filename = $this->getAvailableBackupFilename($path, 'tar.gz');
 
         if (!is_dir($path)) {
-            mkdir($path, 0777, true);
+            mkdir($path, 0770, true);
         }
 
         $base = rtrim(CMS_DIR, '/');
@@ -140,13 +164,33 @@ class Backup extends QUI\System\Console\Tool
         }
 
         // Exclude certain subfolders in var
-        $exclude = [
-            '--exclude=var/cache',
-            '--exclude=var/tmp',
-            '--exclude=var/uploads',
-            '--exclude=var/sessions',
-            '--exclude=var/backup'
+        $excludedPaths = [
+            'var/cache',
+            'var/tmp',
+            'var/uploads',
+            'var/sessions',
+            'var/backup'
         ];
+
+        $driver = strtolower((string)QUI::conf('db', 'driver'));
+
+        if (in_array($driver, ['sqlite', 'sqlite3', 'pdo_sqlite'], true)) {
+            $databasePath = QUI::getDataBaseConnection()->getParams()['path'] ?? '';
+            $basePrefix = $base . DIRECTORY_SEPARATOR;
+
+            if (str_starts_with($databasePath, $basePrefix)) {
+                $relativeDatabasePath = substr($databasePath, strlen($basePrefix));
+                $excludedPaths[] = $relativeDatabasePath;
+                $excludedPaths[] = $relativeDatabasePath . '-journal';
+                $excludedPaths[] = $relativeDatabasePath . '-shm';
+                $excludedPaths[] = $relativeDatabasePath . '-wal';
+            }
+        }
+
+        $exclude = array_map(
+            static fn(string $excludedPath): string => escapeshellarg('--exclude=' . $excludedPath),
+            $excludedPaths
+        );
 
         $command = sprintf(
             'cd %s && tar czf %s %s %s',
@@ -164,5 +208,19 @@ class Backup extends QUI\System\Console\Tool
 
         $this->writeLn('Filesystem backup created: ' . $filename, 'green');
         $this->resetColor();
+    }
+
+    private function getAvailableBackupFilename(string $path, string $extension): string
+    {
+        $baseFilename = $path . 'backup_' . date('Y_m_d__H_i_s');
+        $filename = $baseFilename . '.' . $extension;
+        $suffix = 1;
+
+        while (file_exists($filename)) {
+            $filename = $baseFilename . '_' . $suffix . '.' . $extension;
+            $suffix++;
+        }
+
+        return $filename;
     }
 }

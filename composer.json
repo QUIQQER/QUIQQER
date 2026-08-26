@@ -79,6 +79,9 @@
     "t7systems/blowfish": "1.0.0",
     "tedivm/stash": "^1.2"
   },
+  "suggest": {
+    "ext-pdo_sqlite": "Required when SQLite is used as the QUIQQER database"
+  },
   "conflict": {
     "quiqqer/quiqqer": "*",
     "quiqqer/rest": "^1"

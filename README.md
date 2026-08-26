@@ -11,6 +11,8 @@ About QUIQQER
 ![Static Badge](https://img.shields.io/badge/PHP-^8.1-purple)
 ![Static Badge](https://img.shields.io/badge/PHP-PSR-purple)
 ![Static Badge](https://img.shields.io/badge/MySQL-8.*-blue)
+![Static Badge](https://img.shields.io/badge/PostgreSQL-12%2B-blue)
+![Static Badge](https://img.shields.io/badge/SQLite-supported-blue)
 ![Static Badge](https://img.shields.io/badge/Webserver-Apache-white)
 ![Static Badge](https://img.shields.io/badge/Webserver-NGINX-white)
 
@@ -94,6 +96,25 @@ To get started with QUIQQER, follow the [official instructions](https://www.quiq
 
 - [Installation via CLI / Server](https://www.quiqqer.com/Start-now/Installation#terminal-setup)
 - [Installation via Web / Browser](https://www.quiqqer.com/Start-now/Installation#websetup)
+
+### SQLite database
+
+SQLite can be selected with the `sqlite`, `sqlite3` or `pdo_sqlite` database driver. Its default database file is
+`etc/database/quiqqer.sqlite`. A custom relative path is resolved from the QUIQQER installation directory; an absolute
+path can also be configured.
+
+```ini
+[db]
+driver = "sqlite"
+path = "etc/database/quiqqer.sqlite"
+foreign_keys = 1
+busy_timeout = 5000
+journal_mode = "WAL"
+synchronous = "NORMAL"
+```
+
+SQLite deployments must use a local filesystem shared by all PHP processes on the same host. The database file and its
+parent directory must be writable by the PHP and console user. In-memory databases are intended for tests only.
 
 Additional Resources
 ------

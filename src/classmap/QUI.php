@@ -1047,29 +1047,70 @@ class QUI
     public static function getDataBaseConnection(): Connection
     {
         if (!(self::$QueryBuilder instanceof Connection)) {
-            $driver = self::getDoctrineDatabaseDriver((string)self::conf('db', 'driver'));
-            $port = (int)self::conf('db', 'port');
+            $databaseConfig = self::conf('db');
 
-            if (empty($port)) {
-                $port = self::getDefaultDatabasePort($driver);
+            if (!is_array($databaseConfig)) {
+                throw new \InvalidArgumentException('Missing database configuration');
             }
 
-            self::$QueryBuilder = Doctrine\DBAL\DriverManager::getConnection([
-                'dbname' => self::conf('db', 'database'),
-                'driver' => $driver,
-                'host' => self::conf('db', 'host'),
-                'port' => $port,
-                'persistent' => (bool)self::conf('db', 'persistent'),
-                'user' => self::conf('db', 'user'),
-                'password' => self::conf('db', 'password')
-            ]);
+            $connectionParameters = self::getDoctrineConnectionParameters($databaseConfig);
+            $driver = (string)$connectionParameters['driver'];
+
+            if ($driver === 'pdo_sqlite') {
+                self::prepareSqliteDatabasePath((string)$connectionParameters['path']);
+            }
+
+            $Connection = Doctrine\DBAL\DriverManager::getConnection($connectionParameters);
+
+            if ($driver === 'pdo_sqlite') {
+                try {
+                    self::configureSqliteConnection($Connection, $databaseConfig);
+                } catch (\Throwable $Exception) {
+                    $Connection->close();
+                    throw $Exception;
+                }
+            }
+
+            self::$QueryBuilder = $Connection;
         }
 
         return self::$QueryBuilder;
     }
 
     /**
-     * @return 'pdo_mysql'|'pdo_pgsql'
+     * @param array<string, mixed> $databaseConfig
+     * @return array<string, mixed>
+     */
+    private static function getDoctrineConnectionParameters(array $databaseConfig): array
+    {
+        $driver = self::getDoctrineDatabaseDriver((string)($databaseConfig['driver'] ?? ''));
+
+        if ($driver === 'pdo_sqlite') {
+            return [
+                'driver' => $driver,
+                'path' => self::getSqliteDatabasePath($databaseConfig)
+            ];
+        }
+
+        $port = (int)($databaseConfig['port'] ?? 0);
+
+        if (empty($port)) {
+            $port = self::getDefaultDatabasePort($driver);
+        }
+
+        return [
+            'dbname' => $databaseConfig['database'] ?? null,
+            'driver' => $driver,
+            'host' => $databaseConfig['host'] ?? null,
+            'port' => $port,
+            'persistent' => (bool)($databaseConfig['persistent'] ?? false),
+            'user' => $databaseConfig['user'] ?? null,
+            'password' => $databaseConfig['password'] ?? null
+        ];
+    }
+
+    /**
+     * @return 'pdo_mysql'|'pdo_pgsql'|'pdo_sqlite'
      */
     private static function getDoctrineDatabaseDriver(string $driver): string
     {
@@ -1078,6 +1119,7 @@ class QUI
         return match ($driver) {
             'mysql', 'pdo_mysql' => 'pdo_mysql',
             'pgsql', 'postgres', 'postgresql', 'psql', 'pdo_pgsql' => 'pdo_pgsql',
+            'sqlite', 'sqlite3', 'pdo_sqlite' => 'pdo_sqlite',
             default => throw new \InvalidArgumentException('Unsupported DB driver: ' . $driver)
         };
     }
@@ -1088,6 +1130,141 @@ class QUI
             'pdo_pgsql' => 5432,
             default => 3306
         };
+    }
+
+    /**
+     * @param array<string, mixed> $databaseConfig
+     */
+    private static function getSqliteDatabasePath(array $databaseConfig): string
+    {
+        $path = trim((string)($databaseConfig['path'] ?? ''));
+
+        if ($path === '') {
+            return ETC_DIR . 'database/quiqqer.sqlite';
+        }
+
+        if (str_starts_with($path, '/') || preg_match('~^[A-Za-z]:[\\\\/]~', $path)) {
+            return $path;
+        }
+
+        return rtrim(CMS_DIR, '/\\') . DIRECTORY_SEPARATOR . ltrim($path, '/\\');
+    }
+
+    private static function prepareSqliteDatabasePath(string $path): void
+    {
+        $directory = dirname($path);
+
+        if (!is_dir($directory) && !mkdir($directory, 0770, true) && !is_dir($directory)) {
+            throw new \RuntimeException('Could not create SQLite database directory: ' . $directory);
+        }
+
+        if (!is_writable($directory)) {
+            throw new \RuntimeException('SQLite database directory is not writable: ' . $directory);
+        }
+
+        if (file_exists($path) && (!is_file($path) || !is_writable($path))) {
+            throw new \RuntimeException('SQLite database file is not writable: ' . $path);
+        }
+    }
+
+    /**
+     * @param array<string, mixed> $databaseConfig
+     */
+    private static function configureSqliteConnection(Connection $Connection, array $databaseConfig): void
+    {
+        $foreignKeys = self::getSqliteBooleanSetting($databaseConfig, 'foreign_keys', true);
+        $busyTimeout = self::getSqliteIntegerSetting($databaseConfig, 'busy_timeout', 5000);
+        $journalMode = self::getSqliteEnumSetting(
+            $databaseConfig,
+            'journal_mode',
+            'WAL',
+            ['DELETE', 'TRUNCATE', 'PERSIST', 'MEMORY', 'WAL', 'OFF']
+        );
+        $synchronous = self::getSqliteEnumSetting(
+            $databaseConfig,
+            'synchronous',
+            'NORMAL',
+            ['OFF', 'NORMAL', 'FULL', 'EXTRA']
+        );
+
+        $Connection->executeStatement('PRAGMA busy_timeout = ' . $busyTimeout);
+        $Connection->executeStatement('PRAGMA foreign_keys = ' . ($foreignKeys ? 'ON' : 'OFF'));
+        $activeJournalMode = strtoupper(
+            (string)$Connection->executeQuery('PRAGMA journal_mode = ' . $journalMode)->fetchOne()
+        );
+
+        if ($activeJournalMode !== $journalMode) {
+            throw new \RuntimeException(
+                'Could not activate SQLite journal mode ' . $journalMode . '; active mode: ' . $activeJournalMode
+            );
+        }
+
+        $Connection->executeStatement('PRAGMA synchronous = ' . $synchronous);
+    }
+
+    /**
+     * @param array<string, mixed> $databaseConfig
+     */
+    private static function getSqliteBooleanSetting(
+        array $databaseConfig,
+        string $setting,
+        bool $default
+    ): bool {
+        if (!array_key_exists($setting, $databaseConfig)) {
+            return $default;
+        }
+
+        $value = filter_var($databaseConfig[$setting], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+
+        if ($value === null) {
+            throw new \InvalidArgumentException('Invalid SQLite setting db.' . $setting);
+        }
+
+        return $value;
+    }
+
+    /**
+     * @param array<string, mixed> $databaseConfig
+     */
+    private static function getSqliteIntegerSetting(
+        array $databaseConfig,
+        string $setting,
+        int $default
+    ): int {
+        if (!array_key_exists($setting, $databaseConfig)) {
+            return $default;
+        }
+
+        $value = filter_var(
+            $databaseConfig[$setting],
+            FILTER_VALIDATE_INT,
+            ['options' => ['min_range' => 0, 'max_range' => 2147483647]]
+        );
+
+        if ($value === false) {
+            throw new \InvalidArgumentException('Invalid SQLite setting db.' . $setting);
+        }
+
+        return $value;
+    }
+
+    /**
+     * @param array<string, mixed> $databaseConfig
+     * @param string[] $allowedValues
+     */
+    private static function getSqliteEnumSetting(
+        array $databaseConfig,
+        string $setting,
+        string $default,
+        array $allowedValues
+    ): string {
+        $value = strtoupper(trim((string)($databaseConfig[$setting] ?? $default)));
+
+        if (!in_array($value, $allowedValues, true)) {
+            throw new \InvalidArgumentException('Invalid SQLite setting db.' . $setting . ': ' . $value);
+        }
+
+        return $value;
     }
 
     /**
