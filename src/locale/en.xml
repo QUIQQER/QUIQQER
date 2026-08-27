@@ -163,6 +163,12 @@
         <locale name="permission.quiqqer.core.mcp.groups.canUse">
             <en><![CDATA[Can use group administration via MCP]]></en>
         </locale>
+        <locale name="permission.quiqqer.core.mcp.permissions._header">
+            <en><![CDATA[Permissions]]></en>
+        </locale>
+        <locale name="permission.quiqqer.core.mcp.permissions.canUse">
+            <en><![CDATA[Can use permission administration via MCP]]></en>
+        </locale>
         <locale name="permission.quiqqer.core.mcp.clearCache">
             <en><![CDATA[Can clear the QUIQQER cache via MCP]]></en>
         </locale>

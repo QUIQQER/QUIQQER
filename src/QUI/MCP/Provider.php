@@ -21,6 +21,18 @@ use QUI\MCP\Groups\ListUserGroups;
 use QUI\MCP\Groups\RemoveGroupUsers;
 use QUI\MCP\Groups\SearchGroups;
 use QUI\MCP\Groups\UpdateGroup;
+use QUI\MCP\Permissions\GetEffectivePermission;
+use QUI\MCP\Permissions\GetGroupPermissions;
+use QUI\MCP\Permissions\GetMediaPermissions;
+use QUI\MCP\Permissions\GetProjectPermissions;
+use QUI\MCP\Permissions\GetSitePermissions;
+use QUI\MCP\Permissions\GetUserPermissions;
+use QUI\MCP\Permissions\ListPermissions;
+use QUI\MCP\Permissions\UpdateGroupPermissions;
+use QUI\MCP\Permissions\UpdateMediaPermissions;
+use QUI\MCP\Permissions\UpdateProjectPermissions;
+use QUI\MCP\Permissions\UpdateSitePermissions;
+use QUI\MCP\Permissions\UpdateUserPermissions;
 use QUI\MCP\Project\AddLanguage;
 use QUI\MCP\Project\GetCustomCSS;
 use QUI\MCP\Project\GetCustomJavaScript;
@@ -154,7 +166,19 @@ class Provider implements ProviderInterface
             new ListUserGroups(),
             new ListGroupUsers(),
             new AddGroupUsers(),
-            new RemoveGroupUsers()
+            new RemoveGroupUsers(),
+            new ListPermissions(),
+            new GetUserPermissions(),
+            new UpdateUserPermissions(),
+            new GetGroupPermissions(),
+            new UpdateGroupPermissions(),
+            new GetProjectPermissions(),
+            new UpdateProjectPermissions(),
+            new GetSitePermissions(),
+            new UpdateSitePermissions(),
+            new GetMediaPermissions(),
+            new UpdateMediaPermissions(),
+            new GetEffectivePermission()
         ];
     }
 

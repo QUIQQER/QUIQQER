@@ -19,6 +19,7 @@ class McpPermissionDefinitionTest extends TestCase
     {
         yield 'users' => ['quiqqer.core.mcp.users.canUse'];
         yield 'groups' => ['quiqqer.core.mcp.groups.canUse'];
+        yield 'permissions' => ['quiqqer.core.mcp.permissions.canUse'];
     }
 
     #[DataProvider('permissionProvider')]

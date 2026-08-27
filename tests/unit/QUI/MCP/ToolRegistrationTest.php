@@ -19,6 +19,18 @@ use QUI\MCP\Groups\ListUserGroups;
 use QUI\MCP\Groups\RemoveGroupUsers;
 use QUI\MCP\Groups\SearchGroups;
 use QUI\MCP\Groups\UpdateGroup;
+use QUI\MCP\Permissions\GetEffectivePermission;
+use QUI\MCP\Permissions\GetGroupPermissions;
+use QUI\MCP\Permissions\GetMediaPermissions;
+use QUI\MCP\Permissions\GetProjectPermissions;
+use QUI\MCP\Permissions\GetSitePermissions;
+use QUI\MCP\Permissions\GetUserPermissions;
+use QUI\MCP\Permissions\ListPermissions;
+use QUI\MCP\Permissions\UpdateGroupPermissions;
+use QUI\MCP\Permissions\UpdateMediaPermissions;
+use QUI\MCP\Permissions\UpdateProjectPermissions;
+use QUI\MCP\Permissions\UpdateSitePermissions;
+use QUI\MCP\Permissions\UpdateUserPermissions;
 use QUI\MCP\Project\AddLanguage;
 use QUI\MCP\Project\GetSetting;
 use QUI\MCP\Project\ListSettings;
@@ -201,6 +213,66 @@ class ToolRegistrationTest extends TestCase
             new RemoveGroupUsers(),
             'quiqqer_groups_users_remove',
             ['group', 'users']
+        ];
+        yield 'list permissions' => [
+            new ListPermissions(),
+            'quiqqer_permissions_list',
+            []
+        ];
+        yield 'get user permissions' => [
+            new GetUserPermissions(),
+            'quiqqer_permissions_user_get',
+            ['user']
+        ];
+        yield 'update user permissions' => [
+            new UpdateUserPermissions(),
+            'quiqqer_permissions_user_update',
+            ['user', 'permissions']
+        ];
+        yield 'get group permissions' => [
+            new GetGroupPermissions(),
+            'quiqqer_permissions_group_get',
+            ['group']
+        ];
+        yield 'update group permissions' => [
+            new UpdateGroupPermissions(),
+            'quiqqer_permissions_group_update',
+            ['group', 'permissions']
+        ];
+        yield 'get project permissions' => [
+            new GetProjectPermissions(),
+            'quiqqer_permissions_project_get',
+            ['project']
+        ];
+        yield 'update project permissions' => [
+            new UpdateProjectPermissions(),
+            'quiqqer_permissions_project_update',
+            ['project', 'permissions']
+        ];
+        yield 'get site permissions' => [
+            new GetSitePermissions(),
+            'quiqqer_permissions_site_get',
+            ['project', 'id']
+        ];
+        yield 'update site permissions' => [
+            new UpdateSitePermissions(),
+            'quiqqer_permissions_site_update',
+            ['project', 'id', 'permissions']
+        ];
+        yield 'get media permissions' => [
+            new GetMediaPermissions(),
+            'quiqqer_permissions_media_get',
+            ['project', 'id']
+        ];
+        yield 'update media permissions' => [
+            new UpdateMediaPermissions(),
+            'quiqqer_permissions_media_update',
+            ['project', 'id', 'permissions']
+        ];
+        yield 'get effective permission' => [
+            new GetEffectivePermission(),
+            'quiqqer_permissions_effective_get',
+            ['user', 'permission']
         ];
     }
 
