@@ -120,11 +120,23 @@ use QUI\MCP\System\GetSystemInfo;
 use QUI\MCP\System\Update;
 use QUI\MCP\Users\ActivateUser;
 use QUI\MCP\Users\CreateUser;
+use QUI\MCP\Users\CreateUserAddress;
 use QUI\MCP\Users\DeactivateUser;
+use QUI\MCP\Users\DeleteUserAddress;
+use QUI\MCP\Users\DeleteUserWebAuthnCredential;
 use QUI\MCP\Users\DeleteUser;
+use QUI\MCP\Users\DisableUserAuthenticator;
+use QUI\MCP\Users\GetUserAddress;
 use QUI\MCP\Users\GetUser;
+use QUI\MCP\Users\InviteUser;
+use QUI\MCP\Users\ListUserAddresses;
+use QUI\MCP\Users\ListUserAuthenticators;
 use QUI\MCP\Users\ListUsers;
 use QUI\MCP\Users\SearchUsers;
+use QUI\MCP\Users\SendUserPasswordReset;
+use QUI\MCP\Users\SetDefaultUserAddress;
+use QUI\MCP\Users\SetUserPassword;
+use QUI\MCP\Users\UpdateUserAddress;
 use QUI\MCP\Users\UpdateUser;
 use QUI\MCP\VHost\CreateVHost;
 use QUI\MCP\VHost\DeleteVHost;
@@ -245,6 +257,18 @@ class Provider implements ProviderInterface
             new ActivateUser(),
             new DeactivateUser(),
             new DeleteUser(),
+            new ListUserAddresses(),
+            new GetUserAddress(),
+            new CreateUserAddress(),
+            new UpdateUserAddress(),
+            new DeleteUserAddress(),
+            new SetDefaultUserAddress(),
+            new SetUserPassword(),
+            new SendUserPasswordReset(),
+            new InviteUser(),
+            new ListUserAuthenticators(),
+            new DisableUserAuthenticator(),
+            new DeleteUserWebAuthnCredential(),
             new ListGroups(),
             new SearchGroups(),
             new GetGroup(),

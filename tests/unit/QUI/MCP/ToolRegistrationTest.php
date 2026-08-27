@@ -84,11 +84,23 @@ use QUI\MCP\Project\Trash\RestoreSites;
 use QUI\MCP\System\GetSystemInfo;
 use QUI\MCP\Users\ActivateUser;
 use QUI\MCP\Users\CreateUser;
+use QUI\MCP\Users\CreateUserAddress;
 use QUI\MCP\Users\DeactivateUser;
+use QUI\MCP\Users\DeleteUserAddress;
+use QUI\MCP\Users\DeleteUserWebAuthnCredential;
 use QUI\MCP\Users\DeleteUser;
+use QUI\MCP\Users\DisableUserAuthenticator;
+use QUI\MCP\Users\GetUserAddress;
 use QUI\MCP\Users\GetUser;
+use QUI\MCP\Users\InviteUser;
+use QUI\MCP\Users\ListUserAddresses;
+use QUI\MCP\Users\ListUserAuthenticators;
 use QUI\MCP\Users\ListUsers;
 use QUI\MCP\Users\SearchUsers;
+use QUI\MCP\Users\SendUserPasswordReset;
+use QUI\MCP\Users\SetDefaultUserAddress;
+use QUI\MCP\Users\SetUserPassword;
+use QUI\MCP\Users\UpdateUserAddress;
 use QUI\MCP\Users\UpdateUser;
 use QUI\MCP\VHost\CreateVHost;
 use QUI\MCP\VHost\DeleteVHost;
@@ -313,6 +325,66 @@ class ToolRegistrationTest extends TestCase
             new DeleteUser(),
             'quiqqer_users_delete',
             ['user']
+        ];
+        yield 'list user addresses' => [
+            new ListUserAddresses(),
+            'quiqqer_users_addresses_list',
+            ['user']
+        ];
+        yield 'get user address' => [
+            new GetUserAddress(),
+            'quiqqer_users_addresses_get',
+            ['user', 'address']
+        ];
+        yield 'create user address' => [
+            new CreateUserAddress(),
+            'quiqqer_users_addresses_create',
+            ['user', 'attributes']
+        ];
+        yield 'update user address' => [
+            new UpdateUserAddress(),
+            'quiqqer_users_addresses_update',
+            ['user', 'address', 'attributes']
+        ];
+        yield 'delete user address' => [
+            new DeleteUserAddress(),
+            'quiqqer_users_addresses_delete',
+            ['user', 'address']
+        ];
+        yield 'set default user address' => [
+            new SetDefaultUserAddress(),
+            'quiqqer_users_addresses_default_update',
+            ['user', 'address']
+        ];
+        yield 'set user password' => [
+            new SetUserPassword(),
+            'quiqqer_users_password_update',
+            ['user', 'password']
+        ];
+        yield 'send user password reset' => [
+            new SendUserPasswordReset(),
+            'quiqqer_users_password_reset_send',
+            ['user']
+        ];
+        yield 'invite user' => [
+            new InviteUser(),
+            'quiqqer_users_invite',
+            ['email']
+        ];
+        yield 'list user authenticators' => [
+            new ListUserAuthenticators(),
+            'quiqqer_users_authenticators_list',
+            ['user']
+        ];
+        yield 'disable user authenticator' => [
+            new DisableUserAuthenticator(),
+            'quiqqer_users_authenticator_disable',
+            ['user', 'authenticator']
+        ];
+        yield 'delete user WebAuthn credential' => [
+            new DeleteUserWebAuthnCredential(),
+            'quiqqer_users_webauthn_credential_delete',
+            ['user', 'credentialId']
         ];
         yield 'list groups' => [
             new ListGroups(),
