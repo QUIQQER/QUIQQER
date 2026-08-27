@@ -42,14 +42,22 @@ use QUI\MCP\Project\ListSettings;
 use QUI\MCP\Project\Media\ActivateMedia;
 use QUI\MCP\Project\Media\CreateUploadSession;
 use QUI\MCP\Project\Media\CreateFolder;
+use QUI\MCP\Project\Media\CopyMedia;
 use QUI\MCP\Project\Media\DeactivateMedia;
 use QUI\MCP\Project\Media\DeleteMedia;
+use QUI\MCP\Project\Media\DownloadMedia;
+use QUI\MCP\Project\Media\DownloadMediaFolder;
 use QUI\MCP\Project\Media\FinalizeUpload;
 use QUI\MCP\Project\Media\GetMedia;
+use QUI\MCP\Project\Media\GetMediaFolderSize;
 use QUI\MCP\Project\Media\GetUploadSession;
 use QUI\MCP\Project\Media\ListMedia;
+use QUI\MCP\Project\Media\MoveMedia;
+use QUI\MCP\Project\Media\RenameMedia;
+use QUI\MCP\Project\Media\ReplaceMedia;
 use QUI\MCP\Project\Media\SearchMedia;
 use QUI\MCP\Project\Media\UpdateMedia;
+use QUI\MCP\Project\Media\UpdateMediaVisibility;
 use QUI\MCP\Project\Media\UploadMedia;
 use QUI\MCP\Project\SetCustomCSS;
 use QUI\MCP\Project\SetCustomJavaScript;
@@ -69,6 +77,14 @@ use QUI\MCP\Project\Sites\SearchSites;
 use QUI\MCP\Project\Sites\SetSiteType;
 use QUI\MCP\Project\Sites\SortSites;
 use QUI\MCP\Project\Sites\UpdateSite;
+use QUI\MCP\Project\Trash\ClearMediaTrash;
+use QUI\MCP\Project\Trash\ClearSiteTrash;
+use QUI\MCP\Project\Trash\DestroyMedia;
+use QUI\MCP\Project\Trash\DestroySites;
+use QUI\MCP\Project\Trash\ListMediaTrash;
+use QUI\MCP\Project\Trash\ListSiteTrash;
+use QUI\MCP\Project\Trash\RestoreMedia;
+use QUI\MCP\Project\Trash\RestoreSites;
 use QUI\MCP\Project\UpdateSettings;
 use QUI\MCP\System\ClearCache;
 use QUI\MCP\System\GetSystemInfo;
@@ -147,6 +163,22 @@ class Provider implements ProviderInterface
             new ActivateMedia(),
             new DeactivateMedia(),
             new DeleteMedia(),
+            new MoveMedia(),
+            new CopyMedia(),
+            new RenameMedia(),
+            new ReplaceMedia(),
+            new UpdateMediaVisibility(),
+            new DownloadMedia(),
+            new DownloadMediaFolder(),
+            new GetMediaFolderSize(),
+            new ListSiteTrash(),
+            new RestoreSites(),
+            new DestroySites(),
+            new ClearSiteTrash(),
+            new ListMediaTrash(),
+            new RestoreMedia(),
+            new DestroyMedia(),
+            new ClearMediaTrash(),
             new ListUsers(),
             new SearchUsers(),
             new GetUser(),

@@ -32,10 +32,26 @@ use QUI\MCP\Permissions\UpdateProjectPermissions;
 use QUI\MCP\Permissions\UpdateSitePermissions;
 use QUI\MCP\Permissions\UpdateUserPermissions;
 use QUI\MCP\Project\AddLanguage;
+use QUI\MCP\Project\Media\CopyMedia;
+use QUI\MCP\Project\Media\DownloadMedia;
+use QUI\MCP\Project\Media\DownloadMediaFolder;
+use QUI\MCP\Project\Media\GetMediaFolderSize;
+use QUI\MCP\Project\Media\MoveMedia;
+use QUI\MCP\Project\Media\RenameMedia;
+use QUI\MCP\Project\Media\ReplaceMedia;
+use QUI\MCP\Project\Media\UpdateMediaVisibility;
 use QUI\MCP\Project\GetSetting;
 use QUI\MCP\Project\ListSettings;
 use QUI\MCP\Project\SetSetting;
 use QUI\MCP\Project\UpdateSettings;
+use QUI\MCP\Project\Trash\ClearMediaTrash;
+use QUI\MCP\Project\Trash\ClearSiteTrash;
+use QUI\MCP\Project\Trash\DestroyMedia;
+use QUI\MCP\Project\Trash\DestroySites;
+use QUI\MCP\Project\Trash\ListMediaTrash;
+use QUI\MCP\Project\Trash\ListSiteTrash;
+use QUI\MCP\Project\Trash\RestoreMedia;
+use QUI\MCP\Project\Trash\RestoreSites;
 use QUI\MCP\System\GetSystemInfo;
 use QUI\MCP\Users\ActivateUser;
 use QUI\MCP\Users\CreateUser;
@@ -273,6 +289,86 @@ class ToolRegistrationTest extends TestCase
             new GetEffectivePermission(),
             'quiqqer_permissions_effective_get',
             ['user', 'permission']
+        ];
+        yield 'list site trash' => [
+            new ListSiteTrash(),
+            'quiqqer_sites_trash_list',
+            ['project']
+        ];
+        yield 'restore sites' => [
+            new RestoreSites(),
+            'quiqqer_sites_restore',
+            ['project', 'ids', 'parentId']
+        ];
+        yield 'destroy sites' => [
+            new DestroySites(),
+            'quiqqer_sites_destroy',
+            ['project', 'ids', 'confirm']
+        ];
+        yield 'clear site trash' => [
+            new ClearSiteTrash(),
+            'quiqqer_sites_trash_clear',
+            ['project', 'confirm']
+        ];
+        yield 'list media trash' => [
+            new ListMediaTrash(),
+            'quiqqer_media_trash_list',
+            ['project']
+        ];
+        yield 'restore media' => [
+            new RestoreMedia(),
+            'quiqqer_media_restore',
+            ['project', 'ids', 'parentId']
+        ];
+        yield 'destroy media' => [
+            new DestroyMedia(),
+            'quiqqer_media_destroy',
+            ['project', 'ids', 'confirm']
+        ];
+        yield 'clear media trash' => [
+            new ClearMediaTrash(),
+            'quiqqer_media_trash_clear',
+            ['project', 'confirm']
+        ];
+        yield 'move media' => [
+            new MoveMedia(),
+            'quiqqer_media_move',
+            ['project', 'ids', 'targetFolderId']
+        ];
+        yield 'copy media' => [
+            new CopyMedia(),
+            'quiqqer_media_copy',
+            ['project', 'ids', 'targetFolderId']
+        ];
+        yield 'rename media' => [
+            new RenameMedia(),
+            'quiqqer_media_rename',
+            ['project', 'id', 'name']
+        ];
+        yield 'replace media' => [
+            new ReplaceMedia(),
+            'quiqqer_media_replace',
+            ['project', 'id', 'filename', 'contentBase64']
+        ];
+        yield 'update media visibility' => [
+            new UpdateMediaVisibility(),
+            'quiqqer_media_visibility_update',
+            ['project', 'ids', 'visible']
+        ];
+        yield 'download media' => [
+            new DownloadMedia(),
+            'quiqqer_media_download',
+            ['project', 'id']
+        ];
+        yield 'download media folder' => [
+            new DownloadMediaFolder(),
+            'quiqqer_media_folder_download',
+            ['project', 'id']
+        ];
+        yield 'get media folder size' => [
+            new GetMediaFolderSize(),
+            'quiqqer_media_folder_size_get',
+            ['project', 'id']
         ];
     }
 
