@@ -299,11 +299,10 @@ class Locale implements \Stringable
     /**
      * Refresh the locale
      * Clears the locale
-     *
-     * @return void
      */
-    public function refresh()
+    public function refresh(): void
     {
+        LocaleRuntimeCache::clear();
     }
 
     public function formatNumber(string|float|int $number, int $format = NumberFormatter::DECIMAL): string
