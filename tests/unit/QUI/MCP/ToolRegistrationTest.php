@@ -7,6 +7,11 @@ namespace QUI\MCP;
 use Mcp\Server\Builder;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use QUI\MCP\Forwarding\CreateForwarding;
+use QUI\MCP\Forwarding\DeleteForwardings;
+use QUI\MCP\Forwarding\GetForwarding;
+use QUI\MCP\Forwarding\ListForwardings;
+use QUI\MCP\Forwarding\UpdateForwarding;
 use QUI\MCP\Groups\ActivateGroup;
 use QUI\MCP\Groups\AddGroupUsers;
 use QUI\MCP\Groups\CreateGroup;
@@ -93,6 +98,31 @@ class ToolRegistrationTest extends TestCase
      */
     public static function toolProvider(): iterable
     {
+        yield 'list forwardings' => [
+            new ListForwardings(),
+            'quiqqer_forwardings_list',
+            []
+        ];
+        yield 'get forwarding' => [
+            new GetForwarding(),
+            'quiqqer_forwardings_get',
+            ['source']
+        ];
+        yield 'create forwarding' => [
+            new CreateForwarding(),
+            'quiqqer_forwardings_create',
+            ['source', 'target']
+        ];
+        yield 'update forwarding' => [
+            new UpdateForwarding(),
+            'quiqqer_forwardings_update',
+            ['source', 'target']
+        ];
+        yield 'delete forwardings' => [
+            new DeleteForwardings(),
+            'quiqqer_forwardings_delete',
+            ['sources']
+        ];
         yield 'get project' => [
             new GetProject(),
             'quiqqer_projects_get',

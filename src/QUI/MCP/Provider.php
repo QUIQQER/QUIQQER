@@ -9,6 +9,11 @@ namespace QUI\MCP;
 use Mcp\Server\Builder;
 use QUI\AI\MCP\ProviderInterface;
 use QUI\AI\MCP\Server;
+use QUI\MCP\Forwarding\CreateForwarding;
+use QUI\MCP\Forwarding\DeleteForwardings;
+use QUI\MCP\Forwarding\GetForwarding;
+use QUI\MCP\Forwarding\ListForwardings;
+use QUI\MCP\Forwarding\UpdateForwarding;
 use QUI\MCP\Groups\ActivateGroup;
 use QUI\MCP\Groups\AddGroupUsers;
 use QUI\MCP\Groups\CreateGroup;
@@ -187,6 +192,11 @@ class Provider implements ProviderInterface
             new CreateVHost(),
             new UpdateVHost(),
             new DeleteVHost(),
+            new ListForwardings(),
+            new GetForwarding(),
+            new CreateForwarding(),
+            new UpdateForwarding(),
+            new DeleteForwardings(),
             new GetMedia(),
             new ListMedia(),
             new SearchMedia(),

@@ -182,6 +182,9 @@
         <locale name="permission.quiqqer.core.mcp.manageVhosts">
             <de><![CDATA[Darf VHosts per MCP erstellen, bearbeiten und löschen]]></de>
         </locale>
+        <locale name="permission.quiqqer.core.mcp.manageForwardings">
+            <de><![CDATA[Darf globale Weiterleitungen per MCP verwalten]]></de>
+        </locale>
         <locale name="permission.quiqqer.projects._header">
             <de><![CDATA[Projekte]]></de>
         </locale>

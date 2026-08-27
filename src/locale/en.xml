@@ -181,6 +181,9 @@
         <locale name="permission.quiqqer.core.mcp.manageVhosts">
             <en><![CDATA[Can create, update and delete VHosts via MCP]]></en>
         </locale>
+        <locale name="permission.quiqqer.core.mcp.manageForwardings">
+            <en><![CDATA[Can manage global forwardings via MCP]]></en>
+        </locale>
         <locale name="permission.quiqqer.projects._header">
             <en><![CDATA[Projects]]></en>
         </locale>
