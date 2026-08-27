@@ -45,12 +45,18 @@ use QUI\MCP\Project\ListAvailableLanguages;
 use QUI\MCP\Project\ListDemoDataSets;
 use QUI\MCP\Project\ListProjectTemplates;
 use QUI\MCP\Project\Media\CopyMedia;
+use QUI\MCP\Project\Media\CreateImageVariant;
 use QUI\MCP\Project\Media\DownloadMedia;
 use QUI\MCP\Project\Media\DownloadMediaFolder;
+use QUI\MCP\Project\Media\GetMediaEffects;
+use QUI\MCP\Project\Media\GetMediaFolderPreview;
 use QUI\MCP\Project\Media\GetMediaFolderSize;
 use QUI\MCP\Project\Media\MoveMedia;
 use QUI\MCP\Project\Media\RenameMedia;
 use QUI\MCP\Project\Media\ReplaceMedia;
+use QUI\MCP\Project\Media\UpdateMediaEffects;
+use QUI\MCP\Project\Media\UpdateMediaFolderPreview;
+use QUI\MCP\Project\Media\UpdateMediaOrder;
 use QUI\MCP\Project\Media\UpdateMediaVisibility;
 use QUI\MCP\Project\GetSetting;
 use QUI\MCP\Project\ListSettings;
@@ -492,6 +498,36 @@ class ToolRegistrationTest extends TestCase
             new UpdateMediaVisibility(),
             'quiqqer_media_visibility_update',
             ['project', 'ids', 'visible']
+        ];
+        yield 'get media effects' => [
+            new GetMediaEffects(),
+            'quiqqer_media_effects_get',
+            ['project', 'id']
+        ];
+        yield 'update media effects' => [
+            new UpdateMediaEffects(),
+            'quiqqer_media_effects_update',
+            ['project', 'id', 'effects']
+        ];
+        yield 'create image variant' => [
+            new CreateImageVariant(),
+            'quiqqer_media_image_variant_create',
+            ['project', 'id']
+        ];
+        yield 'update media order' => [
+            new UpdateMediaOrder(),
+            'quiqqer_media_order_update',
+            ['project', 'folderId', 'orderedIds']
+        ];
+        yield 'get media folder preview' => [
+            new GetMediaFolderPreview(),
+            'quiqqer_media_folder_preview_get',
+            ['project', 'folderId']
+        ];
+        yield 'update media folder preview' => [
+            new UpdateMediaFolderPreview(),
+            'quiqqer_media_folder_preview_update',
+            ['project', 'folderId', 'imageId']
         ];
         yield 'download media' => [
             new DownloadMedia(),

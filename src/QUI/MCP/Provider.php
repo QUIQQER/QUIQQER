@@ -52,6 +52,7 @@ use QUI\MCP\Project\ListProjects;
 use QUI\MCP\Project\ListProjectTemplates;
 use QUI\MCP\Project\ListSettings;
 use QUI\MCP\Project\Media\ActivateMedia;
+use QUI\MCP\Project\Media\CreateImageVariant;
 use QUI\MCP\Project\Media\CreateUploadSession;
 use QUI\MCP\Project\Media\CreateFolder;
 use QUI\MCP\Project\Media\CopyMedia;
@@ -61,6 +62,8 @@ use QUI\MCP\Project\Media\DownloadMedia;
 use QUI\MCP\Project\Media\DownloadMediaFolder;
 use QUI\MCP\Project\Media\FinalizeUpload;
 use QUI\MCP\Project\Media\GetMedia;
+use QUI\MCP\Project\Media\GetMediaEffects;
+use QUI\MCP\Project\Media\GetMediaFolderPreview;
 use QUI\MCP\Project\Media\GetMediaFolderSize;
 use QUI\MCP\Project\Media\GetUploadSession;
 use QUI\MCP\Project\Media\ListMedia;
@@ -69,6 +72,9 @@ use QUI\MCP\Project\Media\RenameMedia;
 use QUI\MCP\Project\Media\ReplaceMedia;
 use QUI\MCP\Project\Media\SearchMedia;
 use QUI\MCP\Project\Media\UpdateMedia;
+use QUI\MCP\Project\Media\UpdateMediaEffects;
+use QUI\MCP\Project\Media\UpdateMediaFolderPreview;
+use QUI\MCP\Project\Media\UpdateMediaOrder;
 use QUI\MCP\Project\Media\UpdateMediaVisibility;
 use QUI\MCP\Project\Media\UploadMedia;
 use QUI\MCP\Project\SetCustomCSS;
@@ -214,6 +220,12 @@ class Provider implements ProviderInterface
             new RenameMedia(),
             new ReplaceMedia(),
             new UpdateMediaVisibility(),
+            new GetMediaEffects(),
+            new UpdateMediaEffects(),
+            new CreateImageVariant(),
+            new UpdateMediaOrder(),
+            new GetMediaFolderPreview(),
+            new UpdateMediaFolderPreview(),
             new DownloadMedia(),
             new DownloadMediaFolder(),
             new GetMediaFolderSize(),
