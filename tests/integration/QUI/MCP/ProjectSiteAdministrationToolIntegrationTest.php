@@ -145,6 +145,13 @@ class ProjectSiteAdministrationToolIntegrationTest extends ProjectIntegrationTes
                 ]);
                 self::assertTrue($unlocked['released']);
                 self::assertFalse($unlocked['lock']['locked']);
+                $unlockedAgain = self::invokeTool(new UnlockSite(), [
+                    $projectName,
+                    $siteId,
+                    $defaultLanguage
+                ]);
+                self::assertTrue($unlockedAgain['released']);
+                self::assertFalse($unlockedAgain['lock']['locked']);
 
                 $cacheCreated = self::invokeTool(new CreateSiteCache(), [
                     $projectName,

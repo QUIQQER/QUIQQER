@@ -31,8 +31,6 @@ class UnlockSite extends AbstractSiteAdministrationTool
                     );
                     $owner = self::getLockOwner($Site);
                     $requestUserId = (string)Server::getRequestUser()->getUUID();
-                    $released = false;
-
                     if ($owner !== false) {
                         if ((string)$owner !== $requestUserId) {
                             if (!$force) {
@@ -43,16 +41,17 @@ class UnlockSite extends AbstractSiteAdministrationTool
 
                             Permission::checkAdminUser(Server::getRequestUser());
                         }
-
-                        Locker::unlock(
-                            QUI::getPackage('quiqqer/core'),
-                            self::getLockKey($Site)
-                        );
-                        $released = true;
                     }
 
+                    // Unlocking is intentionally idempotent. Some cache backends may
+                    // expire a lock between the ownership check and this operation.
+                    Locker::unlock(
+                        QUI::getPackage('quiqqer/core'),
+                        self::getLockKey($Site)
+                    );
+
                     return [
-                        'released' => $released,
+                        'released' => true,
                         'forced' => $force,
                         'lock' => self::getLockResponse($Site, false)
                     ];
@@ -61,7 +60,7 @@ class UnlockSite extends AbstractSiteAdministrationTool
                 }
             },
             name: 'quiqqer_sites_unlock',
-            description: 'Releases an owned site lock; administrators may release another user lock with force=true.',
+            description: 'Ensures that a site is unlocked; administrators may release another user lock with force=true.',
             inputSchema: [
                 'type' => 'object',
                 'additionalProperties' => false,
