@@ -32,6 +32,13 @@ use QUI\MCP\Permissions\UpdateProjectPermissions;
 use QUI\MCP\Permissions\UpdateSitePermissions;
 use QUI\MCP\Permissions\UpdateUserPermissions;
 use QUI\MCP\Project\AddLanguage;
+use QUI\MCP\Project\CreateDefaultStructure;
+use QUI\MCP\Project\CreateProject;
+use QUI\MCP\Project\DeleteProject;
+use QUI\MCP\Project\GetProject;
+use QUI\MCP\Project\ListAvailableLanguages;
+use QUI\MCP\Project\ListDemoDataSets;
+use QUI\MCP\Project\ListProjectTemplates;
 use QUI\MCP\Project\Media\CopyMedia;
 use QUI\MCP\Project\Media\DownloadMedia;
 use QUI\MCP\Project\Media\DownloadMediaFolder;
@@ -42,7 +49,18 @@ use QUI\MCP\Project\Media\ReplaceMedia;
 use QUI\MCP\Project\Media\UpdateMediaVisibility;
 use QUI\MCP\Project\GetSetting;
 use QUI\MCP\Project\ListSettings;
+use QUI\MCP\Project\RenameProject;
 use QUI\MCP\Project\SetSetting;
+use QUI\MCP\Project\Sites\ClearSiteCache;
+use QUI\MCP\Project\Sites\CreateSiteCache;
+use QUI\MCP\Project\Sites\GetSiteLock;
+use QUI\MCP\Project\Sites\LinkSite;
+use QUI\MCP\Project\Sites\ListSiteLayouts;
+use QUI\MCP\Project\Sites\ListSiteTypes;
+use QUI\MCP\Project\Sites\LockSite;
+use QUI\MCP\Project\Sites\RemoveLanguageLink;
+use QUI\MCP\Project\Sites\UnlinkSite;
+use QUI\MCP\Project\Sites\UnlockSite;
 use QUI\MCP\Project\UpdateSettings;
 use QUI\MCP\Project\Trash\ClearMediaTrash;
 use QUI\MCP\Project\Trash\ClearSiteTrash;
@@ -75,10 +93,100 @@ class ToolRegistrationTest extends TestCase
      */
     public static function toolProvider(): iterable
     {
+        yield 'get project' => [
+            new GetProject(),
+            'quiqqer_projects_get',
+            ['project']
+        ];
+        yield 'create project' => [
+            new CreateProject(),
+            'quiqqer_projects_create',
+            ['name', 'defaultLanguage']
+        ];
+        yield 'rename project' => [
+            new RenameProject(),
+            'quiqqer_projects_rename',
+            ['project', 'newName']
+        ];
+        yield 'delete project' => [
+            new DeleteProject(),
+            'quiqqer_projects_delete',
+            ['project', 'confirm']
+        ];
+        yield 'create default project structure' => [
+            new CreateDefaultStructure(),
+            'quiqqer_projects_create_default_structure',
+            ['project']
+        ];
+        yield 'list available project languages' => [
+            new ListAvailableLanguages(),
+            'quiqqer_projects_languages_list',
+            []
+        ];
+        yield 'list project templates' => [
+            new ListProjectTemplates(),
+            'quiqqer_projects_templates_list',
+            []
+        ];
+        yield 'list project demo data sets' => [
+            new ListDemoDataSets(),
+            'quiqqer_projects_demo_data_list',
+            ['template']
+        ];
         yield 'add project language' => [
             new AddLanguage(),
             'quiqqer_projects_add_language',
             ['project', 'lang']
+        ];
+        yield 'remove site language link' => [
+            new RemoveLanguageLink(),
+            'quiqqer_sites_remove_language_link',
+            ['project', 'id', 'targetLang']
+        ];
+        yield 'link site' => [
+            new LinkSite(),
+            'quiqqer_sites_link',
+            ['project', 'id', 'parentId']
+        ];
+        yield 'unlink site' => [
+            new UnlinkSite(),
+            'quiqqer_sites_unlink',
+            ['project', 'id', 'parentId']
+        ];
+        yield 'get site lock' => [
+            new GetSiteLock(),
+            'quiqqer_sites_lock_get',
+            ['project', 'id']
+        ];
+        yield 'lock site' => [
+            new LockSite(),
+            'quiqqer_sites_lock',
+            ['project', 'id']
+        ];
+        yield 'unlock site' => [
+            new UnlockSite(),
+            'quiqqer_sites_unlock',
+            ['project', 'id']
+        ];
+        yield 'list site types' => [
+            new ListSiteTypes(),
+            'quiqqer_sites_types_list',
+            []
+        ];
+        yield 'list site layouts' => [
+            new ListSiteLayouts(),
+            'quiqqer_sites_layouts_list',
+            ['project']
+        ];
+        yield 'clear site cache' => [
+            new ClearSiteCache(),
+            'quiqqer_sites_cache_clear',
+            ['project', 'id']
+        ];
+        yield 'create site cache' => [
+            new CreateSiteCache(),
+            'quiqqer_sites_cache_create',
+            ['project', 'id']
         ];
         yield 'list project settings' => [
             new ListSettings(),

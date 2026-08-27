@@ -60,7 +60,9 @@ abstract class AbstractTool implements ToolInterface
             'title' => $Project->getTitle(),
             'lang' => $Project->getLang(),
             'defaultLang' => $Project->getDefaultLang(),
-            'languages' => $Project->getLanguages()
+            'languages' => $Project->getLanguages(),
+            'template' => $Project->getTemplate() ?: null,
+            'host' => $Project->getHost()
         ];
     }
 

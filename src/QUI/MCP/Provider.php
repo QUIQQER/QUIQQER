@@ -33,11 +33,18 @@ use QUI\MCP\Permissions\UpdateMediaPermissions;
 use QUI\MCP\Permissions\UpdateProjectPermissions;
 use QUI\MCP\Permissions\UpdateSitePermissions;
 use QUI\MCP\Permissions\UpdateUserPermissions;
+use QUI\MCP\Project\CreateDefaultStructure;
+use QUI\MCP\Project\CreateProject;
+use QUI\MCP\Project\DeleteProject;
 use QUI\MCP\Project\AddLanguage;
 use QUI\MCP\Project\GetCustomCSS;
 use QUI\MCP\Project\GetCustomJavaScript;
+use QUI\MCP\Project\GetProject;
 use QUI\MCP\Project\GetSetting;
+use QUI\MCP\Project\ListAvailableLanguages;
+use QUI\MCP\Project\ListDemoDataSets;
 use QUI\MCP\Project\ListProjects;
+use QUI\MCP\Project\ListProjectTemplates;
 use QUI\MCP\Project\ListSettings;
 use QUI\MCP\Project\Media\ActivateMedia;
 use QUI\MCP\Project\Media\CreateUploadSession;
@@ -64,18 +71,28 @@ use QUI\MCP\Project\SetCustomJavaScript;
 use QUI\MCP\Project\SetSetting;
 use QUI\MCP\Project\Sites\ActivateSite;
 use QUI\MCP\Project\Sites\AddLanguageLink;
+use QUI\MCP\Project\Sites\ClearSiteCache;
 use QUI\MCP\Project\Sites\CopySite;
 use QUI\MCP\Project\Sites\CopySiteToLanguage;
 use QUI\MCP\Project\Sites\CreateChild;
+use QUI\MCP\Project\Sites\CreateSiteCache;
 use QUI\MCP\Project\Sites\DeactivateSite;
 use QUI\MCP\Project\Sites\DeleteSite;
 use QUI\MCP\Project\Sites\GetSite;
 use QUI\MCP\Project\Sites\GetSiteByUrl;
+use QUI\MCP\Project\Sites\GetSiteLock;
+use QUI\MCP\Project\Sites\LinkSite;
+use QUI\MCP\Project\Sites\ListSiteLayouts;
 use QUI\MCP\Project\Sites\ListSites;
+use QUI\MCP\Project\Sites\ListSiteTypes;
+use QUI\MCP\Project\Sites\LockSite;
 use QUI\MCP\Project\Sites\MoveSite;
+use QUI\MCP\Project\Sites\RemoveLanguageLink;
 use QUI\MCP\Project\Sites\SearchSites;
 use QUI\MCP\Project\Sites\SetSiteType;
 use QUI\MCP\Project\Sites\SortSites;
+use QUI\MCP\Project\Sites\UnlinkSite;
+use QUI\MCP\Project\Sites\UnlockSite;
 use QUI\MCP\Project\Sites\UpdateSite;
 use QUI\MCP\Project\Trash\ClearMediaTrash;
 use QUI\MCP\Project\Trash\ClearSiteTrash;
@@ -85,6 +102,7 @@ use QUI\MCP\Project\Trash\ListMediaTrash;
 use QUI\MCP\Project\Trash\ListSiteTrash;
 use QUI\MCP\Project\Trash\RestoreMedia;
 use QUI\MCP\Project\Trash\RestoreSites;
+use QUI\MCP\Project\RenameProject;
 use QUI\MCP\Project\UpdateSettings;
 use QUI\MCP\System\ClearCache;
 use QUI\MCP\System\GetSystemInfo;
@@ -119,6 +137,14 @@ class Provider implements ProviderInterface
     {
         $this->tools = [
             new ListProjects(),
+            new GetProject(),
+            new CreateProject(),
+            new RenameProject(),
+            new DeleteProject(),
+            new CreateDefaultStructure(),
+            new ListAvailableLanguages(),
+            new ListProjectTemplates(),
+            new ListDemoDataSets(),
             new AddLanguage(),
             new ListSettings(),
             new GetSetting(),
@@ -133,6 +159,9 @@ class Provider implements ProviderInterface
             new GetSiteByUrl(),
             new SearchSites(),
             new AddLanguageLink(),
+            new RemoveLanguageLink(),
+            new LinkSite(),
+            new UnlinkSite(),
             new CopySite(),
             new CopySiteToLanguage(),
             new CreateChild(),
@@ -143,6 +172,13 @@ class Provider implements ProviderInterface
             new SortSites(),
             new SetSiteType(),
             new DeleteSite(),
+            new GetSiteLock(),
+            new LockSite(),
+            new UnlockSite(),
+            new ListSiteTypes(),
+            new ListSiteLayouts(),
+            new ClearSiteCache(),
+            new CreateSiteCache(),
             new GetSystemInfo(),
             new ClearCache(),
             new Update(),
