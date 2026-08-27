@@ -7,12 +7,32 @@ namespace QUI\MCP;
 use Mcp\Server\Builder;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use QUI\MCP\Groups\ActivateGroup;
+use QUI\MCP\Groups\AddGroupUsers;
+use QUI\MCP\Groups\CreateGroup;
+use QUI\MCP\Groups\DeactivateGroup;
+use QUI\MCP\Groups\DeleteGroup;
+use QUI\MCP\Groups\GetGroup;
+use QUI\MCP\Groups\ListGroups;
+use QUI\MCP\Groups\ListGroupUsers;
+use QUI\MCP\Groups\ListUserGroups;
+use QUI\MCP\Groups\RemoveGroupUsers;
+use QUI\MCP\Groups\SearchGroups;
+use QUI\MCP\Groups\UpdateGroup;
 use QUI\MCP\Project\AddLanguage;
 use QUI\MCP\Project\GetSetting;
 use QUI\MCP\Project\ListSettings;
 use QUI\MCP\Project\SetSetting;
 use QUI\MCP\Project\UpdateSettings;
 use QUI\MCP\System\GetSystemInfo;
+use QUI\MCP\Users\ActivateUser;
+use QUI\MCP\Users\CreateUser;
+use QUI\MCP\Users\DeactivateUser;
+use QUI\MCP\Users\DeleteUser;
+use QUI\MCP\Users\GetUser;
+use QUI\MCP\Users\ListUsers;
+use QUI\MCP\Users\SearchUsers;
+use QUI\MCP\Users\UpdateUser;
 use QUI\MCP\VHost\CreateVHost;
 use QUI\MCP\VHost\DeleteVHost;
 use QUI\MCP\VHost\GetVHost;
@@ -81,6 +101,106 @@ class ToolRegistrationTest extends TestCase
             new DeleteVHost(),
             'quiqqer_vhosts_delete',
             ['host']
+        ];
+        yield 'list users' => [
+            new ListUsers(),
+            'quiqqer_users_list',
+            []
+        ];
+        yield 'search users' => [
+            new SearchUsers(),
+            'quiqqer_users_search',
+            ['query']
+        ];
+        yield 'get user' => [
+            new GetUser(),
+            'quiqqer_users_get',
+            ['user']
+        ];
+        yield 'create user' => [
+            new CreateUser(),
+            'quiqqer_users_create',
+            ['username']
+        ];
+        yield 'update user' => [
+            new UpdateUser(),
+            'quiqqer_users_update',
+            ['user', 'attributes']
+        ];
+        yield 'activate user' => [
+            new ActivateUser(),
+            'quiqqer_users_activate',
+            ['user']
+        ];
+        yield 'deactivate user' => [
+            new DeactivateUser(),
+            'quiqqer_users_deactivate',
+            ['user']
+        ];
+        yield 'delete user' => [
+            new DeleteUser(),
+            'quiqqer_users_delete',
+            ['user']
+        ];
+        yield 'list groups' => [
+            new ListGroups(),
+            'quiqqer_groups_list',
+            []
+        ];
+        yield 'search groups' => [
+            new SearchGroups(),
+            'quiqqer_groups_search',
+            ['query']
+        ];
+        yield 'get group' => [
+            new GetGroup(),
+            'quiqqer_groups_get',
+            ['group']
+        ];
+        yield 'create group' => [
+            new CreateGroup(),
+            'quiqqer_groups_create',
+            ['name', 'parent']
+        ];
+        yield 'update group' => [
+            new UpdateGroup(),
+            'quiqqer_groups_update',
+            ['group', 'attributes']
+        ];
+        yield 'activate group' => [
+            new ActivateGroup(),
+            'quiqqer_groups_activate',
+            ['group']
+        ];
+        yield 'deactivate group' => [
+            new DeactivateGroup(),
+            'quiqqer_groups_deactivate',
+            ['group']
+        ];
+        yield 'delete group' => [
+            new DeleteGroup(),
+            'quiqqer_groups_delete',
+            ['group']
+        ];
+        yield 'list user groups' => [
+            new ListUserGroups(),
+            'quiqqer_users_groups_list',
+            ['user']
+        ];
+        yield 'list group users' => [
+            new ListGroupUsers(),
+            'quiqqer_groups_users_list',
+            ['group']
+        ];
+        yield 'add group users' => [
+            new AddGroupUsers(),
+            'quiqqer_groups_users_add',
+            ['group', 'users']
+        ];
+        yield 'remove group users' => [
+            new RemoveGroupUsers(),
+            'quiqqer_groups_users_remove',
+            ['group', 'users']
         ];
     }
 

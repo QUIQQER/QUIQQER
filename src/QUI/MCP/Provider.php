@@ -9,6 +9,18 @@ namespace QUI\MCP;
 use Mcp\Server\Builder;
 use QUI\AI\MCP\ProviderInterface;
 use QUI\AI\MCP\Server;
+use QUI\MCP\Groups\ActivateGroup;
+use QUI\MCP\Groups\AddGroupUsers;
+use QUI\MCP\Groups\CreateGroup;
+use QUI\MCP\Groups\DeactivateGroup;
+use QUI\MCP\Groups\DeleteGroup;
+use QUI\MCP\Groups\GetGroup;
+use QUI\MCP\Groups\ListGroups;
+use QUI\MCP\Groups\ListGroupUsers;
+use QUI\MCP\Groups\ListUserGroups;
+use QUI\MCP\Groups\RemoveGroupUsers;
+use QUI\MCP\Groups\SearchGroups;
+use QUI\MCP\Groups\UpdateGroup;
 use QUI\MCP\Project\AddLanguage;
 use QUI\MCP\Project\GetCustomCSS;
 use QUI\MCP\Project\GetCustomJavaScript;
@@ -49,6 +61,14 @@ use QUI\MCP\Project\UpdateSettings;
 use QUI\MCP\System\ClearCache;
 use QUI\MCP\System\GetSystemInfo;
 use QUI\MCP\System\Update;
+use QUI\MCP\Users\ActivateUser;
+use QUI\MCP\Users\CreateUser;
+use QUI\MCP\Users\DeactivateUser;
+use QUI\MCP\Users\DeleteUser;
+use QUI\MCP\Users\GetUser;
+use QUI\MCP\Users\ListUsers;
+use QUI\MCP\Users\SearchUsers;
+use QUI\MCP\Users\UpdateUser;
 use QUI\MCP\VHost\CreateVHost;
 use QUI\MCP\VHost\DeleteVHost;
 use QUI\MCP\VHost\GetVHost;
@@ -114,7 +134,27 @@ class Provider implements ProviderInterface
             new UpdateMedia(),
             new ActivateMedia(),
             new DeactivateMedia(),
-            new DeleteMedia()
+            new DeleteMedia(),
+            new ListUsers(),
+            new SearchUsers(),
+            new GetUser(),
+            new CreateUser(),
+            new UpdateUser(),
+            new ActivateUser(),
+            new DeactivateUser(),
+            new DeleteUser(),
+            new ListGroups(),
+            new SearchGroups(),
+            new GetGroup(),
+            new CreateGroup(),
+            new UpdateGroup(),
+            new ActivateGroup(),
+            new DeactivateGroup(),
+            new DeleteGroup(),
+            new ListUserGroups(),
+            new ListGroupUsers(),
+            new AddGroupUsers(),
+            new RemoveGroupUsers()
         ];
     }
 

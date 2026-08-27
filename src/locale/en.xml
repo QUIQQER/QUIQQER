@@ -151,6 +151,18 @@
         <locale name="permission.quiqqer.core.mcp.canUse">
             <en><![CDATA[Can use the core MCP tools]]></en>
         </locale>
+        <locale name="permission.quiqqer.core.mcp.users._header">
+            <en><![CDATA[Users]]></en>
+        </locale>
+        <locale name="permission.quiqqer.core.mcp.users.canUse">
+            <en><![CDATA[Can use user administration via MCP]]></en>
+        </locale>
+        <locale name="permission.quiqqer.core.mcp.groups._header">
+            <en><![CDATA[Groups]]></en>
+        </locale>
+        <locale name="permission.quiqqer.core.mcp.groups.canUse">
+            <en><![CDATA[Can use group administration via MCP]]></en>
+        </locale>
         <locale name="permission.quiqqer.core.mcp.clearCache">
             <en><![CDATA[Can clear the QUIQQER cache via MCP]]></en>
         </locale>
