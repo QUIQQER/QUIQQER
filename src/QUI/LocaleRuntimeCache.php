@@ -60,4 +60,9 @@ class LocaleRuntimeCache
     {
         return isset(self::$languages[$lang][$group]);
     }
+
+    public static function clear(): void
+    {
+        self::$languages = [];
+    }
 }
