@@ -41,7 +41,7 @@ class LockSite extends AbstractSiteAdministrationTool
 
                     return [
                         'acquired' => $acquired,
-                        'lock' => self::getLockResponse($Site)
+                        'lock' => self::getLockResponse($Site, $acquired ? $requestUserId : $owner)
                     ];
                 } catch (Throwable $Exception) {
                     return ToolHelper::parseExceptionToResult($Exception);

@@ -54,7 +54,7 @@ class UnlockSite extends AbstractSiteAdministrationTool
                     return [
                         'released' => $released,
                         'forced' => $force,
-                        'lock' => self::getLockResponse($Site)
+                        'lock' => self::getLockResponse($Site, false)
                     ];
                 } catch (Throwable $Exception) {
                     return ToolHelper::parseExceptionToResult($Exception);

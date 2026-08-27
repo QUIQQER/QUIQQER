@@ -43,9 +43,12 @@ abstract class AbstractSiteAdministrationTool extends AbstractTool
     /**
      * @return array<string, mixed>
      */
-    protected static function getLockResponse(Edit $Site): array
+    protected static function getLockResponse(Edit $Site, mixed $owner = null): array
     {
-        $owner = self::getLockOwner($Site);
+        if ($owner === null) {
+            $owner = self::getLockOwner($Site);
+        }
+
         $requestUserId = (string)Server::getRequestUser()->getUUID();
         $ownerId = $owner === false ? null : (string)$owner;
         $ownerData = null;
