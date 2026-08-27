@@ -106,6 +106,20 @@ class LocaleTest extends TestCase
         $this->assertFalse($sut->existsLang('abcdefg'));
     }
 
+    public function testRefreshClearsRuntimeCache(): void
+    {
+        LocaleRuntimeCache::set('de', 'quiqqer/core', [
+            'projects.defaultstructure.search.title' => 'Stale title'
+        ]);
+
+        $this->assertTrue(LocaleRuntimeCache::isCached('de', 'quiqqer/core'));
+
+        $locale = new Locale();
+        $locale->refresh();
+
+        $this->assertFalse(LocaleRuntimeCache::isCached('de', 'quiqqer/core'));
+    }
+
     public static function isLocaleStringDataProvider(): array
     {
         return [
