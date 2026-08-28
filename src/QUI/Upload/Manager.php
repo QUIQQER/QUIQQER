@@ -15,8 +15,10 @@ use QUI\Utils\System\File;
 use QUI\Utils\System\File as QUIFile;
 
 use function array_merge;
+use function array_key_exists;
 use function class_exists;
 use function count;
+use function dirname;
 use function explode;
 use function fclose;
 use function file_exists;
@@ -24,21 +26,34 @@ use function file_get_contents;
 use function file_put_contents;
 use function flush;
 use function fnmatch;
+use function fstat;
 use function fopen;
 use function fwrite;
 use function implode;
 use function is_array;
 use function is_callable;
 use function is_dir;
+use function is_file;
+use function is_link;
 use function is_object;
+use function is_scalar;
+use function is_string;
 use function json_decode;
 use function json_encode;
+use function lstat;
 use function move_uploaded_file;
 use function ob_flush;
+use function preg_match;
 use function realpath;
+use function rtrim;
 use function str_replace;
+use function str_contains;
+use function str_starts_with;
+use function strlen;
 use function substr;
 use function trim;
+
+use const DIRECTORY_SEPARATOR;
 
 /**
  * Upload Manager
@@ -49,6 +64,8 @@ use function trim;
  */
 class Manager
 {
+    private const MAX_FILESYSTEM_NAME_BYTES = 255;
+
     /**
      * Initialized the upload
      *
@@ -139,8 +156,9 @@ class Manager
     public function upload(): bool | string | array
     {
         QUIFile::mkdir($this->getUserUploadDir());
+        $canonicalUploadDir = $this->getCanonicalUserUploadDir();
 
-        $filename = false;
+        $filename = null;
         $fileSize = 0;
         $fileType = false;
 
@@ -151,8 +169,8 @@ class Manager
             $fileType = $_REQUEST['filetype'];
         }
 
-        if (isset($_REQUEST['filename'])) {
-            $filename = $_REQUEST['filename'];
+        if (array_key_exists('filename', $_REQUEST)) {
+            $filename = $this->validateUploadFilename($_REQUEST['filename']);
         }
 
         if (isset($_REQUEST['filesize'])) {
@@ -185,8 +203,7 @@ class Manager
         $configMaxFileCount = Permission::getPermission('quiqqer.upload.maxUploadCount');
 
         if ($configMaxFileCount) {
-            $userDir = $this->getUserUploadDir();
-            $files = File::readDir($userDir);
+            $files = File::readDir($canonicalUploadDir);
             $count = count($files) / 2;
 
             if ($count + 1 >= $configMaxFileCount) {
@@ -220,26 +237,17 @@ class Manager
         }
 
 
-        if ($this->checkFnMatch($configAllowedTypes, $fileType) === false) {
-            throw new Exception([
-                'quiqqer/core',
-                'exception.upload.not.allowed.mimetype'
-            ]);
-        }
-
-        if ($this->checkFnMatch($configAllowedEndings, $filename) === false) {
-            throw new Exception([
-                'quiqqer/core',
-                'exception.upload.not.allowed.ending'
-            ]);
-        }
-
         /**
          * no html5 upload
          */
-        if (!$filename) {
+        if ($filename === null) {
             try {
-                $this->formUpload($onfinish, $params);
+                $this->formUpload(
+                    $onfinish,
+                    $params,
+                    $configAllowedTypes,
+                    $configAllowedEndings
+                );
             } catch (Exception $Exception) {
                 $this->flushMessage($Exception->toArray());
 
@@ -257,9 +265,11 @@ class Manager
             return '';
         }
 
-        // cleanup file name
-        $filename = trim($filename);
-        $filename = trim($filename, '.');
+        if (!is_scalar($fileType)) {
+            throw new Exception('Invalid upload MIME type.', 400);
+        }
+
+        $this->checkAllowedUpload($filename, (string)$fileType, $configAllowedTypes, $configAllowedEndings);
 
         /**
          * html5 upload
@@ -276,19 +286,16 @@ class Manager
         $this->add($filename, $params);
 
 
-        $uploaddir = $this->getUserUploadDir();
-        $tmp_name = $uploaddir . $filename;
+        $uploadPaths = $this->getUploadPaths($filename);
+        $uploaddir = $uploadPaths['directory'];
+        $tmp_name = $uploadPaths['file'];
 
         /* PUT REQUEST */
         $putdata = file_get_contents('php://input');
-        $Handle = fopen($tmp_name, 'a');
-
-        if ($Handle) {
-            fwrite($Handle, (string)$putdata);
-            fclose($Handle);
-        }
+        $this->appendUploadData($filename, (string)$putdata);
 
         // upload finish?
+        $tmp_name = $this->getUploadPaths($filename)['file'];
         $fileinfo = QUIFile::getInfo($tmp_name, [
             'filesize' => true
         ]);
@@ -429,6 +436,220 @@ class Manager
         return VAR_DIR . 'uploads/';
     }
 
+    /**
+     * Validate and normalize one client-provided upload filename.
+     *
+     * @throws Exception
+     */
+    public function validateUploadFilename(mixed $filename): string
+    {
+        if (!is_string($filename) || $filename === '') {
+            throw new Exception('Invalid upload filename.', 400);
+        }
+
+        if (
+            preg_match('/[\x00-\x1F\x7F]/', $filename)
+            || str_contains($filename, '/')
+            || str_contains($filename, '\\')
+            || str_contains($filename, ':')
+        ) {
+            throw new Exception('Invalid upload filename.', 400);
+        }
+
+        $filename = trim($filename);
+        $filename = trim($filename, '.');
+
+        if (
+            $filename === ''
+            || $filename === '.'
+            || $filename === '..'
+            || strlen($filename . '.json') > self::MAX_FILESYSTEM_NAME_BYTES
+        ) {
+            throw new Exception('Invalid upload filename.', 400);
+        }
+
+        return $filename;
+    }
+
+    /**
+     * @param QUI\Interfaces\Users\User|null $User
+     * @return array{filename: string, directory: string, file: string, metadata: string}
+     *
+     * @throws Exception
+     */
+    protected function getUploadPaths(
+        mixed $filename,
+        null | QUI\Interfaces\Users\User $User = null
+    ): array {
+        $filename = $this->validateUploadFilename($filename);
+        $uploadDirPrefix = $this->getCanonicalUserUploadDir($User);
+        $canonicalUploadDir = rtrim($uploadDirPrefix, DIRECTORY_SEPARATOR);
+        $file = $uploadDirPrefix . $filename;
+        $metadata = $file . '.json';
+
+        $this->assertSafeUploadPath($file, $canonicalUploadDir, $uploadDirPrefix);
+        $this->assertSafeUploadPath($metadata, $canonicalUploadDir, $uploadDirPrefix);
+
+        return [
+            'filename' => $filename,
+            'directory' => $uploadDirPrefix,
+            'file' => $file,
+            'metadata' => $metadata
+        ];
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function getCanonicalUserUploadDir(
+        null | QUI\Interfaces\Users\User $User = null
+    ): string {
+        $uploadDir = rtrim($this->getUserUploadDir($User), '/\\');
+
+        QUIFile::mkdir($uploadDir . DIRECTORY_SEPARATOR);
+
+        if (!is_dir($uploadDir) || is_link($uploadDir)) {
+            throw new Exception('Invalid user upload directory.', 400);
+        }
+
+        $canonicalUploadDir = realpath($uploadDir);
+        $canonicalUploadRoot = realpath(rtrim($this->getDir(), '/\\'));
+
+        if (
+            $canonicalUploadDir === false
+            || $canonicalUploadRoot === false
+            || dirname($canonicalUploadDir) !== $canonicalUploadRoot
+        ) {
+            throw new Exception('Invalid user upload directory.', 400);
+        }
+
+        $uploadRootPrefix = $canonicalUploadRoot . DIRECTORY_SEPARATOR;
+        $uploadDirPrefix = $canonicalUploadDir . DIRECTORY_SEPARATOR;
+
+        if (!str_starts_with($uploadDirPrefix, $uploadRootPrefix)) {
+            throw new Exception('Invalid user upload directory.', 400);
+        }
+
+        return $uploadDirPrefix;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function assertSafeUploadPath(string $path, string $uploadDir, string $uploadDirPrefix): void
+    {
+        $parent = realpath(dirname($path));
+
+        if (
+            $parent === false
+            || $parent !== $uploadDir
+            || !str_starts_with($path, $uploadDirPrefix)
+        ) {
+            throw new Exception('Invalid upload path.', 400);
+        }
+
+        if (is_link($path)) {
+            throw new Exception('Invalid upload path.', 400);
+        }
+
+        if (!file_exists($path)) {
+            return;
+        }
+
+        $canonicalPath = realpath($path);
+        $pathStat = lstat($path);
+
+        if (
+            !is_file($path)
+            || $canonicalPath === false
+            || !is_array($pathStat)
+            || $pathStat['nlink'] !== 1
+            || dirname($canonicalPath) !== $uploadDir
+            || !str_starts_with($canonicalPath, $uploadDirPrefix)
+        ) {
+            throw new Exception('Invalid upload path.', 400);
+        }
+    }
+
+    /**
+     * @param mixed $allowedTypes
+     * @param mixed $allowedEndings
+     *
+     * @throws Exception
+     */
+    protected function checkAllowedUpload(
+        string $filename,
+        string $fileType,
+        mixed $allowedTypes,
+        mixed $allowedEndings
+    ): void {
+        if (is_array($allowedTypes)) {
+            $allowedTypes = implode(',', $allowedTypes);
+        }
+
+        if (is_array($allowedEndings)) {
+            $allowedEndings = implode(',', $allowedEndings);
+        }
+
+        if (!is_scalar($allowedTypes)) {
+            $allowedTypes = '';
+        }
+
+        if (!is_scalar($allowedEndings)) {
+            $allowedEndings = '';
+        }
+
+        if ($this->checkFnMatch((string)$allowedTypes, $fileType) === false) {
+            throw new Exception([
+                'quiqqer/core',
+                'exception.upload.not.allowed.mimetype'
+            ]);
+        }
+
+        if ($this->checkFnMatch((string)$allowedEndings, $filename) === false) {
+            throw new Exception([
+                'quiqqer/core',
+                'exception.upload.not.allowed.ending'
+            ]);
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function appendUploadData(string $filename, string $data): void
+    {
+        $path = $this->getUploadPaths($filename)['file'];
+        $Handle = fopen($path, 'ab');
+
+        if ($Handle === false) {
+            throw new Exception('Could not open upload file.', 500);
+        }
+
+        $handleStat = fstat($Handle);
+        $pathStat = lstat($path);
+        $isRegularFile = is_array($handleStat)
+            && is_array($pathStat)
+            && ($handleStat['mode'] & 0170000) === 0100000
+            && ($pathStat['mode'] & 0170000) === 0100000
+            && $handleStat['dev'] === $pathStat['dev']
+            && $handleStat['ino'] === $pathStat['ino']
+            && $handleStat['nlink'] === 1
+            && $pathStat['nlink'] === 1;
+
+        if (!$isRegularFile) {
+            fclose($Handle);
+            throw new Exception('Invalid upload file.', 400);
+        }
+
+        if ($data !== '' && fwrite($Handle, $data) !== strlen($data)) {
+            fclose($Handle);
+            throw new Exception('Could not write upload file.', 500);
+        }
+
+        fclose($Handle);
+    }
+
     protected function checkFnMatch(string $values, string $str): bool
     {
         if (empty($values)) {
@@ -452,11 +673,17 @@ class Manager
      *
      * @param callable|string $onfinish - Function
      * @param mixed $params - extra params for the \QUI\QDOM File Object
+     * @param mixed $allowedTypes
+     * @param mixed $allowedEndings
      *
      * @throws Exception
      */
-    protected function formUpload(callable | string $onfinish, mixed $params): void
-    {
+    protected function formUpload(
+        callable | string $onfinish,
+        mixed $params,
+        mixed $allowedTypes,
+        mixed $allowedEndings
+    ): void {
         if (empty($_FILES) || !isset($_FILES['files'])) {
             throw new Exception(
                 QUI::getLocale()->get('quiqqer/core', 'exception.media.upload.no.data'),
@@ -466,19 +693,27 @@ class Manager
 
         $list = $_FILES['files'];
 
+        if (!is_array($list) || !array_key_exists('error', $list)) {
+            throw new Exception('Invalid upload data.', 400);
+        }
+
         if (!is_array($list['error'])) {
             $this->checkUpload($list['error']);
 
-            $uploadDir = $this->getUserUploadDir();
-            $filename = $list['name'];
+            $filename = $this->validateUploadFilename($list['name'] ?? null);
+            $fileType = is_string($list['type'] ?? null) ? $list['type'] : '';
+            $tmpName = $list['tmp_name'] ?? null;
+            $this->checkAllowedUpload($filename, $fileType, $allowedTypes, $allowedEndings);
 
-            // cleanup file name
-            $filename = trim($filename);
-            $filename = trim($filename, '.');
+            if (!is_string($tmpName)) {
+                throw new Exception('Invalid temporary upload file.', 400);
+            }
 
-            $file = $uploadDir . $filename;
+            $uploadPaths = $this->getUploadPaths($filename);
+            $uploadDir = $uploadPaths['directory'];
+            $file = $uploadPaths['file'];
 
-            if (!move_uploaded_file($list["tmp_name"], $file)) {
+            if (!move_uploaded_file($tmpName, $file)) {
                 throw new Exception(
                     QUI::getLocale()->get('quiqqer/core', 'exception.media.move', [
                         'file' => $file
@@ -510,17 +745,34 @@ class Manager
             return;
         }
 
+        if (
+            !is_array($list['name'] ?? null)
+            || !is_array($list['tmp_name'] ?? null)
+            || !is_array($list['type'] ?? null)
+        ) {
+            throw new Exception('Invalid upload data.', 400);
+        }
+
         foreach ($list['error'] as $key => $error) {
             $this->checkUpload($error);
 
-            $uploadDir = $this->getUserUploadDir();
-            $filename = $list['name'][$key];
-            $file = $uploadDir . $filename;
+            $filename = $this->validateUploadFilename($list['name'][$key] ?? null);
+            $fileType = is_string($list['type'][$key] ?? null) ? $list['type'][$key] : '';
+            $tmpName = $list['tmp_name'][$key] ?? null;
+            $this->checkAllowedUpload($filename, $fileType, $allowedTypes, $allowedEndings);
 
-            if (!move_uploaded_file($list["tmp_name"], $file)) {
-                QUI::getLocale()->get('quiqqer/core', 'exception.media.move', [
+            if (!is_string($tmpName)) {
+                throw new Exception('Invalid temporary upload file.', 400);
+            }
+
+            $uploadPaths = $this->getUploadPaths($filename);
+            $uploadDir = $uploadPaths['directory'];
+            $file = $uploadPaths['file'];
+
+            if (!move_uploaded_file($tmpName, $file)) {
+                throw new Exception(QUI::getLocale()->get('quiqqer/core', 'exception.media.move', [
                     'file' => $filename
-                ]);
+                ]));
             }
 
             if (isset($_REQUEST['extract']) && $_REQUEST['extract']) {
@@ -602,7 +854,26 @@ class Manager
             );
         }
 
-        $to = $this->getUserUploadDir() . $fileInfo['filename'];
+        $filename = $this->validateUploadFilename($fileInfo['filename'] ?? null);
+        $uploadDir = $this->getCanonicalUserUploadDir();
+        $canonicalUploadDir = rtrim($uploadDir, DIRECTORY_SEPARATOR);
+        $to = $uploadDir . $filename;
+        $canonicalTarget = file_exists($to) ? realpath($to) : false;
+
+        if (
+            is_link($to)
+            || realpath(dirname($to)) !== $canonicalUploadDir
+            || (
+                file_exists($to)
+                && (
+                    $canonicalTarget === false
+                    || dirname($canonicalTarget) !== $canonicalUploadDir
+                    || (!is_file($to) && !is_dir($to))
+                )
+            )
+        ) {
+            throw new Exception('Invalid upload extraction path.', 400);
+        }
 
         QUIFile::unlink($to);
         QUIFile::mkdir($to);
@@ -677,11 +948,10 @@ class Manager
      */
     protected function delete(string $filename): void
     {
-        $file = $this->getUserUploadDir() . $filename;
-        $conf = $this->getUserUploadDir() . $filename . '.json';
+        $uploadPaths = $this->getUploadPaths($filename);
 
-        QUIFile::unlink($file);
-        QUIFile::unlink($conf);
+        QUIFile::unlink($uploadPaths['file']);
+        QUIFile::unlink($uploadPaths['metadata']);
     }
 
     /**
@@ -694,7 +964,8 @@ class Manager
      */
     protected function add(string $filename, array $params): void
     {
-        $conf = $this->getUserUploadDir() . $filename . '.json';
+        $uploadPaths = $this->getUploadPaths($filename);
+        $conf = $uploadPaths['metadata'];
 
         if (file_exists($conf)) {
             return;
@@ -703,7 +974,7 @@ class Manager
         file_put_contents(
             $conf,
             json_encode([
-                'file' => $filename,
+                'file' => $uploadPaths['filename'],
                 'user' => QUI::getUserBySession()->getUUID(),
                 'params' => $params
             ])
@@ -717,7 +988,8 @@ class Manager
      */
     protected function getFileData(string $filename): QDOM
     {
-        $conf = $this->getUserUploadDir() . $filename . '.json';
+        $uploadPaths = $this->getUploadPaths($filename);
+        $conf = $uploadPaths['metadata'];
 
         if (!file_exists($conf)) {
             throw new Exception(
@@ -730,6 +1002,13 @@ class Manager
             (string)file_get_contents($conf),
             true
         );
+
+        if (
+            !is_array($data)
+            || ($data['file'] ?? null) !== $uploadPaths['filename']
+        ) {
+            throw new Exception('Invalid upload metadata.', 400);
+        }
 
         $File = new QDOM();
         $File->setAttributes($data);
@@ -787,13 +1066,14 @@ class Manager
 
         $this->checkUserPermissions($User);
 
-
         // read user upload dir
-        $dir = $this->getUserUploadDir($User);
+        $userUploadDir = $this->getUserUploadDir($User);
 
-        if (!file_exists($dir) || !is_dir($dir)) {
+        if (!file_exists($userUploadDir)) {
             return [];
         }
+
+        $dir = $this->getCanonicalUserUploadDir($User);
 
         $files = QUIFile::readDir($dir);
         $result = [];
@@ -805,7 +1085,8 @@ class Manager
 
                 if (isset($attributes['params'])) {
                     $params = $attributes['params'];
-                    $file_info = QUIFile::getInfo($dir . $file);
+                    $uploadPath = $this->getUploadPaths($file, $User)['file'];
+                    $file_info = QUIFile::getInfo($uploadPath);
 
                     $params['file']['uploaded'] = $file_info['filesize'];
 
@@ -815,7 +1096,8 @@ class Manager
                 $result[] = $attributes;
             } catch (Exception $Exception) {
                 if ($Exception->getCode() === 404) {
-                    QUIFile::unlink($dir . $file);
+                    $uploadPath = $this->getUploadPaths($file, $User)['file'];
+                    QUIFile::unlink($uploadPath);
                 }
             }
         }
