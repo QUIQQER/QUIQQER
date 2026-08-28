@@ -375,8 +375,17 @@ class LoginAjaxTest extends TestCase
             ->willReturn($User);
         $Users->expects(self::once())
             ->method('authenticate')
-            ->with($Authenticator, [])
-            ->willReturn(true);
+            ->willReturnCallback(static function (
+                AuthenticatorInterface $AuthenticationTarget,
+                array $params,
+                ?bool &$authenticationExecuted
+            ) use ($Authenticator): bool {
+                self::assertSame($Authenticator, $AuthenticationTarget);
+                self::assertSame([], $params);
+                $authenticationExecuted = true;
+
+                return true;
+            });
         $Users->expects(self::once())
             ->method('login')
             ->willReturn($User);
@@ -415,5 +424,76 @@ class LoginAjaxTest extends TestCase
         self::assertSame(1, $loginStartEvents);
         self::assertSame(1, $sessionValues['auth-primary']);
         self::assertSame(1, $sessionValues['auth-secondary']);
+    }
+
+    public function testCachedAuthenticationDoesNotRefreshEnrollmentAuthorization(): void
+    {
+        $authenticator = QUIQQER::class;
+        $uid = 'test-user-uuid';
+        $Session = new QUI\System\Console\Session();
+        $Session->set('uid', $uid);
+        $Session->set('username', 'test-user');
+        $Session->set('auth', 1);
+        $Session->set('auth-primary', 1);
+        $Session->set('auth-secondary', 0);
+        $Session->set('auth-' . $authenticator, 1);
+        $Session->set(WebAuthn\Server::SESSION_ENROLLMENT, ['sentinel' => true]);
+
+        $Events = $this->createMock(EventsManager::class);
+        $Events->method('fireEvent')->willReturn([]);
+
+        $AuthHandler = $this->createMock(Handler::class);
+        $AuthHandler->method('getGlobalFrontendAuthenticators')->willReturn([$authenticator]);
+
+        $HandlerInstance = new ReflectionProperty(Handler::class, 'Instance');
+        $HandlerInstance->setValue(null, $AuthHandler);
+
+        $User = $this->createMock(User::class);
+        $User->method('getUUID')->willReturn($uid);
+        $User->method('getName')->willReturn('Test User');
+        $User->method('getLang')->willReturn('en');
+
+        $Users = $this->createMock(UserManager::class);
+        $Users->expects(self::once())
+            ->method('authenticate')
+            ->willReturn(true);
+        $Users->expects(self::once())
+            ->method('login')
+            ->willReturn($User);
+        $Users->method('getUserBySession')->willReturn($User);
+        $Users->method('isAuth')->willReturn(true);
+
+        $Config = $this->createMock(Config::class);
+        $Config->method('get')
+            ->willReturnCallback(static function (string $section, ?string $key = null): mixed {
+                if ($section === 'auth_settings' && $key === 'secondary_frontend') {
+                    return 0;
+                }
+
+                return false;
+            });
+
+        QUI::$Session = $Session;
+        QUI::$Events = $Events;
+        QUI::$Users = $Users;
+        QUI::$Conf = $Config;
+        QUI::$Ajax = new Ajax();
+
+        require dirname(__DIR__, 5) . '/admin/ajax/users/login.php';
+
+        $registeredCallables = Ajax::getRegisteredCallables();
+        $login = $registeredCallables['ajax_users_login']['callable'];
+        $result = $login(
+            $authenticator,
+            [],
+            SessionFailureCounter::STEP_PRIMARY,
+            [$authenticator]
+        );
+
+        self::assertTrue($result['loggedIn']);
+        self::assertSame(
+            ['sentinel' => true],
+            $Session->get(WebAuthn\Server::SESSION_ENROLLMENT)
+        );
     }
 }

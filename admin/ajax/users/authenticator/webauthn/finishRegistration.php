@@ -6,20 +6,10 @@ use QUI\Users\Auth\WebAuthn\Server;
 QUI::getAjax()->registerFunction(
     'ajax_users_authenticator_webauthn_finishRegistration',
     static function ($attestation, $name = '', $userUuid = ''): array {
-        $User = QUI::getUserBySession();
+        $Server = new Server();
+        $User = $Server->getAuthorizedEnrollmentUser();
 
-        if (QUI::getUsers()->isNobodyUser($User) && QUI::getSession()->get('uid')) {
-            $User = QUI::getUsers()->get(QUI::getSession()->get('uid'));
-        }
-
-        if (QUI::getUsers()->isNobodyUser($User)) {
-            throw new QUI\Users\Exception(
-                ['quiqqer/core', 'exception.login.fail.user.not.found'],
-                404
-            );
-        }
-
-        if ($userUuid !== '' && $userUuid !== $User->getUUID()) {
+        if ($userUuid !== '' && (string)$userUuid !== (string)$User->getUUID()) {
             throw new QUI\Permissions\Exception(
                 ['quiqqer/core', 'exception.no.permission'],
                 403
@@ -35,7 +25,7 @@ QUI::getAjax()->registerFunction(
             );
         }
 
-        $result = (new Server())->finishRegistrationForUser($User, $attestation, $name);
+        $result = $Server->finishRegistrationForUser($User, $attestation, $name);
         $User->enableAuthenticator(WebAuthnAuthenticator::class, QUI::getUsers()->getSystemUser());
 
         return $result;

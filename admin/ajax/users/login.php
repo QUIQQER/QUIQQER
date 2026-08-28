@@ -3,6 +3,7 @@
 use QUI\Interfaces\Users\User;
 use QUI\System\Log;
 use QUI\Users\Auth\SessionFailureCounter;
+use QUI\Users\Auth\WebAuthn\Server as WebAuthnServer;
 
 QUI::getAjax()->registerFunction(
     'ajax_users_login',
@@ -113,11 +114,13 @@ QUI::getAjax()->registerFunction(
         }
 
         $FailureCounter = new SessionFailureCounter(QUI::getSession());
+        $authenticationExecuted = false;
 
         try {
             QUI::getUsers()->authenticate(
                 $AuthenticationTarget,
-                $authParams
+                $authParams,
+                $authenticationExecuted
             );
         } catch (QUI\Users\UserAuthException | QUI\Users\Auth\Exception | QUI\Users\Exception $Exception) {
             if ($Exception->getCode() === 429) {
@@ -170,6 +173,20 @@ QUI::getAjax()->registerFunction(
         // $secondaryLoginType = 0 no 2fa
         // $secondaryLoginType = 1 2fa is required
         // $secondaryLoginType = 2 2fa is optional
+        if (
+            $authenticationExecuted
+            && $currentAuthStep === SessionFailureCounter::STEP_PRIMARY
+            && $secondaryLoginType === 1
+        ) {
+            try {
+                $EnrollmentUser = QUI::getUsers()->get(QUI::getSession()->get('uid'));
+                (new WebAuthnServer())->authorizeRequiredMfaBootstrap($EnrollmentUser);
+            } catch (\Throwable $Exception) {
+                QUI::getSession()->remove(WebAuthnServer::SESSION_ENROLLMENT);
+                Log::writeException($Exception);
+            }
+        }
+
         if ($secondaryLoginType === 2 && QUI::getSession()->get('auth-primary')) {
             QUI::getSession()->set('auth', 1);
         }
@@ -185,7 +202,17 @@ QUI::getAjax()->registerFunction(
             QUI::getSession()->get('auth-primary') === 1 && QUI::getSession()->get('auth-secondary') === 1
         ) {
             try {
-                QUI::getUsers()->login();
+                $LoggedInUser = QUI::getUsers()->login();
+
+                if ($LoggedInUser instanceof User && $authenticationExecuted) {
+                    try {
+                        (new WebAuthnServer())->authorizeAuthenticatedEnrollment($LoggedInUser);
+                    } catch (\Throwable $Exception) {
+                        QUI::getSession()->remove(WebAuthnServer::SESSION_ENROLLMENT);
+                        Log::writeException($Exception);
+                    }
+                }
+
                 $loggedIn = true;
             } catch (\Exception $Exception) {
                 // User cannot log in (e.g. User is not active)
