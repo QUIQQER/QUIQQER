@@ -13,6 +13,18 @@ QUI::getAjax()->registerFunction(
         $currentAuthStep = $authStep === SessionFailureCounter::STEP_SECONDARY
             ? SessionFailureCounter::STEP_SECONDARY
             : SessionFailureCounter::STEP_PRIMARY;
+        $isSecondaryAuthentication = $currentAuthStep === SessionFailureCounter::STEP_SECONDARY;
+
+        if (
+            $isSecondaryAuthentication
+            && (
+                QUI::getSession()->get('auth-primary') !== 1
+                || QUI::getSession()->get('auth-' . $authenticator) === 1
+            )
+        ) {
+            QUI::getSession()->remove('inAuthentication');
+            return false;
+        }
 
         if (is_string($authenticators)) {
             $authenticators = json_decode($authenticators, true);
@@ -22,26 +34,66 @@ QUI::getAjax()->registerFunction(
             $authenticators = [];
         }
 
-        if ($currentAuthStep === SessionFailureCounter::STEP_PRIMARY) {
-            if (QUI::isFrontend()) {
-                $allowedPrimaryAuthenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalFrontendAuthenticators();
-            } else {
-                $allowedPrimaryAuthenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalBackendAuthenticators();
+        $AuthHandler = QUI\Users\Auth\Handler::getInstance();
+        $AuthenticationTarget = $authenticator;
+
+        if (QUI::isFrontend()) {
+            $allowedAuthenticators = $isSecondaryAuthentication
+                ? $AuthHandler->getGlobalFrontendSecondaryAuthenticators()
+                : $AuthHandler->getGlobalFrontendAuthenticators();
+        } else {
+            $allowedAuthenticators = $isSecondaryAuthentication
+                ? $AuthHandler->getGlobalBackendSecondaryAuthenticators()
+                : $AuthHandler->getGlobalBackendAuthenticators();
+        }
+
+        if (!$isSecondaryAuthentication && !empty($authenticators)) {
+            $allowedAuthenticators = array_values(array_intersect(
+                $allowedAuthenticators,
+                $authenticators
+            ));
+        }
+
+        if (!in_array($authenticator, $allowedAuthenticators, true)) {
+            if ($isSecondaryAuthentication) {
+                QUI::getSession()->remove('inAuthentication');
+                return false;
             }
 
-            if (!empty($authenticators)) {
-                $allowedPrimaryAuthenticators = array_values(array_intersect(
-                    $allowedPrimaryAuthenticators,
-                    $authenticators
-                ));
+            throw new QUI\Users\Auth\Exception(
+                ['quiqqer/core', 'exception.authenticator.not.found'],
+                404
+            );
+        }
+
+        if ($isSecondaryAuthentication) {
+            $uid = QUI::getSession()->get('uid');
+
+            if ((!is_int($uid) && !is_string($uid)) || (string)$uid === '') {
+                QUI::getSession()->remove('inAuthentication');
+                return false;
             }
 
-            if (!in_array($authenticator, $allowedPrimaryAuthenticators, true)) {
-                throw new QUI\Users\Auth\Exception(
-                    ['quiqqer/core', 'exception.authenticator.not.found'],
-                    404
-                );
+            try {
+                $User = QUI::getUsers()->get($uid);
+
+                if (!$User->hasAuthenticator($authenticator)) {
+                    QUI::getSession()->remove('inAuthentication');
+                    return false;
+                }
+
+                $SecondaryAuthenticator = $AuthHandler->getAuthenticator($authenticator, $User);
+            } catch (QUI\Exception) {
+                QUI::getSession()->remove('inAuthentication');
+                return false;
             }
+
+            if (!$SecondaryAuthenticator->isSecondaryAuthentication()) {
+                QUI::getSession()->remove('inAuthentication');
+                return false;
+            }
+
+            $AuthenticationTarget = $SecondaryAuthenticator;
         }
 
         $User = QUI::getUserBySession();
@@ -64,7 +116,7 @@ QUI::getAjax()->registerFunction(
 
         try {
             QUI::getUsers()->authenticate(
-                $authenticator,
+                $AuthenticationTarget,
                 $authParams
             );
         } catch (QUI\Users\UserAuthException | QUI\Users\Auth\Exception | QUI\Users\Exception $Exception) {
