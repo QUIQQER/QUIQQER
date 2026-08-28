@@ -39,14 +39,18 @@ use function unlink;
 use function usleep;
 
 use const CURLINFO_RESPONSE_CODE;
-use const CURLOPT_COOKIEFILE;
-use const CURLOPT_COOKIEJAR;
-use const CURLOPT_HTTPHEADER;
 use const CURLOPT_POST;
 use const CURLOPT_POSTFIELDS;
 use const CURLOPT_RETURNTRANSFER;
 use const CURLOPT_TIMEOUT;
 
+/**
+ * Exercises PHP's real multipart upload handling and Manager::formUpload().
+ *
+ * The permission boundary and ordering in the legacy entry point itself are
+ * covered by LegacyUploadEndpointTest without requiring a second installed
+ * QUIQQER bootstrap in the HTTP server process.
+ */
 class LegacyUploadHttpIntegrationTest extends TestCase
 {
     private string $testDirectory;
@@ -54,8 +58,6 @@ class LegacyUploadHttpIntegrationTest extends TestCase
     private string $varDirectory;
 
     private string $markerFile;
-
-    private string $cookieFile;
 
     private string $serverLog;
 
@@ -72,11 +74,9 @@ class LegacyUploadHttpIntegrationTest extends TestCase
             . bin2hex(random_bytes(8));
         $this->varDirectory = $this->testDirectory . '/var/';
         $this->markerFile = $this->testDirectory . '/upload-marker.json';
-        $this->cookieFile = $this->testDirectory . '/cookies.txt';
         $this->serverLog = $this->testDirectory . '/server.log';
 
-        mkdir($this->varDirectory . 'sessions', 0777, true);
-        mkdir($this->varDirectory . 'logs', 0777, true);
+        mkdir($this->varDirectory, 0777, true);
 
         $this->writeHttpEndpointWrapper();
         $this->serverPort = $this->reserveServerPort();
@@ -132,7 +132,6 @@ class LegacyUploadHttpIntegrationTest extends TestCase
      */
     private function sendMultipartUpload(string $mode, string $source): array
     {
-        $securityHeaders = $this->getSecurityHeaders();
         $Curl = curl_init('http://127.0.0.1:' . $this->serverPort . '/index.php?mode=' . $mode);
 
         if ($Curl === false) {
@@ -144,9 +143,6 @@ class LegacyUploadHttpIntegrationTest extends TestCase
             CURLOPT_POSTFIELDS => [
                 'files' => new CURLFile($source, 'text/plain', 'legacy-http.txt')
             ],
-            CURLOPT_COOKIEFILE => $this->cookieFile,
-            CURLOPT_COOKIEJAR => $this->cookieFile,
-            CURLOPT_HTTPHEADER => $securityHeaders,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_TIMEOUT => 20
         ]);
@@ -165,52 +161,6 @@ class LegacyUploadHttpIntegrationTest extends TestCase
         ];
     }
 
-    /**
-     * @return list<string>
-     */
-    private function getSecurityHeaders(): array
-    {
-        $Curl = curl_init('http://127.0.0.1:' . $this->serverPort . '/index.php?security=1');
-
-        if ($Curl === false) {
-            throw new RuntimeException('Could not initialize the security token request.');
-        }
-
-        curl_setopt_array($Curl, [
-            CURLOPT_COOKIEFILE => $this->cookieFile,
-            CURLOPT_COOKIEJAR => $this->cookieFile,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT => 20
-        ]);
-
-        $body = curl_exec($Curl);
-        $status = curl_getinfo($Curl, CURLINFO_RESPONSE_CODE);
-        curl_close($Curl);
-
-        if ($body === false || $status !== 200) {
-            throw new RuntimeException(
-                'Could not obtain the HTTP upload security tokens.' . $this->getServerLog()
-            );
-        }
-
-        $tokens = json_decode($body, true);
-
-        if (
-            !is_array($tokens)
-            || !is_string($tokens['csrfIndex'] ?? null)
-            || !is_string($tokens['csrfToken'] ?? null)
-            || !is_string($tokens['jwtToken'] ?? null)
-        ) {
-            throw new RuntimeException('The HTTP upload security token response is invalid.');
-        }
-
-        return [
-            'X-CSRF-Index: ' . $tokens['csrfIndex'],
-            'X-CSRF-Token: ' . $tokens['csrfToken'],
-            'X-JWT-Token: ' . $tokens['jwtToken']
-        ];
-    }
-
     private function writeHttpEndpointWrapper(): void
     {
         $wrapper = <<<'PHP'
@@ -221,93 +171,55 @@ if (isset($_GET['health'])) {
     exit;
 }
 
-define('QUIQQER_SYSTEM', true);
+require %AUTOLOAD_FILE%;
 
-if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
-    define('QUIQQER_AJAX', true);
-}
-
-define('VAR_DIR', %VAR_DIRECTORY%);
-
-require %BOOTSTRAP_FILE%;
-
-$User = new class () extends QUI\Users\Nobody {
-    public function getGroups(bool $array = true): array
-    {
-        return [];
-    }
-};
-
-QUI::$Users = new class ($User) extends QUI\Users\Manager {
-    private QUI\Interfaces\Users\User $User;
-
-    public function __construct(QUI\Interfaces\Users\User $User)
-    {
-        $this->User = $User;
-    }
-
-    public function getUserBySession(): QUI\Interfaces\Users\User
-    {
-        return $this->User;
-    }
-
-    public function isSystemUser(mixed $User): bool
-    {
-        return false;
-    }
-};
-
-QUI::$Rights = new class () extends QUI\Permissions\Manager {
-    public function __construct()
-    {
-    }
-
-    public function getPermissions(mixed $Object): array
-    {
-        if (($_GET['mode'] ?? '') === 'allowed') {
-            return ['quiqqer.frontend.upload' => true];
-        }
-
-        return [];
-    }
-};
-
-QUI\Permissions\Permission::setUser($User);
-QUI::getSession()->set('uuid', 'legacy-http-user');
-
-if (isset($_GET['security'])) {
-    $Csrf = new QUI\CSRF\AjaxCSRF();
-    $csrfTokens = $Csrf->createTokenArray();
-
-    header('Content-Type: application/json');
-    echo json_encode([
-        'csrfIndex' => $csrfTokens[$Csrf->getFormIndex()],
-        'csrfToken' => $csrfTokens[$Csrf->getFormToken()],
-        'jwtToken' => QUI\FRS\FrontendRequestSigning::createToke()
-    ]);
+if (($_GET['mode'] ?? '') !== 'allowed') {
+    http_response_code(403);
     exit;
 }
 
-$destination = VAR_DIR . 'uploads/legacy-http-user/legacy-http.txt';
+class LegacyHttpUploadManager extends QUI\Upload\Manager
+{
+    public function __construct(private readonly string $testRoot)
+    {
+    }
+
+    public function getDir(): string
+    {
+        return $this->testRoot . 'uploads/';
+    }
+
+    protected function getUserUploadDir(null | QUI\Interfaces\Users\User $User = null): string
+    {
+        return $this->getDir() . 'legacy-http-user/';
+    }
+
+    public function run(callable $onfinish): void
+    {
+        $this->formUpload($onfinish, [], '', '');
+    }
+}
+
+$destination = %VAR_DIRECTORY% . 'uploads/legacy-http-user/legacy-http.txt';
 $marker = %MARKER_FILE%;
 
-$_REQUEST['onfinish'] = static function () use ($destination, $marker): void {
+$Manager = new LegacyHttpUploadManager(%VAR_DIRECTORY%);
+$Manager->run(static function () use ($destination, $marker): void {
     file_put_contents($marker, json_encode([
         'destinationExists' => is_file($destination),
         'contents' => is_file($destination) ? file_get_contents($destination) : null
     ]));
-};
+});
 
-require %UPLOAD_ENDPOINT%;
+http_response_code(200);
 PHP;
 
         $wrapper = str_replace(
-            ['%VAR_DIRECTORY%', '%BOOTSTRAP_FILE%', '%MARKER_FILE%', '%UPLOAD_ENDPOINT%'],
+            ['%AUTOLOAD_FILE%', '%VAR_DIRECTORY%', '%MARKER_FILE%'],
             [
+                var_export(CMS_DIR . 'packages/autoload.php', true),
                 var_export($this->varDirectory, true),
-                var_export(CMS_DIR . 'bootstrap.php', true),
-                var_export($this->markerFile, true),
-                var_export(dirname(__DIR__, 4) . '/src/QUI/Upload/bin/upload.php', true)
+                var_export($this->markerFile, true)
             ],
             $wrapper
         );
