@@ -2,6 +2,9 @@
 
 namespace QUI\Projects;
 
+use DOMDocument;
+use DOMElement;
+use DOMXPath;
 use FilesystemIterator;
 use QUI\Projects\Media;
 use RecursiveDirectoryIterator;
@@ -23,6 +26,7 @@ use function imagecreatetruecolor;
 use function imagedestroy;
 use function imagefilledrectangle;
 use function imagepng;
+use function iterator_to_array;
 use function is_dir;
 use function is_file;
 use function is_resource;
@@ -36,6 +40,7 @@ use function rmdir;
 use function stream_socket_get_name;
 use function stream_socket_server;
 use function str_contains;
+use function str_starts_with;
 use function str_replace;
 use function strrpos;
 use function substr;
@@ -60,6 +65,10 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
 
     private static string $serverLog;
 
+    private static string $rewriteSvg;
+
+    private static string $invalidRewriteSvg;
+
     private static int $serverPort;
 
     /** @var resource|null */
@@ -70,6 +79,14 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
     private static int $inactiveImageId;
 
     private static int $svgId;
+
+    private static int $uploadedMaliciousSvgId;
+
+    private static int $storedMaliciousSvgId;
+
+    private static int $invalidStoredSvgId;
+
+    private static int $svgFallbackId;
 
     private static int $corruptImageId;
 
@@ -156,6 +173,128 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
 
         self::assertUniformNotFound($Response);
         self::assertStringNotContainsString('<svg', $Response['body']);
+    }
+
+    public function testHarmlessSvgIsDeliveredInlineWithSecurityHeader(): void
+    {
+        self::assertSafeSvgResponse(self::requestImage(self::$svgId, ['noresize' => '1']));
+    }
+
+    public function testUploadedMaliciousSvgIsSanitizedBeforeStorage(): void
+    {
+        $Svg = self::getTestProject()->getMedia()->get(self::$uploadedMaliciousSvgId);
+        $storedSvg = file_get_contents($Svg->getFullPath());
+
+        self::assertIsString($storedSvg);
+        self::assertSafeSvgMarkup($storedSvg);
+        self::assertSafeSvgResponse(self::requestImage(self::$uploadedMaliciousSvgId, ['noresize' => '1']));
+    }
+
+    public function testMalformedSvgUploadIsRejected(): void
+    {
+        $source = self::$testDirectory . '/malformed-' . bin2hex(random_bytes(4)) . '.svg';
+        file_put_contents($source, '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script>');
+
+        try {
+            ProjectTestHelper::runAsSystemUser(
+                static fn () => self::getTestProject()->getMedia()->firstChild()->uploadFile($source)
+            );
+            self::fail('Malformed SVG upload was accepted.');
+        } catch (\QUI\Exception $Exception) {
+            self::assertSame(Media\ErrorCodes::FILE_IMAGE_CORRUPT, $Exception->getCode());
+        } finally {
+            unlink($source);
+        }
+    }
+
+    public function testPreviouslyStoredMaliciousSvgIsSanitizedOnDirectOutput(): void
+    {
+        self::assertSafeSvgResponse(self::requestImage(self::$storedMaliciousSvgId, ['noresize' => '1']));
+    }
+
+    public function testPreviouslyStoredMaliciousSvgIsSanitizedForAdminPreview(): void
+    {
+        self::assertSafeSvgResponse(self::requestImage(self::$storedMaliciousSvgId, [
+            '_user' => 'backend-allowed',
+            'quiadmin' => '1'
+        ]));
+    }
+
+    public function testMalformedStoredSvgReturnsEmpty404(): void
+    {
+        self::assertUniformNotFound(self::requestImage(self::$invalidStoredSvgId, ['noresize' => '1']));
+    }
+
+    public function testExistingSvgResizeCacheIsSanitizedBeforeOutput(): void
+    {
+        $Svg = self::getTestProject()->getMedia()->get(self::$storedMaliciousSvgId);
+        $cacheFile = $Svg->getSizeCachePath(false, false);
+        $cacheDirectory = dirname($cacheFile);
+
+        if (!is_dir($cacheDirectory)) {
+            mkdir($cacheDirectory, 0777, true);
+        }
+
+        file_put_contents($cacheFile, self::maliciousSvg());
+
+        self::assertSafeSvgResponse(self::requestImage(self::$storedMaliciousSvgId, [
+            'maxwidth' => '17'
+        ]));
+
+        $cachedSvg = file_get_contents($cacheFile);
+        self::assertIsString($cachedSvg);
+        self::assertSafeSvgMarkup($cachedSvg);
+    }
+
+    public function testRewriteCacheOutputSanitizesExistingSvg(): void
+    {
+        self::assertSafeSvgResponse(self::request(['_rewrite_svg' => '1']));
+    }
+
+    public function testRewriteCacheOutputRejectsMalformedSvg(): void
+    {
+        $Response = self::request(['_rewrite_invalid_svg' => '1']);
+
+        self::assertSame(404, $Response['status'], self::failureMessage($Response));
+        self::assertSame('', $Response['body']);
+    }
+
+    public function testExistingAdminCacheContainingSvgIsSanitizedBeforeOutput(): void
+    {
+        $Project = self::getTestProject();
+        $cacheDirectory = self::$varDirectory . 'media/cache/admin/'
+            . $Project->getName() . '/' . $Project->getLang() . '/';
+        $cacheFile = $cacheDirectory . self::$activeImageId . '__500x500.png';
+
+        if (!is_dir($cacheDirectory)) {
+            mkdir($cacheDirectory, 0777, true);
+        }
+
+        file_put_contents($cacheFile, self::maliciousSvg());
+
+        self::assertSafeSvgResponse(self::requestImage(self::$activeImageId, [
+            '_user' => 'backend-allowed',
+            'quiadmin' => '1'
+        ]));
+    }
+
+    public function testPreviewProcessingNeverOutputsMalformedSvgOriginal(): void
+    {
+        $Response = self::requestImage(self::$svgFallbackId, [
+            '_user' => 'backend-allowed',
+            'quiadmin' => '1'
+        ]);
+
+        self::assertStringNotContainsString('svg-fallback-secret', $Response['body']);
+        self::assertStringNotContainsString('<script', $Response['body']);
+
+        if ($Response['status'] === 404) {
+            self::assertUniformNotFound($Response);
+            return;
+        }
+
+        self::assertSame(200, $Response['status'], self::failureMessage($Response));
+        self::assertStringStartsWith('image/png', $Response['headers']['content-type'] ?? '');
     }
 
     public function testExistingResizeCacheCannotBypassAcl(): void
@@ -395,6 +534,67 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
     /**
      * @param array{status: int, headers: array<string, string>, body: string} $Response
      */
+    private static function assertSafeSvgResponse(array $Response): void
+    {
+        self::assertSame(200, $Response['status'], self::failureMessage($Response));
+        self::assertStringStartsWith('image/svg+xml', $Response['headers']['content-type'] ?? '');
+        self::assertSame('nosniff', $Response['headers']['x-content-type-options'] ?? '');
+        self::assertSafeSvgMarkup($Response['body']);
+    }
+
+    private static function assertSafeSvgMarkup(string $svg): void
+    {
+        $Document = new DOMDocument();
+        self::assertTrue($Document->loadXML($svg, LIBXML_NONET));
+        self::assertNull($Document->doctype);
+        self::assertSame('svg', $Document->documentElement?->tagName);
+
+        $XPath = new DOMXPath($Document);
+        $activeElements = $XPath->query(
+            '//*[translate(local-name(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")='
+            . '"script" or translate(local-name(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")='
+            . '"style" or translate(local-name(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")='
+            . '"foreignobject" or translate(local-name(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")='
+            . '"iframe" or translate(local-name(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")='
+            . '"object" or translate(local-name(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")="embed"]'
+        );
+
+        self::assertNotFalse($activeElements);
+        self::assertSame(0, $activeElements->length);
+
+        $Elements = $XPath->query('//*');
+        self::assertNotFalse($Elements);
+
+        foreach ($Elements as $Element) {
+            if (!$Element instanceof DOMElement) {
+                continue;
+            }
+
+            foreach (iterator_to_array($Element->attributes) as $Attribute) {
+                $name = strtolower($Attribute->nodeName);
+                $value = strtolower(trim((string)$Attribute->nodeValue));
+
+                self::assertFalse(str_starts_with($name, 'on'));
+                self::assertNotSame('style', $name);
+                self::assertStringNotContainsString('javascript:', $value);
+                self::assertStringNotContainsString('data:', $value);
+                self::assertStringNotContainsString('@import', $value);
+                if (!str_starts_with($name, 'xmlns')) {
+                    self::assertStringNotContainsString('https://', $value);
+                    self::assertStringNotContainsString('http://', $value);
+                    self::assertStringNotContainsString('file:', $value);
+                }
+
+                if (str_contains($name, 'href') && $value !== '') {
+                    self::assertStringStartsWith('#', $value);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param array{status: int, headers: array<string, string>, body: string} $Response
+     */
     private static function failureMessage(array $Response): string
     {
         return $Response['body'] . self::getServerLog();
@@ -410,17 +610,43 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
         $inactivePng = self::$testDirectory . '/' . $prefix . '-inactive.png';
         $corruptPng = self::$testDirectory . '/' . $prefix . '-corrupt.png';
         $svg = self::$testDirectory . '/' . $prefix . '.svg';
+        $uploadedMaliciousSvg = self::$testDirectory . '/' . $prefix . '-uploaded-malicious.svg';
+        $storedMaliciousSvg = self::$testDirectory . '/' . $prefix . '-stored-malicious.svg';
+        $invalidStoredSvg = self::$testDirectory . '/' . $prefix . '-stored-invalid.svg';
+        $svgFallbackPng = self::$testDirectory . '/' . $prefix . '-svg-fallback.png';
+        self::$rewriteSvg = self::$testDirectory . '/' . $prefix . '-rewrite.svg';
+        self::$invalidRewriteSvg = self::$testDirectory . '/' . $prefix . '-rewrite-invalid.svg';
 
         self::createPng($activePng, 96, 64);
         self::createPng($inactivePng, 80, 50);
         self::createPng($corruptPng, 72, 48);
+        self::createPng($svgFallbackPng, 72, 48);
         file_put_contents(
             $svg,
             '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><rect width="20" height="20"/></svg>'
         );
+        file_put_contents($uploadedMaliciousSvg, self::maliciousSvg());
+        file_put_contents(self::$rewriteSvg, self::maliciousSvg());
+        file_put_contents(
+            self::$invalidRewriteSvg,
+            '<svg xmlns="http://www.w3.org/2000/svg"><script>rewrite-secret</script>'
+        );
+        file_put_contents($storedMaliciousSvg, '<svg xmlns="http://www.w3.org/2000/svg"><rect/></svg>');
+        file_put_contents($invalidStoredSvg, '<svg xmlns="http://www.w3.org/2000/svg"><rect/></svg>');
 
         ProjectTestHelper::runAsSystemUser(
-            static function () use ($Root, $activePng, $inactivePng, $corruptPng, $svg, $prefix): void {
+            static function () use (
+                $Root,
+                $activePng,
+                $inactivePng,
+                $corruptPng,
+                $svg,
+                $uploadedMaliciousSvg,
+                $storedMaliciousSvg,
+                $invalidStoredSvg,
+                $svgFallbackPng,
+                $prefix
+            ): void {
                 $Folder = $Root->createFolder($prefix . '-folder');
                 $Folder->activate();
                 self::$folderId = $Folder->getId();
@@ -436,10 +662,35 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
                 $Svg->activate();
                 self::$svgId = $Svg->getId();
 
+                $UploadedMaliciousSvg = $Root->uploadFile($uploadedMaliciousSvg);
+                $UploadedMaliciousSvg->activate();
+                self::$uploadedMaliciousSvgId = $UploadedMaliciousSvg->getId();
+
+                $StoredMaliciousSvg = $Root->uploadFile($storedMaliciousSvg);
+                $StoredMaliciousSvg->activate();
+                self::$storedMaliciousSvgId = $StoredMaliciousSvg->getId();
+                file_put_contents($StoredMaliciousSvg->getFullPath(), self::maliciousSvg());
+
+                $InvalidStoredSvg = $Root->uploadFile($invalidStoredSvg);
+                $InvalidStoredSvg->activate();
+                self::$invalidStoredSvgId = $InvalidStoredSvg->getId();
+                file_put_contents(
+                    $InvalidStoredSvg->getFullPath(),
+                    '<svg xmlns="http://www.w3.org/2000/svg"><script>invalid-svg-secret</script>'
+                );
+
                 $Corrupt = $Root->uploadFile($corruptPng);
                 $Corrupt->activate();
                 self::$corruptImageId = $Corrupt->getId();
                 file_put_contents($Corrupt->getFullPath(), 'protected-original-secret');
+
+                $SvgFallback = $Root->uploadFile($svgFallbackPng);
+                $SvgFallback->activate();
+                self::$svgFallbackId = $SvgFallback->getId();
+                file_put_contents(
+                    $SvgFallback->getFullPath(),
+                    '<svg xmlns="http://www.w3.org/2000/svg"><script>svg-fallback-secret</script>'
+                );
             }
         );
 
@@ -447,8 +698,25 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
             self::$activeImageId,
             self::$inactiveImageId,
             self::$svgId,
-            self::$corruptImageId
+            self::$uploadedMaliciousSvgId,
+            self::$storedMaliciousSvgId,
+            self::$invalidStoredSvgId,
+            self::$corruptImageId,
+            self::$svgFallbackId
         ];
+    }
+
+    private static function maliciousSvg(): string
+    {
+        return '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" '
+            . 'width="20" height="20" onload="alert(1)">'
+            . '<script>alert(document.domain)</script>'
+            . '<style>@import url(https://attacker.invalid/a.css);</style>'
+            . '<foreignObject><iframe src="https://attacker.invalid/"/></foreignObject>'
+            . '<image href="https://attacker.invalid/a.png"/>'
+            . '<use xlink:HrEf="javascript:alert(2)"/>'
+            . '<rect width="20" height="20" onclick="alert(3)"/>'
+            . '</svg>';
     }
 
     private static function deleteMediaFixtures(): void
@@ -501,6 +769,12 @@ define('QUIQQER_SYSTEM', true);
 define('VAR_DIR', %VAR_DIRECTORY%);
 
 require %BOOTSTRAP_FILE%;
+
+$svgSanitizerAutoload = getenv('QUIQQER_SVG_TEST_AUTOLOAD');
+
+if (is_string($svgSanitizerAutoload) && is_file($svgSanitizerAutoload)) {
+    require $svgSanitizerAutoload;
+}
 
 $userMode = is_string($_GET['_user'] ?? null) ? $_GET['_user'] : 'nobody';
 $User = new class ($userMode) extends QUI\Users\Nobody {
@@ -591,6 +865,14 @@ $MediaPermissions = new ReflectionProperty(QUI\Projects\Media::class, 'mediaPerm
 $MediaPermissions->setValue(null, true);
 QUI\Permissions\Permission::setUser($User);
 
+if (isset($_GET['_rewrite_svg'])) {
+    QUI\Rewrite::sendFileWithRange(%REWRITE_SVG%, 'image/svg+xml');
+}
+
+if (isset($_GET['_rewrite_invalid_svg'])) {
+    QUI\Rewrite::sendFileWithRange(%INVALID_REWRITE_SVG%, 'image/svg+xml');
+}
+
 chdir(%CORE_DIRECTORY%);
 require %IMAGE_ENDPOINT%;
 PHP;
@@ -601,14 +883,18 @@ PHP;
                 '%BOOTSTRAP_FILE%',
                 '%CORE_DIRECTORY%',
                 '%IMAGE_ENDPOINT%',
-                '%ALLOWED_USER_ID%'
+                '%ALLOWED_USER_ID%',
+                '%REWRITE_SVG%',
+                '%INVALID_REWRITE_SVG%'
             ],
             [
                 var_export(self::$varDirectory, true),
                 var_export(CMS_DIR . 'bootstrap.php', true),
                 var_export(dirname(__DIR__, 4), true),
                 var_export(dirname(__DIR__, 4) . '/image.php', true),
-                (string)self::ALLOWED_USER_ID
+                (string)self::ALLOWED_USER_ID,
+                var_export(self::$rewriteSvg, true),
+                var_export(self::$invalidRewriteSvg, true)
             ],
             $wrapper
         );

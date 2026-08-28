@@ -32,6 +32,10 @@
     RewriteCond %{ldelim}REQUEST_URI{rdelim} ^{$URL_DIR}{$URL_SYS_DIR}image.php$
     RewriteRule ^(.*)$ {$URL_DIR}image.php?%{ldelim}QUERY_STRING{rdelim} [END]
 
+    # Existing active-document media caches must pass through the SVG sanitizer path as well.
+    RewriteCond %{ldelim}REQUEST_URI{rdelim} ^{$URL_DIR}media/cache/.*\.(svgz?|html?|xhtml|xml)$ [NC]
+    RewriteRule ^(.*)$ index.php?_url=$1&%{ldelim}QUERY_STRING{rdelim} [END]
+
     RewriteCond %{ldelim}REQUEST_URI{rdelim} ^{$URL_DIR}{$URL_SYS_DIR}$ [OR]
     RewriteCond %{ldelim}REQUEST_URI{rdelim} ^{$URL_DIR}{$URL_SYS_DIR}index.php$ [OR]
     RewriteCond %{ldelim}REQUEST_URI{rdelim} ^{$URL_DIR}{$URL_SYS_DIR}image.php$ [OR]

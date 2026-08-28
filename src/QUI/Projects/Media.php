@@ -10,6 +10,7 @@ use Exception;
 use Intervention\Image\ImageManager;
 use QUI;
 use QUI\Projects\Media\Utils;
+use QUI\Utils\Security\SvgSanitizer;
 use QUI\Utils\System\File as FileUtils;
 
 use function class_exists;
@@ -17,7 +18,11 @@ use function count;
 use function date;
 use function explode;
 use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
+use function in_array;
 use function is_array;
+use function is_string;
 use function json_decode;
 use function json_encode;
 use function md5;
@@ -831,6 +836,40 @@ class Media extends QUI\QDOM
 
         $name = $data['name'];
         $info = QUI\Utils\System\File::getInfo($file);
+        $extension = strtolower((string)($info['extension'] ?? ''));
+        $hasSvgType = in_array($info['mime_type'], ['image/svg', 'image/svg+xml'], true);
+        $mustBeSvg = in_array($extension, ['svg', 'svgz'], true) || $hasSvgType;
+        $mayBeSvg = $mustBeSvg || in_array(
+            $info['mime_type'],
+            ['application/xml', 'application/xhtml+xml', 'text/html', 'text/plain', 'text/xml'],
+            true
+        );
+        $sanitizedSvg = null;
+
+        if ($mayBeSvg) {
+            $content = file_get_contents($file);
+
+            if (is_string($content)) {
+                $sanitized = SvgSanitizer::sanitize($content);
+
+                if ($sanitized !== '') {
+                    $sanitizedSvg = $sanitized;
+                    $info['mime_type'] = 'image/svg+xml';
+
+                    if ($extension !== 'svg') {
+                        $info['basename'] = $info['filename'] . '.svg';
+                        $info['extension'] = 'svg';
+                    }
+                }
+            }
+
+            if ($mustBeSvg && $sanitizedSvg === null) {
+                throw new QUI\Exception(
+                    ['quiqqer/core', 'exception.image.upload.image.corrupted'],
+                    Media\ErrorCodes::FILE_IMAGE_CORRUPT
+                );
+            }
+        }
 
         if ($info['mime_type'] != $data['mime_type']) {
             $name = $info['basename'];
@@ -865,7 +904,34 @@ class Media extends QUI\QDOM
         // check file size if needed and if the file is an image
         $imageType = Utils::getMediaTypeByMimeType($info['mime_type']);
 
-        if ($imageType === 'image') {
+        if ($sanitizedSvg !== null) {
+            if (file_put_contents($file, $sanitizedSvg) === false) {
+                throw new QUI\Exception(
+                    ['quiqqer/core', 'exception.image.upload.image.corrupted'],
+                    Media\ErrorCodes::FILE_IMAGE_CORRUPT
+                );
+            }
+
+            $Document = new \DOMDocument();
+            $Document->resolveExternals = false;
+            $Document->substituteEntities = false;
+            $Document->loadXML($sanitizedSvg, LIBXML_NONET);
+            $Svg = $Document->documentElement;
+
+            if ($Svg instanceof \DOMElement) {
+                $width = $Svg->getAttribute('width');
+                $height = $Svg->getAttribute('height');
+                $viewBox = preg_split('/[\s,]+/', $Svg->getAttribute('viewBox'));
+
+                if ((!$width || !$height) && is_array($viewBox) && count($viewBox) === 4) {
+                    $width = $width ?: $viewBox[2];
+                    $height = $height ?: $viewBox[3];
+                }
+
+                $info['width'] = $width ? (int)$width : null;
+                $info['height'] = $height ? (int)$height : null;
+            }
+        } elseif ($imageType === 'image') {
             $maxConfigSize = (int)$this->getProject()->getConfig('media_maxUploadSize');
             $info = FileUtils::getInfo($file, ['imagesize' => true]);
 

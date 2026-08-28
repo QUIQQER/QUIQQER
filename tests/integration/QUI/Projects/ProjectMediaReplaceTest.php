@@ -2,10 +2,116 @@
 
 namespace QUI\Projects;
 
+use DOMDocument;
+use DOMElement;
+use DOMXPath;
 use QUI;
+
+use function iterator_to_array;
+use function str_starts_with;
 
 class ProjectMediaReplaceTest extends ProjectIntegrationTestCase
 {
+    public function testSvgReplacementIsSanitizedBeforeExistingFileIsRemoved(): void
+    {
+        $Project = self::getTestProject();
+        $Media = $Project->getMedia();
+        $Root = $Media->firstChild();
+        $folderName = 'phpunit-replace-svg-parent-' . uniqid();
+        $sourceFile = sys_get_temp_dir() . '/quiqqer-phpunit-replace-svg-source-' . uniqid() . '.png';
+        $replacementFile = sys_get_temp_dir() . '/quiqqer-phpunit-replace-svg-target-' . uniqid() . '.svg';
+        $invalidFile = sys_get_temp_dir() . '/quiqqer-phpunit-replace-svg-invalid-' . uniqid() . '.svg';
+        $fileId = null;
+        $folderId = null;
+
+        self::createPng($sourceFile);
+        file_put_contents(
+            $replacementFile,
+            '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="9" onload="alert(1)">'
+            . '<script>alert(document.domain)</script>'
+            . '<foreignObject><iframe src="https://attacker.invalid/"/></foreignObject>'
+            . '<rect width="12" height="9" onclick="alert(2)"/>'
+            . '</svg>'
+        );
+        file_put_contents($invalidFile, '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script>');
+
+        try {
+            $folderId = ProjectTestHelper::runAsSystemUser(static function () use ($Root, $folderName): int {
+                return $Root->createFolder($folderName)->getId();
+            });
+
+            $fileId = ProjectTestHelper::runAsSystemUser(
+                static function () use ($Media, $folderId, $sourceFile): int {
+                    return $Media->get($folderId)->uploadFile($sourceFile)->getId();
+                }
+            );
+
+            $Original = $Media->get($fileId);
+            $originalPath = $Original->getFullPath();
+            $originalContent = file_get_contents($originalPath);
+
+            try {
+                ProjectTestHelper::runAsSystemUser(
+                    static fn () => $Media->replace($fileId, $invalidFile)
+                );
+                self::fail('Malformed SVG replacement was accepted.');
+            } catch (QUI\Exception $Exception) {
+                self::assertSame(Media\ErrorCodes::FILE_IMAGE_CORRUPT, $Exception->getCode());
+            }
+
+            self::assertFileExists($originalPath);
+            self::assertSame($originalContent, file_get_contents($originalPath));
+
+            $Replaced = ProjectTestHelper::runAsSystemUser(
+                static fn () => $Media->replace($fileId, $replacementFile)
+            );
+            $storedSvg = file_get_contents($Replaced->getFullPath());
+
+            self::assertIsString($storedSvg);
+            self::assertSame('image/svg+xml', $Replaced->getAttribute('mime_type'));
+            self::assertSame(12, (int)$Replaced->getAttribute('image_width'));
+            self::assertSame(9, (int)$Replaced->getAttribute('image_height'));
+
+            $Document = new DOMDocument();
+            self::assertTrue($Document->loadXML($storedSvg, LIBXML_NONET));
+            $XPath = new DOMXPath($Document);
+            self::assertSame(0, $XPath->query('//*[local-name()="script" or local-name()="foreignObject"]')->length);
+
+            foreach ($XPath->query('//*') as $Element) {
+                if (!$Element instanceof DOMElement) {
+                    continue;
+                }
+
+                foreach (iterator_to_array($Element->attributes) as $Attribute) {
+                    self::assertFalse(str_starts_with(strtolower($Attribute->nodeName), 'on'));
+                    self::assertStringNotContainsString('attacker.invalid', (string)$Attribute->nodeValue);
+                }
+            }
+        } finally {
+            if ($fileId) {
+                ProjectTestHelper::runAsSystemUser(static function () use ($Media, $fileId): void {
+                    $File = $Media->get($fileId);
+                    $File->delete();
+                    $File->destroy();
+                });
+            }
+
+            if ($folderId) {
+                ProjectTestHelper::runAsSystemUser(static function () use ($Media, $folderId): void {
+                    $Folder = $Media->get($folderId);
+                    $Folder->delete();
+                    $Folder->destroy();
+                });
+            }
+
+            foreach ([$sourceFile, $replacementFile, $invalidFile] as $temporaryFile) {
+                if (file_exists($temporaryFile)) {
+                    unlink($temporaryFile);
+                }
+            }
+        }
+    }
+
     public function testImageCanBeReplacedWithZeroMaxUploadSizeConfig(): void
     {
         $Project = self::getTestProject();

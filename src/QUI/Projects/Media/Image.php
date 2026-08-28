@@ -11,6 +11,7 @@ use QUI;
 use QUI\ExceptionStack;
 use QUI\Projects\Media;
 use QUI\Projects\Media\Utils as MediaUtils;
+use QUI\Utils\Security\SvgSanitizer;
 use QUI\Utils\StringHelper;
 use QUI\Utils\System\File as FileUtils;
 
@@ -24,6 +25,7 @@ use function explode;
 use function fclose;
 use function feof;
 use function file_exists;
+use function file_get_contents;
 use function file_put_contents;
 use function fopen;
 use function fread;
@@ -145,16 +147,35 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $Media = $this->Media;
         $original = $this->getFullPath();
         $cacheFile = $this->getSizeCachePath($width, $height);
+        $isSvg = in_array($this->getAttribute('mime_type'), ['image/svg', 'image/svg+xml'], true);
 
         if (file_exists($cacheFile)) {
+            if ($isSvg) {
+                $cachedSvg = file_get_contents($cacheFile);
+                $sanitizedSvg = is_string($cachedSvg) ? SvgSanitizer::sanitize($cachedSvg) : '';
+
+                if ($sanitizedSvg === '') {
+                    throw new QUI\Exception('Invalid SVG media.', ErrorCodes::FILE_IMAGE_CORRUPT);
+                }
+
+                if ($sanitizedSvg !== $cachedSvg && file_put_contents($cacheFile, $sanitizedSvg) === false) {
+                    throw new QUI\Exception('Invalid SVG media.', ErrorCodes::FILE_IMAGE_CORRUPT);
+                }
+            }
+
             return $cacheFile;
         }
 
         // create cache folder
         FileUtils::mkdir(dirname($cacheFile));
 
-        if ($this->getAttribute('mime_type') == 'image/svg+xml') {
-            FileUtils::copy($original, $cacheFile);
+        if ($isSvg) {
+            $svg = file_get_contents($original);
+            $sanitizedSvg = is_string($svg) ? SvgSanitizer::sanitize($svg) : '';
+
+            if ($sanitizedSvg === '' || file_put_contents($cacheFile, $sanitizedSvg) === false) {
+                throw new QUI\Exception('Invalid SVG media.', ErrorCodes::FILE_IMAGE_CORRUPT);
+            }
 
             return $cacheFile;
         }

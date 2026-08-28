@@ -9,13 +9,18 @@ namespace QUI\Projects\Media;
 use Exception;
 use QUI;
 use QUI\Projects\Media;
+use QUI\Utils\Security\SvgSanitizer;
 use QUI\Utils\System\File as QUIFile;
 
 use function dirname;
 use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
 use function in_array;
+use function is_string;
 use function md5_file;
 use function sha1_file;
+use function strtolower;
 
 /**
  * A media file
@@ -61,6 +66,8 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
 
 
         $extension = QUI\Utils\StringHelper::pathinfo($original, PATHINFO_EXTENSION);
+        $isSvg = in_array(strtolower((string)$extension), ['svg', 'svgz'], true)
+            || in_array($this->getAttribute('mime_type'), ['image/svg', 'image/svg+xml'], true);
 
         if (in_array($extension, Utils::getWhiteListForNoMediaCache())) {
             QUIFile::unlink($cacheFile);
@@ -70,16 +77,38 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
 
         // Nur wenn Extension in Whitelist ist dann Cache machen
         if (file_exists($cacheFile)) {
+            if ($isSvg) {
+                $svg = file_get_contents($cacheFile);
+                $sanitizedSvg = is_string($svg) ? SvgSanitizer::sanitize($svg) : '';
+
+                if ($sanitizedSvg === '') {
+                    throw new QUI\Exception('Invalid SVG media.', ErrorCodes::FILE_IMAGE_CORRUPT);
+                }
+
+                if ($sanitizedSvg !== $svg && file_put_contents($cacheFile, $sanitizedSvg) === false) {
+                    throw new QUI\Exception('Invalid SVG media.', ErrorCodes::FILE_IMAGE_CORRUPT);
+                }
+            }
+
             return $cacheFile;
         }
 
         // Cachefolder erstellen
         QUIFile::mkdir(dirname($cacheFile));
 
-        try {
-            QUIFile::copy($original, $cacheFile);
-        } catch (QUI\Exception) {
-            // nothing
+        if ($isSvg) {
+            $svg = file_get_contents($original);
+            $sanitizedSvg = is_string($svg) ? SvgSanitizer::sanitize($svg) : '';
+
+            if ($sanitizedSvg === '' || file_put_contents($cacheFile, $sanitizedSvg) === false) {
+                throw new QUI\Exception('Invalid SVG media.', ErrorCodes::FILE_IMAGE_CORRUPT);
+            }
+        } else {
+            try {
+                QUIFile::copy($original, $cacheFile);
+            } catch (QUI\Exception) {
+                // nothing
+            }
         }
 
         return $cacheFile;

@@ -7,6 +7,7 @@ if (!defined('QUIQQER_SYSTEM')) {
 require_once 'bootstrap.php';
 
 use QUI\Projects\Media;
+use QUI\Utils\Security\SvgSanitizer;
 
 /**
  * Send the uniform response for unavailable or inaccessible media.
@@ -22,7 +23,8 @@ function sendMediaNotFound(): never
             'Content-Type',
             'Expires',
             'Last-Modified',
-            'Pragma'
+            'Pragma',
+            'X-Content-Type-Options'
         ] as $header
     ) {
         header_remove($header);
@@ -78,6 +80,53 @@ function sendMediaFile(
         throw new QUI\Exception('Media file not found.', 404);
     }
 
+    $detectedMimeType = getMediaMimeType($path);
+
+    if ($mimeType === '') {
+        $mimeType = $detectedMimeType;
+    }
+
+    $normalizedMimeType = strtolower(trim(explode(';', $mimeType)[0]));
+    $normalizedDetectedMimeType = strtolower(trim(explode(';', $detectedMimeType)[0]));
+    $isSvg = in_array($normalizedMimeType, ['image/svg', 'image/svg+xml'], true)
+        || in_array($normalizedDetectedMimeType, ['image/svg', 'image/svg+xml'], true)
+        || in_array(strtolower((string)pathinfo($path, PATHINFO_EXTENSION)), ['svg', 'svgz'], true);
+
+    if ($isSvg) {
+        $svg = file_get_contents($path);
+        $sanitizedSvg = is_string($svg) ? SvgSanitizer::sanitize($svg) : '';
+        $modified = filemtime($path);
+
+        if ($sanitizedSvg === '' || $modified === false) {
+            throw new QUI\Exception('Invalid SVG media.', 404);
+        }
+
+        $fileSize = strlen($sanitizedSvg);
+
+        QUI::getGlobalResponse()->sendHeaders();
+
+        header('Content-Type: image/svg+xml');
+        header('X-Content-Type-Options: nosniff');
+        header('Content-Length: ' . $fileSize);
+        header('Content-Size: ' . $fileSize);
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $modified) . ' GMT');
+        header('Content-Disposition: inline; filename="' . str_replace('"', '', basename($downloadName)) . '"');
+
+        if ($sharedCacheAllowed) {
+            header('Pragma: public');
+            header('Cache-Control: public, must-revalidate, post-check=0, pre-check=0');
+            header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+        } else {
+            header('Pragma: no-cache');
+            header('Cache-Control: private, no-store, max-age=0');
+            header('Expires: 0');
+            header('Vary: Cookie');
+        }
+
+        echo $sanitizedSvg;
+        exit;
+    }
+
     $Handle = fopen($path, 'rb');
     $fileSize = filesize($path);
     $modified = filemtime($path);
@@ -88,10 +137,6 @@ function sendMediaFile(
         }
 
         throw new QUI\Exception('Media file not readable.', 404);
-    }
-
-    if ($mimeType === '') {
-        $mimeType = getMediaMimeType($path);
     }
 
     if ($mimeType === '') {

@@ -131,6 +131,10 @@ class Frankenphp extends QUI\System\Console\Tool
                 path_regexp bin
             }
 
+            @quiqqer_media_cache_active_document {
+                path_regexp (?i)^/media/cache/.*\.(svgz?|html?|xhtml|xml)$
+            }
+
             @quiqqer_nested_existing {
                 path_regexp ^/.+/.+
                 file {
@@ -191,6 +195,11 @@ class Frankenphp extends QUI\System\Console\Tool
                 }
 
                 # Public static paths from the final htaccess allow-list.
+                handle @quiqqer_media_cache_active_document {
+                    rewrite * /index.php?{query}&_url={path}
+                    $frontControllerPhpDirective
+                }
+
                 handle /.well-known/* {
                     try_files {path} {path}/ /index.php?{query}&_url={path}
                     $frontControllerPhpDirective

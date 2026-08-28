@@ -13,6 +13,7 @@ use QUI\Projects\Media\Image;
 use QUI\Projects\Media\Utils as MediaUtils;
 use QUI\Projects\Project;
 use QUI\Projects\Site;
+use QUI\Utils\Security\SvgSanitizer;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,6 +27,7 @@ use function define;
 use function defined;
 use function explode;
 use function file_exists;
+use function file_get_contents;
 use function http_response_code;
 use function http_build_query;
 use function implode;
@@ -652,6 +654,31 @@ class Rewrite
     {
         if (!is_file($file) || !is_readable($file)) {
             header("HTTP/1.1 404 Not Found");
+            exit;
+        }
+
+        $normalizedMimeType = strtolower(trim(explode(';', (string)$mimeType)[0]));
+        $detectedMimeType = function_exists('mime_content_type') ? (string)mime_content_type($file) : '';
+        $normalizedDetectedMimeType = strtolower(trim(explode(';', $detectedMimeType)[0]));
+        $isSvg = in_array($normalizedMimeType, ['image/svg', 'image/svg+xml'], true)
+            || in_array($normalizedDetectedMimeType, ['image/svg', 'image/svg+xml'], true)
+            || in_array(strtolower((string)pathinfo($file, PATHINFO_EXTENSION)), ['svg', 'svgz'], true);
+
+        if ($isSvg) {
+            $svg = file_get_contents($file);
+            $sanitizedSvg = is_string($svg) ? SvgSanitizer::sanitize($svg) : '';
+
+            if ($sanitizedSvg === '') {
+                header('HTTP/1.1 404 Not Found');
+                header('Content-Length: 0');
+                exit;
+            }
+
+            header('Content-Type: image/svg+xml');
+            header('X-Content-Type-Options: nosniff');
+            header('Content-Length: ' . strlen($sanitizedSvg));
+            header('Content-Disposition: inline; filename="' . basename($file) . '"');
+            echo $sanitizedSvg;
             exit;
         }
 
