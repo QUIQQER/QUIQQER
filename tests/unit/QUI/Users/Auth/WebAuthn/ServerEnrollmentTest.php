@@ -109,6 +109,19 @@ class ServerEnrollmentTest extends TestCase
         self::assertLessThanOrEqual(300, $authorization['expires'] - $authorization['created']);
     }
 
+    public function testOptionalMfaUserIsNotFullyAuthenticatedBeforeSecondaryAuthentication(): void
+    {
+        $Authenticator = $this->createMock(AuthenticatorInterface::class);
+        $Authenticator->method('isSecondaryAuthentication')->willReturn(true);
+        $User = $this->createUser('user-uuid', [$Authenticator]);
+        $Server = new Server($this->createRepository());
+
+        $this->configureEnvironment($User, 2, [$Authenticator::class], true);
+        QUI::getSession()->set('auth-secondary', 0);
+
+        self::assertFalse($Server->isFullyAuthenticatedUser($User));
+    }
+
     public function testRequiredMfaBootstrapReceivesSeparateAuthorization(): void
     {
         $User = $this->createUser('user-uuid');

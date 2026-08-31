@@ -576,7 +576,7 @@ class Server
         QUI::getSession()->remove(self::SESSION_ENROLLMENT);
     }
 
-    private function isFullyAuthenticatedUser(QUI\Interfaces\Users\User $User): bool
+    public function isFullyAuthenticatedUser(QUI\Interfaces\Users\User $User): bool
     {
         $Session = QUI::getSession();
 
