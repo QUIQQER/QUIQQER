@@ -675,11 +675,11 @@ class Media extends QUI\QDOM
             ->fetchAssociative();
 
         if ($result === false) {
-            throw new QUI\Exception('ID ' . $id . ' not found', 404);
+            throw new QUI\Exception('Media file with ID "' . $id . '" not found', 404);
         }
 
         if (QUI::isFrontend() && $result['deleted']) {
-            throw new QUI\Exception('ID ' . $id . ' not found', 404);
+            throw new QUI\Exception('Media file with ID "' . $id . '" not found', 404);
         }
 
 
@@ -785,7 +785,7 @@ class Media extends QUI\QDOM
                 ->fetchAssociative();
 
             if ($result === false) {
-                throw new QUI\Exception('File ' . $filepath . ' not found', 404);
+                throw new QUI\Exception('Media file with path "' . $filepath . '" not found', 404);
             }
 
             $id = (int)$result['id'];
@@ -809,7 +809,7 @@ class Media extends QUI\QDOM
     public function replace(int $id, string $file): QUI\Interfaces\Projects\Media\File
     {
         if (!file_exists($file)) {
-            throw new QUI\Exception('File could not be found', 404);
+            throw new QUI\Exception('Replacement file could not be found in path "' . $file . '"', 404);
         }
 
         // use direct db not the objects, because
@@ -827,11 +827,11 @@ class Media extends QUI\QDOM
 
 
         if ($data === false) {
-            throw new QUI\Exception('File entry not found', 404);
+            throw new QUI\Exception('Media file for replacement with ID "' . $id . '" not found', 404);
         }
 
         if ($data['type'] == 'folder') {
-            throw new QUI\Exception('Only Files can be replaced', 403);
+            throw new QUI\Exception('Folders cannot be replaced by files', 403);
         }
 
         $name = $data['name'];
