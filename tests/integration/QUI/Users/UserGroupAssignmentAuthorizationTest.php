@@ -11,6 +11,7 @@ use QUI;
 use QUI\Ajax;
 use QUI\Interfaces\Users\User as UserInterface;
 use QUI\Permissions\Permission;
+use QUI\Security\CsrfToken;
 use QUI\System\Console\Session as ConsoleSession;
 use ReflectionProperty;
 use Throwable;
@@ -165,6 +166,7 @@ final class UserGroupAssignmentAuthorizationTest extends TestCase
     private function invokeSave(User $User, array $attributes): array
     {
         return QUI::getAjax()->callRequestFunction(self::AJAX_FUNCTION, [
+            '_csrf' => CsrfToken::get(),
             'uid' => $User->getUUID(),
             'attributes' => json_encode($attributes, JSON_THROW_ON_ERROR)
         ]);
