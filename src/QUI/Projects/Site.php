@@ -1835,6 +1835,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function restore(): void
     {
+        $this->checkPermission('quiqqer.projects.site.edit');
+
         QUI::getDataBaseConnection()->update(
             $this->TABLE,
             ['deleted' => 0],
