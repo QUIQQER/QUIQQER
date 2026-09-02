@@ -39,6 +39,10 @@ QUI::getAjax()->registerFunction(
             return $attribute['name'];
         }, $noAutoSave);
 
+        if (array_key_exists('usergroup', $attributes)) {
+            QUI\Permissions\Permission::checkPermission('quiqqer.admin.users.edit');
+        }
+
         foreach ($attributes as $key => $value) {
             if (!in_array($key, $noAutoSave)) {
                 $User->setAttribute($key, $value);
