@@ -12,6 +12,34 @@ use PHPUnit\Framework\TestCase;
 #[PreserveGlobalState(false)]
 final class SettingsAjaxSecurityTest extends TestCase
 {
+    public function testAliasedCoreConfigPathRequiresNonceWhenSaving(): void
+    {
+        \QUI::$Ajax = new Ajax();
+
+        $coreDirectory = dirname(__DIR__, 3);
+        require $coreDirectory . '/admin/ajax/settings/save.php';
+
+        $callable = Ajax::getRegisteredCallables()['ajax_settings_save']['callable'];
+        $aliasedConfigFile = $coreDirectory . '/admin/settings/../settings/conf.xml';
+
+        self::assertStringNotContainsString(
+            'quiqqer/core/admin/settings/conf.xml',
+            $aliasedConfigFile
+        );
+        self::assertSame(
+            realpath($coreDirectory . '/admin/settings/conf.xml'),
+            realpath($aliasedConfigFile)
+        );
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Could not save QUIQQER config');
+
+        $callable(
+            json_encode($aliasedConfigFile, JSON_THROW_ON_ERROR),
+            json_encode([], JSON_THROW_ON_ERROR)
+        );
+    }
+
     public function testAliasedCoreConfigPathKeepsSensitiveSettingsHidden(): void
     {
         \QUI::$Ajax = new Ajax();
