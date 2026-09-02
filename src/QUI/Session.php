@@ -60,6 +60,7 @@ class Session
 
     private const CLIENT_PROTECTED_KEY_PREFIXES = [
         'auth',
+        'quiqqer.security.',
         'session_master_',
         'session_log_'
     ];

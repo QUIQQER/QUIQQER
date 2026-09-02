@@ -6,7 +6,7 @@
  * @param \QUI\QDOM $File - Name of the Package
  */
 
-QUI::getAjax()->registerFunction(
+QUI::getAjax()->registerCsrfProtectedFunction(
     'ajax_system_packages_upload_package',
     static function ($File): void {
         /* @var $File \QUI\QDOM */

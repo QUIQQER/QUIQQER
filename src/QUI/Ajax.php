@@ -10,6 +10,7 @@ use PDOException;
 use QUI;
 
 use function array_filter;
+use function array_key_exists;
 use function array_slice;
 use function call_user_func;
 use function call_user_func_array;
@@ -55,6 +56,13 @@ class Ajax extends QUI\QDOM
     protected static array $callables = [];
 
     /**
+     * AJAX functions that require a CSRF token outside the backend dispatcher.
+     *
+     * @var array<string, true>
+     */
+    protected static array $csrfProtectedFunctions = [];
+
+    /**
      * registered permissions from available ajax functions
      *
      * @var array<string, mixed>
@@ -68,6 +76,11 @@ class Ajax extends QUI\QDOM
      * @var array<string, array<array-key, mixed>>
      */
     protected array $jsCallbacks = [];
+
+    /**
+     * Whether the current HTTP request has passed CSRF validation.
+     */
+    private bool $csrfValidated = false;
 
     /**
      * @param array<array-key, mixed> $params
@@ -146,6 +159,32 @@ class Ajax extends QUI\QDOM
     }
 
     /**
+     * Register an AJAX function that always requires a valid CSRF token.
+     *
+     * This is intended for administrative callbacks reached through a shared
+     * dispatcher, such as the upload endpoint, where QUI::isBackend() is false.
+     *
+     * @param string $name - Name of the function
+     * @param callable $function - Function
+     * @param bool|array<array-key, mixed> $reg_vars - Variables of the function
+     * @param bool|array<array-key, mixed>|string $user_perm - permissions / rights
+     */
+    public static function registerCsrfProtectedFunction(
+        string $name,
+        callable $function,
+        bool|array $reg_vars = [],
+        bool|array|string $user_perm = false
+    ): bool {
+        $registered = self::registerFunction($name, $function, $reg_vars, $user_perm);
+
+        if ($registered) {
+            self::$csrfProtectedFunctions[$name] = true;
+        }
+
+        return $registered;
+    }
+
+    /**
      * @return array<string, array<array-key, mixed>>
      */
     public static function getRegisteredFunctions(): array
@@ -188,6 +227,10 @@ class Ajax extends QUI\QDOM
         foreach ($_rfs as $_rf) {
             $_rf = QUI\Utils\Security\Orthos::clear($_rf);
             $result[$_rf] = $this->callRequestFunction($_rf);
+        }
+
+        if (self::isBackendCsrfProtectionRequired()) {
+            $result['csrfToken'] = Security\CsrfToken::get();
         }
 
         $SymfonySession = QUI::getSession()->getSymfonySession();
@@ -397,6 +440,21 @@ class Ajax extends QUI\QDOM
             );
         }
 
+        if (self::isCsrfProtectionRequired($_rf) && !$this->csrfValidated) {
+            $csrfToken = $_REQUEST['_csrf'] ?? null;
+
+            if (is_array($values) && array_key_exists('_csrf', $values)) {
+                $csrfToken = $values['_csrf'];
+            }
+
+            try {
+                Security\CsrfToken::assertValid($csrfToken);
+                $this->csrfValidated = true;
+            } catch (\Exception $Exception) {
+                return $this->writeException($Exception);
+            }
+        }
+
         // Rechte prüfung
         try {
             self::checkPermissions($_rf);
@@ -484,6 +542,23 @@ class Ajax extends QUI\QDOM
         }
 
         return $return;
+    }
+
+    public static function isBackendCsrfProtectionRequired(): bool
+    {
+        if (!QUI::isBackend()) {
+            return false;
+        }
+
+        $User = QUI::getUserBySession();
+
+        return QUI::getUsers()->isAuth($User);
+    }
+
+    private static function isCsrfProtectionRequired(string $function): bool
+    {
+        return self::isBackendCsrfProtectionRequired()
+            || isset(self::$csrfProtectedFunctions[$function]);
     }
 
     /**
