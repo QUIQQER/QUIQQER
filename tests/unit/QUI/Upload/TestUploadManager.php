@@ -39,6 +39,11 @@ class TestUploadManager extends Manager
         $this->appendUploadData($filename, $data);
     }
 
+    public function runCallback(string $function): mixed
+    {
+        return $this->callFunction($function);
+    }
+
     /**
      * @param array<string, mixed> $params
      */

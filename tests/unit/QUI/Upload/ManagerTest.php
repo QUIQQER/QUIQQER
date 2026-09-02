@@ -12,19 +12,26 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
 use function bin2hex;
+use function count;
 use function dirname;
+use function explode;
 use function file_get_contents;
 use function file_put_contents;
 use function is_dir;
 use function link;
+use function ltrim;
 use function mkdir;
 use function random_bytes;
 use function rawurldecode;
 use function rmdir;
+use function str_replace;
 use function str_repeat;
+use function substr;
 use function symlink;
 use function sys_get_temp_dir;
+use function trim;
 use function unlink;
+use function var_export;
 
 use const DIRECTORY_SEPARATOR;
 
@@ -151,6 +158,31 @@ class ManagerTest extends TestCase
 
         $this->expectException(QUI\Exception::class);
         $this->Manager->upload();
+    }
+
+    public function testCallbackTraversalCannotIncludePhpOutsideHandlerRoot(): void
+    {
+        $payloadFile = $this->temporaryDirectory . '/callback-payload.php';
+        $markerFile = $this->temporaryDirectory . '/callback-executed';
+        $payload = '<?php file_put_contents('
+            . var_export($markerFile, true)
+            . ", 'executed');";
+        file_put_contents($payloadFile, $payload);
+
+        $callbackRoot = trim(OPT_DIR . 'quiqqer/core/admin/ajax', DIRECTORY_SEPARATOR);
+        $rootLevels = count(explode(DIRECTORY_SEPARATOR, $callbackRoot));
+        $relativePayload = str_repeat('..' . DIRECTORY_SEPARATOR, $rootLevels)
+            . ltrim(substr($payloadFile, 0, -4), DIRECTORY_SEPARATOR);
+        $callback = 'ajax_' . str_replace(DIRECTORY_SEPARATOR, '_', $relativePayload);
+
+        try {
+            $this->Manager->runCallback($callback);
+            self::fail('Upload callback traversal was accepted.');
+        } catch (QUI\Exception $Exception) {
+            self::assertSame(404, $Exception->getCode());
+        }
+
+        self::assertFileDoesNotExist($markerFile);
     }
 
     public function testResolvedDataAndMetadataPathsAreDirectChildren(): void

@@ -10,7 +10,6 @@ use QUI;
 use QUI\Exception;
 use QUI\Permissions\Permission;
 use QUI\QDOM;
-use QUI\Utils\Security\Orthos;
 use QUI\Utils\System\File;
 use QUI\Utils\System\File as QUIFile;
 
@@ -104,44 +103,150 @@ class Manager
             );
         }
 
+        $callbackFile = $this->getCallbackFile($function);
+        require_once $callbackFile;
+
+        $_REQUEST = array_merge($_REQUEST, $params, [
+            '_rf' => '["' . $function . '"]'
+        ]);
+
+        return QUI::getAjax()->callRequestFunction($function, $_REQUEST);
+    }
+
+    /**
+     * Resolve an upload callback only inside a registered Core or package AJAX directory.
+     *
+     * @throws Exception
+     */
+    protected function getCallbackFile(string $function): string
+    {
         if (str_starts_with($function, 'ajax_')) {
-            // if the function is an ajax_function
-            $_rf_file = OPT_DIR . 'quiqqer/core/admin/' . str_replace('_', '/', $function) . '.php';
-            $_rf_file = Orthos::clearPath((string)realpath($_rf_file));
-
-            if (file_exists($_rf_file)) {
-                require_once $_rf_file;
-            }
-
-            $_REQUEST = array_merge($_REQUEST, $params, [
-                '_rf' => '["' . $function . '"]'
-            ]);
-
-            return QUI::getAjax()->callRequestFunction($function, $_REQUEST);
+            return $this->resolveCallbackFile(
+                OPT_DIR . 'quiqqer/core/admin/ajax',
+                substr($function, strlen('ajax_')),
+                $function
+            );
         }
 
         if (str_starts_with($function, 'package_')) {
-            $dir = OPT_DIR;
-            $file = substr(str_replace('_', '/', $function), 8) . '.php';
+            $package = $this->getCallbackPackage($function);
+            $prefix = 'package_' . str_replace('/', '_', $package) . '_ajax_';
 
-            $_rf_file = $dir . $file;
-            $_rf_file = Orthos::clearPath((string)realpath($_rf_file));
-
-            if (file_exists($_rf_file)) {
-                require_once $_rf_file;
-            }
-
-            $_REQUEST = array_merge($_REQUEST, $params, [
-                '_rf' => '["' . $function . '"]'
-            ]);
-
-            return QUI::getAjax()->callRequestFunction($function, $_REQUEST);
+            return $this->resolveCallbackFile(
+                OPT_DIR . $package . '/ajax',
+                substr($function, strlen($prefix)),
+                $function
+            );
         }
 
-        throw new Exception(
-            'Function ' . $function . ' not found',
-            404
-        );
+        throw new Exception('Function ' . $function . ' not found', 404);
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function resolveCallbackFile(string $root, string $handler, string $function): string
+    {
+        if (!preg_match('/\A[A-Za-z0-9-]+(?:_[A-Za-z0-9-]+)*\z/D', $handler)) {
+            throw new Exception('Function ' . $function . ' not found', 404);
+        }
+
+        $canonicalRoot = realpath($root);
+
+        if ($canonicalRoot === false || !is_dir($canonicalRoot)) {
+            throw new Exception('Function ' . $function . ' not found', 404);
+        }
+
+        $callbackFile = $canonicalRoot . DIRECTORY_SEPARATOR
+            . str_replace('_', DIRECTORY_SEPARATOR, $handler) . '.php';
+        $canonicalCallbackFile = realpath($callbackFile);
+        $rootPrefix = rtrim($canonicalRoot, '/\\') . DIRECTORY_SEPARATOR;
+
+        if (
+            $canonicalCallbackFile === false
+            || !is_file($canonicalCallbackFile)
+            || !str_starts_with($canonicalCallbackFile, $rootPrefix)
+        ) {
+            throw new Exception('Function ' . $function . ' not found', 404);
+        }
+
+        return $canonicalCallbackFile;
+    }
+
+    /**
+     * Determine the package belonging to a package callback. Older upload clients
+     * do not always send the package parameter, so installed packages are used as
+     * the server-side registry for that compatibility path.
+     *
+     * @throws Exception
+     */
+    private function getCallbackPackage(string $function): string
+    {
+        if (array_key_exists('package', $_REQUEST)) {
+            if (!is_string($_REQUEST['package'])) {
+                throw new Exception('Function ' . $function . ' not found', 404);
+            }
+
+            $package = $_REQUEST['package'];
+            $this->validateCallbackPackage($package, $function);
+
+            return $package;
+        }
+
+        $matchedPackage = '';
+        $matchedPrefixLength = 0;
+
+        foreach (QUI::getPackageManager()->getInstalled() as $installedPackage) {
+            $package = $installedPackage['name'] ?? null;
+
+            if (!is_string($package)) {
+                continue;
+            }
+
+            $prefix = 'package_' . str_replace('/', '_', $package) . '_ajax_';
+
+            if (!str_starts_with($function, $prefix) || strlen($prefix) <= $matchedPrefixLength) {
+                continue;
+            }
+
+            $matchedPackage = $package;
+            $matchedPrefixLength = strlen($prefix);
+        }
+
+        if ($matchedPackage === '') {
+            throw new Exception('Function ' . $function . ' not found', 404);
+        }
+
+        $this->validateCallbackPackage($matchedPackage, $function);
+
+        return $matchedPackage;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function validateCallbackPackage(string $package, string $function): void
+    {
+        $parts = explode('/', $package);
+        $isValidPackage = count($parts) === 2;
+
+        foreach ($parts as $part) {
+            if (
+                $part === ''
+                || $part === '.'
+                || $part === '..'
+                || !preg_match('/\A[A-Za-z0-9][A-Za-z0-9_.-]*\z/D', $part)
+            ) {
+                $isValidPackage = false;
+                break;
+            }
+        }
+
+        $prefix = 'package_' . str_replace('/', '_', $package) . '_ajax_';
+
+        if (!$isValidPackage || !str_starts_with($function, $prefix)) {
+            throw new Exception('Function ' . $function . ' not found', 404);
+        }
     }
 
     /**
