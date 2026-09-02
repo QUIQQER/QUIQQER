@@ -17,6 +17,7 @@ QUI::getAjax()->registerFunction(
         $Media = $Project->getMedia();
         $Trash = $Media->getTrash();
         $Folder = $Media->get($parentid);
+        $PermissionUser = QUI::getUserBySession();
 
         if (!QUI\Projects\Media\Utils::isFolder($Folder)) {
             throw new QUI\Exception(
@@ -28,7 +29,7 @@ QUI::getAjax()->registerFunction(
 
         foreach ($ids as $id) {
             if ($Folder instanceof QUI\Projects\Media\Folder) {
-                $Trash->restore($id, $Folder);
+                $Trash->restore($id, $Folder, $PermissionUser);
             }
         }
     },

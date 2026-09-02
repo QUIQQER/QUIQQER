@@ -5,6 +5,7 @@ namespace QUI\MCP\Project\Trash;
 use Mcp\Schema\Result\CallToolResult;
 use Mcp\Server\Builder;
 use QUI;
+use QUI\AI\MCP\Server;
 use QUI\AI\MCP\ToolHelper;
 use QUI\Projects\Media\Folder;
 use Throwable;
@@ -34,7 +35,11 @@ class RestoreMedia extends AbstractTrashTool
                     $restored = [];
 
                     foreach ($ids as $id) {
-                        $Item = $Media->getTrash()->restore($id, $Parent);
+                        $Item = $Media->getTrash()->restore(
+                            $id,
+                            $Parent,
+                            Server::getRequestUser()
+                        );
                         $restored[] = [
                             'previousId' => $id,
                             'item' => self::parseMediaItem($Item, true)
