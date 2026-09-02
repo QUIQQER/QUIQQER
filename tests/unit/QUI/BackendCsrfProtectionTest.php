@@ -88,15 +88,18 @@ final class BackendCsrfProtectionTest extends TestCase
         self::assertTrue($result['result']);
     }
 
-    public function testExplicitlyProtectedSharedDispatcherRequestWithoutTokenIsRejected(): void
+    public function testAdminFunctionViaSharedDispatcherWithoutTokenIsRejected(): void
     {
+        $this->enableAuthenticatedSession();
         $Ajax = new Ajax();
         $called = false;
-        $Ajax::registerCsrfProtectedFunction(
+        $Ajax::registerFunction(
             'test_shared_dispatcher_csrf',
             static function () use (&$called): void {
                 $called = true;
-            }
+            },
+            [],
+            'Permission::checkAdminUser'
         );
 
         $result = $Ajax->callRequestFunction('test_shared_dispatcher_csrf');
@@ -105,12 +108,15 @@ final class BackendCsrfProtectionTest extends TestCase
         self::assertSame(403, $result['Exception']['code']);
     }
 
-    public function testExplicitlyProtectedSharedDispatcherRequestWithTokenIsAccepted(): void
+    public function testAdminFunctionViaSharedDispatcherWithTokenIsAccepted(): void
     {
+        $this->enableAuthenticatedSession();
         $Ajax = new Ajax();
-        $Ajax::registerCsrfProtectedFunction(
+        $Ajax::registerFunction(
             'test_shared_dispatcher_csrf',
-            static fn(): bool => true
+            static fn(): bool => true,
+            [],
+            'Permission::checkAdminUser'
         );
 
         $result = $Ajax->callRequestFunction(
@@ -124,8 +130,16 @@ final class BackendCsrfProtectionTest extends TestCase
     private function enableAuthenticatedBackendRequest(): void
     {
         define('QUIQQER_BACKEND', true);
+        $this->enableAuthenticatedSession();
+    }
+
+    private function enableAuthenticatedSession(): void
+    {
         $Users = \QUI::getUsers();
+        $User = $this->createMock(Users\User::class);
+        $User->method('getUUID')->willReturn('backend-csrf-test-user');
+        $User->method('isSU')->willReturn(true);
         $SessionProperty = new ReflectionProperty($Users, 'Session');
-        $SessionProperty->setValue($Users, $Users->getSystemUser());
+        $SessionProperty->setValue($Users, $User);
     }
 }

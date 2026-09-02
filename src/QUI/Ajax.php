@@ -56,13 +56,6 @@ class Ajax extends QUI\QDOM
     protected static array $callables = [];
 
     /**
-     * AJAX functions that require a CSRF token outside the backend dispatcher.
-     *
-     * @var array<string, true>
-     */
-    protected static array $csrfProtectedFunctions = [];
-
-    /**
      * registered permissions from available ajax functions
      *
      * @var array<string, mixed>
@@ -156,32 +149,6 @@ class Ajax extends QUI\QDOM
         }
 
         return true;
-    }
-
-    /**
-     * Register an AJAX function that always requires a valid CSRF token.
-     *
-     * This is intended for administrative callbacks reached through a shared
-     * dispatcher, such as the upload endpoint, where QUI::isBackend() is false.
-     *
-     * @param string $name - Name of the function
-     * @param callable $function - Function
-     * @param bool|array<array-key, mixed> $reg_vars - Variables of the function
-     * @param bool|array<array-key, mixed>|string $user_perm - permissions / rights
-     */
-    public static function registerCsrfProtectedFunction(
-        string $name,
-        callable $function,
-        bool|array $reg_vars = [],
-        bool|array|string $user_perm = false
-    ): bool {
-        $registered = self::registerFunction($name, $function, $reg_vars, $user_perm);
-
-        if ($registered) {
-            self::$csrfProtectedFunctions[$name] = true;
-        }
-
-        return $registered;
     }
 
     /**
@@ -557,8 +524,33 @@ class Ajax extends QUI\QDOM
 
     private static function isCsrfProtectionRequired(string $function): bool
     {
-        return self::isBackendCsrfProtectionRequired()
-            || isset(self::$csrfProtectedFunctions[$function]);
+        if (self::isBackendCsrfProtectionRequired()) {
+            return true;
+        }
+
+        $User = QUI::getUserBySession();
+
+        if (!QUI::getUsers()->isAuth($User)) {
+            return false;
+        }
+
+        $permissions = self::$permissions[$function] ?? [];
+
+        if (is_string($permissions)) {
+            $permissions = [$permissions];
+        }
+
+        if (!is_array($permissions)) {
+            return false;
+        }
+
+        foreach ($permissions as $permission) {
+            if ($permission === 'Permission::checkAdminUser') {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
