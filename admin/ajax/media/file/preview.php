@@ -21,7 +21,10 @@ QUI::getAjax()->registerFunction(
             exit;
         }
 
-        QUI\Utils\System\File::fileHeader($File->getFullPath());
+        QUI\Rewrite::sendFileWithRange(
+            $File->getFullPath(),
+            (string)$File->getAttribute('mime_type')
+        );
     },
     ['project', 'fileid'],
     'Permission::checkAdminUser'

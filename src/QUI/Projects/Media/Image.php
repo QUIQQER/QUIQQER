@@ -47,6 +47,8 @@ use function sha1_file;
 use function str_replace;
 use function strlen;
 use function substr;
+use function sys_get_temp_dir;
+use function tempnam;
 use function unlink;
 use function wordwrap;
 
@@ -863,6 +865,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     {
         $SessionUser = QUI::getUserBySession();
         $external = $this->getAttribute('external');
+        $temporaryFile = null;
 
         if (empty($external)) {
             return;
@@ -872,10 +875,56 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             $file = QUI\Utils\Request\Url::get($external);
             $original = $this->getFullPath();
 
-            file_put_contents($original, $file);
+            if (!is_string($file) || $file === '') {
+                throw new QUI\Exception('The external image response is empty.');
+            }
+
+            $temporaryFile = tempnam(sys_get_temp_dir(), 'quiqqer-external-image-');
+
+            if ($temporaryFile === false || file_put_contents($temporaryFile, $file) === false) {
+                throw new QUI\Exception('The external image could not be validated.');
+            }
+
+            $fileInfo = FileUtils::getInfo($temporaryFile);
+            $mimeType = (string)($fileInfo['mime_type'] ?? '');
+            $mustBeSvg = in_array($mimeType, ['image/svg', 'image/svg+xml'], true);
+            $mayBeSvg = $mustBeSvg || in_array(
+                $mimeType,
+                ['application/xml', 'application/xhtml+xml', 'text/html', 'text/plain', 'text/xml'],
+                true
+            );
+            $sanitizedSvg = null;
+
+            if ($mayBeSvg) {
+                $sanitized = SvgSanitizer::sanitize($file);
+
+                if ($sanitized !== '') {
+                    $sanitizedSvg = $sanitized;
+                    $file = $sanitized;
+
+                    if (file_put_contents($temporaryFile, $sanitizedSvg) === false) {
+                        throw new QUI\Exception('The external SVG could not be sanitized.');
+                    }
+
+                    $fileInfo = FileUtils::getInfo($temporaryFile);
+                    $fileInfo['mime_type'] = 'image/svg+xml';
+                    $mimeType = 'image/svg+xml';
+                }
+            }
+
+            if ($mustBeSvg && $sanitizedSvg === null) {
+                throw new QUI\Exception('The external SVG is invalid.', ErrorCodes::FILE_IMAGE_CORRUPT);
+            }
+
+            if (MediaUtils::getMediaTypeByMimeType($mimeType) !== 'image') {
+                throw new QUI\Exception('The external resource is not an image.', ErrorCodes::FILE_IMAGE_CORRUPT);
+            }
+
+            if (file_put_contents($original, $file) === false) {
+                throw new QUI\Exception('The external image could not be stored.');
+            }
 
             // update image dimensions
-            $fileInfo = FileUtils::getInfo($original);
             $imageWidth = null;
             $imageHeight = null;
 
@@ -904,6 +953,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             $this->deleteCache();
         } catch (QUI\Exception) {
             $this->deactivate();
+        } finally {
+            if (is_string($temporaryFile) && file_exists($temporaryFile)) {
+                unlink($temporaryFile);
+            }
         }
     }
 
