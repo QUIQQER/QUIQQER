@@ -81,12 +81,12 @@ class Permission
         $Manager = QUI::getPermissionManager();
         $permissions = $Manager->getPermissions($User);
 
-        // An explicitly stored user value takes precedence over group values.
-        if (isset($permissions[$perm])) {
-            if (!empty($permissions[$perm])) {
-                return $permissions[$perm];
-            }
-        } else {
+        if (!empty($permissions[$perm])) {
+            return $permissions[$perm];
+        }
+
+        // An explicitly stored user denial takes precedence over group values.
+        if (!($User instanceof QUI\Users\User && isset($permissions[$perm]))) {
             $groups = $User->getGroups();
 
             foreach ($groups as $Group) {
