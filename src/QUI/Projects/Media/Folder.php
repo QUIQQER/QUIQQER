@@ -1282,6 +1282,11 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 'quiqqer.projects.media.upload',
                 $EditUser
             );
+
+            $this->checkPermission(
+                'quiqqer.projects.media.upload',
+                $EditUser
+            );
         }
 
         if (!file_exists($file)) {
