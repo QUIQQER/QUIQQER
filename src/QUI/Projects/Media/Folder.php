@@ -356,6 +356,13 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         QUI\Projects\Media\Folder $Folder,
         null | QUI\Interfaces\Users\User $PermissionUser = null
     ): void {
+        $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
+        $Folder->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
+
+        if ($this->getId() === $Folder->getId() || in_array($this->getId(), $Folder->getParentIds(), true)) {
+            throw new QUI\Exception('A folder cannot be moved into itself or one of its descendants.');
+        }
+
         $Parent = $this->getParent();
 
         if ($Folder->getId() === $Parent->getId()) {
@@ -379,53 +386,92 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         $old_path = StringUtils::replaceDblSlashes($old_path);
         $new_path = StringUtils::replaceDblSlashes($new_path);
+        $oldFullPath = $this->Media->getFullPath() . $old_path;
+        $newFullPath = $this->Media->getFullPath() . $new_path;
+        $filesystemMoved = false;
 
-        // update children paths
-        $Connection->createQueryBuilder()
-            ->update($Platform->quoteSingleIdentifier($this->Media->getTable()))
-            ->set(
-                $Platform->quoteSingleIdentifier("file"),
-                "REPLACE(" . $Platform->quoteSingleIdentifier("file") . ", :oldpath, :newpath)"
-            )
-            ->where($Platform->quoteSingleIdentifier("file") . " LIKE :search")
-            ->setParameter("oldpath", StringUtils::replaceDblSlashes($old_path . "/"))
-            ->setParameter("newpath", StringUtils::replaceDblSlashes($new_path . "/"))
-            ->setParameter("search", $old_path . "%")
-            ->executeStatement();
+        try {
+            $Connection->transactional(function () use (
+                $Connection,
+                $Platform,
+                $old_path,
+                $new_path,
+                $oldFullPath,
+                $newFullPath,
+                $Parent,
+                $Folder,
+                &$filesystemMoved
+            ): void {
+                // update children paths
+                $Connection->createQueryBuilder()
+                    ->update($Platform->quoteSingleIdentifier($this->Media->getTable()))
+                    ->set(
+                        $Platform->quoteSingleIdentifier("file"),
+                        "REPLACE(" . $Platform->quoteSingleIdentifier("file") . ", :oldpath, :newpath)"
+                    )
+                    ->where($Platform->quoteSingleIdentifier("file") . " LIKE :search")
+                    ->setParameter("oldpath", StringUtils::replaceDblSlashes($old_path . "/"))
+                    ->setParameter("newpath", StringUtils::replaceDblSlashes($new_path . "/"))
+                    ->setParameter("search", $old_path . "%")
+                    ->executeStatement();
 
-        // update me
-        $file = StringUtils::replaceDblSlashes($new_path . '/');
+                // update me
+                $file = StringUtils::replaceDblSlashes($new_path . '/');
 
+                $Connection->update(
+                    $this->Media->getTable(),
+                    [
+                        'file' => $file,
+                        'pathHash' => md5($file)
+                    ],
+                    ['id' => $this->getId()]
+                );
 
-        QUI::getDataBaseConnection()->update(
-            $this->Media->getTable(),
-            [
-                'file' => $file,
-                'pathHash' => md5($file)
-            ],
-            ['id' => $this->getId()]
-        );
+                // set the new parent relationship
+                $updatedRelations = $Connection->update(
+                    $this->Media->getTable('relations'),
+                    [
+                        'parent' => $Folder->getId()
+                    ],
+                    [
+                        'parent' => $Parent->getId(),
+                        'child' => $this->getId()
+                    ]
+                );
 
-        // set the new parent relationship
-        QUI::getDataBaseConnection()->update(
-            $this->Media->getTable('relations'),
-            [
-                'parent' => $Folder->getId()
-            ],
-            [
-                'parent' => $Parent->getId(),
-                'child' => $this->getId()
-            ]
-        );
+                if ((int)$updatedRelations !== 1) {
+                    throw new QUI\Exception('Could not update the media folder parent relation.');
+                }
 
-        FileUtils::move(
-            $this->Media->getFullPath() . $old_path,
-            $this->Media->getFullPath() . $new_path
-        );
+                if (!FileUtils::move($oldFullPath, $newFullPath)) {
+                    throw new QUI\Exception('Could not move media folder on the filesystem.');
+                }
+
+                $filesystemMoved = true;
+            });
+        } catch (\Throwable $Exception) {
+            if ($filesystemMoved) {
+                try {
+                    if (!FileUtils::move($newFullPath, $oldFullPath)) {
+                        throw new QUI\Exception('Could not roll back media folder move on the filesystem.');
+                    }
+                } catch (\Throwable $RollbackException) {
+                    throw new QUI\Exception(
+                        'Media folder move failed and its filesystem rollback could not be completed.',
+                        500,
+                        ['rollbackException' => $RollbackException->getMessage()],
+                        $Exception
+                    );
+                }
+            }
+
+            throw $Exception;
+        }
 
         // @todo rename cache instead of delete
         $this->deleteCache();
-        $this->setAttribute('file', $new_path);
+        $this->setAttribute('file', StringUtils::replaceDblSlashes($new_path . '/'));
+        $this->parent_id = $Folder->getId();
     }
 
     /**

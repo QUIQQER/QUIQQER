@@ -1423,8 +1423,14 @@ abstract class Item extends QUI\QDOM
 
         $parents = [];
         $id = $this->getId();
+        $visited = [$id => true];
 
-        while ($id = $this->Media->getParentIdFrom($id)) {
+        while (($id = $this->Media->getParentIdFrom($id)) !== false) {
+            if (isset($visited[$id])) {
+                throw new QUI\Exception('Cycle detected in the media folder hierarchy.');
+            }
+
+            $visited[$id] = true;
             $parents[] = $id;
         }
 
