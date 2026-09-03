@@ -18,7 +18,10 @@ use function array_flip;
 use function array_keys;
 use function array_map;
 use function array_merge;
+use function array_search;
+use function array_slice;
 use function array_unique;
+use function array_values;
 use function chr;
 use function class_exists;
 use function count;
@@ -46,6 +49,7 @@ use function rtrim;
 use function sort;
 use function str_repeat;
 use function str_replace;
+use function str_starts_with;
 use function strtolower;
 use function strlen;
 use function time;
@@ -897,7 +901,8 @@ class Console
                 }
 
                 $this->systemToolExitCode = $this->passwordReset(
-                    $this->getPasswordResetIdentifierArgument()
+                    $this->getPasswordResetIdentifierArgument(),
+                    (bool)$this->getArgument('no-interaction')
                 );
                 return;
 
@@ -971,13 +976,14 @@ class Console
      * Initiates a password reset
      *
      * @param string|null $identifier Optional username or UUID; requested interactively if omitted
+     * @param bool $noInteraction Skip confirmation prompts; requires an identifier
      *
      * @throws QUI\Database\Exception
      * @throws ExceptionStack
      * @throws QUI\Permissions\Exception
      * @throws QUI\Users\Exception
      */
-    protected function passwordReset(?string $identifier = null): int
+    protected function passwordReset(?string $identifier = null, bool $noInteraction = false): int
     {
         $this->writeLn(
             QUI::getLocale()->get(
@@ -994,6 +1000,12 @@ class Console
             "yellow"
         );
         $this->clearMsg();
+
+        if ($identifier === null && $noInteraction) {
+            $this->writePasswordResetMessage('console.tool.passwordreset.identifier.required', 'red');
+
+            return self::PASSWORD_RESET_EXIT_CANCELLED;
+        }
 
         if ($identifier === null) {
             $this->writeLn(
@@ -1034,43 +1046,44 @@ class Console
             return self::PASSWORD_RESET_EXIT_RUNTIME_FAILURE;
         }
 
-        // Confirmation
-        $this->writeLn(
-            QUI::getLocale()->get(
-                "quiqqer/core",
-                "console.tool.passwordreset.prompt.confirm",
-                [
-                    "username" => $username,
-                    "uuid" => $uuid
-                ]
-            ) . ' '
-        );
+        if (!$noInteraction) {
+            $this->writeLn(
+                QUI::getLocale()->get(
+                    "quiqqer/core",
+                    "console.tool.passwordreset.prompt.confirm",
+                    [
+                        "username" => $username,
+                        "uuid" => $uuid
+                    ]
+                ) . ' '
+            );
 
-        $confirm = strtolower(trim($this->readInput()));
+            $confirm = strtolower(trim($this->readInput()));
 
-        if ($confirm !== "y") {
-            $this->writePasswordResetMessage('console.tool.passwordreset.cancelled', 'red');
+            if ($confirm !== "y") {
+                $this->writePasswordResetMessage('console.tool.passwordreset.cancelled', 'red');
 
-            return self::PASSWORD_RESET_EXIT_CANCELLED;
-        }
+                return self::PASSWORD_RESET_EXIT_CANCELLED;
+            }
 
-        $this->writeLn(
-            QUI::getLocale()->get(
-                "quiqqer/core",
-                "console.tool.passwordreset.prompt.confirm2",
-                [
-                    "username" => $username
-                ]
-            ) . ' ',
-            "yellow"
-        );
+            $this->writeLn(
+                QUI::getLocale()->get(
+                    "quiqqer/core",
+                    "console.tool.passwordreset.prompt.confirm2",
+                    [
+                        "username" => $username
+                    ]
+                ) . ' ',
+                "yellow"
+            );
 
-        $confirm = strtolower(trim($this->readInput()));
+            $confirm = strtolower(trim($this->readInput()));
 
-        if ($confirm !== "y") {
-            $this->writePasswordResetMessage('console.tool.passwordreset.cancelled', 'red');
+            if ($confirm !== "y") {
+                $this->writePasswordResetMessage('console.tool.passwordreset.cancelled', 'red');
 
-            return self::PASSWORD_RESET_EXIT_CANCELLED;
+                return self::PASSWORD_RESET_EXIT_CANCELLED;
+            }
         }
 
         try {
@@ -1100,17 +1113,19 @@ class Console
         $arguments = array_values($_SERVER['argv']);
         $toolIndex = array_search('password-reset', $arguments, true);
 
-        if ($toolIndex === false || !isset($arguments[$toolIndex + 1])) {
+        if ($toolIndex === false) {
             return null;
         }
 
-        $identifier = $arguments[$toolIndex + 1];
+        foreach (array_slice($arguments, $toolIndex + 1) as $argument) {
+            if (str_starts_with($argument, '-')) {
+                continue;
+            }
 
-        if (str_starts_with($identifier, '-')) {
-            return null;
+            return $argument;
         }
 
-        return $identifier;
+        return null;
     }
 
     /**

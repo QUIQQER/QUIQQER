@@ -79,6 +79,10 @@ final class ConsolePasswordResetTest extends TestCase
                 '[password]',
                 $this->getLocaleText($language, 'console.tool.passwordreset.success')
             );
+            self::assertStringContainsString(
+                '--no-interaction',
+                $this->getLocaleText($language, 'console.tool.passwordreset.identifier.required')
+            );
         }
     }
 
@@ -140,6 +144,44 @@ final class ConsolePasswordResetTest extends TestCase
         );
         self::assertStringNotContainsString('Username or UUID:', $Console->output);
         self::assertSame(2, preg_match_all('/\(y\/[Nn]\) /', $Console->output));
+    }
+
+    public function testNoInteractionSkipsAllPrompts(): void
+    {
+        $uuid = '9c506425-4d2f-46bb-8901-8a6dd718a6d1';
+        [$Users, $User, $SystemUser] = $this->createUserManager('alice', $uuid);
+
+        $Users->expects(self::once())->method('getUserByName')->with('alice')->willReturn($User);
+        $Users->method('getSystemUser')->willReturn($SystemUser);
+        $this->expectPasswordChange($User, $SystemUser);
+
+        QUI::$Users = $Users;
+        $Console = new PasswordResetTestConsole([]);
+
+        self::assertSame(
+            Console::PASSWORD_RESET_EXIT_SUCCESS,
+            $Console->runPasswordReset('alice', true)
+        );
+        self::assertStringNotContainsString('Username or UUID:', $Console->output);
+        self::assertStringNotContainsString('(y/N)', $Console->output);
+    }
+
+    public function testNoInteractionRequiresIdentifier(): void
+    {
+        $Users = $this->createMock(Manager::class);
+        $Users->expects(self::never())->method('getUserByName');
+        $Users->expects(self::never())->method('get');
+        QUI::$Users = $Users;
+
+        $Console = new PasswordResetTestConsole([]);
+
+        self::assertSame(
+            Console::PASSWORD_RESET_EXIT_CANCELLED,
+            $Console->runPasswordReset(null, true)
+        );
+        self::assertNotEmpty($Console->output);
+        self::assertStringNotContainsString('Username or UUID:', $Console->output);
+        self::assertStringNotContainsString('(y/N)', $Console->output);
     }
 
     public function testUnknownUserReturnsDocumentedStatus(): void

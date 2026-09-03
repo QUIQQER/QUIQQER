@@ -84,6 +84,28 @@ final class ConsolePasswordResetIntegrationTest extends TestCase
         $User->refresh();
         self::assertFalse($User->checkPassword($passwordBeforeUuidReset));
 
+        $passwordBeforeNoInteractionReset = bin2hex(random_bytes(18));
+        $User->setPassword($passwordBeforeNoInteractionReset, QUI::getUsers()->getSystemUser());
+
+        self::assertSame(
+            Console::PASSWORD_RESET_EXIT_SUCCESS,
+            $this->runPasswordReset([], $User->getUsername(), true)
+        );
+
+        $User->refresh();
+        self::assertFalse($User->checkPassword($passwordBeforeNoInteractionReset));
+
+        $passwordBeforeMissingIdentifier = bin2hex(random_bytes(18));
+        $User->setPassword($passwordBeforeMissingIdentifier, QUI::getUsers()->getSystemUser());
+
+        self::assertSame(
+            Console::PASSWORD_RESET_EXIT_CANCELLED,
+            $this->runPasswordReset([], null, true)
+        );
+
+        $User->refresh();
+        self::assertTrue($User->checkPassword($passwordBeforeMissingIdentifier));
+
         $passwordBeforeUnknownUser = bin2hex(random_bytes(18));
         $User->setPassword($passwordBeforeUnknownUser, QUI::getUsers()->getSystemUser());
 
@@ -123,13 +145,20 @@ final class ConsolePasswordResetIntegrationTest extends TestCase
     /**
      * @param list<string> $inputs
      */
-    private function runPasswordReset(array $inputs, ?string $identifier = null): int
-    {
+    private function runPasswordReset(
+        array $inputs,
+        ?string $identifier = null,
+        bool $noInteraction = false
+    ): int {
         $command = [
             PHP_BINARY,
             CMS_DIR . 'console',
             'password-reset'
         ];
+
+        if ($noInteraction) {
+            $command[] = '--no-interaction';
+        }
 
         if ($identifier !== null) {
             $command[] = $identifier;

@@ -5659,8 +5659,9 @@ After logging in you will be prompted to set a new password.
         <locale name="console.systemtool.password-reset">
             <en><![CDATA[
             Initiates a password reset for a username or UUID.
-            Usage: ./console password-reset [username-or-UUID]
-            If the username or UUID is provided, the identifier prompt is skipped. Both confirmation prompts remain required.
+            Usage: ./console password-reset [username-or-UUID] [--no-interaction]
+            If the username or UUID is provided, the identifier prompt is skipped. Confirmation prompts remain required unless --no-interaction is used.
+            --no-interaction skips both confirmation prompts and requires a username or UUID argument.
             Exit codes: 0 = password changed; 1 = unexpected/runtime failure; 2 = invalid identifier or user not found; 3 = cancelled or required input missing.
             ]]></en>
         </locale>
@@ -5752,6 +5753,9 @@ After logging in you will be prompted to set a new password.
         </locale>
         <locale name="console.tool.passwordreset.user.not.found">
             <en><![CDATA[The given user was not found]]></en>
+        </locale>
+        <locale name="console.tool.passwordreset.identifier.required">
+            <en><![CDATA[A username or UUID is required when using --no-interaction]]></en>
         </locale>
         <locale name="console.tool.passwordreset.cancelled">
             <en><![CDATA[The password reset was cancelled]]></en>

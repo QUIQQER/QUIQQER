@@ -5836,8 +5836,9 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
         <locale name="console.systemtool.password-reset">
             <de><![CDATA[
             Initiiert einen Passwort-Reset für einen Benutzernamen oder eine UUID.
-            Verwendung: ./console password-reset [Benutzername-oder-UUID]
-            Wenn der Benutzername oder die UUID angegeben wird, entfällt die Abfrage der Kennung. Beide Sicherheitsabfragen bleiben erforderlich.
+            Verwendung: ./console password-reset [Benutzername-oder-UUID] [--no-interaction]
+            Wenn der Benutzername oder die UUID angegeben wird, entfällt die Abfrage der Kennung. Die Sicherheitsabfragen bleiben erforderlich, sofern --no-interaction nicht verwendet wird.
+            --no-interaction überspringt beide Sicherheitsabfragen und erfordert einen Benutzernamen oder eine UUID als Argument.
             Exitcodes: 0 = Passwort geändert; 1 = unerwarteter Laufzeitfehler; 2 = ungültige Kennung oder Benutzer nicht gefunden; 3 = abgebrochen oder erforderliche Eingabe fehlt.
             ]]></de>
         </locale>
@@ -5931,6 +5932,9 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
         </locale>
         <locale name="console.tool.passwordreset.user.not.found">
             <de><![CDATA[Der gegebene Benutzer wurde nicht gefunden]]></de>
+        </locale>
+        <locale name="console.tool.passwordreset.identifier.required">
+            <de><![CDATA[Bei Verwendung von --no-interaction muss ein Benutzername oder eine UUID angegeben werden]]></de>
         </locale>
         <locale name="console.tool.passwordreset.cancelled">
             <de><![CDATA[Der Passwort-Reset wurde abgebrochen]]></de>
