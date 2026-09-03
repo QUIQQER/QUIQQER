@@ -1372,8 +1372,6 @@ class Manager
             }
         }
 
-        QUI::getEvents()->fireEvent('userAuthenticatorLoginStart', [$userId, $authenticator]);
-
         if ($authenticator instanceof AuthenticatorInterface) {
             $Authenticator = $authenticator;
         } else {
@@ -1382,6 +1380,16 @@ class Manager
                 $username
             );
         }
+
+        if ($userId === false) {
+            try {
+                $userId = $Authenticator->getUser()->getUUID();
+            } catch (\Exception) {
+                // The authenticator reports an invalid identity during authentication.
+            }
+        }
+
+        QUI::getEvents()->fireEvent('userAuthenticatorLoginStart', [$userId, $authenticator]);
 
         if (
             $Session->get('auth-' . $Authenticator::class)

@@ -100,4 +100,30 @@ class ManagerTest extends TestCase
         self::assertTrue((new Manager())->authenticate($Authenticator, [], $authenticationExecuted));
         self::assertTrue($authenticationExecuted);
     }
+
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
+    public function testAuthenticateChecksPersistentThrottleForAuthenticatorResolvedUser(): void
+    {
+        $User = $this->createMock(User::class);
+        $User->method('getUUID')->willReturn('test-user-uuid');
+
+        $Authenticator = $this->createMock(AuthenticatorInterface::class);
+        $Authenticator->expects(self::once())->method('getUser')->willReturn($User);
+        $Authenticator->expects(self::never())->method('auth');
+
+        QUI::$Session = new Session();
+
+        $Events = $this->createMock(EventsManager::class);
+        $Events->expects(self::once())
+            ->method('fireEvent')
+            ->with('userAuthenticatorLoginStart', ['test-user-uuid', $Authenticator])
+            ->willThrowException(new Exception('Login temporarily locked', 429));
+        QUI::$Events = $Events;
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionCode(429);
+
+        (new Manager())->authenticate($Authenticator);
+    }
 }
