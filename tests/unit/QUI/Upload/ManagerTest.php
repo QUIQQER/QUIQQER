@@ -36,6 +36,7 @@ use function var_export;
 use const DIRECTORY_SEPARATOR;
 
 require_once __DIR__ . '/TestUploadManager.php';
+require_once __DIR__ . '/Fixtures/NonFormUploadCallable.php';
 
 class ManagerTest extends TestCase
 {
@@ -158,6 +159,25 @@ class ManagerTest extends TestCase
 
         $this->expectException(QUI\Exception::class);
         $this->Manager->upload();
+    }
+
+    public function testNonFormCallableIsRejectedBeforeConstruction(): void
+    {
+        NonFormUploadCallable::$constructorCalls = 0;
+        $_REQUEST = [
+            'callable' => NonFormUploadCallable::class,
+            'filename' => 'test.txt',
+            'filetype' => []
+        ];
+
+        try {
+            $this->Manager->upload();
+            self::fail('Invalid MIME type was accepted.');
+        } catch (QUI\Exception $Exception) {
+            self::assertSame('Invalid upload MIME type.', $Exception->getMessage());
+        }
+
+        self::assertSame(0, NonFormUploadCallable::$constructorCalls);
     }
 
     public function testCallbackTraversalCannotIncludePhpOutsideHandlerRoot(): void

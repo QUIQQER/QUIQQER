@@ -15,7 +15,6 @@ use QUI\Utils\System\File as QUIFile;
 
 use function array_merge;
 use function array_key_exists;
-use function class_exists;
 use function count;
 use function dirname;
 use function explode;
@@ -29,6 +28,7 @@ use function fstat;
 use function fopen;
 use function fwrite;
 use function implode;
+use function is_a;
 use function is_array;
 use function is_callable;
 use function is_dir;
@@ -296,12 +296,10 @@ class Manager
 
         $UploadForm = null;
 
-        if (isset($_REQUEST['callable']) && class_exists($_REQUEST['callable'])) {
-            $Instance = new $_REQUEST['callable']();
+        $requestClass = $_REQUEST['callable'] ?? null;
 
-            if ($Instance instanceof Form) {
-                $UploadForm = $Instance;
-            }
+        if (is_string($requestClass) && is_a($requestClass, Form::class, true)) {
+            $UploadForm = new $requestClass();
         }
 
         // check file count
