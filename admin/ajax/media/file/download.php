@@ -21,6 +21,7 @@ QUI::getAjax()->registerFunction(
             exit;
         }
 
+        $File->checkPermission('quiqqer.projects.media.view');
         QUI\Utils\System\File::downloadHeader($File->getFullPath());
     },
     ['project', 'fileid'],

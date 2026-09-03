@@ -479,6 +479,33 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
         self::assertStringNotContainsString('public', $Response['headers']['cache-control'] ?? '');
     }
 
+    public function testBackendMediaDownloadWithoutItemPermissionIsRejected(): void
+    {
+        $Response = self::requestImage(self::$mediaFileId, [
+            '_ajax_download' => '1',
+            '_access' => 'protected',
+            '_user' => 'backend-denied'
+        ]);
+
+        self::assertGreaterThanOrEqual(400, $Response['status'], self::failureMessage($Response));
+        self::assertSame(403, json_decode($Response['body'], true)['code'] ?? null);
+        self::assertStringNotContainsString('0123456789', $Response['body']);
+        self::assertArrayNotHasKey('content-disposition', $Response['headers']);
+    }
+
+    public function testAuthorizedBackendUserCanDownloadMediaFile(): void
+    {
+        $Response = self::requestImage(self::$mediaFileId, [
+            '_ajax_download' => '1',
+            '_access' => 'protected',
+            '_user' => 'backend-allowed'
+        ]);
+
+        self::assertSame(200, $Response['status'], self::failureMessage($Response));
+        self::assertSame('0123456789', $Response['body']);
+        self::assertStringContainsString('attachment', $Response['headers']['content-disposition'] ?? '');
+    }
+
     public function testProtectedFolderDoesNotReturnFolderIcon(): void
     {
         self::assertUniformNotFound(self::requestImage(self::$folderId, [
@@ -1007,6 +1034,16 @@ if (isset($_GET['_ajax_preview'])) {
     exit;
 }
 
+if (isset($_GET['_ajax_download'])) {
+    QUI::$Ajax = new QUI\Ajax();
+    require %AJAX_DOWNLOAD_ENDPOINT%;
+
+    $callables = QUI\Ajax::getRegisteredCallables();
+    $download = $callables['ajax_media_file_download']['callable'];
+    $download((string)($_GET['project'] ?? ''), (string)($_GET['id'] ?? ''));
+    exit;
+}
+
 require %IMAGE_ENDPOINT%;
 PHP;
 
@@ -1017,6 +1054,7 @@ PHP;
                 '%CORE_DIRECTORY%',
                 '%IMAGE_ENDPOINT%',
                 '%AJAX_PREVIEW_ENDPOINT%',
+                '%AJAX_DOWNLOAD_ENDPOINT%',
                 '%ALLOWED_USER_ID%',
                 '%REWRITE_SVG%',
                 '%INVALID_REWRITE_SVG%',
@@ -1028,6 +1066,7 @@ PHP;
                 var_export(dirname(__DIR__, 4), true),
                 var_export(dirname(__DIR__, 4) . '/image.php', true),
                 var_export(dirname(__DIR__, 4) . '/admin/ajax/media/file/preview.php', true),
+                var_export(dirname(__DIR__, 4) . '/admin/ajax/media/file/download.php', true),
                 (string)self::ALLOWED_USER_ID,
                 var_export(self::$rewriteSvg, true),
                 var_export(self::$invalidRewriteSvg, true),
