@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace QUI\MCP;
 
+use Mcp\Schema\Result\CallToolResult;
 use Mcp\Server\Builder;
 use PHPUnit\Framework\TestCase;
 use QUI;
@@ -26,11 +27,14 @@ use QUI\MCP\Users\GetUser;
 use QUI\MCP\Users\SearchUsers;
 use QUI\MCP\Users\UpdateUser;
 use QUI\Permissions\Permission;
+use QUI\Users\User;
 use ReflectionProperty;
 use Throwable;
 
 class UserGroupToolIntegrationTest extends TestCase
 {
+    private const AUTHORIZATION_TEST_PREFIX = 'mcp-group-auth-';
+
     public function testUserGroupAndMembershipLifecycle(): void
     {
         self::skipIfDatabaseOrSuperUserIsUnavailable();
@@ -140,11 +144,154 @@ class UserGroupToolIntegrationTest extends TestCase
         });
     }
 
+    public function testDelegatedEditorCannotAssignUsersToStrongerOrRootGroups(): void
+    {
+        self::skipIfDatabaseOrSuperUserIsUnavailable();
+
+        $actorUuid = null;
+        $allowedTargetUuid = null;
+        $protectedTargetUuid = null;
+        $allowedGroupUuid = null;
+        $protectedGroupUuid = null;
+
+        try {
+            self::runAsRootUser(function (UserInterface $RootUser) use (
+                &$actorUuid,
+                &$allowedTargetUuid,
+                &$protectedTargetUuid,
+                &$allowedGroupUuid,
+                &$protectedGroupUuid
+            ): void {
+                $Actor = self::createAuthorizationTestUser('actor', $RootUser);
+                $AllowedTarget = self::createAuthorizationTestUser('allowed-target', $RootUser);
+                $ProtectedTarget = self::createAuthorizationTestUser('protected-target', $RootUser);
+                $RootGroup = QUI::getGroups()->get(QUI::conf('globals', 'root'));
+                $AllowedGroup = $RootGroup->createChild(
+                    self::AUTHORIZATION_TEST_PREFIX . 'allowed-' . bin2hex(random_bytes(5)),
+                    $RootUser
+                );
+                $ProtectedGroup = $RootGroup->createChild(
+                    self::AUTHORIZATION_TEST_PREFIX . 'protected-' . bin2hex(random_bytes(5)),
+                    $RootUser
+                );
+
+                QUI::getPermissionManager()->setPermissions($Actor, [
+                    'quiqqer.admin' => true,
+                    'quiqqer.admin.groups.edit' => true,
+                    'quiqqer.admin.users.edit' => true,
+                    'quiqqer.core.mcp.canUse' => true,
+                    'quiqqer.core.mcp.groups.canUse' => true,
+                    'quiqqer.core.mcp.users.canUse' => true,
+                    'quiqqer.projects.create' => true
+                ], $RootUser);
+                QUI::getPermissionManager()->setPermissions(
+                    $AllowedGroup,
+                    ['quiqqer.projects.create' => true],
+                    $RootUser
+                );
+                QUI::getPermissionManager()->setPermissions(
+                    $ProtectedGroup,
+                    ['quiqqer.system.update' => true],
+                    $RootUser
+                );
+                $AllowedGroup->addUser($Actor);
+                $Actor->save($RootUser);
+
+                $actorUuid = (string)$Actor->getUUID();
+                $allowedTargetUuid = (string)$AllowedTarget->getUUID();
+                $protectedTargetUuid = (string)$ProtectedTarget->getUUID();
+                $allowedGroupUuid = (string)$AllowedGroup->getUUID();
+                $protectedGroupUuid = (string)$ProtectedGroup->getUUID();
+            });
+
+            $Actor = QUI::getUsers()->get((string)$actorUuid);
+            self::assertInstanceOf(User::class, $Actor);
+
+            self::runAsUser($Actor, function () use (
+                $allowedTargetUuid,
+                $protectedTargetUuid,
+                $allowedGroupUuid,
+                $protectedGroupUuid
+            ): void {
+                $allowed = self::invokeTool(new AddGroupUsers(), [
+                    $allowedGroupUuid,
+                    [$allowedTargetUuid]
+                ]);
+                self::assertSame(1, $allowed['added']);
+
+                $protected = self::invokeToolRaw(new AddGroupUsers(), [
+                    $protectedGroupUuid,
+                    [$protectedTargetUuid]
+                ]);
+                self::assertInstanceOf(CallToolResult::class, $protected);
+
+                $rootGroup = QUI::getGroups()->get(QUI::conf('globals', 'root'));
+                $root = self::invokeToolRaw(new AddGroupUsers(), [
+                    $rootGroup->getUUID(),
+                    [$protectedTargetUuid]
+                ]);
+                self::assertInstanceOf(CallToolResult::class, $root);
+
+                $ProtectedTarget = QUI::getUsers()->get((string)$protectedTargetUuid);
+                self::assertInstanceOf(User::class, $ProtectedTarget);
+                $ProtectedTarget->refresh();
+                self::assertNotContains($protectedGroupUuid, $ProtectedTarget->getGroups(false));
+                self::assertNotContains($rootGroup->getUUID(), $ProtectedTarget->getGroups(false));
+            });
+        } finally {
+            self::runAsRootUser(function (UserInterface $RootUser) use (
+                $actorUuid,
+                $allowedTargetUuid,
+                $protectedTargetUuid,
+                $allowedGroupUuid,
+                $protectedGroupUuid
+            ): void {
+                foreach ([$allowedGroupUuid, $protectedGroupUuid] as $groupUuid) {
+                    if ($groupUuid === null) {
+                        continue;
+                    }
+
+                    try {
+                        QUI::getGroups()->get($groupUuid)->delete();
+                    } catch (Throwable) {
+                    }
+                }
+
+                foreach ([$actorUuid, $allowedTargetUuid, $protectedTargetUuid] as $userUuid) {
+                    if ($userUuid === null) {
+                        continue;
+                    }
+
+                    try {
+                        $User = QUI::getUsers()->get($userUuid);
+
+                        if ($User instanceof User) {
+                            $User->delete($RootUser);
+                        }
+                    } catch (Throwable) {
+                    }
+                }
+            });
+        }
+    }
+
     /**
      * @param array<int, mixed> $arguments
      * @return array<string, mixed>
      */
     private static function invokeTool(ToolInterface $Tool, array $arguments): array
+    {
+        $result = self::invokeToolRaw($Tool, $arguments);
+
+        self::assertIsArray($result);
+
+        return $result;
+    }
+
+    /**
+     * @param array<int, mixed> $arguments
+     */
+    private static function invokeToolRaw(ToolInterface $Tool, array $arguments): mixed
     {
         $Builder = new Builder();
         $Tool->register($Builder);
@@ -155,9 +302,21 @@ class UserGroupToolIntegrationTest extends TestCase
         self::assertIsCallable($Handler);
         $result = $Handler(...$arguments);
 
-        self::assertIsArray($result);
-
         return $result;
+    }
+
+    private static function createAuthorizationTestUser(string $suffix, UserInterface $RootUser): User
+    {
+        $username = self::AUTHORIZATION_TEST_PREFIX . $suffix . '-' . bin2hex(random_bytes(5));
+        $User = QUI::getUsers()->createChildWithAttributes([
+            'username' => $username,
+            'email' => $username . '@example.invalid'
+        ], $RootUser);
+        self::assertInstanceOf(User::class, $User);
+        $User->setPassword(self::AUTHORIZATION_TEST_PREFIX . bin2hex(random_bytes(8)), $RootUser);
+        $User->activate('', $RootUser);
+
+        return $User;
     }
 
     private static function skipIfDatabaseOrSuperUserIsUnavailable(): void
@@ -178,6 +337,13 @@ class UserGroupToolIntegrationTest extends TestCase
     {
         $Users = QUI::getUsers();
         $RootUser = $Users->get(QUI::conf('globals', 'rootuser'));
+
+        return self::runAsUser($RootUser, $Callback);
+    }
+
+    private static function runAsUser(UserInterface $User, callable $Callback): mixed
+    {
+        $Users = QUI::getUsers();
         $SessionProperty = new ReflectionProperty($Users, 'Session');
         $PermissionProperty = new ReflectionProperty(Permission::class, 'User');
         $RequestUserProperty = new ReflectionProperty(Server::class, 'RequestUser');
@@ -185,12 +351,12 @@ class UserGroupToolIntegrationTest extends TestCase
         $PreviousPermissionUser = $PermissionProperty->getValue();
         $PreviousRequestUser = $RequestUserProperty->getValue();
 
-        $SessionProperty->setValue($Users, $RootUser);
-        $PermissionProperty->setValue(null, $RootUser);
-        $RequestUserProperty->setValue(null, $RootUser);
+        $SessionProperty->setValue($Users, $User);
+        $PermissionProperty->setValue(null, $User);
+        $RequestUserProperty->setValue(null, $User);
 
         try {
-            return $Callback($RootUser);
+            return $Callback($User);
         } finally {
             $SessionProperty->setValue($Users, $PreviousSessionUser);
             $PermissionProperty->setValue(null, $PreviousPermissionUser);
