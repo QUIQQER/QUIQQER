@@ -148,6 +148,25 @@ final class MediaUploadAuthorizationTest extends TestCase
         self::assertTrue($NestedFolder->childWithNameExists($uploadedName));
     }
 
+    public function testAjaxUploadRejectsBeforeCreatingFolderBelowRestrictedChild(): void
+    {
+        $this->setTargetUploadPermission($this->User);
+
+        $RestrictedFolder = ProjectTestHelper::runAsSystemUser(
+            fn (): Folder => $this->TargetFolder->createFolder('restricted')
+        );
+
+        $this->setActor($this->Root);
+        QUI::getPermissionManager()->setMediaPermissions($RestrictedFolder, [
+            'quiqqer.projects.media.upload' => [$this->Root]
+        ], $this->Root);
+
+        $response = $this->callAjaxUpload('restricted/unauthorized/rejected.txt');
+
+        $this->assertPermissionDenied($response);
+        self::assertFalse($RestrictedFolder->childWithNameExists('unauthorized'));
+    }
+
     public function testAjaxOverwriteRejectsMissingTargetEditPermission(): void
     {
         $TargetFile = $this->createOverwriteTarget();

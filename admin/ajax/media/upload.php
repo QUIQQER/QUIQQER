@@ -52,6 +52,7 @@ QUI::getAjax()->registerFunction(
                 if ($Folder->childWithNameExists($folder)) {
                     $Folder = $Folder->getChildByName($folder);
                 } else {
+                    $Folder->checkPermission('quiqqer.projects.media.upload');
                     $Folder = $Folder->createFolder($folder);
                 }
             }
