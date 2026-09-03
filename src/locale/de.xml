@@ -5834,7 +5834,10 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
             <de><![CDATA[Führt ein System-Setup aus]]></de>
         </locale>
         <locale name="console.systemtool.password-reset">
-            <de><![CDATA[Initiiert ein Passwort-Reset]]></de>
+            <de><![CDATA[
+            Initiiert einen interaktiven Passwort-Reset für einen Benutzernamen oder eine UUID.
+            Exitcodes: 0 = Passwort geändert; 1 = unerwarteter Laufzeitfehler; 2 = ungültige Kennung oder Benutzer nicht gefunden; 3 = abgebrochen oder erforderliche Eingabe fehlt.
+            ]]></de>
         </locale>
         <locale name="console.systemtool.clear-cache-path">
             <de><![CDATA[Löscht einen bestimmten cache path.]]></de>
@@ -5913,12 +5916,12 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
         <locale name="console.tool.passwordreset.warning">
             <de><![CDATA[ACHTUNG! Dieses setzt das Passwort eines Benutzers unwiderbringlich zurück!]]></de>
         </locale>
-        <locale name="console.tool.passwordreset.prompt.username">
-            <de><![CDATA[Benutzername:]]></de>
+        <locale name="console.tool.passwordreset.prompt.identifier">
+            <de><![CDATA[Benutzername oder UUID:]]></de>
         </locale>
         <locale name="console.tool.passwordreset.prompt.confirm">
             <de><![CDATA[
-            Sind Sie sicher, dass Sie das passwort des benutzers '[username]' zurücksetzen möchten? (y/n)
+            Sind Sie sicher, dass Sie das Passwort des Benutzers '[username]' (UUID: [uuid]) zurücksetzen möchten? (y/n)
             ]]></de>
         </locale>
         <locale name="console.tool.passwordreset.prompt.confirm2">
@@ -5926,6 +5929,12 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
         </locale>
         <locale name="console.tool.passwordreset.user.not.found">
             <de><![CDATA[Der gegebene Benutzer wurde nicht gefunden]]></de>
+        </locale>
+        <locale name="console.tool.passwordreset.cancelled">
+            <de><![CDATA[Der Passwort-Reset wurde abgebrochen]]></de>
+        </locale>
+        <locale name="console.tool.passwordreset.error">
+            <de><![CDATA[Der Passwort-Reset ist unerwartet fehlgeschlagen]]></de>
         </locale>
         <locale name="console.tool.passwordreset.success">
             <de><![CDATA[Das passwort wurde erfolgreich geändert! Das neue Passwort ist '[password]']]></de>
