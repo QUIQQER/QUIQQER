@@ -2,11 +2,25 @@
 
 use QUI\InstallationWizard\InstallationWizardInterface;
 use QUI\InstallationWizard\ProviderHandler;
+use QUI\Permissions\Permission;
+use QUI\Security\CsrfToken;
 use QUI\System\Log;
 
 const QUIQQER_SYSTEM = true;
 
 require_once dirname(__FILE__, 7) . '/header.php';
+
+Permission::checkSU(QUI::getUserBySession());
+
+if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+    throw new QUI\Exception('Installation wizard execution requires POST.', 405);
+}
+
+CsrfToken::assertValid($_POST['_csrf'] ?? null);
+
+$execution = ProviderHandler::claimExecution();
+$provider = $execution['provider'];
+$data = $execution['data'];
 
 // Set a valid header so browsers pick it up correctly.
 header('Content-type: text/html; charset=utf-8');
@@ -71,21 +85,6 @@ flushIt();
 
 <?php
 flushIt();
-
-$Config = ProviderHandler::getConfig();
-$provider = $Config->get('execute', 'provider');
-$data = $Config->get('execute', 'data');
-$data = json_decode($data, true);
-
-if (
-    !is_string($provider)
-    || !is_a($provider, InstallationWizardInterface::class, true)
-) {
-    throw new UnexpectedValueException(
-        'Invalid installation wizard provider: '
-        . (is_scalar($provider) ? (string)$provider : get_debug_type($provider))
-    );
-}
 
 /** @var class-string<InstallationWizardInterface> $provider */
 $Provider = new $provider();
