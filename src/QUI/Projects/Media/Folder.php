@@ -155,6 +155,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function rename(string $newName, null | QUI\Interfaces\Users\User $PermissionUser = null): void
     {
+        $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
+
         if (empty($newName)) {
             throw new QUI\Exception(
                 ['quiqqer/core', 'exception.media.folder.name.invalid'],
