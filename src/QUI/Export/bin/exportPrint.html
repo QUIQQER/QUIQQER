@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     {if $cssFile}
-    <link href="{$cssFile}" rel="stylesheet" type="text/css"/>
+    <link href="{$cssFile|escape:'html'}" rel="stylesheet" type="text/css"/>
     {/if}
 </head>
 <body>
@@ -15,7 +15,7 @@
     <thead>
     <tr>
         {foreach $header as $title}
-        <th>{$title}</th>
+        <th>{$title|escape:'html'}</th>
         {/foreach}
     </tr>
     </thead>
@@ -23,7 +23,7 @@
     {foreach $data as $row}
     <tr>
         {foreach $row as $cell}
-        <td>{$cell}</td>
+        <td>{$cell|escape:'html'}</td>
         {/foreach}
     </tr>
     {/foreach}

@@ -14,9 +14,11 @@ use QUI\Projects\Media\Utils as MediaUtils;
 use QUI\Projects\Project;
 use QUI\Projects\Site;
 use QUI\Utils\Security\SvgSanitizer;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 use function array_flip;
 use function array_map;
@@ -682,65 +684,14 @@ class Rewrite
             exit;
         }
 
-        $size = filesize($file);
-        $start = 0;
-        $end = $size - 1;
-        $length = $size;
-
-        if (isset($_SERVER['HTTP_RANGE'])) {
-            if (preg_match('/bytes=(\d+)-(\d*)/', $_SERVER['HTTP_RANGE'], $matches)) {
-                $start = intval($matches[1]);
-
-                if ($matches[2] !== '') {
-                    $end = intval($matches[2]);
-                }
-
-                if ($start >= $size || $end < $start) {
-                    header('HTTP/1.1 416 Range Not Satisfiable');
-                    header("Content-Range: bytes */$size");
-                    exit;
-                }
-
-                $end = min($end, $size - 1);
-                $length = $end - $start + 1;
-                $httpStatus = '206 Partial Content';
-                header("HTTP/1.1 $httpStatus");
-                header("Content-Range: bytes $start-$end/$size");
-            }
-        }
-
-        header('Content-Type: ' . $mimeType);
-        header('Content-Length: ' . $length);
-        header('Accept-Ranges: bytes');
-        header('Content-Disposition: inline; filename="' . basename($file) . '"');
-
-        $fp = fopen($file, 'rb');
-
-        if ($fp === false) {
-            header('HTTP/1.1 404 Not Found');
-            exit;
-        }
-
-        fseek($fp, $start);
-
-        $buffer = 8192;
-        $bytesSent = 0;
-
-        while (!feof($fp) && $bytesSent < $length) {
-            $remaining = $length - $bytesSent;
-
-            if ($remaining <= 0) {
-                break;
-            }
-
-            $readLength = min($buffer, $remaining);
-            echo fread($fp, $readLength);
-            $bytesSent += $readLength;
-            @ob_flush();
-            flush();
-        }
-
-        fclose($fp);
+        $Response = new BinaryFileResponse($file);
+        $Response->headers->set('Content-Type', (string)$mimeType);
+        $Response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_INLINE,
+            basename($file)
+        );
+        $Response->prepare(QUI::getRequest());
+        $Response->send();
         exit;
     }
 

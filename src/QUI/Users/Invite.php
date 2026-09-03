@@ -9,6 +9,7 @@ namespace QUI\Users;
 use QUI;
 use QUI\Interfaces\Users\User as QUIUserInterface;
 use QUI\Mail\Mailer;
+use QUI\Permissions\Permission;
 use QUI\Security\Password;
 
 use function filter_var;
@@ -34,6 +35,11 @@ class Invite
             throw new Exception(
                 QUI::getLocale()->get('quiqqer/core', 'controls.email.select.email_invalid')
             );
+        }
+
+        if ($groups !== []) {
+            Permission::checkPermission('quiqqer.admin.users.edit');
+            Permission::checkPermission('quiqqer.admin.groups.edit');
         }
 
         $Users = QUI::getUsers();

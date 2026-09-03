@@ -960,9 +960,14 @@ abstract class Item extends QUI\QDOM
         Folder $Folder,
         null | QUI\Interfaces\Users\User $PermissionUser = null
     ): QUI\Interfaces\Projects\Media\File {
+        $this->checkPermission('quiqqer.projects.media.view', $PermissionUser);
         $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
 
-        $File = $Folder->uploadFile($this->getFullPath());
+        $File = $Folder->uploadFile(
+            $this->getFullPath(),
+            Folder::FILE_OVERWRITE_NONE,
+            $PermissionUser
+        );
 
         $File->setAttribute('title', $this->getAttribute('title'));
         $File->setAttribute('alt', $this->getAttribute('alt'));

@@ -21,6 +21,7 @@ QUI::getAjax()->registerFunction(
             exit;
         }
 
+        $File->checkPermission('quiqqer.projects.media.view');
         QUI\Rewrite::sendFileWithRange(
             $File->getFullPath(),
             (string)$File->getAttribute('mime_type')

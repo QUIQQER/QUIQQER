@@ -4,9 +4,39 @@ namespace QUI\Projects;
 
 use QUI;
 use QUI\Interfaces\Projects\Site as SiteInterface;
+use QUI\Permissions\Permission;
+use ReflectionProperty;
 
 class ProjectSiteDbalTest extends ProjectIntegrationTestCase
 {
+    private mixed $previousManagerSession;
+    private mixed $previousPermissionUser;
+    private ReflectionProperty $managerSessionProperty;
+    private ReflectionProperty $permissionUserProperty;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $Users = QUI::getUsers();
+        $SystemUser = $Users->getSystemUser();
+        $this->managerSessionProperty = new ReflectionProperty($Users, 'Session');
+        $this->permissionUserProperty = new ReflectionProperty(Permission::class, 'User');
+        $this->previousManagerSession = $this->managerSessionProperty->getValue($Users);
+        $this->previousPermissionUser = $this->permissionUserProperty->getValue();
+
+        $this->managerSessionProperty->setValue($Users, $SystemUser);
+        $this->permissionUserProperty->setValue(null, $SystemUser);
+    }
+
+    protected function tearDown(): void
+    {
+        $this->managerSessionProperty->setValue(QUI::getUsers(), $this->previousManagerSession);
+        $this->permissionUserProperty->setValue(null, $this->previousPermissionUser);
+
+        parent::tearDown();
+    }
+
     public function testSiteRewrittenUrlSupportsQueryParametersThroughInterface(): void
     {
         /** @var SiteInterface $Site */
