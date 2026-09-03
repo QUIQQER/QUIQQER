@@ -5921,11 +5921,11 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
         </locale>
         <locale name="console.tool.passwordreset.prompt.confirm">
             <de><![CDATA[
-            Sind Sie sicher, dass Sie das Passwort des Benutzers '[username]' (UUID: [uuid]) zurücksetzen möchten? (y/n)
+            Sind Sie sicher, dass Sie das Passwort des Benutzers '[username]' (UUID: [uuid]) zurücksetzen möchten? (y/N)
             ]]></de>
         </locale>
         <locale name="console.tool.passwordreset.prompt.confirm2">
-            <de><![CDATA[Sind Sie wirklich sicher? Dies kann nicht rückgängig gemacht werden! (y/n)]]></de>
+            <de><![CDATA[Sind Sie wirklich sicher? Dies kann nicht rückgängig gemacht werden! (y/N)]]></de>
         </locale>
         <locale name="console.tool.passwordreset.user.not.found">
             <de><![CDATA[Der gegebene Benutzer wurde nicht gefunden]]></de>
@@ -5937,7 +5937,7 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
             <de><![CDATA[Der Passwort-Reset ist unerwartet fehlgeschlagen]]></de>
         </locale>
         <locale name="console.tool.passwordreset.success">
-            <de><![CDATA[Das passwort wurde erfolgreich geändert! Das neue Passwort ist '[password]']]></de>
+            <de><![CDATA[Das Passwort wurde erfolgreich geändert! Das neue Passwort lautet:]]></de>
         </locale>
         <locale name="exception.zip.extension.not.installed">
             <de><![CDATA[

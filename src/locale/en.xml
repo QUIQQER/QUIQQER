@@ -5737,16 +5737,16 @@ After logging in you will be prompted to set a new password.
             <en><![CDATA[Password reset]]></en>
         </locale>
         <locale name="console.tool.passwordreset.warning">
-            <en><![CDATA[ATTENTION! This tool will ireversibly reset the password of a user!]]></en>
+            <en><![CDATA[ATTENTION! This tool will irreversibly reset the password of a user!]]></en>
         </locale>
         <locale name="console.tool.passwordreset.prompt.identifier">
             <en><![CDATA[Username or UUID:]]></en>
         </locale>
         <locale name="console.tool.passwordreset.prompt.confirm">
-            <en><![CDATA[Are you sure you want to reset the password of the user '[username]' (UUID: [uuid])? (y/n)]]></en>
+            <en><![CDATA[Are you sure you want to reset the password of the user '[username]' (UUID: [uuid])? (y/N)]]></en>
         </locale>
         <locale name="console.tool.passwordreset.prompt.confirm2">
-            <en><![CDATA[Are you really sure? This change can not be undone! (y/n)]]></en>
+            <en><![CDATA[Are you really sure? This change can not be undone! (y/N)]]></en>
         </locale>
         <locale name="console.tool.passwordreset.user.not.found">
             <en><![CDATA[The given user was not found]]></en>
@@ -5758,7 +5758,7 @@ After logging in you will be prompted to set a new password.
             <en><![CDATA[The password reset failed unexpectedly]]></en>
         </locale>
         <locale name="console.tool.passwordreset.success">
-            <en><![CDATA[The password has been changed successfully. The new password is '[password]']]></en>
+            <en><![CDATA[The password has been changed successfully. The new password is:]]></en>
         </locale>
         <locale name="exception.zip.extension.not.installed">
             <en><![CDATA[

@@ -12,10 +12,16 @@ use QUI\System\Console;
 use QUI\Users\Manager;
 use QUI\Users\SystemUser;
 use RuntimeException;
+use SimpleXMLElement;
 
 use function bin2hex;
-use function implode;
+use function dirname;
+use function preg_match_all;
 use function random_bytes;
+use function simplexml_load_file;
+use function trim;
+
+use const PHP_EOL;
 
 require_once __DIR__ . '/PasswordResetTestConsole.php';
 
@@ -44,13 +50,36 @@ final class ConsolePasswordResetTest extends TestCase
         $this->expectPasswordChange($User, $SystemUser);
 
         QUI::$Users = $Users;
-        $Console = new PasswordResetTestConsole(['alice', 'y', 'y']);
+        $generatedPassword = bin2hex(random_bytes(18));
+        $Console = new PasswordResetTestConsole(['alice', 'y', 'y'], $generatedPassword);
 
         self::assertSame(Console::PASSWORD_RESET_EXIT_SUCCESS, $Console->runPasswordReset());
 
-        $output = implode("\n", $Console->output);
+        $output = $Console->output;
         self::assertStringContainsString('alice', $output);
         self::assertStringContainsString($uuid, $output);
+        self::assertStringContainsString('Username or UUID: ', $output);
+        self::assertSame(2, preg_match_all('/\(y\/[Nn]\) /', $output));
+        self::assertStringContainsString(PHP_EOL . $generatedPassword . PHP_EOL, $output);
+        self::assertStringEndsWith($generatedPassword . PHP_EOL, $output);
+    }
+
+    public function testLocalePromptsDeclareSafeDefaultAndDoNotInlineThePassword(): void
+    {
+        foreach (['en', 'de'] as $language) {
+            self::assertStringEndsWith(
+                '(y/N)',
+                $this->getLocaleText($language, 'console.tool.passwordreset.prompt.confirm')
+            );
+            self::assertStringEndsWith(
+                '(y/N)',
+                $this->getLocaleText($language, 'console.tool.passwordreset.prompt.confirm2')
+            );
+            self::assertStringNotContainsString(
+                '[password]',
+                $this->getLocaleText($language, 'console.tool.passwordreset.success')
+            );
+        }
     }
 
     public function testExistingUserCanBeResetByUuid(): void
@@ -169,10 +198,7 @@ final class ConsolePasswordResetTest extends TestCase
 
         self::assertSame(Console::PASSWORD_RESET_EXIT_RUNTIME_FAILURE, $Console->runPasswordReset());
         self::assertNotEmpty($Console->output);
-
-        foreach ($Console->output as $output) {
-            self::assertStringNotContainsString($generatedPassword, $output);
-        }
+        self::assertStringNotContainsString($generatedPassword, $Console->output);
     }
 
     /**
@@ -196,5 +222,20 @@ final class ConsolePasswordResetTest extends TestCase
             self::callback(static fn(string $password): bool => $password !== ''),
             $SystemUser
         );
+    }
+
+    private function getLocaleText(string $language, string $localeName): string
+    {
+        $localeFile = dirname(__DIR__, 4) . '/src/locale/' . $language . '.xml';
+        $Xml = simplexml_load_file($localeFile);
+
+        self::assertInstanceOf(SimpleXMLElement::class, $Xml);
+
+        $result = $Xml->xpath('//locale[@name="' . $localeName . '"]/' . $language);
+
+        self::assertIsArray($result);
+        self::assertCount(1, $result);
+
+        return trim((string)$result[0]);
     }
 }

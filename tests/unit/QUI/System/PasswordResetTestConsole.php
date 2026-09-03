@@ -11,8 +11,7 @@ final class PasswordResetTestConsole extends Console
     /** @var list<string> */
     private array $inputs;
 
-    /** @var list<string> */
-    public array $output = [];
+    public string $output = '';
 
     private ?string $generatedPassword;
 
@@ -37,12 +36,12 @@ final class PasswordResetTestConsole extends Console
 
     public function writeLn(string $msg = '', bool|string $color = false, bool|string $bg = false): void
     {
-        $this->output[] = $msg;
+        $this->output .= PHP_EOL . $msg;
     }
 
     public function write(string $msg, bool|string $color = false, bool|string $bg = false): void
     {
-        $this->output[] = $msg;
+        $this->output .= $msg;
     }
 
     public function clearMsg(): void

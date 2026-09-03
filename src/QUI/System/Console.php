@@ -996,7 +996,7 @@ class Console
             QUI::getLocale()->get(
                 "quiqqer/core",
                 "console.tool.passwordreset.prompt.identifier"
-            )
+            ) . ' '
         );
 
         $identifier = trim($this->readInput());
@@ -1036,7 +1036,7 @@ class Console
                     "username" => $username,
                     "uuid" => $uuid
                 ]
-            )
+            ) . ' '
         );
 
         $confirm = strtolower(trim($this->readInput()));
@@ -1054,7 +1054,7 @@ class Console
                 [
                     "username" => $username
                 ]
-            ),
+            ) . ' ',
             "yellow"
         );
 
@@ -1078,13 +1078,12 @@ class Console
         $this->writeLn(
             QUI::getLocale()->get(
                 "quiqqer/core",
-                "console.tool.passwordreset.success",
-                [
-                    "password" => $password
-                ]
+                "console.tool.passwordreset.success"
             ),
             "green"
         );
+        $this->writeLn($password, "green");
+        $this->writeLn();
 
         return self::PASSWORD_RESET_EXIT_SUCCESS;
     }
