@@ -199,9 +199,20 @@ try {
     $Media = $Project->getMedia();
     $File = $Media->get($mediaId);
     $SessionUser = QUI::getUserBySession();
+    $requestHost = $_SERVER['HTTP_HOST'] ?? '';
+    $requestReferer = $_SERVER['HTTP_REFERER'] ?? '';
+    $hasAdminReferer = is_string($requestHost)
+        && $requestHost !== ''
+        && is_string($requestReferer)
+        && str_contains($requestReferer, $requestHost)
+        && str_contains($requestReferer, URL_SYS_DIR);
+    $isAdminRequest = isset($_REQUEST['quiadmin']) || $hasAdminReferer;
+    $isAdmin = $isAdminRequest
+        && QUI::getUsers()->isAuth($SessionUser)
+        && $SessionUser->canUseBackend();
 
     // Central security boundary for every output and cache path below.
-    if (!$File instanceof Media\Item || !$File->isActive()) {
+    if (!$File instanceof Media\Item || (!$File->isActive() && !$isAdmin)) {
         throw new QUI\Exception('Media item not available.', 404);
     }
 
@@ -226,17 +237,6 @@ try {
 
     $file = (string)$File->getAttribute('file');
     $image = false;
-    $requestHost = $_SERVER['HTTP_HOST'] ?? '';
-    $requestReferer = $_SERVER['HTTP_REFERER'] ?? '';
-    $hasAdminReferer = is_string($requestHost)
-        && $requestHost !== ''
-        && is_string($requestReferer)
-        && str_contains($requestReferer, $requestHost)
-        && str_contains($requestReferer, URL_SYS_DIR);
-    $isAdminRequest = isset($_REQUEST['quiadmin']) || $hasAdminReferer;
-    $isAdmin = $isAdminRequest
-        && QUI::getUsers()->isAuth($SessionUser)
-        && $SessionUser->canUseBackend();
 
     if (
         !isset($_REQUEST['noresize'])

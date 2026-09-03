@@ -175,6 +175,20 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
         self::assertUniformNotFound(self::requestImage(self::$inactiveImageId));
     }
 
+    public function testAuthorizedBackendUserCanPreviewInactiveImage(): void
+    {
+        $Response = self::requestImage(self::$inactiveImageId, [
+            '_user' => 'backend-allowed',
+            'quiadmin' => '1'
+        ]);
+
+        self::assertSame(200, $Response['status'], self::failureMessage($Response));
+        self::assertNotSame('', $Response['body']);
+        self::assertStringStartsWith('image/png', $Response['headers']['content-type'] ?? '');
+        self::assertStringContainsString('private', $Response['headers']['cache-control'] ?? '');
+        self::assertStringNotContainsString('public', $Response['headers']['cache-control'] ?? '');
+    }
+
     public function testProtectedSvgIsNotDelivered(): void
     {
         $Response = self::requestImage(self::$svgId, [
