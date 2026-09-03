@@ -17,6 +17,7 @@ QUI::getAjax()->registerFunction(
         $Site = new QUI\Projects\Site\Edit($Project, (int)$id);
         $params = json_decode($params, true);
 
+        $Site->checkPermission('quiqqer.projects.site.view');
         $Packages = QUI::getPackageManager();
         $attributes = false;
 
@@ -42,6 +43,8 @@ QUI::getAjax()->registerFunction(
         for ($i = 0, $len = count($children); $i < $len; $i++) {
             $Child = $children[$i];
             /* @var $Child \QUI\Projects\Site\Edit */
+
+            $Child->checkPermission('quiqqer.projects.site.view');
 
             if (!$attributes) {
                 $result[$i] = $Child->getAttributes();
