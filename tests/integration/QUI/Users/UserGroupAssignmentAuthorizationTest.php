@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 use QUI;
 use QUI\Ajax;
 use QUI\Interfaces\Users\User as UserInterface;
+use QUI\Mail\Mailer;
 use QUI\Permissions\Permission;
 use QUI\Security\CsrfToken;
 use QUI\System\Console\Session as ConsoleSession;
@@ -20,13 +21,15 @@ use Throwable;
 #[PreserveGlobalState(false)]
 final class UserGroupAssignmentAuthorizationTest extends TestCase
 {
-    private const AJAX_FUNCTION = 'ajax_users_save';
+    private const AJAX_INVITE_FUNCTION = 'ajax_users_invite';
+    private const AJAX_SAVE_FUNCTION = 'ajax_users_save';
     private const TEST_PREFIX = 'cwa-user-group-fix-';
 
     private mixed $previousSession;
     private mixed $previousAjax;
     private mixed $previousManagerSession;
     private mixed $previousPermissionUser;
+    private bool $previousMailSendingDisabled;
 
     private ReflectionProperty $managerSessionProperty;
     private ReflectionProperty $permissionUserProperty;
@@ -43,9 +46,12 @@ final class UserGroupAssignmentAuthorizationTest extends TestCase
         $this->previousAjax = QUI::$Ajax;
         $this->previousManagerSession = $this->managerSessionProperty->getValue(QUI::getUsers());
         $this->previousPermissionUser = $this->permissionUserProperty->getValue();
+        $this->previousMailSendingDisabled = Mailer::$DISABLE_MAIL_SENDING;
 
         QUI::$Ajax = new Ajax();
         require_once OPT_DIR . 'quiqqer/core/admin/ajax/users/save.php';
+        require_once OPT_DIR . 'quiqqer/core/admin/ajax/users/invite.php';
+        Mailer::$DISABLE_MAIL_SENDING = true;
 
         $Root = QUI::getUsers()->get(QUI::conf('globals', 'rootuser'));
         self::assertTrue($Root->isSU(), 'The local fixture root user must be an SU.');
@@ -65,6 +71,7 @@ final class UserGroupAssignmentAuthorizationTest extends TestCase
         } finally {
             $this->managerSessionProperty->setValue(QUI::getUsers(), $this->previousManagerSession);
             $this->permissionUserProperty->setValue(null, $this->previousPermissionUser);
+            Mailer::$DISABLE_MAIL_SENDING = $this->previousMailSendingDisabled;
             QUI::$Session = $this->previousSession;
             QUI::$Ajax = $this->previousAjax;
         }
@@ -126,8 +133,70 @@ final class UserGroupAssignmentAuthorizationTest extends TestCase
         self::assertContains($rootGroupUuid, $User->getGroups(false));
     }
 
-    private function createBackendUser(bool $canEditUsers): User
+    public function testUserCreatorCannotInviteUserIntoGroupWithoutUserEditPermission(): void
     {
+        $Actor = $this->createBackendUser(false, true);
+        $email = self::TEST_PREFIX . bin2hex(random_bytes(5)) . '@example.invalid';
+        $rootGroupUuid = (string)QUI::getGroups()->get(QUI::conf('globals', 'root'))->getUUID();
+
+        $this->setActor($Actor);
+        $response = $this->invokeInvite($email, [$rootGroupUuid]);
+
+        self::assertIsArray($response);
+        self::assertArrayHasKey('Exception', $response);
+        self::assertFalse(QUI::getUsers()->usernameExists($email));
+    }
+
+    public function testUserCreatorCanInviteUserWithoutGroups(): void
+    {
+        $Actor = $this->createBackendUser(true, true);
+        $email = self::TEST_PREFIX . bin2hex(random_bytes(5)) . '@example.invalid';
+
+        $this->setActor($Actor);
+        $response = $this->invokeInvite($email, []);
+
+        self::assertArrayNotHasKey('Exception', $response);
+        self::assertIsString($response['result']);
+        $userUuid = $response['result'];
+        $InvitedUser = QUI::getUsers()->get($userUuid);
+        self::assertTrue($InvitedUser->isActive());
+        self::assertSame($email, $InvitedUser->getAttribute('email'));
+    }
+
+    public function testUserEditorCannotAssignInvitationGroupWithoutGroupEditPermission(): void
+    {
+        $Actor = $this->createBackendUser(true, true);
+        $email = self::TEST_PREFIX . bin2hex(random_bytes(5)) . '@example.invalid';
+        $rootGroupUuid = (string)QUI::getGroups()->get(QUI::conf('globals', 'root'))->getUUID();
+
+        $this->setActor($Actor);
+        $response = $this->invokeInvite($email, [$rootGroupUuid]);
+
+        self::assertArrayHasKey('Exception', $response);
+        self::assertFalse(QUI::getUsers()->usernameExists($email));
+    }
+
+    public function testUserEditorCanAssignGroupDuringInvitation(): void
+    {
+        $Actor = $this->createBackendUser(true, true, true);
+        $email = self::TEST_PREFIX . bin2hex(random_bytes(5)) . '@example.invalid';
+        $rootGroupUuid = (string)QUI::getGroups()->get(QUI::conf('globals', 'root'))->getUUID();
+
+        $this->setActor($Actor);
+        $response = $this->invokeInvite($email, [$rootGroupUuid]);
+
+        self::assertArrayNotHasKey('Exception', $response);
+        self::assertIsString($response['result']);
+        $userUuid = $response['result'];
+        $InvitedUser = QUI::getUsers()->get($userUuid);
+        self::assertContains($rootGroupUuid, $InvitedUser->getGroups(false));
+    }
+
+    private function createBackendUser(
+        bool $canEditUsers,
+        bool $canCreateUsers = false,
+        bool $canEditGroups = false
+    ): User {
         $username = self::TEST_PREFIX . bin2hex(random_bytes(5));
         $System = QUI::getUsers()->getSystemUser();
         $Root = QUI::getUsers()->get(QUI::conf('globals', 'rootuser'));
@@ -139,6 +208,8 @@ final class UserGroupAssignmentAuthorizationTest extends TestCase
         self::assertInstanceOf(User::class, $User);
         QUI::getPermissionManager()->setPermissions($User, [
             'quiqqer.admin' => true,
+            'quiqqer.admin.groups.edit' => $canEditGroups,
+            'quiqqer.admin.users.create' => $canCreateUsers,
             'quiqqer.admin.users.edit' => $canEditUsers
         ], $Root);
 
@@ -165,10 +236,20 @@ final class UserGroupAssignmentAuthorizationTest extends TestCase
     /** @param array<string, mixed> $attributes */
     private function invokeSave(User $User, array $attributes): array
     {
-        return QUI::getAjax()->callRequestFunction(self::AJAX_FUNCTION, [
+        return QUI::getAjax()->callRequestFunction(self::AJAX_SAVE_FUNCTION, [
             '_csrf' => CsrfToken::get(),
             'uid' => $User->getUUID(),
             'attributes' => json_encode($attributes, JSON_THROW_ON_ERROR)
+        ]);
+    }
+
+    /** @param array<int, string> $groups */
+    private function invokeInvite(string $email, array $groups): array
+    {
+        return QUI::getAjax()->callRequestFunction(self::AJAX_INVITE_FUNCTION, [
+            '_csrf' => CsrfToken::get(),
+            'email' => $email,
+            'groups' => json_encode($groups, JSON_THROW_ON_ERROR)
         ]);
     }
 
