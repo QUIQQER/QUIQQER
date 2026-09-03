@@ -72,4 +72,9 @@ class TestUploadManager extends Manager
         $this->formUpload(static function (): void {
         }, [], $allowedTypes, $allowedEndings);
     }
+
+    public function validateLegacyUploadId(mixed $uploadId): string
+    {
+        return parent::validateLegacyUploadId($uploadId);
+    }
 }
