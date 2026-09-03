@@ -355,6 +355,8 @@ class Edit extends Site
             return;
         }
 
+        $this->checkPermission('quiqqer.projects.site.del');
+
         QUI::getRewrite()->unregisterPath($this);
 
         /**

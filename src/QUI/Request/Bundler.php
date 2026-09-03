@@ -117,6 +117,10 @@ class Bundler
 
             $data = QUI::getAjax()->callRequestFunction($fun, $request['params']);
 
+            if (QUI\Ajax::isBackendCsrfProtectionRequired()) {
+                $result['csrfToken'] = QUI\Security\CsrfToken::get();
+            }
+
             // session close -> performance
             $SymfonySession = QUI::getSession()->getSymfonySession();
 

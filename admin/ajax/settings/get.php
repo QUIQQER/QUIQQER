@@ -12,6 +12,7 @@ QUI::getAjax()->registerFunction(
     static function ($file) {
         $files = json_decode($file, true);
         $config = [];
+        $coreConfigFile = realpath(__DIR__ . '/../../settings/conf.xml');
 
         if (is_string($files)) {
             $files = [$files];
@@ -22,9 +23,13 @@ QUI::getAjax()->registerFunction(
                 $file = CMS_DIR . $file;
             }
 
-            if (!file_exists($file)) {
+            $resolvedFile = realpath($file);
+
+            if ($resolvedFile === false) {
                 continue;
             }
+
+            $file = $resolvedFile;
 
             $Config = QUI\Utils\Text\XML::getConfigFromXml($file, true);
 
@@ -34,7 +39,7 @@ QUI::getAjax()->registerFunction(
 
             // hidden fields
             // don't show this in the frontend
-            if (str_contains($file, 'quiqqer/core/admin/settings/conf.xml')) {
+            if ($coreConfigFile !== false && $file === $coreConfigFile) {
                 unset($config['db']);
                 unset($config['openssl']);
                 unset($config['globals']['salt']);

@@ -15,6 +15,10 @@ QUI::getAjax()->registerFunction(
         $jsonFiles = json_decode($file, true);
         $files = [];
 
+        // realpath() resolves aliases and symlinks; dirname() alone would not provide canonical comparison paths.
+        $coreConfigFile = realpath(__DIR__ . '/../../settings/conf.xml');
+        $cacheConfigFile = realpath(__DIR__ . '/../../settings/cache.xml');
+
         if ($jsonFiles) {
             if (is_string($jsonFiles)) {
                 $files = [$jsonFiles];
@@ -39,13 +43,23 @@ QUI::getAjax()->registerFunction(
                 continue;
             }
 
+            $resolvedFile = realpath($file);
+
+            if ($resolvedFile === false) {
+                continue;
+            }
+
+            $file = $resolvedFile;
+            $isCoreConfigFile = $coreConfigFile !== false && $file === $coreConfigFile;
+            $isCacheConfigFile = $cacheConfigFile !== false && $file === $cacheConfigFile;
+
             if (is_string($params)) {
                 $params = json_decode($params, true);
             }
 
             // csp data
             if (
-                str_contains($file, 'quiqqer/core/admin/settings/conf.xml')
+                $isCoreConfigFile
                 && isset($params['securityHeaders_csp'])
             ) {
                 unset($params['securityHeaders_csp']);
@@ -53,7 +67,7 @@ QUI::getAjax()->registerFunction(
 
             // more bad workaround by hen
             // @todo need to fix that
-            if (str_contains($file, 'quiqqer/core/admin/settings/cache.xml')) {
+            if ($isCacheConfigFile) {
                 if (!empty($params['general']['cacheType'])) {
                     $cacheType = $params['general']['cacheType'];
 
@@ -73,7 +87,7 @@ QUI::getAjax()->registerFunction(
                 }
             }
 
-            if (str_contains($file, 'quiqqer/core/admin/settings/conf.xml')) {
+            if ($isCoreConfigFile) {
                 // overwrite openssl settings is not allowed
                 if (isset($params['openssl'])) {
                     unset($params['openssl']);
@@ -111,7 +125,7 @@ QUI::getAjax()->registerFunction(
             );
 
             // bad workaround by hen
-            if (!str_contains($file, 'quiqqer/core/admin/settings/conf.xml')) {
+            if (!$isCoreConfigFile) {
                 continue;
             }
 

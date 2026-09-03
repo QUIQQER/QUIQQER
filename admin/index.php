@@ -214,6 +214,7 @@ echo $User->getLang(); ?>"> <!--<![endif]-->
         ]); ?>;
 
         var QUIQQER = {
+            csrfToken: <?php echo json_encode(QUI\Security\CsrfToken::get()); ?>,
             Rewrite: {
                 URL_PARAM_SEPARATOR: "<?php echo QUI\Rewrite::URL_PARAM_SEPARATOR; ?>",
                 URL_SPACE_CHARACTER: "<?php echo QUI\Rewrite::URL_SPACE_CHARACTER; ?>",

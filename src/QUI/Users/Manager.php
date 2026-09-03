@@ -1337,6 +1337,7 @@ class Manager
      * Authenticate the user at one authenticator
      *
      * @param array<string, mixed> $params
+     * @param bool|null $authenticationExecuted - true if the authenticator was executed in this call
      *
      * @throws QUI\Users\UserAuthException
      * @throws QUI\Exception
@@ -1344,8 +1345,10 @@ class Manager
      */
     public function authenticate(
         AuthenticatorInterface | AbstractAuthenticator | string $authenticator,
-        array $params = []
+        array $params = [],
+        ?bool &$authenticationExecuted = null
     ): bool {
+        $authenticationExecuted = false;
         $username = '';
         $Session = QUI::getSession();
 
@@ -1390,6 +1393,7 @@ class Manager
 
         try {
             $Authenticator->auth($params);
+            $authenticationExecuted = true;
         } catch (QUI\Users\Exception $Exception) {
             $Exception->setAttribute('reason', self::AUTH_ERROR_AUTH_ERROR);
 

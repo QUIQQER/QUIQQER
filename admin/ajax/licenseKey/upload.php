@@ -36,5 +36,8 @@ QUI::getAjax()->registerFunction(
         );
     },
     ['File'],
-    'Permission::checkAdminUser'
+    [
+        'Permission::checkAdminUser',
+        'quiqqer.system.update'
+    ]
 );

@@ -11,10 +11,13 @@ use function array_values;
 use function defined;
 use function file_exists;
 use function glob;
+use function getenv;
+use function getmypid;
 use function implode;
 use function is_dir;
 use function is_file;
 use function is_string;
+use function putenv;
 use function str_starts_with;
 use function unlink;
 
@@ -31,6 +34,7 @@ final class TestCleanup
     public const EVENT = 'onQuiqqerTestCleanup';
 
     private const PROJECT_PREFIX = 'phpunit';
+    private const OWNER_PROCESS_ID_ENVIRONMENT_VARIABLE = 'QUIQQER_TEST_CLEANUP_OWNER_PROCESS_ID';
 
     private static bool $cleanupCompleted = false;
     private static bool $cleanupRunning = false;
@@ -38,7 +42,11 @@ final class TestCleanup
 
     public static function register(): void
     {
-        if (self::$registered || PHP_SAPI !== 'cli') {
+        if (
+            self::$registered
+            || PHP_SAPI !== 'cli'
+            || !self::isCleanupOwnerProcess()
+        ) {
             return;
         }
 
@@ -56,6 +64,25 @@ final class TestCleanup
                 error_log('[QUIQQER test cleanup] ' . $Exception->getMessage());
             }
         });
+    }
+
+    private static function isCleanupOwnerProcess(): bool
+    {
+        $processId = getmypid();
+
+        if ($processId === false) {
+            return true;
+        }
+
+        $ownerProcessId = getenv(self::OWNER_PROCESS_ID_ENVIRONMENT_VARIABLE);
+
+        if ($ownerProcessId !== false) {
+            return $ownerProcessId === (string)$processId;
+        }
+
+        putenv(self::OWNER_PROCESS_ID_ENVIRONMENT_VARIABLE . '=' . $processId);
+
+        return true;
     }
 
     /**

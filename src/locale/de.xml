@@ -152,6 +152,24 @@
         <locale name="permission.quiqqer.core.mcp.canUse">
             <de><![CDATA[Darf die Core-MCP-Tools verwenden]]></de>
         </locale>
+        <locale name="permission.quiqqer.core.mcp.users._header">
+            <de><![CDATA[Benutzer]]></de>
+        </locale>
+        <locale name="permission.quiqqer.core.mcp.users.canUse">
+            <de><![CDATA[Darf die Benutzerverwaltung per MCP verwenden]]></de>
+        </locale>
+        <locale name="permission.quiqqer.core.mcp.groups._header">
+            <de><![CDATA[Gruppen]]></de>
+        </locale>
+        <locale name="permission.quiqqer.core.mcp.groups.canUse">
+            <de><![CDATA[Darf die Gruppenverwaltung per MCP verwenden]]></de>
+        </locale>
+        <locale name="permission.quiqqer.core.mcp.permissions._header">
+            <de><![CDATA[Berechtigungen]]></de>
+        </locale>
+        <locale name="permission.quiqqer.core.mcp.permissions.canUse">
+            <de><![CDATA[Darf die Berechtigungsverwaltung per MCP verwenden]]></de>
+        </locale>
         <locale name="permission.quiqqer.core.mcp.clearCache">
             <de><![CDATA[Darf den QUIQQER-Cache per MCP löschen]]></de>
         </locale>
@@ -163,6 +181,9 @@
         </locale>
         <locale name="permission.quiqqer.core.mcp.manageVhosts">
             <de><![CDATA[Darf VHosts per MCP erstellen, bearbeiten und löschen]]></de>
+        </locale>
+        <locale name="permission.quiqqer.core.mcp.manageForwardings">
+            <de><![CDATA[Darf globale Weiterleitungen per MCP verwalten]]></de>
         </locale>
         <locale name="permission.quiqqer.projects._header">
             <de><![CDATA[Projekte]]></de>

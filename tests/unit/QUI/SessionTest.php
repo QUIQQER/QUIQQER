@@ -4,6 +4,7 @@ namespace QUI;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use QUI\Users\Auth\VerifiedMail2FA;
 
 class SessionTest extends TestCase
 {
@@ -28,6 +29,8 @@ class SessionTest extends TestCase
         yield 'master login state' => ['session_master_state'];
         yield 'master login log' => ['session_log_id'];
         yield 'master login log state' => ['session_log_state'];
+        yield 'mail MFA login code' => [VerifiedMail2FA::USER_CODE_ATTRIBUTE];
+        yield 'mail MFA verification code' => [VerifiedMail2FA::USER_CODE_VERIFYING_ATTRIBUTE];
     }
 
     #[DataProvider('allowedClientSessionKeyProvider')]

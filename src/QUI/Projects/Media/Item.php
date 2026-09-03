@@ -13,6 +13,7 @@ use QUI\Groups\Group;
 use QUI\Permissions\Permission;
 use QUI\Projects\Media;
 use QUI\Users\User;
+use QUI\Utils\Security\SvgSanitizer;
 use QUI\Utils\System\File as QUIFile;
 
 use function array_reverse;
@@ -36,6 +37,7 @@ use function pathinfo;
 use function preg_replace;
 use function reset;
 use function str_replace;
+use function strtolower;
 use function strpos;
 use function trim;
 
@@ -1019,22 +1021,40 @@ abstract class Item extends QUI\QDOM
                 $order = '';
         }
 
-        // svg fix
-        if ($this->getAttribute('mime_type') == 'text/html') {
+        $mimeType = (string)$this->getAttribute('mime_type');
+        $extension = strtolower((string)pathinfo($this->getFullPath(), PATHINFO_EXTENSION));
+        $mustBeSvg = in_array($extension, ['svg', 'svgz'], true)
+            || in_array($mimeType, ['image/svg', 'image/svg+xml'], true);
+        $mayBeSvg = $mustBeSvg || in_array(
+            $mimeType,
+            ['application/xml', 'application/xhtml+xml', 'text/html', 'text/plain', 'text/xml'],
+            true
+        );
+
+        if ($mayBeSvg) {
             $content = file_get_contents($this->getFullPath());
+            $sanitizedSvg = is_string($content) ? SvgSanitizer::sanitize($content) : '';
 
-            if (str_contains((string)$content, '<svg') && strpos((string)$content, '</svg>')) {
-                file_put_contents(
-                    $this->getFullPath(),
-                    '<?xml version="1.0" encoding="UTF-8"?>' .
-                    $content
+            if ($sanitizedSvg === '' && $mustBeSvg) {
+                throw new QUI\Exception(
+                    ['quiqqer/core', 'exception.image.upload.image.corrupted'],
+                    ErrorCodes::FILE_IMAGE_CORRUPT
                 );
+            }
 
-                $fileInfo = QUI\Utils\System\File::getInfo($this->getFullPath());
+            if ($sanitizedSvg !== '') {
+                if (file_put_contents($this->getFullPath(), $sanitizedSvg) === false) {
+                    throw new QUI\Exception(
+                        ['quiqqer/core', 'exception.image.upload.image.corrupted'],
+                        ErrorCodes::FILE_IMAGE_CORRUPT
+                    );
+                }
+
+                $this->setAttribute('mime_type', 'image/svg+xml');
 
                 QUI::getDataBaseConnection()->update(
                     $this->Media->getTable(),
-                    ['mime_type' => $fileInfo['mime_type']],
+                    ['mime_type' => 'image/svg+xml'],
                     ['id' => $this->getId()]
                 );
             }
