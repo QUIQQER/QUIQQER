@@ -18,6 +18,8 @@ QUI::getAjax()->registerFunction(
         $Media = $Project->getMedia();
         $File = $Media->get($folderId);
 
+        $File->checkPermission('quiqqer.projects.media.view');
+
         if (!($File instanceof Folder)) {
             QUI\Utils\System\File::downloadHeader($File->getFullPath());
             exit;
