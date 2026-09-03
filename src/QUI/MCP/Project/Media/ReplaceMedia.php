@@ -5,6 +5,7 @@ namespace QUI\MCP\Project\Media;
 use Mcp\Schema\Result\CallToolResult;
 use Mcp\Server\Builder;
 use QUI;
+use QUI\AI\MCP\Server;
 use QUI\AI\MCP\ToolHelper;
 use QUI\Projects\Media\Folder;
 use Throwable;
@@ -54,7 +55,11 @@ class ReplaceMedia extends AbstractMediaTool
                         throw new QUI\Exception('Could not write temporary replacement file.');
                     }
 
-                    $File = self::getMedia($project)->replace($id, $tmpFile);
+                    $File = self::getMedia($project)->replace(
+                        $id,
+                        $tmpFile,
+                        Server::getRequestUser()
+                    );
                     $tmpFile = null;
 
                     return [

@@ -801,13 +801,17 @@ class Media extends QUI\QDOM
      *
      * @param integer $id
      * @param string $file - Path to the new file
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
      *
      * @return QUI\Interfaces\Projects\Media\File
      *
      * @throws QUI\Exception
      */
-    public function replace(int $id, string $file): QUI\Interfaces\Projects\Media\File
-    {
+    public function replace(
+        int $id,
+        string $file,
+        null | QUI\Interfaces\Users\User $PermissionUser = null
+    ): QUI\Interfaces\Projects\Media\File {
         if (!file_exists($file)) {
             throw new QUI\Exception('Replacement file could not be found in path "' . $file . '"', 404);
         }
@@ -833,6 +837,8 @@ class Media extends QUI\QDOM
         if ($data['type'] == 'folder') {
             throw new QUI\Exception('Folders cannot be replaced by files', 403);
         }
+
+        $this->get($id)->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
 
         $name = $data['name'];
         $info = QUI\Utils\System\File::getInfo($file);
