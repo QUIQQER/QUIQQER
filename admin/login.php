@@ -129,7 +129,8 @@ foreach ($packages as $package) {
     echo 'var QUIQQER_IS_ADMIN_LOGIN = true;';
     echo 'var QUIQQER = ' . json_encode([
         'csrfToken' => QUI\Security\CsrfToken::get(),
-        'inAdministration' => true
+        'inAdministration' => true,
+        'vMd5' => md5(QUI::version())
     ]) . ';';
     echo 'var QUIQQER_CONFIG = {globals: {no_ajax_bundler: 1}}';
     echo '/* ]]> */';

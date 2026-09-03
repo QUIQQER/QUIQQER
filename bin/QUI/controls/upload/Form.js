@@ -25,11 +25,12 @@ define('controls/upload/Form', [
     'qui/controls/loader/Loader',
     'utils/Media',
     'classes/request/Upload',
+    'Ajax',
     'Locale',
 
     'css!controls/upload/Form.css'
 
-], function (QUI, QUIControl, QUIProgressbar, QUIButton, QUILoader, MediaUtils, Upload, Locale) {
+], function (QUI, QUIControl, QUIProgressbar, QUIButton, QUILoader, MediaUtils, Upload, Ajax, Locale) {
     'use strict';
 
     const lg = 'quiqqer/core';
@@ -912,6 +913,7 @@ define('controls/upload/Form', [
             // use the normal upload
             if (typeof FileReader === 'undefined') {
                 this.$Form.getElements('input[type="hidden"]').destroy();
+                this.$params._csrf = Ajax.getBackendCsrfToken();
 
                 // create the params into the form
                 for (const n in this.$params) {
@@ -962,7 +964,7 @@ define('controls/upload/Form', [
                 return;
             }
 
-            const startUpload = function (preparedFiles) {
+            const startUpload = (preparedFiles) => {
                 if ('extract' in params && params.extract) {
                     const extract = {};
 
