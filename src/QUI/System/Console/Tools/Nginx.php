@@ -186,6 +186,11 @@ class Nginx extends QUI\System\Console\Tool
             location /media/cache/ {
                 try_files \$uri \$uri/ @quiqqer_front_controller;
             }
+
+            # Existing active-document media caches must pass through the SVG sanitizer path as well.
+            location ~* ^/media/cache/.+\.(svgz?|html?|xhtml|xml)$ {
+                try_files \$uri.__quiqqer_svg_sanitizer__ @quiqqer_front_controller;
+            }
             
             location /packages/ckeditor/ {
                 try_files \$uri \$uri/ @quiqqer_front_controller;

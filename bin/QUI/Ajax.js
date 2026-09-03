@@ -47,6 +47,64 @@ define('Ajax', [
     let TRY_MAX = 3;
     let TRY_DELAY = 1000;
 
+    const getAdministrationWindow = function() {
+        if (typeof window.QUIQQER !== 'undefined' && window.QUIQQER.inAdministration) {
+            return window;
+        }
+
+        try {
+            if (
+                window.parent !== window &&
+                typeof window.parent.QUIQQER !== 'undefined' &&
+                window.parent.QUIQQER.inAdministration
+            ) {
+                return window.parent;
+            }
+        } catch (error) {
+            // Cross-origin parent windows are intentionally ignored.
+        }
+
+        return null;
+    };
+
+    const getBackendCsrfToken = function() {
+        const AdministrationWindow = getAdministrationWindow();
+
+        if (
+            AdministrationWindow === null ||
+            typeof AdministrationWindow.QUIQQER.csrfToken !== 'string'
+        ) {
+            return '';
+        }
+
+        return AdministrationWindow.QUIQQER.csrfToken;
+    };
+
+    const addBackendCsrfToken = function(params) {
+        const token = getBackendCsrfToken();
+
+        if (token !== '') {
+            params._csrf = token;
+        }
+
+        return params;
+    };
+
+    const updateBackendCsrfToken = function(result) {
+        const AdministrationWindow = getAdministrationWindow();
+
+        if (
+            AdministrationWindow === null ||
+            !result ||
+            typeof result.csrfToken !== 'string' ||
+            result.csrfToken === ''
+        ) {
+            return;
+        }
+
+        AdministrationWindow.QUIQQER.csrfToken = result.csrfToken;
+    };
+
     if (typeof QUIQQER_CONFIG !== 'undefined' &&
         typeof QUIQQER_CONFIG.globals !== 'undefined' &&
         (QUIQQER_CONFIG.globals.debug_mode || QUIQQER_CONFIG.globals.development)) {
@@ -54,6 +112,15 @@ define('Ajax', [
     }
 
     const Ajax = {
+        /**
+         * Return the CSRF token of the active administration window.
+         *
+         * @return {String}
+         */
+        getBackendCsrfToken: function() {
+            return getBackendCsrfToken();
+        },
+
 
         $globalJSF: {}, // global javascript callback functions
         $onprogress: {},
@@ -86,6 +153,7 @@ define('Ajax', [
                 '_rf': call,
                 '_FRONTEND': window.QUIQQER_FRONTEND || 0
             });
+            addBackendCsrfToken(params);
 
             if (typeof params.lang === 'undefined') {
                 params.lang = Locale.getCurrent();
@@ -108,6 +176,8 @@ define('Ajax', [
                     onSuccess: function() {
                         const args = arguments;
                         const Request = args[args.length - 1];
+
+                        updateBackendCsrfToken(self.$onprogress[this].$result);
 
                         if (Request.getAttribute('logout')) {
                             return;
@@ -353,6 +423,7 @@ define('Ajax', [
                 _rf      : JSON.stringify([call]),
                 _FRONTEND: window.QUIQQER_FRONTEND || 0
             });
+            addBackendCsrfToken(requestParams);
             const body = new URLSearchParams();
 
             Object.entries(requestParams).forEach(function([name, value]) {
@@ -485,6 +556,7 @@ define('Ajax', [
             params = Utils.combine(params, {
                 '_rf': call
             });
+            addBackendCsrfToken(params);
 
             this.$onprogress[id] = new QUIAjax(
                 // combine all params, so, they are available in the Request Object
@@ -570,6 +642,7 @@ define('Ajax', [
             params = Utils.combine(params, {
                 '_rf': call
             });
+            addBackendCsrfToken(params);
 
             if (typeof this.$AjaxHelper === 'undefined') {
                 this.$AjaxHelper = new QUIAjax();

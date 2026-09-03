@@ -28,6 +28,14 @@ abstract class AbstractTool implements ToolInterface
         );
     }
 
+    protected static function checkPermission(string $permission): void
+    {
+        Permission::checkPermission(
+            $permission,
+            Server::getRequestUser()
+        );
+    }
+
     protected static function getProject(string $project, ?string $lang = null): Project
     {
         if (empty($lang)) {
@@ -52,7 +60,9 @@ abstract class AbstractTool implements ToolInterface
             'title' => $Project->getTitle(),
             'lang' => $Project->getLang(),
             'defaultLang' => $Project->getDefaultLang(),
-            'languages' => $Project->getLanguages()
+            'languages' => $Project->getLanguages(),
+            'template' => $Project->getTemplate() ?: null,
+            'host' => $Project->getHost()
         ];
     }
 

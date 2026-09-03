@@ -10,6 +10,7 @@ use PDOException;
 use QUI;
 
 use function array_filter;
+use function array_key_exists;
 use function array_slice;
 use function call_user_func;
 use function call_user_func_array;
@@ -68,6 +69,11 @@ class Ajax extends QUI\QDOM
      * @var array<string, array<array-key, mixed>>
      */
     protected array $jsCallbacks = [];
+
+    /**
+     * Whether the current HTTP request has passed CSRF validation.
+     */
+    private bool $csrfValidated = false;
 
     /**
      * @param array<array-key, mixed> $params
@@ -188,6 +194,10 @@ class Ajax extends QUI\QDOM
         foreach ($_rfs as $_rf) {
             $_rf = QUI\Utils\Security\Orthos::clear($_rf);
             $result[$_rf] = $this->callRequestFunction($_rf);
+        }
+
+        if (self::isBackendCsrfProtectionRequired()) {
+            $result['csrfToken'] = Security\CsrfToken::get();
         }
 
         $SymfonySession = QUI::getSession()->getSymfonySession();
@@ -397,6 +407,21 @@ class Ajax extends QUI\QDOM
             );
         }
 
+        if (self::isCsrfProtectionRequired($_rf) && !$this->csrfValidated) {
+            $csrfToken = $_REQUEST['_csrf'] ?? null;
+
+            if (is_array($values) && array_key_exists('_csrf', $values)) {
+                $csrfToken = $values['_csrf'];
+            }
+
+            try {
+                Security\CsrfToken::assertValid($csrfToken);
+                $this->csrfValidated = true;
+            } catch (\Exception $Exception) {
+                return $this->writeException($Exception);
+            }
+        }
+
         // Rechte prüfung
         try {
             self::checkPermissions($_rf);
@@ -484,6 +509,48 @@ class Ajax extends QUI\QDOM
         }
 
         return $return;
+    }
+
+    public static function isBackendCsrfProtectionRequired(): bool
+    {
+        if (!QUI::isBackend()) {
+            return false;
+        }
+
+        $User = QUI::getUserBySession();
+
+        return QUI::getUsers()->isAuth($User);
+    }
+
+    private static function isCsrfProtectionRequired(string $function): bool
+    {
+        if (self::isBackendCsrfProtectionRequired()) {
+            return true;
+        }
+
+        $User = QUI::getUserBySession();
+
+        if (!QUI::getUsers()->isAuth($User)) {
+            return false;
+        }
+
+        $permissions = self::$permissions[$function] ?? [];
+
+        if (is_string($permissions)) {
+            $permissions = [$permissions];
+        }
+
+        if (!is_array($permissions)) {
+            return false;
+        }
+
+        foreach ($permissions as $permission) {
+            if ($permission === 'Permission::checkAdminUser') {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

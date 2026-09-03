@@ -8,11 +8,12 @@ define('controls/packages/upload/Upload', [
     'qui/controls/Control',
     'qui/controls/buttons/Button',
     'controls/upload/Form',
+    'Ajax',
     'Locale',
 
     'css!controls/packages/upload/Upload.css'
 
-], function (QUI, QUIControl, QUIButton, UploadForm, QUILocale) {
+], function (QUI, QUIControl, QUIButton, UploadForm, Ajax, QUILocale) {
     "use strict";
 
     var lg = 'quiqqer/core';
@@ -105,6 +106,7 @@ define('controls/packages/upload/Upload', [
 
             this.$Upload.setParam('onfinish', 'ajax_system_packages_upload_package');
             this.$Upload.setParam('extract', 0);
+            this.$Upload.setParam('_csrf', Ajax.getBackendCsrfToken());
 
             return Elm;
         },

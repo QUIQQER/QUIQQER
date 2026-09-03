@@ -161,10 +161,15 @@ class Trash implements QUI\Interfaces\Projects\Trash
     /**
      * Restore an item to a folder
      *
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
+     *
      * @throws QUI\Exception
      */
-    public function restore(int $id, Folder $Folder): QUI\Interfaces\Projects\Media\File
-    {
+    public function restore(
+        int $id,
+        Folder $Folder,
+        null | QUI\Interfaces\Users\User $PermissionUser = null
+    ): QUI\Interfaces\Projects\Media\File {
         $file = $this->getPath() . $id;
 
         if (!file_exists($file)) {
@@ -203,10 +208,18 @@ class Trash implements QUI\Interfaces\Projects\Trash
 
         $newFile = $this->getPath() . $data['name'] . $extension;
 
+        $Source = $this->Media->get($id);
+        $Source->checkPermission('quiqqer.projects.media.view', $PermissionUser);
+        $Folder->checkPermission('quiqqer.projects.media.upload', $PermissionUser);
+
         QUI\Utils\System\File::move($file, $newFile);
 
         // insert the file
-        $Item = $Folder->uploadFile($newFile);
+        $Item = $Folder->uploadFile(
+            $newFile,
+            Folder::FILE_OVERWRITE_NONE,
+            $PermissionUser
+        );
 
         // change old db entry, if one exist
         $Item->setAttributes([

@@ -125,6 +125,20 @@ class Forwarding
      */
     public static function forward(Request $Request): void
     {
+        $forwarding = self::resolve($Request);
+
+        if ($forwarding !== null) {
+            self::redirect($forwarding);
+        }
+    }
+
+    /**
+     * Resolve a request to its first matching forwarding rule without sending a response.
+     *
+     * @return array<string, mixed>|null
+     */
+    public static function resolve(Request $Request): ?array
+    {
         $list = [];
 
         try {
@@ -139,12 +153,14 @@ class Forwarding
         $request = $host . $uri;
 
         // directly found
-        if (isset($list[$request])) {
-            self::redirect($list[$request]);
+        if (isset($list[$request]) && is_array($list[$request])) {
+            return $list[$request];
         }
 
-        if (isset($list[trim($request, '/')])) {
-            self::redirect($list[trim($request, '/')]);
+        $trimmedRequest = trim($request, '/');
+
+        if (isset($list[$trimmedRequest]) && is_array($list[$trimmedRequest])) {
+            return $list[$trimmedRequest];
         }
 
 
@@ -154,8 +170,12 @@ class Forwarding
                 continue;
             }
 
-            self::redirect($params);
+            if (is_array($params)) {
+                return $params;
+            }
         }
+
+        return null;
     }
 
     /**
@@ -164,6 +184,20 @@ class Forwarding
      * @param array<string, mixed> $data
      */
     protected static function redirect(array $data): never
+    {
+        $Redirect = self::createRedirectResponse($data);
+
+        echo $Redirect->getContent();
+        $Redirect->send();
+        exit;
+    }
+
+    /**
+     * Build the response for a forwarding rule without sending it.
+     *
+     * @param array<string, mixed> $data
+     */
+    public static function createRedirectResponse(array $data): RedirectResponse
     {
         $target = $data['target'];
         $code = (int)$data['code'];
@@ -179,8 +213,6 @@ class Forwarding
         $Redirect = new RedirectResponse($target);
         $Redirect->setStatusCode($code);
 
-        echo $Redirect->getContent();
-        $Redirect->send();
-        exit;
+        return $Redirect;
     }
 }

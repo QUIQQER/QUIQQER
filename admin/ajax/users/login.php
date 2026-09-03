@@ -3,6 +3,7 @@
 use QUI\Interfaces\Users\User;
 use QUI\System\Log;
 use QUI\Users\Auth\SessionFailureCounter;
+use QUI\Users\Auth\WebAuthn\Server as WebAuthnServer;
 
 QUI::getAjax()->registerFunction(
     'ajax_users_login',
@@ -13,6 +14,18 @@ QUI::getAjax()->registerFunction(
         $currentAuthStep = $authStep === SessionFailureCounter::STEP_SECONDARY
             ? SessionFailureCounter::STEP_SECONDARY
             : SessionFailureCounter::STEP_PRIMARY;
+        $isSecondaryAuthentication = $currentAuthStep === SessionFailureCounter::STEP_SECONDARY;
+
+        if (
+            $isSecondaryAuthentication
+            && (
+                QUI::getSession()->get('auth-primary') !== 1
+                || QUI::getSession()->get('auth-' . $authenticator) === 1
+            )
+        ) {
+            QUI::getSession()->remove('inAuthentication');
+            return false;
+        }
 
         if (is_string($authenticators)) {
             $authenticators = json_decode($authenticators, true);
@@ -22,26 +35,66 @@ QUI::getAjax()->registerFunction(
             $authenticators = [];
         }
 
-        if ($currentAuthStep === SessionFailureCounter::STEP_PRIMARY) {
-            if (QUI::isFrontend()) {
-                $allowedPrimaryAuthenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalFrontendAuthenticators();
-            } else {
-                $allowedPrimaryAuthenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalBackendAuthenticators();
+        $AuthHandler = QUI\Users\Auth\Handler::getInstance();
+        $AuthenticationTarget = $authenticator;
+
+        if (QUI::isFrontend()) {
+            $allowedAuthenticators = $isSecondaryAuthentication
+                ? $AuthHandler->getGlobalFrontendSecondaryAuthenticators()
+                : $AuthHandler->getGlobalFrontendAuthenticators();
+        } else {
+            $allowedAuthenticators = $isSecondaryAuthentication
+                ? $AuthHandler->getGlobalBackendSecondaryAuthenticators()
+                : $AuthHandler->getGlobalBackendAuthenticators();
+        }
+
+        if (!$isSecondaryAuthentication && !empty($authenticators)) {
+            $allowedAuthenticators = array_values(array_intersect(
+                $allowedAuthenticators,
+                $authenticators
+            ));
+        }
+
+        if (!in_array($authenticator, $allowedAuthenticators, true)) {
+            if ($isSecondaryAuthentication) {
+                QUI::getSession()->remove('inAuthentication');
+                return false;
             }
 
-            if (!empty($authenticators)) {
-                $allowedPrimaryAuthenticators = array_values(array_intersect(
-                    $allowedPrimaryAuthenticators,
-                    $authenticators
-                ));
+            throw new QUI\Users\Auth\Exception(
+                ['quiqqer/core', 'exception.authenticator.not.found'],
+                404
+            );
+        }
+
+        if ($isSecondaryAuthentication) {
+            $uid = QUI::getSession()->get('uid');
+
+            if ((!is_int($uid) && !is_string($uid)) || (string)$uid === '') {
+                QUI::getSession()->remove('inAuthentication');
+                return false;
             }
 
-            if (!in_array($authenticator, $allowedPrimaryAuthenticators, true)) {
-                throw new QUI\Users\Auth\Exception(
-                    ['quiqqer/core', 'exception.authenticator.not.found'],
-                    404
-                );
+            try {
+                $User = QUI::getUsers()->get($uid);
+
+                if (!$User->hasAuthenticator($authenticator)) {
+                    QUI::getSession()->remove('inAuthentication');
+                    return false;
+                }
+
+                $SecondaryAuthenticator = $AuthHandler->getAuthenticator($authenticator, $User);
+            } catch (QUI\Exception) {
+                QUI::getSession()->remove('inAuthentication');
+                return false;
             }
+
+            if (!$SecondaryAuthenticator->isSecondaryAuthentication()) {
+                QUI::getSession()->remove('inAuthentication');
+                return false;
+            }
+
+            $AuthenticationTarget = $SecondaryAuthenticator;
         }
 
         $User = QUI::getUserBySession();
@@ -61,11 +114,13 @@ QUI::getAjax()->registerFunction(
         }
 
         $FailureCounter = new SessionFailureCounter(QUI::getSession());
+        $authenticationExecuted = false;
 
         try {
             QUI::getUsers()->authenticate(
-                $authenticator,
-                $authParams
+                $AuthenticationTarget,
+                $authParams,
+                $authenticationExecuted
             );
         } catch (QUI\Users\UserAuthException | QUI\Users\Auth\Exception | QUI\Users\Exception $Exception) {
             if ($Exception->getCode() === 429) {
@@ -118,6 +173,20 @@ QUI::getAjax()->registerFunction(
         // $secondaryLoginType = 0 no 2fa
         // $secondaryLoginType = 1 2fa is required
         // $secondaryLoginType = 2 2fa is optional
+        if (
+            $authenticationExecuted
+            && $currentAuthStep === SessionFailureCounter::STEP_PRIMARY
+            && $secondaryLoginType === 1
+        ) {
+            try {
+                $EnrollmentUser = QUI::getUsers()->get(QUI::getSession()->get('uid'));
+                (new WebAuthnServer())->authorizeRequiredMfaBootstrap($EnrollmentUser);
+            } catch (\Throwable $Exception) {
+                QUI::getSession()->remove(WebAuthnServer::SESSION_ENROLLMENT);
+                Log::writeException($Exception);
+            }
+        }
+
         if ($secondaryLoginType === 2 && QUI::getSession()->get('auth-primary')) {
             QUI::getSession()->set('auth', 1);
         }
@@ -133,7 +202,17 @@ QUI::getAjax()->registerFunction(
             QUI::getSession()->get('auth-primary') === 1 && QUI::getSession()->get('auth-secondary') === 1
         ) {
             try {
-                QUI::getUsers()->login();
+                $LoggedInUser = QUI::getUsers()->login();
+
+                if ($LoggedInUser instanceof User && $authenticationExecuted) {
+                    try {
+                        (new WebAuthnServer())->authorizeAuthenticatedEnrollment($LoggedInUser);
+                    } catch (\Throwable $Exception) {
+                        QUI::getSession()->remove(WebAuthnServer::SESSION_ENROLLMENT);
+                        Log::writeException($Exception);
+                    }
+                }
+
                 $loggedIn = true;
             } catch (\Exception $Exception) {
                 // User cannot log in (e.g. User is not active)

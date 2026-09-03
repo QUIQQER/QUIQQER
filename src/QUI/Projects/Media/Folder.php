@@ -12,6 +12,7 @@ use QUI\ExceptionStack;
 use QUI\Interfaces\Users\User;
 use QUI\Projects\Media;
 use QUI\Projects\Media\Utils as MediaUtils;
+use QUI\Utils\Security\SvgSanitizer;
 use QUI\Utils\StringHelper as StringUtils;
 use QUI\Utils\System\File as FileUtils;
 use RecursiveDirectoryIterator;
@@ -26,12 +27,15 @@ use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
 use function is_dir;
+use function is_array;
 use function is_string;
+use function in_array;
 use function ltrim;
 use function md5;
 use function rtrim;
 use function set_time_limit;
 use function str_replace;
+use function strtolower;
 use function strlen;
 use function strpos;
 use function substr;
@@ -1242,6 +1246,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         $fileInfo = FileUtils::getInfo($file);
         $filename = MediaUtils::stripMediaName($fileInfo['basename']);
+        $sanitizedSvg = null;
 
 
         // test if the image is readable
@@ -1274,30 +1279,37 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         // $filename = \mb_strtolower($filename); -> mor will das raus haben
 
-        // svg fix
-        if (
-            $fileInfo['mime_type'] === 'text/html'
-            || $fileInfo['mime_type'] === 'text/plain'
-            || $fileInfo['mime_type'] === 'image/svg'
-            || $fileInfo['mime_type'] === 'image/svg+xml'
-        ) {
+        $extension = strtolower((string)($fileInfo['extension'] ?? ''));
+        $hasSvgType = in_array($fileInfo['mime_type'], ['image/svg', 'image/svg+xml'], true);
+        $mustBeSvg = in_array($extension, ['svg', 'svgz'], true) || $hasSvgType;
+        $mayBeSvg = $mustBeSvg || in_array(
+            $fileInfo['mime_type'],
+            ['application/xml', 'application/xhtml+xml', 'text/html', 'text/plain', 'text/xml'],
+            true
+        );
+
+        if ($mayBeSvg) {
             $content = file_get_contents($file);
 
-            if (str_contains((string)$content, '<svg') && strpos((string)$content, '</svg>')) {
-                if (!str_contains((string)$content, '<?xml ')) {
-                    if (preg_match('/(<svg[\s\S]*<\/svg>)/i', (string)$content, $match)) {
-                        $content = $match[1];
-                    }
+            if (is_string($content)) {
+                $sanitized = SvgSanitizer::sanitize($content);
 
-                    if (mb_substr((string)$content, 0, 3) === "\xEF\xBB\xBF") {
-                        $content = substr((string)$content, 3);
-                    }
+                if ($sanitized !== '') {
+                    $sanitizedSvg = $sanitized;
+                    $fileInfo['mime_type'] = 'image/svg+xml';
 
-                    $content = '<?xml version="1.0" encoding="UTF-8"?>' . $content;
-                    file_put_contents($file, $content);
+                    if ($extension !== 'svg') {
+                        $filename = MediaUtils::stripMediaName($fileInfo['filename']) . '.svg';
+                        $fileInfo['extension'] = 'svg';
+                    }
                 }
+            }
 
-                $fileInfo = FileUtils::getInfo($file);
+            if ($mustBeSvg && $sanitizedSvg === null) {
+                throw new QUI\Exception(
+                    ['quiqqer/core', 'exception.image.upload.image.corrupted'],
+                    ErrorCodes::FILE_IMAGE_CORRUPT
+                );
             }
         }
 
@@ -1342,7 +1354,16 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         // copy the file to the media
-        FileUtils::copy($file, $new_file);
+        if ($sanitizedSvg !== null) {
+            if (file_put_contents($new_file, $sanitizedSvg) === false) {
+                throw new QUI\Exception(
+                    ['quiqqer/core', 'exception.image.upload.image.corrupted'],
+                    ErrorCodes::FILE_IMAGE_CORRUPT
+                );
+            }
+        } else {
+            FileUtils::copy($file, $new_file);
+        }
 
 
         // create the database entry
@@ -1350,6 +1371,11 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $table_rel = $this->Media->getTable('relations');
 
         $new_file_info = FileUtils::getInfo($new_file);
+
+        if ($sanitizedSvg !== null) {
+            $new_file_info['mime_type'] = 'image/svg+xml';
+        }
+
         $title = str_replace('_', ' ', $new_file_info['filename']);
 
         if (empty($new_file_info['filename'])) {
@@ -1366,22 +1392,12 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $imageWidth = null;
         $imageHeight = null;
 
-        if ($fileInfo['mime_type'] === 'image/svg' || $fileInfo['mime_type'] === 'image/svg+xml') {
-            $svgContent = file_get_contents($file);
-
-            if (preg_match('/(<svg[\s\S]*<\/svg>)/i', (string)$svgContent, $match)) {
-                $svgContent = $match[1];
-            }
-
-            if (mb_substr((string)$svgContent, 0, 3) === "\xEF\xBB\xBF") {
-                $svgContent = substr((string)$svgContent, 3);
-            }
-
-            $svgContent = trim((string)$svgContent);
-
+        if ($sanitizedSvg !== null) {
             try {
                 $dom = new \DOMDocument();
-                $dom->loadXML($svgContent);
+                $dom->resolveExternals = false;
+                $dom->substituteEntities = false;
+                $dom->loadXML($sanitizedSvg, LIBXML_NONET);
                 $svg = $dom->getElementsByTagName('svg')->item(0);
             } catch (\Exception) {
                 $svg = null;

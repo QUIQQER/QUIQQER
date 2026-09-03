@@ -1999,6 +1999,23 @@ class User implements QUIUserInterface
     {
         $this->checkEditPermission($PermissionUser);
 
+        if ($PermissionUser === null) {
+            $PermissionUser = QUI::getUserBySession();
+        }
+
+        $isTargetSuperUser = $this->isSU();
+        $isActingSystemUser = QUI::getUsers()->isSystemUser($PermissionUser);
+        $isActingSuperUser = $PermissionUser->isSU();
+
+        if ($isTargetSuperUser && !$isActingSystemUser && !$isActingSuperUser) {
+            throw new QUI\Permissions\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/core',
+                    'exception.lib.user.no.edit.rights'
+                )
+            );
+        }
+
         if (empty($new)) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(

@@ -21,11 +21,7 @@ define('QUIQQER_AJAX', true);
 
 require_once $dir . 'header.php';
 
-try {
-    QUI\Permissions\Permission::checkPermission('quiqqer.frontend.upload');
-} catch (\Exception $Exception) {
-    QUI\System\Log::writeDebugException($Exception);
-}
+QUI\Permissions\Permission::checkPermission('quiqqer.frontend.upload');
 
 $QUM = new QUI\Upload\Manager();
 QUI::getAjax();

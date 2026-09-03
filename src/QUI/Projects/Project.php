@@ -487,7 +487,11 @@ class Project implements \Stringable
         $group = 'project/' . $this->getName();
 
         if (QUI::getLocale()->exists($group, 'title')) {
-            return QUI::getLocale()->get($group, 'title');
+            $title = QUI::getLocale()->get($group, 'title');
+
+            if ($title !== '') {
+                return $title;
+            }
         }
 
         return $this->getName();

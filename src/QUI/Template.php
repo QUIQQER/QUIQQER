@@ -9,7 +9,6 @@ namespace QUI;
 use QUI;
 use QUI\Interfaces\Template\EngineInterface;
 use QUI\Projects\Project;
-use QUI\Utils\Security\Orthos;
 
 use function class_exists;
 use function explode;
@@ -20,6 +19,8 @@ use function htmlspecialchars;
 use function html_entity_decode;
 use function implode;
 use function is_array;
+use function is_dir;
+use function is_file;
 use function ltrim;
 use function realpath;
 use function rtrim;
@@ -430,6 +431,66 @@ class Template extends QUI\QDOM
         $this->assigned[$param] = $value;
     }
 
+    private function getRegisteredTemplatePackage(mixed $name): ?Package\Package
+    {
+        if (!is_string($name) || trim($name) === '') {
+            return null;
+        }
+        foreach (QUI::getPackageManager()->searchInstalledPackages(['type' => 'quiqqer-template']) as $data) {
+            if (($data['name'] ?? null) !== trim($name)) {
+                continue;
+            }
+            try {
+                $Package = QUI::getPackage(trim($name));
+                $root = realpath($Package->getDir());
+                return $root !== false && is_dir($root) ? $Package : null;
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeDebugException($Exception);
+                return null;
+            }
+        }
+        return null;
+    }
+
+    private function getContainedFile(mixed $root, mixed $file): ?string
+    {
+        $root = realpath((string)$root);
+        $file = realpath((string)$file);
+        if ($root === false || $file === false || !is_file($file)) {
+            return null;
+        }
+        $prefix = rtrim($root, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        return str_starts_with($file, $prefix) ? $file : null;
+    }
+
+    protected function getUserDirectory(): string
+    {
+        return USR_DIR;
+    }
+
+    /** @return array{0: Package\Package, 1: string}|null */
+    private function getRegisteredSiteType(mixed $value): ?array
+    {
+        if (!is_string($value) || !str_contains($value, ':')) {
+            return null;
+        }
+        try {
+            foreach (QUI::getPackageManager()->getAvailableSiteTypes() as $types) {
+                foreach ($types as $entry) {
+                    if (($entry['type'] ?? null) === $value) {
+                        [$package, $type] = explode(':', $value, 2);
+                        $Package = QUI::getPackage($package);
+                        $root = realpath($Package->getDir());
+                        return $root !== false && is_dir($root) ? [$Package, $type] : null;
+                    }
+                }
+            }
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeDebugException($Exception);
+        }
+        return null;
+    }
+
     /**
      * Prepares the contents of a template
      *
@@ -446,6 +507,7 @@ class Template extends QUI\QDOM
         $Rewrite = QUI::getRewrite();
         $Locale = QUI::getLocale();
         $Template = $this;
+        $userDirectory = $this->getUserDirectory();
 
         $projectTemplate = $Project->getTemplate();
         $hasTemplateParent = false;
@@ -454,15 +516,16 @@ class Template extends QUI\QDOM
             $projectTemplate = $Site->getAttribute('quiqqer.site.template');
         }
 
-        try {
-            $this->TemplatePackage = QUI::getPackage($projectTemplate);
+        $this->TemplatePackage = $this->getRegisteredTemplatePackage($projectTemplate);
+        if ($this->TemplatePackage !== null) {
             $hasTemplateParent = $this->TemplatePackage->hasTemplateParent();
 
             if ($hasTemplateParent) {
-                $this->TemplateParent = $this->TemplatePackage->getTemplateParent();
+                $parent = $this->TemplatePackage->getTemplateParent();
+                $this->TemplateParent = $this->getRegisteredTemplatePackage($parent->getName());
             }
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::writeDebugException($Exception);
+        } else {
+            $projectTemplate = '';
         }
 
         $User = $Users->getUserBySession();
@@ -496,8 +559,9 @@ class Template extends QUI\QDOM
          */
 
         $default_tpl = LIB_DIR . 'templates/index.html';
-        $project_tpl = USR_DIR . $Project->getName() . '/lib/index.html';
-        $project_index = USR_DIR . $Project->getName() . '/lib/index.php';
+        $projectLibRoot = $userDirectory . $Project->getName() . '/lib';
+        $project_tpl = $this->getContainedFile($projectLibRoot, $projectLibRoot . '/index.html');
+        $project_index = $this->getContainedFile($projectLibRoot, $projectLibRoot . '/index.php');
 
         $tpl = $default_tpl;
 
@@ -517,16 +581,16 @@ class Template extends QUI\QDOM
                     && !empty($vhost['template'])
                 ) {
                     $projectTemplate = $vhost['template'];
-
-                    try {
-                        $this->TemplatePackage = QUI::getPackage($projectTemplate);
+                    $this->TemplatePackage = $this->getRegisteredTemplatePackage($projectTemplate);
+                    if ($this->TemplatePackage !== null) {
                         $hasTemplateParent = $this->TemplatePackage->hasTemplateParent();
 
                         if ($hasTemplateParent) {
-                            $this->TemplateParent = $this->TemplatePackage->getTemplateParent();
+                            $parent = $this->TemplatePackage->getTemplateParent();
+                            $this->TemplateParent = $this->getRegisteredTemplatePackage($parent->getName());
                         }
-                    } catch (QUI\Exception $Exception) {
-                        QUI\System\Log::writeDebugException($Exception);
+                    } else {
+                        $projectTemplate = '';
                     }
 
                     break;
@@ -534,26 +598,27 @@ class Template extends QUI\QDOM
             }
         }
 
-        $template_tpl = OPT_DIR . $projectTemplate . '/index.html';
-        $template_index = OPT_DIR . $projectTemplate . '/index.php';
+        $templateRoot = $this->TemplatePackage?->getDir();
+        $template_tpl = $templateRoot ? $this->getContainedFile($templateRoot, $templateRoot . '/index.html') : null;
+        $template_index = $templateRoot ? $this->getContainedFile($templateRoot, $templateRoot . '/index.php') : null;
 
         if (
-            !file_exists($template_tpl)
+            $template_tpl === null
             && $hasTemplateParent
             && $this->TemplateParent !== null
         ) {
-            $template_tpl = OPT_DIR . $this->TemplateParent->getName() . '/index.html';
+            $template_tpl = $this->getContainedFile($this->TemplateParent->getDir(), $this->TemplateParent->getDir() . '/index.html');
         }
 
         if (
-            !file_exists($template_index)
+            $template_index === null
             && $hasTemplateParent
             && $this->TemplateParent !== null
         ) {
-            $template_index = OPT_DIR . $this->TemplateParent->getName() . '/index.php';
+            $template_index = $this->getContainedFile($this->TemplateParent->getDir(), $this->TemplateParent->getDir() . '/index.php');
         }
 
-        if (file_exists($template_tpl)) {
+        if ($template_tpl !== null) {
             $tpl = $template_tpl;
 
             $Engine->assign([
@@ -562,12 +627,12 @@ class Template extends QUI\QDOM
             ]);
         }
 
-        if (file_exists($project_tpl)) {
+        if ($project_tpl !== null) {
             $tpl = $project_tpl;
 
             $Engine->assign([
                 'URL_TPL_DIR' => URL_USR_DIR . $Project->getName() . '/',
-                'TPL_DIR' => USR_DIR . $Project->getName() . '/',
+                'TPL_DIR' => $userDirectory . $Project->getName() . '/',
             ]);
         }
 
@@ -581,7 +646,7 @@ class Template extends QUI\QDOM
         */
 
         // scripts file (index.php)
-        if (file_exists($project_index)) {
+        if ($project_index !== null) {
             include $project_index;
         } elseif ($template_index && file_exists($template_index)) {
             include $template_index;
@@ -592,54 +657,54 @@ class Template extends QUI\QDOM
         $siteScript = false;
         $projectScript = false;
 
-        $siteType = $Site->getAttribute('type');
-        $siteType = explode(':', $siteType);
+        $siteTypeValue = (string)$Site->getAttribute('type');
+        $siteType = explode(':', $siteTypeValue, 2);
 
         if (isset($siteType[1])) {
-            $package = $siteType[0];
-            $type = $siteType[1];
+            $registered = $this->getRegisteredSiteType($siteTypeValue);
+            if ($registered !== null) {
+                [$SitePackage, $type] = $registered;
+                $package = $SitePackage->getName();
 
             // site template
-            $siteScript = OPT_DIR . $package . '/' . $type . '.php';
+                $siteScript = $this->getContainedFile($SitePackage->getDir(), $SitePackage->getDir() . '/' . $type . '.php');
 
             // project template
-            $projectScript = USR_DIR . 'lib/' . $projectTemplate . '/' . $type . '.php';
+                $projectRoot = $userDirectory . 'lib/' . $projectTemplate;
+                $projectScript = $projectTemplate
+                ? $this->getContainedFile($projectRoot, $projectRoot . '/' . $type . '.php')
+                : null;
 
             // template
-            $tplScript = OPT_DIR . $projectTemplate . '/' . $package . '/' . $type . '.php';
+                $tplRoot = $this->TemplatePackage?->getDir();
+                $tplScript = $tplRoot ? $this->getContainedFile($tplRoot, $tplRoot . '/' . $package . '/' . $type . '.php') : null;
 
-            if (file_exists($tplScript)) {
-                $siteScript = $tplScript;
-            }
+                if ($tplScript !== null) {
+                    $siteScript = $tplScript;
+                }
 
             // site template
-            $siteUsrScript = USR_DIR . $Project->getName() . '/lib/' . $package . '/' . $type . '.php';
+                $siteUsrRoot = $projectLibRoot;
+                $siteUsrScript = $this->getContainedFile($siteUsrRoot, $siteUsrRoot . '/' . $package . '/' . $type . '.php');
 
-            if (file_exists($siteUsrScript)) {
-                $siteScript = $siteUsrScript;
+                if ($siteUsrScript !== null) {
+                    $siteScript = $siteUsrScript;
+                }
             }
         }
 
-        if ($siteType[0] == 'standard') {
+        if ($siteType[0] == 'standard' && $templateRoot) {
             // site template
-            $siteScript = OPT_DIR . $projectTemplate . '/standard.php';
+            $siteScript = $this->getContainedFile($templateRoot, $templateRoot . '/standard.php');
         }
 
         // includes
         if ($siteScript) {
-            $siteScript = Orthos::clearPath((string)realpath($siteScript));
-
-            if ($siteScript) {
-                include $siteScript;
-            }
+            include $siteScript;
         }
 
         if ($projectScript) {
-            $projectScript = Orthos::clearPath((string)realpath($projectScript));
-
-            if ($projectScript) {
-                include $projectScript;
-            }
+            include $projectScript;
         }
 
         QUI::getEvents()->fireEvent('templateSiteFetch', [$this, $Site]);
