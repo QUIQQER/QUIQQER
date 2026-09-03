@@ -1441,14 +1441,17 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             // overwrite file
             try {
                 $Item = MediaUtils::getElement($new_file);
+                $Item->checkPermission('quiqqer.projects.media.edit', $EditUser);
+                $Item->checkPermission('quiqqer.projects.media.del', $EditUser);
                 $Item->deleteCache();
-
-                $Item->deactivate();
-                $Item->delete();
+                $Item->deactivate($EditUser);
+                $Item->delete($EditUser);
 
                 if ($options == self::FILE_OVERWRITE_DESTROY) {
-                    $Item->destroy();
+                    $Item->destroy($EditUser);
                 }
+            } catch (QUI\Permissions\Exception $Exception) {
+                throw $Exception;
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::addDebug(
                     $Exception->getMessage(),

@@ -13,6 +13,7 @@ use QUI\Interfaces\Users\User as UserInterface;
 use QUI\Permissions\Manager as PermissionManager;
 use QUI\Permissions\Permission;
 use QUI\Projects\Media\Folder;
+use QUI\Projects\Media\Item;
 use QUI\QDOM;
 use QUI\Security\CsrfToken;
 use QUI\System\Console\Session as ConsoleSession;
@@ -147,6 +148,59 @@ final class MediaUploadAuthorizationTest extends TestCase
         self::assertTrue($NestedFolder->childWithNameExists($uploadedName));
     }
 
+    public function testAjaxOverwriteRejectsMissingTargetEditPermission(): void
+    {
+        $TargetFile = $this->createOverwriteTarget();
+        $this->setTargetUploadPermission($this->User);
+        $this->setOverwriteTargetPermissions($TargetFile, $this->Root, $this->User);
+
+        $response = $this->callAjaxUpload(basename($this->temporaryFile));
+
+        $this->assertPermissionDenied($response);
+        $this->assertOverwriteTargetIsUnchanged($TargetFile);
+    }
+
+    public function testFolderOverwriteRejectsMissingTargetDeletePermission(): void
+    {
+        $TargetFile = $this->createOverwriteTarget();
+        $this->setTargetUploadPermission($this->User);
+        $this->setOverwriteTargetPermissions($TargetFile, $this->User, $this->Root);
+        $this->setActor($this->User);
+
+        try {
+            $this->TargetFolder->uploadFile(
+                $this->temporaryFile,
+                Folder::FILE_OVERWRITE_TRUE,
+                $this->User
+            );
+            self::fail('Overwriting a protected media file must be rejected.');
+        } catch (QUI\Permissions\Exception $Exception) {
+            self::assertSame(403, $Exception->getCode());
+        }
+
+        $this->assertOverwriteTargetIsUnchanged($TargetFile);
+    }
+
+    public function testFolderOverwriteAllowsAuthorizedTarget(): void
+    {
+        $TargetFile = $this->createOverwriteTarget();
+        $this->setTargetUploadPermission($this->User);
+        $this->setOverwriteTargetPermissions($TargetFile, $this->User, $this->User);
+        $this->setActor($this->User);
+
+        $UploadedFile = $this->TargetFolder->uploadFile(
+            $this->temporaryFile,
+            Folder::FILE_OVERWRITE_TRUE,
+            $this->User
+        );
+
+        self::assertNotSame($TargetFile->getId(), $UploadedFile->getId());
+        self::assertSame(
+            'replacement media content',
+            file_get_contents($UploadedFile->getFullPath())
+        );
+    }
+
     private function callAjaxUpload(string $relativePath): array
     {
         $File = new QDOM();
@@ -226,6 +280,55 @@ final class MediaUploadAuthorizationTest extends TestCase
         QUI::getPermissionManager()->setMediaPermissions($this->TargetFolder, [
             'quiqqer.projects.media.upload' => [$AllowedUser]
         ], $this->Root);
+    }
+
+    private function createOverwriteTarget(): Item
+    {
+        file_put_contents($this->temporaryFile, 'protected media content');
+
+        $TargetFile = ProjectTestHelper::runAsSystemUser(function (): Item {
+            $TargetFile = $this->TargetFolder->uploadFile($this->temporaryFile);
+            $TargetFile->activate();
+
+            return $TargetFile;
+        });
+
+        self::assertInstanceOf(Item::class, $TargetFile);
+        file_put_contents($this->temporaryFile, 'replacement media content');
+
+        return $TargetFile;
+    }
+
+    private function setOverwriteTargetPermissions(Item $TargetFile, User $EditUser, User $DeleteUser): void
+    {
+        $this->setActor($this->Root);
+        QUI::getPermissionManager()->setMediaPermissions($TargetFile, [
+            'quiqqer.projects.media.edit' => [$EditUser],
+            'quiqqer.projects.media.del' => [$DeleteUser]
+        ], $this->Root);
+    }
+
+    /**
+     * @param array<string, mixed> $response
+     */
+    private function assertPermissionDenied(array $response): void
+    {
+        self::assertArrayHasKey('Exception', $response);
+        self::assertSame(403, $response['Exception']['code'] ?? null);
+        self::assertSame(QUI\Permissions\Exception::class, $response['Exception']['type'] ?? null);
+    }
+
+    private function assertOverwriteTargetIsUnchanged(Item $TargetFile): void
+    {
+        $StoredFile = $this->Media->get($TargetFile->getId());
+
+        self::assertFalse($StoredFile->isDeleted());
+        self::assertTrue($StoredFile->isActive());
+        self::assertSame('protected media content', file_get_contents($StoredFile->getFullPath()));
+        self::assertSame(
+            'replacement media content',
+            file_get_contents($this->temporaryFile)
+        );
     }
 
     private function cleanupMediaFixtures(): void
