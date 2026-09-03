@@ -1252,12 +1252,20 @@ class Manager
         // has user permission for a login
         QUI\Permissions\Permission::checkPermission('quiqqer.login', $User);
 
-
         // session
-        QUI::getSession()->remove('inAuthentication');
-        QUI::getSession()->set('auth', 1);
-        QUI::getSession()->set('uid', $userId);
-        QUI::getSession()->set('secHash', $this->getSecHash());
+        $Session = QUI::getSession();
+
+        if (!$Session->regenerate()) {
+            throw new QUI\Users\Exception(
+                ['quiqqer/core', 'exception.login.fail'],
+                500
+            );
+        }
+
+        $Session->remove('inAuthentication');
+        $Session->set('auth', 1);
+        $Session->set('uid', $userId);
+        $Session->set('secHash', $this->getSecHash());
 
         $userAgent = '';
 
