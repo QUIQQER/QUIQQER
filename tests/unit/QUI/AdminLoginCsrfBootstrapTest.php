@@ -30,5 +30,6 @@ final class AdminLoginCsrfBootstrapTest extends TestCase
         self::assertStringContainsString("echo 'var QUIQQER = '", $bootstrap);
         self::assertStringContainsString("'csrfToken' => QUI\\Security\\CsrfToken::get()", $bootstrap);
         self::assertStringContainsString("'inAdministration' => true", $bootstrap);
+        self::assertStringContainsString("'vMd5' => md5(QUI::version())", $bootstrap);
     }
 }
