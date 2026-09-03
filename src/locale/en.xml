@@ -5659,9 +5659,10 @@ After logging in you will be prompted to set a new password.
         <locale name="console.systemtool.password-reset">
             <en><![CDATA[
             Initiates a password reset for a username or UUID.
-            Usage: ./console password-reset [username-or-UUID] [--no-interaction]
+            Usage: ./console password-reset [username-or-UUID] [--no-interaction] [--password-stdin]
             If the username or UUID is provided, the identifier prompt is skipped. Confirmation prompts remain required unless --no-interaction is used.
             --no-interaction skips both confirmation prompts and requires a username or UUID argument.
+            --password-stdin reads the new password from one line on STDIN instead of generating one and does not print the supplied password.
             Exit codes: 0 = password changed; 1 = unexpected/runtime failure; 2 = invalid identifier or user not found; 3 = cancelled or required input missing.
             ]]></en>
         </locale>
@@ -5757,6 +5758,9 @@ After logging in you will be prompted to set a new password.
         <locale name="console.tool.passwordreset.identifier.required">
             <en><![CDATA[A username or UUID is required when using --no-interaction]]></en>
         </locale>
+        <locale name="console.tool.passwordreset.password.stdin.required">
+            <en><![CDATA[--password-stdin requires a non-empty password on STDIN]]></en>
+        </locale>
         <locale name="console.tool.passwordreset.cancelled">
             <en><![CDATA[The password reset was cancelled]]></en>
         </locale>
@@ -5765,6 +5769,9 @@ After logging in you will be prompted to set a new password.
         </locale>
         <locale name="console.tool.passwordreset.success">
             <en><![CDATA[The password has been changed successfully. The new password is:]]></en>
+        </locale>
+        <locale name="console.tool.passwordreset.success.custom">
+            <en><![CDATA[The password has been changed successfully.]]></en>
         </locale>
         <locale name="exception.zip.extension.not.installed">
             <en><![CDATA[

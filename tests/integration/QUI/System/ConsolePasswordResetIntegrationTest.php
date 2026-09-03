@@ -106,6 +106,24 @@ final class ConsolePasswordResetIntegrationTest extends TestCase
         $User->refresh();
         self::assertTrue($User->checkPassword($passwordBeforeMissingIdentifier));
 
+        $passwordFromStdin = bin2hex(random_bytes(18));
+
+        self::assertSame(
+            Console::PASSWORD_RESET_EXIT_SUCCESS,
+            $this->runPasswordReset([$passwordFromStdin], $User->getUsername(), true, true)
+        );
+
+        $User->refresh();
+        self::assertTrue($User->checkPassword($passwordFromStdin));
+
+        self::assertSame(
+            Console::PASSWORD_RESET_EXIT_CANCELLED,
+            $this->runPasswordReset([], $User->getUsername(), true, true)
+        );
+
+        $User->refresh();
+        self::assertTrue($User->checkPassword($passwordFromStdin));
+
         $passwordBeforeUnknownUser = bin2hex(random_bytes(18));
         $User->setPassword($passwordBeforeUnknownUser, QUI::getUsers()->getSystemUser());
 
@@ -148,7 +166,8 @@ final class ConsolePasswordResetIntegrationTest extends TestCase
     private function runPasswordReset(
         array $inputs,
         ?string $identifier = null,
-        bool $noInteraction = false
+        bool $noInteraction = false,
+        bool $passwordStdin = false
     ): int {
         $command = [
             PHP_BINARY,
@@ -158,6 +177,10 @@ final class ConsolePasswordResetIntegrationTest extends TestCase
 
         if ($noInteraction) {
             $command[] = '--no-interaction';
+        }
+
+        if ($passwordStdin) {
+            $command[] = '--password-stdin';
         }
 
         if ($identifier !== null) {

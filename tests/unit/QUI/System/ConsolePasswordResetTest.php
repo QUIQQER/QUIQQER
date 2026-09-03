@@ -83,6 +83,10 @@ final class ConsolePasswordResetTest extends TestCase
                 '--no-interaction',
                 $this->getLocaleText($language, 'console.tool.passwordreset.identifier.required')
             );
+            self::assertStringContainsString(
+                '--password-stdin',
+                $this->getLocaleText($language, 'console.tool.passwordreset.password.stdin.required')
+            );
         }
     }
 
@@ -156,7 +160,8 @@ final class ConsolePasswordResetTest extends TestCase
         $this->expectPasswordChange($User, $SystemUser);
 
         QUI::$Users = $Users;
-        $Console = new PasswordResetTestConsole([]);
+        $generatedPassword = bin2hex(random_bytes(18));
+        $Console = new PasswordResetTestConsole([], $generatedPassword);
 
         self::assertSame(
             Console::PASSWORD_RESET_EXIT_SUCCESS,
@@ -164,6 +169,7 @@ final class ConsolePasswordResetTest extends TestCase
         );
         self::assertStringNotContainsString('Username or UUID:', $Console->output);
         self::assertStringNotContainsString('(y/N)', $Console->output);
+        self::assertStringContainsString(PHP_EOL . $generatedPassword . PHP_EOL, $Console->output);
     }
 
     public function testNoInteractionRequiresIdentifier(): void
@@ -181,6 +187,76 @@ final class ConsolePasswordResetTest extends TestCase
         );
         self::assertNotEmpty($Console->output);
         self::assertStringNotContainsString('Username or UUID:', $Console->output);
+        self::assertStringNotContainsString('(y/N)', $Console->output);
+    }
+
+    public function testPasswordStdinSetsExactPasswordWithoutPrintingIt(): void
+    {
+        $uuid = '9c506425-4d2f-46bb-8901-8a6dd718a6d1';
+        $password = ' ' . bin2hex(random_bytes(18)) . ' ';
+        [$Users, $User, $SystemUser] = $this->createUserManager('alice', $uuid);
+
+        $Users->expects(self::once())->method('getUserByName')->with('alice')->willReturn($User);
+        $Users->method('getSystemUser')->willReturn($SystemUser);
+        $User->expects(self::once())->method('setPassword')->with(
+            self::callback(static fn(string $value): bool => $value === $password),
+            $SystemUser
+        );
+
+        QUI::$Users = $Users;
+        $Console = new PasswordResetTestConsole([], null, $password);
+
+        self::assertSame(
+            Console::PASSWORD_RESET_EXIT_SUCCESS,
+            $Console->runPasswordReset('alice', true, true)
+        );
+        self::assertStringNotContainsString($password, $Console->output);
+        self::assertStringNotContainsString('The new password is:', $Console->output);
+        self::assertStringNotContainsString('(y/N)', $Console->output);
+    }
+
+    public function testPasswordStdinWorksWithInteractiveConfirmations(): void
+    {
+        $uuid = '9c506425-4d2f-46bb-8901-8a6dd718a6d1';
+        $password = bin2hex(random_bytes(18));
+        [$Users, $User, $SystemUser] = $this->createUserManager('alice', $uuid);
+
+        $Users->expects(self::once())->method('getUserByName')->with('alice')->willReturn($User);
+        $Users->method('getSystemUser')->willReturn($SystemUser);
+        $User->expects(self::once())->method('setPassword')->with(
+            self::callback(static fn(string $value): bool => $value === $password),
+            $SystemUser
+        );
+
+        QUI::$Users = $Users;
+        $Console = new PasswordResetTestConsole(['y', 'y'], null, $password);
+
+        self::assertSame(
+            Console::PASSWORD_RESET_EXIT_SUCCESS,
+            $Console->runPasswordReset('alice', false, true)
+        );
+        self::assertStringNotContainsString($password, $Console->output);
+        self::assertStringNotContainsString('Username or UUID:', $Console->output);
+        self::assertSame(2, preg_match_all('/\(y\/[Nn]\) /', $Console->output));
+    }
+
+    public function testPasswordStdinRejectsEmptyPassword(): void
+    {
+        $uuid = '9c506425-4d2f-46bb-8901-8a6dd718a6d1';
+        [$Users, $User] = $this->createUserManager('alice', $uuid);
+
+        $Users->expects(self::once())->method('getUserByName')->with('alice')->willReturn($User);
+        $Users->expects(self::never())->method('getSystemUser');
+        $User->expects(self::never())->method('setPassword');
+
+        QUI::$Users = $Users;
+        $Console = new PasswordResetTestConsole([], null, '');
+
+        self::assertSame(
+            Console::PASSWORD_RESET_EXIT_CANCELLED,
+            $Console->runPasswordReset('alice', true, true)
+        );
+        self::assertNotEmpty($Console->output);
         self::assertStringNotContainsString('(y/N)', $Console->output);
     }
 

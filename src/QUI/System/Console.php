@@ -902,7 +902,8 @@ class Console
 
                 $this->systemToolExitCode = $this->passwordReset(
                     $this->getPasswordResetIdentifierArgument(),
-                    (bool)$this->getArgument('no-interaction')
+                    (bool)$this->getArgument('no-interaction'),
+                    (bool)$this->getArgument('password-stdin')
                 );
                 return;
 
@@ -977,14 +978,18 @@ class Console
      *
      * @param string|null $identifier Optional username or UUID; requested interactively if omitted
      * @param bool $noInteraction Skip confirmation prompts; requires an identifier
+     * @param bool $passwordStdin Read the new password from STDIN instead of generating one
      *
      * @throws QUI\Database\Exception
      * @throws ExceptionStack
      * @throws QUI\Permissions\Exception
      * @throws QUI\Users\Exception
      */
-    protected function passwordReset(?string $identifier = null, bool $noInteraction = false): int
-    {
+    protected function passwordReset(
+        ?string $identifier = null,
+        bool $noInteraction = false,
+        bool $passwordStdin = false
+    ): int {
         $this->writeLn(
             QUI::getLocale()->get(
                 "quiqqer/core",
@@ -1087,7 +1092,18 @@ class Console
         }
 
         try {
-            $password = $this->createPasswordResetPassword();
+            if ($passwordStdin) {
+                $password = $this->readPasswordResetPasswordFromStdin();
+
+                if ($password === null || $password === '') {
+                    $this->writePasswordResetMessage('console.tool.passwordreset.password.stdin.required', 'red');
+
+                    return self::PASSWORD_RESET_EXIT_CANCELLED;
+                }
+            } else {
+                $password = $this->createPasswordResetPassword();
+            }
+
             $User->setPassword($password, QUI::getUsers()->getSystemUser());
         } catch (Throwable) {
             $this->writePasswordResetMessage('console.tool.passwordreset.error', 'red');
@@ -1098,11 +1114,17 @@ class Console
         $this->writeLn(
             QUI::getLocale()->get(
                 "quiqqer/core",
-                "console.tool.passwordreset.success"
+                $passwordStdin
+                    ? "console.tool.passwordreset.success.custom"
+                    : "console.tool.passwordreset.success"
             ),
             "green"
         );
-        $this->writeLn($password, "green");
+
+        if (!$passwordStdin) {
+            $this->writeLn($password, "green");
+        }
+
         $this->writeLn();
 
         return self::PASSWORD_RESET_EXIT_SUCCESS;
@@ -1146,6 +1168,17 @@ class Console
     protected function createPasswordResetPassword(): string
     {
         return Orthos::getPassword(random_int(8, 14));
+    }
+
+    protected function readPasswordResetPasswordFromStdin(): ?string
+    {
+        $password = fgets(STDIN);
+
+        if ($password === false) {
+            return null;
+        }
+
+        return rtrim($password, "\r\n");
     }
 
     private function writePasswordResetMessage(string $localeKey, string $color): void

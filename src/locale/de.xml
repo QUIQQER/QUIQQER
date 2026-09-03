@@ -5836,9 +5836,10 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
         <locale name="console.systemtool.password-reset">
             <de><![CDATA[
             Initiiert einen Passwort-Reset für einen Benutzernamen oder eine UUID.
-            Verwendung: ./console password-reset [Benutzername-oder-UUID] [--no-interaction]
+            Verwendung: ./console password-reset [Benutzername-oder-UUID] [--no-interaction] [--password-stdin]
             Wenn der Benutzername oder die UUID angegeben wird, entfällt die Abfrage der Kennung. Die Sicherheitsabfragen bleiben erforderlich, sofern --no-interaction nicht verwendet wird.
             --no-interaction überspringt beide Sicherheitsabfragen und erfordert einen Benutzernamen oder eine UUID als Argument.
+            --password-stdin liest das neue Passwort aus einer Zeile auf STDIN, statt eines zu generieren, und gibt das übergebene Passwort nicht aus.
             Exitcodes: 0 = Passwort geändert; 1 = unerwarteter Laufzeitfehler; 2 = ungültige Kennung oder Benutzer nicht gefunden; 3 = abgebrochen oder erforderliche Eingabe fehlt.
             ]]></de>
         </locale>
@@ -5936,6 +5937,9 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
         <locale name="console.tool.passwordreset.identifier.required">
             <de><![CDATA[Bei Verwendung von --no-interaction muss ein Benutzername oder eine UUID angegeben werden]]></de>
         </locale>
+        <locale name="console.tool.passwordreset.password.stdin.required">
+            <de><![CDATA[--password-stdin erfordert ein nicht leeres Passwort auf STDIN]]></de>
+        </locale>
         <locale name="console.tool.passwordreset.cancelled">
             <de><![CDATA[Der Passwort-Reset wurde abgebrochen]]></de>
         </locale>
@@ -5944,6 +5948,9 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
         </locale>
         <locale name="console.tool.passwordreset.success">
             <de><![CDATA[Das Passwort wurde erfolgreich geändert! Das neue Passwort lautet:]]></de>
+        </locale>
+        <locale name="console.tool.passwordreset.success.custom">
+            <de><![CDATA[Das Passwort wurde erfolgreich geändert!]]></de>
         </locale>
         <locale name="exception.zip.extension.not.installed">
             <de><![CDATA[

@@ -15,18 +15,27 @@ final class PasswordResetTestConsole extends Console
 
     private ?string $generatedPassword;
 
+    private ?string $stdinPassword;
+
     /**
      * @param list<string> $inputs
      */
-    public function __construct(array $inputs, ?string $generatedPassword = null)
-    {
+    public function __construct(
+        array $inputs,
+        ?string $generatedPassword = null,
+        ?string $stdinPassword = null
+    ) {
         $this->inputs = $inputs;
         $this->generatedPassword = $generatedPassword;
+        $this->stdinPassword = $stdinPassword;
     }
 
-    public function runPasswordReset(?string $identifier = null, bool $noInteraction = false): int
-    {
-        return $this->passwordReset($identifier, $noInteraction);
+    public function runPasswordReset(
+        ?string $identifier = null,
+        bool $noInteraction = false,
+        bool $passwordStdin = false
+    ): int {
+        return $this->passwordReset($identifier, $noInteraction, $passwordStdin);
     }
 
     public function readInput(): string
@@ -51,5 +60,10 @@ final class PasswordResetTestConsole extends Console
     protected function createPasswordResetPassword(): string
     {
         return $this->generatedPassword ?? parent::createPasswordResetPassword();
+    }
+
+    protected function readPasswordResetPasswordFromStdin(): ?string
+    {
+        return $this->stdinPassword;
     }
 }
