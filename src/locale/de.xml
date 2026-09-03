@@ -5835,7 +5835,9 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
         </locale>
         <locale name="console.systemtool.password-reset">
             <de><![CDATA[
-            Initiiert einen interaktiven Passwort-Reset für einen Benutzernamen oder eine UUID.
+            Initiiert einen Passwort-Reset für einen Benutzernamen oder eine UUID.
+            Verwendung: ./console password-reset [Benutzername-oder-UUID]
+            Wenn der Benutzername oder die UUID angegeben wird, entfällt die Abfrage der Kennung. Beide Sicherheitsabfragen bleiben erforderlich.
             Exitcodes: 0 = Passwort geändert; 1 = unerwarteter Laufzeitfehler; 2 = ungültige Kennung oder Benutzer nicht gefunden; 3 = abgebrochen oder erforderliche Eingabe fehlt.
             ]]></de>
         </locale>

@@ -100,6 +100,48 @@ final class ConsolePasswordResetTest extends TestCase
         );
     }
 
+    public function testProvidedUsernameSkipsIdentifierPrompt(): void
+    {
+        $uuid = '9c506425-4d2f-46bb-8901-8a6dd718a6d1';
+        [$Users, $User, $SystemUser] = $this->createUserManager('alice', $uuid);
+
+        $Users->expects(self::once())->method('getUserByName')->with('alice')->willReturn($User);
+        $Users->expects(self::never())->method('get');
+        $Users->method('getSystemUser')->willReturn($SystemUser);
+        $this->expectPasswordChange($User, $SystemUser);
+
+        QUI::$Users = $Users;
+        $Console = new PasswordResetTestConsole(['y', 'y']);
+
+        self::assertSame(
+            Console::PASSWORD_RESET_EXIT_SUCCESS,
+            $Console->runPasswordReset('alice')
+        );
+        self::assertStringNotContainsString('Username or UUID:', $Console->output);
+        self::assertSame(2, preg_match_all('/\(y\/[Nn]\) /', $Console->output));
+    }
+
+    public function testProvidedUuidSkipsIdentifierPrompt(): void
+    {
+        $uuid = '9c506425-4d2f-46bb-8901-8a6dd718a6d1';
+        [$Users, $User, $SystemUser] = $this->createUserManager('alice', $uuid);
+
+        $Users->expects(self::once())->method('get')->with($uuid)->willReturn($User);
+        $Users->expects(self::never())->method('getUserByName');
+        $Users->method('getSystemUser')->willReturn($SystemUser);
+        $this->expectPasswordChange($User, $SystemUser);
+
+        QUI::$Users = $Users;
+        $Console = new PasswordResetTestConsole(['y', 'y']);
+
+        self::assertSame(
+            Console::PASSWORD_RESET_EXIT_SUCCESS,
+            $Console->runPasswordReset($uuid)
+        );
+        self::assertStringNotContainsString('Username or UUID:', $Console->output);
+        self::assertSame(2, preg_match_all('/\(y\/[Nn]\) /', $Console->output));
+    }
+
     public function testUnknownUserReturnsDocumentedStatus(): void
     {
         $Users = $this->createMock(Manager::class);

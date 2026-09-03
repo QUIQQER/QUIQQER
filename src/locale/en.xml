@@ -5658,7 +5658,9 @@ After logging in you will be prompted to set a new password.
         </locale>
         <locale name="console.systemtool.password-reset">
             <en><![CDATA[
-            Initiates an interactive password reset for a username or UUID.
+            Initiates a password reset for a username or UUID.
+            Usage: ./console password-reset [username-or-UUID]
+            If the username or UUID is provided, the identifier prompt is skipped. Both confirmation prompts remain required.
             Exit codes: 0 = password changed; 1 = unexpected/runtime failure; 2 = invalid identifier or user not found; 3 = cancelled or required input missing.
             ]]></en>
         </locale>

@@ -24,9 +24,9 @@ final class PasswordResetTestConsole extends Console
         $this->generatedPassword = $generatedPassword;
     }
 
-    public function runPasswordReset(): int
+    public function runPasswordReset(?string $identifier = null): int
     {
-        return $this->passwordReset();
+        return $this->passwordReset($identifier);
     }
 
     public function readInput(): string

@@ -67,7 +67,7 @@ final class ConsolePasswordResetIntegrationTest extends TestCase
 
         self::assertSame(
             Console::PASSWORD_RESET_EXIT_SUCCESS,
-            $this->runPasswordReset([$User->getUsername(), 'y', 'y'])
+            $this->runPasswordReset(['y', 'y'], $User->getUsername())
         );
 
         $User->refresh();
@@ -78,7 +78,7 @@ final class ConsolePasswordResetIntegrationTest extends TestCase
 
         self::assertSame(
             Console::PASSWORD_RESET_EXIT_SUCCESS,
-            $this->runPasswordReset([(string)$User->getUUID(), 'y', 'y'])
+            $this->runPasswordReset(['y', 'y'], (string)$User->getUUID())
         );
 
         $User->refresh();
@@ -123,16 +123,23 @@ final class ConsolePasswordResetIntegrationTest extends TestCase
     /**
      * @param list<string> $inputs
      */
-    private function runPasswordReset(array $inputs): int
+    private function runPasswordReset(array $inputs, ?string $identifier = null): int
     {
+        $command = [
+            PHP_BINARY,
+            CMS_DIR . 'console',
+            'password-reset'
+        ];
+
+        if ($identifier !== null) {
+            $command[] = $identifier;
+        }
+
+        $command[] = '--noLogo';
+        $command[] = '--ignore-file-permissions';
+
         $process = proc_open(
-            [
-                PHP_BINARY,
-                CMS_DIR . 'console',
-                'password-reset',
-                '--noLogo',
-                '--ignore-file-permissions'
-            ],
+            $command,
             [
                 0 => ['pipe', 'r'],
                 1 => ['file', '/dev/null', 'w'],

@@ -896,7 +896,9 @@ class Console
                     return;
                 }
 
-                $this->systemToolExitCode = $this->passwordReset();
+                $this->systemToolExitCode = $this->passwordReset(
+                    $this->getPasswordResetIdentifierArgument()
+                );
                 return;
 
             case 'setup':
@@ -968,12 +970,14 @@ class Console
     /**
      * Initiates a password reset
      *
+     * @param string|null $identifier Optional username or UUID; requested interactively if omitted
+     *
      * @throws QUI\Database\Exception
      * @throws ExceptionStack
      * @throws QUI\Permissions\Exception
      * @throws QUI\Users\Exception
      */
-    protected function passwordReset(): int
+    protected function passwordReset(?string $identifier = null): int
     {
         $this->writeLn(
             QUI::getLocale()->get(
@@ -991,15 +995,18 @@ class Console
         );
         $this->clearMsg();
 
-        // Get user Input
-        $this->writeLn(
-            QUI::getLocale()->get(
-                "quiqqer/core",
-                "console.tool.passwordreset.prompt.identifier"
-            ) . ' '
-        );
+        if ($identifier === null) {
+            $this->writeLn(
+                QUI::getLocale()->get(
+                    "quiqqer/core",
+                    "console.tool.passwordreset.prompt.identifier"
+                ) . ' '
+            );
 
-        $identifier = trim($this->readInput());
+            $identifier = $this->readInput();
+        }
+
+        $identifier = trim($identifier);
 
         if ($identifier === '') {
             $this->writePasswordResetMessage('console.tool.passwordreset.cancelled', 'red');
@@ -1086,6 +1093,24 @@ class Console
         $this->writeLn();
 
         return self::PASSWORD_RESET_EXIT_SUCCESS;
+    }
+
+    private function getPasswordResetIdentifierArgument(): ?string
+    {
+        $arguments = array_values($_SERVER['argv']);
+        $toolIndex = array_search('password-reset', $arguments, true);
+
+        if ($toolIndex === false || !isset($arguments[$toolIndex + 1])) {
+            return null;
+        }
+
+        $identifier = $arguments[$toolIndex + 1];
+
+        if (str_starts_with($identifier, '-')) {
+            return null;
+        }
+
+        return $identifier;
     }
 
     /**
