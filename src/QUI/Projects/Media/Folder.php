@@ -435,6 +435,48 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         QUI\Projects\Media\Folder $Folder,
         null | QUI\Interfaces\Users\User $PermissionUser = null
     ): QUI\Interfaces\Projects\Media\File {
+        $this->checkCopyViewPermissions($PermissionUser);
+
+        return $this->copyToAfterPermissionCheck($Folder, $PermissionUser);
+    }
+
+    /**
+     * Check view permissions for the complete source tree before creating the copy.
+     *
+     * @throws QUI\Exception
+     */
+    private function checkCopyViewPermissions(
+        null | QUI\Interfaces\Users\User $PermissionUser = null
+    ): void {
+        $this->checkPermission('quiqqer.projects.media.view', $PermissionUser);
+
+        $ids = $this->getChildrenIds();
+
+        if (!is_array($ids)) {
+            return;
+        }
+
+        foreach ($ids as $id) {
+            $Item = $this->Media->get($id);
+
+            if ($Item instanceof self) {
+                $Item->checkCopyViewPermissions($PermissionUser);
+                continue;
+            }
+
+            $Item->checkPermission('quiqqer.projects.media.view', $PermissionUser);
+        }
+    }
+
+    /**
+     * Copy a folder after the complete source tree has been authorized.
+     *
+     * @throws QUI\Exception
+     */
+    private function copyToAfterPermissionCheck(
+        QUI\Projects\Media\Folder $Folder,
+        null | QUI\Interfaces\Users\User $PermissionUser = null
+    ): QUI\Interfaces\Projects\Media\File {
         if ($Folder->childWithNameExists($this->getAttribute('name'))) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/core', 'exception.media.folder.already.exists', [
@@ -476,6 +518,17 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         foreach ($ids as $id) {
             try {
                 $Item = $this->Media->get($id);
+
+                if ($Item instanceof self) {
+                    $Item->copyToAfterPermissionCheck($Copy, $PermissionUser);
+                    continue;
+                }
+
+                if ($Item instanceof Item) {
+                    $Item->copyTo($Copy, $PermissionUser);
+                    continue;
+                }
+
                 $Item->copyTo($Copy);
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
