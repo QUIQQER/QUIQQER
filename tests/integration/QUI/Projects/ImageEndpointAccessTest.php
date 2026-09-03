@@ -506,6 +506,34 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
         self::assertStringContainsString('attachment', $Response['headers']['content-disposition'] ?? '');
     }
 
+    public function testBackendMediaPreviewWithoutItemPermissionIsRejected(): void
+    {
+        $Response = self::requestImage(self::$mediaFileId, [
+            '_ajax_preview' => '1',
+            '_access' => 'protected',
+            '_user' => 'backend-denied'
+        ]);
+
+        self::assertGreaterThanOrEqual(400, $Response['status'], self::failureMessage($Response));
+        self::assertSame(403, json_decode($Response['body'], true)['code'] ?? null);
+        self::assertStringNotContainsString('0123456789', $Response['body']);
+        self::assertArrayNotHasKey('accept-ranges', $Response['headers']);
+        self::assertArrayNotHasKey('content-range', $Response['headers']);
+    }
+
+    public function testAuthorizedBackendUserCanPreviewMediaFile(): void
+    {
+        $Response = self::requestImage(self::$mediaFileId, [
+            '_ajax_preview' => '1',
+            '_access' => 'protected',
+            '_user' => 'backend-allowed'
+        ]);
+
+        self::assertSame(200, $Response['status'], self::failureMessage($Response));
+        self::assertSame('0123456789', $Response['body']);
+        self::assertArrayHasKey('content-type', $Response['headers']);
+    }
+
     public function testProtectedFolderDoesNotReturnFolderIcon(): void
     {
         self::assertUniformNotFound(self::requestImage(self::$folderId, [
