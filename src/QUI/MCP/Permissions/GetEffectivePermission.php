@@ -228,6 +228,10 @@ class GetEffectivePermission extends AbstractPermissionTool
         string $type,
         array $groups
     ): mixed {
+        if ($User->isSU()) {
+            return true;
+        }
+
         $directPermissions = $Manager->getUserPermissionData($User);
 
         if ($type !== 'int' && array_key_exists($permission, $directPermissions)) {

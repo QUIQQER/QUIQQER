@@ -8,6 +8,9 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use QUI;
 use QUI\MCP\Permissions\AbstractPermissionTool;
+use QUI\MCP\Permissions\GetEffectivePermission;
+use QUI\Permissions\Manager;
+use QUI\Users\User;
 use ReflectionMethod;
 
 class PermissionToolTest extends TestCase
@@ -57,6 +60,26 @@ class PermissionToolTest extends TestCase
     {
         $this->expectException(QUI\Exception::class);
         self::invokeValidator($type, $value);
+    }
+
+    public function testEffectiveGlobalPermissionGrantsSuperUsers(): void
+    {
+        $Manager = $this->createMock(Manager::class);
+        $Manager->expects(self::never())->method('getUserPermissionData');
+        $User = $this->createMock(User::class);
+        $User->expects(self::once())->method('isSU')->willReturn(true);
+        $Method = new ReflectionMethod(GetEffectivePermission::class, 'getEffectiveUserPermission');
+
+        $value = $Method->invoke(
+            null,
+            $Manager,
+            $User,
+            'test.permission',
+            'bool',
+            [['uuid' => 'test-group', 'name' => 'Test group', 'value' => false]]
+        );
+
+        self::assertTrue($value);
     }
 
     private static function invokeValidator(string $type, mixed $value): void

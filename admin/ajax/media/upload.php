@@ -27,6 +27,8 @@ QUI::getAjax()->registerFunction(
             );
         }
 
+        $Folder->checkPermission('quiqqer.projects.media.upload');
+
         /* @var $Folder QUI\Projects\Media\Folder */
         /* @var $File QUI\QDOM */
         $file = $File->getAttribute('filepath');

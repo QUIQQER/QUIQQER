@@ -176,7 +176,7 @@ define('controls/packages/upload/Upload', [
                 }, {
                     duration: 200,
                     callback: function () {
-                        var Container = new Element('label', {
+                        var Container = new Element('div', {
                             'class': 'qui-packages-upload-notInstalled',
                             html: QUILocale.get(lg, 'dialog.packages.install.upload.notInstalled.text'),
                             styles: {
@@ -184,7 +184,7 @@ define('controls/packages/upload/Upload', [
                             }
                         }).inject(self.$Elm);
 
-                        var i, len, title, version;
+                        var i, len, title, version, PackageEntry, Checkbox, PackageTitle;
 
                         for (i = 0, len = packages.length; i < len; i++) {
                             title = packages[i].title || packages[i].name;
@@ -192,15 +192,23 @@ define('controls/packages/upload/Upload', [
 
                             title = title + ' (' + version + ')';
 
-                            new Element('div', {
-                                'class': 'qui-packages-upload-notInstalled-package',
-                                html: '<input type="checkbox" ' +
-                                    'name="' + packages[i].name + '" ' +
-                                    'data-version="' + version + '" /> ' + title
-                            }).inject(Container);
-                        }
+                            PackageEntry = document.createElement('label');
+                            Checkbox = document.createElement('input');
+                            PackageTitle = document.createElement('span');
 
-                        Container.getElements('input').set('checked', true);
+                            PackageEntry.className = 'qui-packages-upload-notInstalled-package';
+                            Checkbox.type = 'checkbox';
+                            Checkbox.name = packages[i].name;
+                            Checkbox.dataset.name = 'package';
+                            Checkbox.dataset.version = version;
+                            Checkbox.checked = true;
+                            PackageTitle.textContent = title;
+
+                            PackageEntry.appendChild(Checkbox);
+                            PackageEntry.appendChild(document.createTextNode(' '));
+                            PackageEntry.appendChild(PackageTitle);
+                            Container.appendChild(PackageEntry);
+                        }
 
                         new QUIButton({
                             text: QUILocale.get(lg, 'dialog.packages.install.upload.notInstalled.installBtn'),
@@ -209,11 +217,11 @@ define('controls/packages/upload/Upload', [
                             },
                             events: {
                                 onClick: function () {
-                                    var checked = Container.getElements('input:checked');
-                                    var results = checked.map(function (Checkbox) {
+                                    var checked = Container.querySelectorAll('[data-name="package"]:checked');
+                                    var results = Array.from(checked).map(function (Checkbox) {
                                         return {
-                                            name: Checkbox.get('name'),
-                                            version: Checkbox.get('data-version')
+                                            name: Checkbox.name,
+                                            version: Checkbox.dataset.version
                                         };
                                     });
 

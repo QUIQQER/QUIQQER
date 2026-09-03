@@ -15,6 +15,7 @@ QUI::getAjax()->registerFunction(
         $Project = QUI::getProjectManager()->decode($project);
         $Site = new QUI\Projects\Site\Edit($Project, (int)$id);
 
+        $Site->checkPermission('quiqqer.projects.site.view');
         $attributes = $Site->getAttributes();
         $attributes['icon'] = QUI::getPackageManager()->getIconBySiteType($Site->getAttribute('type'));
 

@@ -8,6 +8,9 @@ require_once 'bootstrap.php';
 
 use QUI\Projects\Media;
 use QUI\Utils\Security\SvgSanitizer;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 /**
  * Send the uniform response for unavailable or inaccessible media.
@@ -127,45 +130,42 @@ function sendMediaFile(
         exit;
     }
 
-    $Handle = fopen($path, 'rb');
     $fileSize = filesize($path);
-    $modified = filemtime($path);
 
-    if ($Handle === false || $fileSize === false || $modified === false) {
-        if (is_resource($Handle)) {
-            fclose($Handle);
-        }
-
+    if ($fileSize === false) {
         throw new QUI\Exception('Media file not readable.', 404);
     }
 
     if ($mimeType === '') {
-        fclose($Handle);
         throw new QUI\Exception('Media MIME type not available.', 404);
     }
 
-    QUI::getGlobalResponse()->sendHeaders();
-
-    header('Content-Type: ' . $mimeType);
-    header('Accept-Ranges: bytes');
-    header('Content-Length: ' . $fileSize);
-    header('Content-Size: ' . $fileSize);
-    header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $modified) . ' GMT');
-    header('Content-Disposition: inline; filename="' . str_replace('"', '', basename($downloadName)) . '"');
+    $Response = new BinaryFileResponse(
+        $path,
+        Response::HTTP_OK,
+        QUI::getGlobalResponse()->headers->all(),
+        $sharedCacheAllowed
+    );
+    $Response->headers->set('Content-Type', $mimeType);
+    $Response->headers->set('Content-Size', (string)$fileSize);
+    $Response->setContentDisposition(
+        ResponseHeaderBag::DISPOSITION_INLINE,
+        basename($downloadName)
+    );
 
     if ($sharedCacheAllowed) {
-        header('Pragma: public');
-        header('Cache-Control: public, must-revalidate, post-check=0, pre-check=0');
-        header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+        $Response->headers->set('Pragma', 'public');
+        $Response->headers->set('Cache-Control', 'public, must-revalidate, post-check=0, pre-check=0');
+        $Response->headers->set('Expires', gmdate('D, d M Y H:i:s') . ' GMT');
     } else {
-        header('Pragma: no-cache');
-        header('Cache-Control: private, no-store, max-age=0');
-        header('Expires: 0');
-        header('Vary: Cookie');
+        $Response->headers->set('Pragma', 'no-cache');
+        $Response->headers->set('Cache-Control', 'private, no-store, max-age=0');
+        $Response->headers->set('Expires', '0');
+        $Response->headers->set('Vary', 'Cookie');
     }
 
-    fpassthru($Handle);
-    fclose($Handle);
+    $Response->prepare(QUI::getRequest());
+    $Response->send();
     exit;
 }
 

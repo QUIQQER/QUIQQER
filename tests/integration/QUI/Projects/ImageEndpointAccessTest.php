@@ -69,6 +69,8 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
 
     private static string $invalidRewriteSvg;
 
+    private static string $rewriteMediaFile;
+
     private static string $externalMaliciousSvg;
 
     private static string $externalInvalidSvg;
@@ -97,6 +99,8 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
     private static int $invalidExternalImageId;
 
     private static int $corruptImageId;
+
+    private static int $mediaFileId;
 
     private static int $folderId;
 
@@ -318,6 +322,28 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
         self::assertSame('', $Response['body']);
     }
 
+    public function testDirectMediaFileOutputHonorsByteRange(): void
+    {
+        $Response = self::requestImage(self::$mediaFileId, [], ['Range: bytes=2-5']);
+
+        self::assertSame(206, $Response['status'], self::failureMessage($Response));
+        self::assertSame('2345', $Response['body']);
+        self::assertSame('bytes', $Response['headers']['accept-ranges'] ?? null);
+        self::assertSame('bytes 2-5/10', $Response['headers']['content-range'] ?? null);
+        self::assertSame('4', $Response['headers']['content-length'] ?? null);
+    }
+
+    public function testRewriteMediaFileOutputHonorsSuffixByteRange(): void
+    {
+        $Response = self::request(['_rewrite_media' => '1'], ['Range: bytes=-3']);
+
+        self::assertSame(206, $Response['status'], self::failureMessage($Response));
+        self::assertSame('789', $Response['body']);
+        self::assertSame('bytes', $Response['headers']['accept-ranges'] ?? null);
+        self::assertSame('bytes 7-9/10', $Response['headers']['content-range'] ?? null);
+        self::assertSame('3', $Response['headers']['content-length'] ?? null);
+    }
+
     public function testExistingAdminCacheContainingSvgIsSanitizedBeforeOutput(): void
     {
         $Project = self::getTestProject();
@@ -451,6 +477,91 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
         self::assertNotSame('', $Response['body']);
         self::assertStringContainsString('private', $Response['headers']['cache-control'] ?? '');
         self::assertStringNotContainsString('public', $Response['headers']['cache-control'] ?? '');
+    }
+
+    public function testBackendMediaDownloadWithoutItemPermissionIsRejected(): void
+    {
+        $Response = self::requestImage(self::$mediaFileId, [
+            '_ajax_download' => '1',
+            '_access' => 'protected',
+            '_user' => 'backend-denied'
+        ]);
+
+        self::assertGreaterThanOrEqual(400, $Response['status'], self::failureMessage($Response));
+        self::assertSame(403, json_decode($Response['body'], true)['code'] ?? null);
+        self::assertStringNotContainsString('0123456789', $Response['body']);
+        self::assertArrayNotHasKey('content-disposition', $Response['headers']);
+    }
+
+    public function testAuthorizedBackendUserCanDownloadMediaFile(): void
+    {
+        $Response = self::requestImage(self::$mediaFileId, [
+            '_ajax_download' => '1',
+            '_access' => 'protected',
+            '_user' => 'backend-allowed'
+        ]);
+
+        self::assertSame(200, $Response['status'], self::failureMessage($Response));
+        self::assertSame('0123456789', $Response['body']);
+        self::assertStringContainsString('attachment', $Response['headers']['content-disposition'] ?? '');
+    }
+
+    public function testBackendMediaFolderDownloadWithoutItemPermissionIsRejected(): void
+    {
+        $Response = self::requestImage(self::$folderId, [
+            '_ajax_folder_download' => '1',
+            '_access' => 'protected',
+            '_user' => 'backend-denied'
+        ]);
+
+        self::assertGreaterThanOrEqual(400, $Response['status'], self::failureMessage($Response));
+        self::assertSame(403, json_decode($Response['body'], true)['code'] ?? null);
+        self::assertArrayNotHasKey('content-disposition', $Response['headers']);
+    }
+
+    public function testAuthorizedBackendUserCanDownloadMediaFolder(): void
+    {
+        if (!class_exists(\ZipArchive::class)) {
+            self::markTestSkipped('The ZIP extension is not available.');
+        }
+
+        $Response = self::requestImage(self::$folderId, [
+            '_ajax_folder_download' => '1',
+            '_access' => 'protected',
+            '_user' => 'backend-allowed'
+        ]);
+
+        self::assertSame(200, $Response['status'], self::failureMessage($Response));
+        self::assertStringStartsWith('PK', $Response['body']);
+        self::assertStringContainsString('attachment', $Response['headers']['content-disposition'] ?? '');
+    }
+
+    public function testBackendMediaPreviewWithoutItemPermissionIsRejected(): void
+    {
+        $Response = self::requestImage(self::$mediaFileId, [
+            '_ajax_preview' => '1',
+            '_access' => 'protected',
+            '_user' => 'backend-denied'
+        ]);
+
+        self::assertGreaterThanOrEqual(400, $Response['status'], self::failureMessage($Response));
+        self::assertSame(403, json_decode($Response['body'], true)['code'] ?? null);
+        self::assertStringNotContainsString('0123456789', $Response['body']);
+        self::assertArrayNotHasKey('accept-ranges', $Response['headers']);
+        self::assertArrayNotHasKey('content-range', $Response['headers']);
+    }
+
+    public function testAuthorizedBackendUserCanPreviewMediaFile(): void
+    {
+        $Response = self::requestImage(self::$mediaFileId, [
+            '_ajax_preview' => '1',
+            '_access' => 'protected',
+            '_user' => 'backend-allowed'
+        ]);
+
+        self::assertSame(200, $Response['status'], self::failureMessage($Response));
+        self::assertSame('0123456789', $Response['body']);
+        self::assertArrayHasKey('content-type', $Response['headers']);
     }
 
     public function testProtectedFolderDoesNotReturnFolderIcon(): void
@@ -675,8 +786,10 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
         $svgFallbackPng = self::$testDirectory . '/' . $prefix . '-svg-fallback.png';
         $externalPng = self::$testDirectory . '/' . $prefix . '-external.png';
         $invalidExternalPng = self::$testDirectory . '/' . $prefix . '-external-invalid.png';
+        $mediaFile = self::$testDirectory . '/' . $prefix . '-media.mp4';
         self::$rewriteSvg = self::$testDirectory . '/' . $prefix . '-rewrite.svg';
         self::$invalidRewriteSvg = self::$testDirectory . '/' . $prefix . '-rewrite-invalid.svg';
+        self::$rewriteMediaFile = self::$testDirectory . '/' . $prefix . '-rewrite.mp4';
         self::$externalMaliciousSvg = self::$testDirectory . '/' . $prefix . '-external-malicious.svg';
         self::$externalInvalidSvg = self::$testDirectory . '/' . $prefix . '-external-malformed.svg';
 
@@ -703,6 +816,8 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
         );
         file_put_contents($storedMaliciousSvg, '<svg xmlns="http://www.w3.org/2000/svg"><rect/></svg>');
         file_put_contents($invalidStoredSvg, '<svg xmlns="http://www.w3.org/2000/svg"><rect/></svg>');
+        file_put_contents($mediaFile, '0123456789');
+        file_put_contents(self::$rewriteMediaFile, '0123456789');
 
         ProjectTestHelper::runAsSystemUser(
             static function () use (
@@ -717,11 +832,13 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
                 $svgFallbackPng,
                 $externalPng,
                 $invalidExternalPng,
+                $mediaFile,
                 $prefix
             ): void {
                 $Folder = $Root->createFolder($prefix . '-folder');
                 $Folder->activate();
                 self::$folderId = $Folder->getId();
+                file_put_contents($Folder->getFullPath() . 'archive-secret.txt', 'folder-archive-secret');
 
                 $Active = $Root->uploadFile($activePng);
                 $Active->activate();
@@ -771,6 +888,10 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
                 $InvalidExternalImage = $Root->uploadFile($invalidExternalPng);
                 $InvalidExternalImage->activate();
                 self::$invalidExternalImageId = $InvalidExternalImage->getId();
+
+                $MediaFile = $Root->uploadFile($mediaFile);
+                $MediaFile->activate();
+                self::$mediaFileId = $MediaFile->getId();
             }
         );
 
@@ -784,7 +905,8 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
             self::$corruptImageId,
             self::$svgFallbackId,
             self::$externalImageId,
-            self::$invalidExternalImageId
+            self::$invalidExternalImageId,
+            self::$mediaFileId
         ];
     }
 
@@ -955,6 +1077,10 @@ if (isset($_GET['_rewrite_invalid_svg'])) {
     QUI\Rewrite::sendFileWithRange(%INVALID_REWRITE_SVG%, 'image/svg+xml');
 }
 
+if (isset($_GET['_rewrite_media'])) {
+    QUI\Rewrite::sendFileWithRange(%REWRITE_MEDIA_FILE%, 'video/mp4');
+}
+
 chdir(%CORE_DIRECTORY%);
 
 if (isset($_GET['_ajax_preview'])) {
@@ -964,6 +1090,26 @@ if (isset($_GET['_ajax_preview'])) {
     $callables = QUI\Ajax::getRegisteredCallables();
     $preview = $callables['ajax_media_file_preview']['callable'];
     $preview((string)($_GET['project'] ?? ''), (string)($_GET['id'] ?? ''));
+    exit;
+}
+
+if (isset($_GET['_ajax_download'])) {
+    QUI::$Ajax = new QUI\Ajax();
+    require %AJAX_DOWNLOAD_ENDPOINT%;
+
+    $callables = QUI\Ajax::getRegisteredCallables();
+    $download = $callables['ajax_media_file_download']['callable'];
+    $download((string)($_GET['project'] ?? ''), (string)($_GET['id'] ?? ''));
+    exit;
+}
+
+if (isset($_GET['_ajax_folder_download'])) {
+    QUI::$Ajax = new QUI\Ajax();
+    require %AJAX_FOLDER_DOWNLOAD_ENDPOINT%;
+
+    $callables = QUI\Ajax::getRegisteredCallables();
+    $download = $callables['ajax_media_folder_download']['callable'];
+    $download((string)($_GET['project'] ?? ''), (string)($_GET['id'] ?? ''));
     exit;
 }
 
@@ -977,9 +1123,12 @@ PHP;
                 '%CORE_DIRECTORY%',
                 '%IMAGE_ENDPOINT%',
                 '%AJAX_PREVIEW_ENDPOINT%',
+                '%AJAX_DOWNLOAD_ENDPOINT%',
+                '%AJAX_FOLDER_DOWNLOAD_ENDPOINT%',
                 '%ALLOWED_USER_ID%',
                 '%REWRITE_SVG%',
-                '%INVALID_REWRITE_SVG%'
+                '%INVALID_REWRITE_SVG%',
+                '%REWRITE_MEDIA_FILE%'
             ],
             [
                 var_export(self::$varDirectory, true),
@@ -987,9 +1136,12 @@ PHP;
                 var_export(dirname(__DIR__, 4), true),
                 var_export(dirname(__DIR__, 4) . '/image.php', true),
                 var_export(dirname(__DIR__, 4) . '/admin/ajax/media/file/preview.php', true),
+                var_export(dirname(__DIR__, 4) . '/admin/ajax/media/file/download.php', true),
+                var_export(dirname(__DIR__, 4) . '/admin/ajax/media/folder/download.php', true),
                 (string)self::ALLOWED_USER_ID,
                 var_export(self::$rewriteSvg, true),
-                var_export(self::$invalidRewriteSvg, true)
+                var_export(self::$invalidRewriteSvg, true),
+                var_export(self::$rewriteMediaFile, true)
             ],
             $wrapper
         );

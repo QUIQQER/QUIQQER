@@ -12,6 +12,7 @@ use QUI\Projects\Media;
 use QUI\Projects\Media\File;
 use QUI\Projects\Project;
 use QUI\Projects\Site;
+use QUI\Users\Nobody;
 use QUI\Users\User;
 use ReflectionProperty;
 
@@ -123,6 +124,58 @@ class PermissionTest extends TestCase
         $this->assertSame(
             'from-group',
             Permission::checkPermission('test.permission', $User)
+        );
+    }
+
+    public function testCheckPermissionRejectsGroupGrantAfterExplicitUserDenial(): void
+    {
+        $Group = $this->createMock(Group::class);
+        $User = $this->createUser(false, groups: [$Group]);
+        $Manager = $this->createPermissionManagerMock();
+        $Manager->method('getPermissions')->willReturnCallback(
+            static fn (object $Object): array => $Object === $User
+                ? ['test.permission' => false]
+                : ['test.permission' => true]
+        );
+        QUI::$Rights = $Manager;
+
+        $this->expectException(Exception::class);
+
+        Permission::checkPermission('test.permission', $User);
+    }
+
+    public function testHasPermissionRejectsGroupGrantAfterExplicitUserDenial(): void
+    {
+        $Group = $this->createMock(Group::class);
+        $User = $this->createUser(false, groups: [$Group]);
+        $Manager = $this->createPermissionManagerMock();
+        $Manager->method('getPermissions')->willReturnCallback(
+            static fn (object $Object): array => $Object === $User
+                ? ['test.permission' => false]
+                : ['test.permission' => true]
+        );
+        QUI::$Rights = $Manager;
+
+        $this->assertFalse(
+            Permission::hasPermission('test.permission', $User)
+        );
+    }
+
+    public function testCheckPermissionFallsBackToGroupsForNobodyDefaults(): void
+    {
+        $Group = $this->createMock(Group::class);
+        $Nobody = $this->createMock(Nobody::class);
+        $Nobody->method('getGroups')->willReturn([$Group]);
+        $Manager = $this->createPermissionManagerMock();
+        $Manager->method('getPermissions')->willReturnCallback(
+            static fn (object $Object): array => $Object === $Nobody
+                ? ['test.permission' => false]
+                : ['test.permission' => true]
+        );
+        QUI::$Rights = $Manager;
+
+        self::assertTrue(
+            Permission::checkPermission('test.permission', $Nobody)
         );
     }
 
