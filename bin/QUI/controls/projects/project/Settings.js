@@ -227,7 +227,7 @@ define('controls/projects/project/Settings', [
                     title: self.getProject().getTitle()
                 });
 
-                self.$Title.set('html', self.getAttribute('title'));
+                self.$Title.textContent = self.getAttribute('title');
 
                 self.$config = result[0];
                 self.$defaults = result[1];
