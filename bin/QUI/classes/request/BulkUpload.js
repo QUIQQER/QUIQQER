@@ -15,9 +15,10 @@ define('classes/request/BulkUpload', [
     'qui/classes/DOM',
     'qui/utils/Object',
     'qui/utils/Math',
+    'Ajax',
     'Locale'
 
-], function (QUI, QDOM, ObjectUtils, QUIMath, QUILocale) {
+], function (QUI, QDOM, ObjectUtils, QUIMath, Ajax, QUILocale) {
     'use strict';
 
     const cyrb53 = (str, seed = 0) => {
@@ -294,6 +295,8 @@ define('classes/request/BulkUpload', [
                 filetype: File.type,
                 filepath: this.getFileEntry().path
             });
+
+            UploadParams._csrf = Ajax.getBackendCsrfToken();
 
             if (typeof FileParams.extract !== 'undefined') {
                 if (FileParams.extract) {

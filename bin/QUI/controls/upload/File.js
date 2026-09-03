@@ -39,6 +39,7 @@ define('controls/upload/File', [
           MessageError       = arguments[7],
           MathUtils          = arguments[8],
           ObjectUtils        = arguments[9],
+          Ajax               = arguments[10],
           QUILocale          = arguments[11];
 
 
@@ -550,6 +551,8 @@ define('controls/upload/File', [
                 filename: this.getFilename(),
                 filetype: this.$File.type
             });
+
+            UploadParams._csrf = Ajax.getBackendCsrfToken();
 
             if (typeof FileParams.extract !== 'undefined') {
                 if (FileParams.extract) {
