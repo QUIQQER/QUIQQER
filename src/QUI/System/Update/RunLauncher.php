@@ -18,17 +18,19 @@ class RunLauncher
     {
         $run = $this->repository->create($now, $metadata);
         $webUrl = $this->createWebUrl($run);
+        $webToken = bin2hex(random_bytes(32));
         $cliCommand = $this->createCliCommand($run);
         $state = $run->getState();
 
+        $state->prepareWebAccess($webToken);
         $state->setMetadataValue('webUrl', $webUrl);
-        $state->setMetadataValue('cliCommand', $cliCommand);
         $this->repository->save($state);
 
         return new RunLaunch(
             $run,
             $webUrl,
-            $cliCommand
+            $cliCommand,
+            $webToken
         );
     }
 
@@ -36,9 +38,7 @@ class RunLauncher
     {
         return $this->webRunnerUrl
             . '?id='
-            . rawurlencode($run->getState()->getId())
-            . '&token='
-            . rawurlencode($run->getToken());
+            . rawurlencode($run->getState()->getId());
     }
 
     private function createCliCommand(Run $run): string

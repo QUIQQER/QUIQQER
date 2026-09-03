@@ -33,6 +33,7 @@ QUI::getAjax()->registerFunction(
             'active' => false,
             'id' => $Run->getState()->getId(),
             'url' => $Launch->getWebUrl(),
+            'token' => $Launch->getWebToken(),
             'run' => $Run->getState()->toPublicArray(),
             'deleted' => $runs['deleted']
         ];

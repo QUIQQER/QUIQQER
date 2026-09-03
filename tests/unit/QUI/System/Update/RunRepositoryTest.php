@@ -166,6 +166,11 @@ class RunRepositoryTest extends TestCase
         $this->assertSame(RunState::STATUS_CANCELLED, $cancelled->getStatus());
         $this->assertSame(RunState::PHASE_CANCELLED, $cancelled->getPhase());
         $this->assertSame(1234, $cancelled->getProcess()['pid']);
+        $this->assertArrayNotHasKey('command', $cancelled->getProcess());
+        $this->assertStringNotContainsString(
+            'php execute.php token',
+            (string)file_get_contents($run->getDirectory() . 'state.json')
+        );
     }
 
     private function deleteDirectory(string $directory): void

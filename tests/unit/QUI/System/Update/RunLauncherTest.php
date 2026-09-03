@@ -33,16 +33,24 @@ class RunLauncherTest extends TestCase
         $run = $launch->getRun();
 
         $this->assertSame(
-            'https://example.test/packages/quiqqer/core/bin/update-run.php?id=' . $run->getState()->getId()
-            . '&token=' . $run->getToken(),
+            'https://example.test/packages/quiqqer/core/bin/update-run.php?id=' . $run->getState()->getId(),
             $launch->getWebUrl()
         );
+        $this->assertNotSame('', $launch->getWebToken());
+        $this->assertNotSame($run->getToken(), $launch->getWebToken());
 
         $this->assertSame(
             CliEnvironment::createShellPrefix()
             . "'/usr/bin/php' '" . $run->getExecuteFile() . "' '" . $run->getToken() . "'",
             $launch->getCliCommand()
         );
+
+        $stateContents = (string)file_get_contents($run->getDirectory() . 'state.json');
+
+        $this->assertStringNotContainsString($run->getToken(), $stateContents);
+        $this->assertStringNotContainsString($launch->getWebToken(), $stateContents);
+        $this->assertStringNotContainsString('cliCommand', $stateContents);
+        $this->assertStringNotContainsString('token=', $stateContents);
     }
 
     private function deleteDirectory(string $directory): void

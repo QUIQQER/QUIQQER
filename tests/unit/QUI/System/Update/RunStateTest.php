@@ -91,8 +91,14 @@ class RunStateTest extends TestCase
         $this->assertArrayNotHasKey('tokenHash', $public);
         $this->assertArrayNotHasKey('cliCommand', $public['metadata']);
         $this->assertArrayNotHasKey('command', $public['process']);
-        $this->assertSame('https://example.test/update-run.php?id=run&token=secret-token', $public['metadata']['webUrl']);
+        $this->assertSame('https://example.test/update-run.php?id=run', $public['metadata']['webUrl']);
         $this->assertSame('web', $public['metadata']['type']);
         $this->assertSame(1234, $public['process']['pid']);
+
+        $persisted = $state->toArray();
+
+        $this->assertArrayNotHasKey('cliCommand', $persisted['metadata']);
+        $this->assertArrayNotHasKey('command', $persisted['process']);
+        $this->assertStringNotContainsString('secret-token', (string)json_encode($persisted));
     }
 }

@@ -44,7 +44,8 @@ class RunEntrypoint
         ?array $query = null,
         ?array $argv = null,
         ?string $sapi = null,
-        ?int $now = null
+        ?int $now = null,
+        bool $includeCliCommand = true
     ): int {
         $sapi ??= (string)php_sapi_name();
         $query ??= $_GET;
@@ -110,7 +111,7 @@ class RunEntrypoint
                 'error' => $Exception->getMessage()
             ];
 
-            if ($sapi !== 'cli') {
+            if ($sapi !== 'cli' && $includeCliCommand) {
                 $payload['cliCommand'] = $this->createCliCommand($id, $root, $token);
             }
 

@@ -40,6 +40,7 @@ class RunLauncherFactoryTest extends TestCase
             'https://example.test/packages/quiqqer/core/bin/update-run.php?id=',
             $launch->getWebUrl()
         );
+        $this->assertStringNotContainsString('token=', $launch->getWebUrl());
     }
 
     private function deleteDirectory(string $directory): void

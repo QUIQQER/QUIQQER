@@ -6,6 +6,8 @@ use InvalidArgumentException;
 
 class RunState
 {
+    private const WEB_SESSION_TTL = 3600;
+
     public const STATUS_CREATED = 'created';
     public const STATUS_RUNNING = 'running';
     public const STATUS_RESTART_REQUIRED = 'restart_required';
@@ -76,7 +78,10 @@ class RunState
         private ?int $startedAt = null,
         private ?int $finishedAt = null,
         private ?string $errorMessage = null,
-        private ?array $process = null
+        private ?array $process = null,
+        private ?string $webTokenHash = null,
+        private ?string $webSessionHash = null,
+        private ?int $webSessionExpiresAt = null
     ) {
         self::assertValidIdentifier($id);
     }
@@ -117,7 +122,10 @@ class RunState
             isset($data['startedAt']) ? (int)$data['startedAt'] : null,
             isset($data['finishedAt']) ? (int)$data['finishedAt'] : null,
             isset($data['errorMessage']) ? (string)$data['errorMessage'] : null,
-            is_array($data['process'] ?? null) ? $data['process'] : null
+            self::sanitizeProcess(is_array($data['process'] ?? null) ? $data['process'] : null),
+            isset($data['webTokenHash']) ? (string)$data['webTokenHash'] : null,
+            isset($data['webSessionHash']) ? (string)$data['webSessionHash'] : null,
+            isset($data['webSessionExpiresAt']) ? (int)$data['webSessionExpiresAt'] : null
         );
     }
 
@@ -140,11 +148,14 @@ class RunState
             'status' => $this->status,
             'createdAt' => $this->createdAt,
             'expiresAt' => $this->expiresAt,
-            'metadata' => $this->metadata,
+            'metadata' => $this->getSafeMetadata(),
             'startedAt' => $this->startedAt,
             'finishedAt' => $this->finishedAt,
             'errorMessage' => $this->errorMessage,
-            'process' => $this->process
+            'process' => self::sanitizeProcess($this->process),
+            'webTokenHash' => $this->webTokenHash,
+            'webSessionHash' => $this->webSessionHash,
+            'webSessionExpiresAt' => $this->webSessionExpiresAt
         ];
     }
 
@@ -172,11 +183,7 @@ class RunState
      */
     private function getPublicMetadata(): array
     {
-        $metadata = $this->metadata;
-
-        unset($metadata['cliCommand']);
-
-        return $metadata;
+        return $this->getSafeMetadata();
     }
 
     /**
@@ -188,7 +195,46 @@ class RunState
             return null;
         }
 
-        $process = $this->process;
+        return self::sanitizeProcess($this->process);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function getSafeMetadata(): array
+    {
+        $metadata = $this->metadata;
+
+        unset($metadata['cliCommand']);
+
+        if (is_string($metadata['webUrl'] ?? null)) {
+            $metadata['webUrl'] = self::removeTokenFromUrl($metadata['webUrl']);
+        }
+
+        return $metadata;
+    }
+
+    private static function removeTokenFromUrl(string $url): string
+    {
+        $url = preg_replace_callback(
+            '/([?&])token=[^&#]*(&?)/i',
+            static fn (array $matches): string => $matches[2] !== '' ? $matches[1] : '',
+            $url
+        ) ?? $url;
+
+        return rtrim($url, '?&');
+    }
+
+    /**
+     * @param array<string, mixed>|null $process
+     * @return array<string, mixed>|null
+     */
+    private static function sanitizeProcess(?array $process): ?array
+    {
+        if ($process === null) {
+            return null;
+        }
+
         unset($process['command']);
 
         return $process;
@@ -196,8 +242,58 @@ class RunState
 
     public function assertToken(string $token): void
     {
-        if ($token === '' || !hash_equals($this->tokenHash, hash('sha256', $token))) {
+        $tokenHash = hash('sha256', $token);
+        $validCliToken = $token !== '' && hash_equals($this->tokenHash, $tokenHash);
+        $validWebSession = $token !== ''
+            && $this->webSessionHash !== null
+            && hash_equals($this->webSessionHash, $tokenHash);
+
+        if (!$validCliToken && !$validWebSession) {
             throw new InvalidArgumentException('Invalid update run token.');
+        }
+    }
+
+    public function prepareWebAccess(string $token): void
+    {
+        if ($token === '') {
+            throw new InvalidArgumentException('Invalid update run web token.');
+        }
+
+        $this->webTokenHash = hash('sha256', $token);
+        $this->webSessionHash = null;
+        $this->webSessionExpiresAt = null;
+    }
+
+    public function exchangeWebToken(string $token, string $sessionToken, int $now): void
+    {
+        $this->assertNotExpired($now);
+
+        if (
+            $token === ''
+            || $sessionToken === ''
+            || $this->webTokenHash === null
+            || !hash_equals($this->webTokenHash, hash('sha256', $token))
+        ) {
+            throw new InvalidArgumentException('Invalid update run web token.');
+        }
+
+        $this->webTokenHash = null;
+        $this->webSessionHash = hash('sha256', $sessionToken);
+        $this->webSessionExpiresAt = min($this->expiresAt, $now + self::WEB_SESSION_TTL);
+    }
+
+    public function assertWebSession(string $sessionToken, int $now): void
+    {
+        $this->assertNotExpired($now);
+
+        if (
+            $sessionToken === ''
+            || $this->webSessionHash === null
+            || $this->webSessionExpiresAt === null
+            || $now > $this->webSessionExpiresAt
+            || !hash_equals($this->webSessionHash, hash('sha256', $sessionToken))
+        ) {
+            throw new InvalidArgumentException('Invalid update run web session.');
         }
     }
 
@@ -261,9 +357,9 @@ class RunState
 
     public function setProcess(int $pid, string $command, int $startedAt, ?string $method = null): void
     {
+        // Runner commands contain bearer credentials and must not be persisted.
         $this->process = [
             'pid' => $pid,
-            'command' => $command,
             'startedAt' => $startedAt
         ];
 
@@ -290,6 +386,16 @@ class RunState
     public function getCreatedAt(): int
     {
         return $this->createdAt;
+    }
+
+    public function getExpiresAt(): int
+    {
+        return $this->expiresAt;
+    }
+
+    public function getWebSessionExpiresAt(): ?int
+    {
+        return $this->webSessionExpiresAt;
     }
 
     /**
