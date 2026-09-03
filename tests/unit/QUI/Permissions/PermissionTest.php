@@ -126,6 +126,40 @@ class PermissionTest extends TestCase
         );
     }
 
+    public function testCheckPermissionRejectsGroupGrantAfterExplicitUserDenial(): void
+    {
+        $Group = $this->createMock(Group::class);
+        $User = $this->createUser(false, groups: [$Group]);
+        $Manager = $this->createPermissionManagerMock();
+        $Manager->method('getPermissions')->willReturnCallback(
+            static fn (object $Object): array => $Object === $User
+                ? ['test.permission' => false]
+                : ['test.permission' => true]
+        );
+        QUI::$Rights = $Manager;
+
+        $this->expectException(Exception::class);
+
+        Permission::checkPermission('test.permission', $User);
+    }
+
+    public function testHasPermissionRejectsGroupGrantAfterExplicitUserDenial(): void
+    {
+        $Group = $this->createMock(Group::class);
+        $User = $this->createUser(false, groups: [$Group]);
+        $Manager = $this->createPermissionManagerMock();
+        $Manager->method('getPermissions')->willReturnCallback(
+            static fn (object $Object): array => $Object === $User
+                ? ['test.permission' => false]
+                : ['test.permission' => true]
+        );
+        QUI::$Rights = $Manager;
+
+        $this->assertFalse(
+            Permission::hasPermission('test.permission', $User)
+        );
+    }
+
     public function testHasPermissionReturnsFalseWhenPermissionIsDenied(): void
     {
         $User = $this->createUser(false);

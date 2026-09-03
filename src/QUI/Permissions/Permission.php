@@ -81,18 +81,20 @@ class Permission
         $Manager = QUI::getPermissionManager();
         $permissions = $Manager->getPermissions($User);
 
-        // first check user permission
-        if (!empty($permissions[$perm])) {
-            return $permissions[$perm];
-        }
-
-        $groups = $User->getGroups();
-
-        foreach ($groups as $Group) {
-            $permissions = $Manager->getPermissions($Group);
-
+        // An explicitly stored user value takes precedence over group values.
+        if (isset($permissions[$perm])) {
             if (!empty($permissions[$perm])) {
                 return $permissions[$perm];
+            }
+        } else {
+            $groups = $User->getGroups();
+
+            foreach ($groups as $Group) {
+                $permissions = $Manager->getPermissions($Group);
+
+                if (!empty($permissions[$perm])) {
+                    return $permissions[$perm];
+                }
             }
         }
 
