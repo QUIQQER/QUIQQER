@@ -275,6 +275,138 @@ class UserGroupToolIntegrationTest extends TestCase
         }
     }
 
+    public function testDelegatedEditorCannotRemoveUsersFromStrongerOrRootGroups(): void
+    {
+        self::skipIfDatabaseOrSuperUserIsUnavailable();
+
+        $actorUuid = null;
+        $targetUuid = null;
+        $allowedGroupUuid = null;
+        $protectedGroupUuid = null;
+
+        try {
+            self::runAsRootUser(function (UserInterface $RootUser) use (
+                &$actorUuid,
+                &$targetUuid,
+                &$allowedGroupUuid,
+                &$protectedGroupUuid
+            ): void {
+                $Actor = self::createAuthorizationTestUser('remove-actor', $RootUser);
+                $Target = self::createAuthorizationTestUser('remove-target', $RootUser);
+                $RootGroup = QUI::getGroups()->get(QUI::conf('globals', 'root'));
+                $AllowedGroup = $RootGroup->createChild(
+                    self::AUTHORIZATION_TEST_PREFIX . 'remove-allowed-' . bin2hex(random_bytes(5)),
+                    $RootUser
+                );
+                $ProtectedGroup = $RootGroup->createChild(
+                    self::AUTHORIZATION_TEST_PREFIX . 'remove-protected-' . bin2hex(random_bytes(5)),
+                    $RootUser
+                );
+
+                QUI::getPermissionManager()->setPermissions($Actor, [
+                    'quiqqer.admin' => true,
+                    'quiqqer.admin.groups.edit' => true,
+                    'quiqqer.admin.users.edit' => true,
+                    'quiqqer.core.mcp.canUse' => true,
+                    'quiqqer.core.mcp.groups.canUse' => true,
+                    'quiqqer.core.mcp.users.canUse' => true,
+                    'quiqqer.projects.create' => true
+                ], $RootUser);
+                QUI::getPermissionManager()->setPermissions(
+                    $AllowedGroup,
+                    ['quiqqer.projects.create' => true],
+                    $RootUser
+                );
+                QUI::getPermissionManager()->setPermissions(
+                    $ProtectedGroup,
+                    ['quiqqer.system.update' => true],
+                    $RootUser
+                );
+
+                foreach ([$AllowedGroup, $ProtectedGroup, $RootGroup] as $Group) {
+                    $Group->addUser($Target);
+                }
+
+                $AllowedGroup->addUser($Actor);
+                $Actor->save($RootUser);
+                $Target->save($RootUser);
+
+                $actorUuid = (string)$Actor->getUUID();
+                $targetUuid = (string)$Target->getUUID();
+                $allowedGroupUuid = (string)$AllowedGroup->getUUID();
+                $protectedGroupUuid = (string)$ProtectedGroup->getUUID();
+            });
+
+            $Actor = QUI::getUsers()->get((string)$actorUuid);
+            self::assertInstanceOf(User::class, $Actor);
+
+            self::runAsUser($Actor, function () use (
+                $targetUuid,
+                $allowedGroupUuid,
+                $protectedGroupUuid
+            ): void {
+                $allowed = self::invokeTool(new RemoveGroupUsers(), [
+                    $allowedGroupUuid,
+                    [$targetUuid]
+                ]);
+                self::assertSame(1, $allowed['removed']);
+
+                $protected = self::invokeToolRaw(new RemoveGroupUsers(), [
+                    $protectedGroupUuid,
+                    [$targetUuid]
+                ]);
+                self::assertInstanceOf(CallToolResult::class, $protected);
+
+                $rootGroup = QUI::getGroups()->get(QUI::conf('globals', 'root'));
+                $root = self::invokeToolRaw(new RemoveGroupUsers(), [
+                    $rootGroup->getUUID(),
+                    [$targetUuid]
+                ]);
+                self::assertInstanceOf(CallToolResult::class, $root);
+
+                $Target = QUI::getUsers()->get((string)$targetUuid);
+                self::assertInstanceOf(User::class, $Target);
+                $Target->refresh();
+                self::assertNotContains($allowedGroupUuid, $Target->getGroups(false));
+                self::assertContains($protectedGroupUuid, $Target->getGroups(false));
+                self::assertContains($rootGroup->getUUID(), $Target->getGroups(false));
+            });
+        } finally {
+            self::runAsRootUser(function (UserInterface $RootUser) use (
+                $actorUuid,
+                $targetUuid,
+                $allowedGroupUuid,
+                $protectedGroupUuid
+            ): void {
+                foreach ([$allowedGroupUuid, $protectedGroupUuid] as $groupUuid) {
+                    if ($groupUuid === null) {
+                        continue;
+                    }
+
+                    try {
+                        QUI::getGroups()->get($groupUuid)->delete();
+                    } catch (Throwable) {
+                    }
+                }
+
+                foreach ([$actorUuid, $targetUuid] as $userUuid) {
+                    if ($userUuid === null) {
+                        continue;
+                    }
+
+                    try {
+                        $User = QUI::getUsers()->get($userUuid);
+
+                        if ($User instanceof User) {
+                            $User->delete($RootUser);
+                        }
+                    } catch (Throwable) {
+                    }
+                }
+            });
+        }
+    }
+
     /**
      * @param array<int, mixed> $arguments
      * @return array<string, mixed>

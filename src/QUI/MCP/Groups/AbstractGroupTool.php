@@ -46,6 +46,27 @@ abstract class AbstractGroupTool extends AbstractUserTool
 
     protected static function checkGroupAssignmentPermission(Group $Group): void
     {
+        self::checkGroupMembershipMutationPermission(
+            $Group,
+            'Only superusers may assign users to the root group.',
+            'The selected group grants permissions that the current user may not delegate.'
+        );
+    }
+
+    protected static function checkGroupRemovalPermission(Group $Group): void
+    {
+        self::checkGroupMembershipMutationPermission(
+            $Group,
+            'Only superusers may remove users from the root group.',
+            'The selected group grants permissions that the current user may not revoke.'
+        );
+    }
+
+    private static function checkGroupMembershipMutationPermission(
+        Group $Group,
+        string $rootGroupMessage,
+        string $delegationMessage
+    ): void {
         $RequestUser = Server::getRequestUser();
 
         if ($RequestUser->isSU()) {
@@ -59,7 +80,7 @@ abstract class AbstractGroupTool extends AbstractUserTool
             || (string)$Group->getId() === (string)$rootGroupId
         ) {
             throw new QUI\Permissions\Exception(
-                'Only superusers may assign users to the root group.',
+                $rootGroupMessage,
                 403
             );
         }
@@ -83,7 +104,7 @@ abstract class AbstractGroupTool extends AbstractUserTool
             }
 
             throw new QUI\Permissions\Exception(
-                'The selected group grants permissions that the current user may not delegate.',
+                $delegationMessage,
                 403,
                 ['permission' => $permission]
             );

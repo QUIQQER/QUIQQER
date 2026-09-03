@@ -24,6 +24,7 @@ class RemoveGroupUsers extends AddGroupUsers
                         throw new \QUI\Exception('Users cannot be removed from the Everyone group.');
                     }
 
+                    self::checkGroupRemovalPermission($Group);
                     $resolvedUsers = self::resolveUsers($users);
                     $removedUsers = [];
                     $notMembers = [];
