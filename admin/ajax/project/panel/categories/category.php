@@ -9,11 +9,52 @@
 
 QUI::getAjax()->registerFunction(
     'ajax_project_panel_categories_category',
-    static function ($file, $category) {
+    static function ($file, $category, $project = '') {
+        if (!is_string($file)) {
+            throw new QUI\Exception('Invalid project settings XML file.', 400);
+        }
+
         if (file_exists($file)) {
             $files = [$file];
         } else {
             $files = \json_decode($file, true);
+        }
+
+        if (!is_array($files)) {
+            throw new QUI\Exception('Invalid project settings XML file.', 400);
+        }
+
+        $allowedFiles = [];
+        $projects = [];
+
+        if (is_string($project) && $project !== '') {
+            $projects[] = QUI::getProjectManager()->decode($project);
+        } else {
+            $projects = QUI::getProjectManager()->getProjects(true);
+        }
+
+        foreach ($projects as $Project) {
+            foreach (QUI::getProjectManager()->getRelatedSettingsXML($Project) as $settingsFile) {
+                $settingsFile = realpath($settingsFile);
+
+                if ($settingsFile !== false) {
+                    $allowedFiles[$settingsFile] = true;
+                }
+            }
+        }
+
+        foreach ($files as $key => $settingsFile) {
+            if (!is_string($settingsFile)) {
+                throw new QUI\Exception('Invalid project settings XML file.', 400);
+            }
+
+            $settingsFile = realpath($settingsFile);
+
+            if ($settingsFile === false || !isset($allowedFiles[$settingsFile])) {
+                throw new QUI\Exception('Invalid project settings XML file.', 400);
+            }
+
+            $files[$key] = $settingsFile;
         }
 
         $cacheName = 'quiqqer/package/quiqqer/core/menu/categories/' . md5((string)json_encode($files)) . '/' . $category;
@@ -34,6 +75,6 @@ QUI::getAjax()->registerFunction(
 
         return $result;
     },
-    ['file', 'category'],
+    ['file', 'category', 'project'],
     'Permission::checkAdminUser'
 );

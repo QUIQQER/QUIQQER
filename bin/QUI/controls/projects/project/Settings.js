@@ -780,7 +780,8 @@ define('controls/projects/project/Settings', [
                         });
                     }, {
                         file    : Category.getAttribute('file'),
-                        category: Category.getAttribute('name')
+                        category: Category.getAttribute('name'),
+                        project : self.getProject().encode()
                     });
                 });
             }.bind(this));
