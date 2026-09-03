@@ -964,7 +964,7 @@ define('controls/upload/Form', [
                 return;
             }
 
-            const startUpload = function (preparedFiles) {
+            const startUpload = (preparedFiles) => {
                 if ('extract' in params && params.extract) {
                     const extract = {};
 
