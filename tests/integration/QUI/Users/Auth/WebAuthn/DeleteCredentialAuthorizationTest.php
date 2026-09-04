@@ -24,6 +24,8 @@ use Throwable;
 final class DeleteCredentialAuthorizationTest extends TestCase
 {
     private const AJAX_FUNCTION = 'ajax_users_authenticator_webauthn_deleteCredential';
+    private const CLEANUP_AJAX_FUNCTION = 'ajax_users_authenticator_webauthn_cleanupEmpty';
+    private const SETTINGS_AJAX_FUNCTION = 'ajax_users_authenticator_webauthn_settings';
     private const TEST_PREFIX = 'cwa-fix-';
 
     private mixed $previousSession;
@@ -52,6 +54,8 @@ final class DeleteCredentialAuthorizationTest extends TestCase
 
         QUI::$Ajax = new Ajax();
         require_once OPT_DIR . 'quiqqer/core/admin/ajax/users/authenticator/webauthn/deleteCredential.php';
+        require_once OPT_DIR . 'quiqqer/core/admin/ajax/users/authenticator/webauthn/cleanupEmpty.php';
+        require_once OPT_DIR . 'quiqqer/core/admin/ajax/users/authenticator/webauthn/settings.php';
 
         $Root = QUI::getUsers()->get(QUI::conf('globals', 'rootuser'));
         self::assertTrue($Root->isSU(), 'The local fixture root user must be an SU.');
@@ -60,6 +64,7 @@ final class DeleteCredentialAuthorizationTest extends TestCase
         $this->users['owner'] = $this->createUser('owner', false, false);
         $this->users['other'] = $this->createUser('other', false, false);
         $this->users['backend-no-edit'] = $this->createUser('backend-no-edit', true, false);
+        $this->users['backend-edit'] = $this->createUser('backend-edit', true, true);
         $this->users['user-edit'] = $this->createUser('user-edit', false, true);
     }
 
@@ -244,6 +249,45 @@ final class DeleteCredentialAuthorizationTest extends TestCase
         self::assertNull((new CredentialRepository())->findById($matchingUuidId));
     }
 
+    public function testForeignCredentialMetadataRequiresBackendUserEditPermission(): void
+    {
+        $Owner = $this->users['owner'];
+        $BackendNoEdit = $this->users['backend-no-edit'];
+        $BackendEdit = $this->users['backend-edit'];
+        $UserEdit = $this->users['user-edit'];
+        $credentialName = 'Settings authorization credential';
+
+        $this->createCredential($Owner, $credentialName);
+
+        $this->setActor($Owner, $this->fullyAuthenticatedSession($Owner));
+        $ownerResponse = $this->invokeSettings($Owner->getUUID());
+        self::assertArrayNotHasKey('Exception', $ownerResponse);
+        self::assertStringContainsString($credentialName, $ownerResponse['result']);
+        $ownerCleanupResponse = $this->invokeCleanup($Owner->getUUID());
+        self::assertArrayNotHasKey('Exception', $ownerCleanupResponse);
+        self::assertTrue($ownerCleanupResponse['result']['hasCredentials']);
+
+        $this->setActor($BackendNoEdit, $this->fullyAuthenticatedSession($BackendNoEdit));
+        $backendOnlyResponse = $this->invokeSettings($Owner->getUUID());
+        self::assertArrayHasKey('Exception', $backendOnlyResponse);
+        self::assertStringNotContainsString($credentialName, json_encode($backendOnlyResponse, JSON_THROW_ON_ERROR));
+        self::assertArrayHasKey('Exception', $this->invokeCleanup($Owner->getUUID()));
+
+        $this->setActor($UserEdit, $this->fullyAuthenticatedSession($UserEdit));
+        $editOnlyResponse = $this->invokeSettings($Owner->getUUID());
+        self::assertArrayHasKey('Exception', $editOnlyResponse);
+        self::assertStringNotContainsString($credentialName, json_encode($editOnlyResponse, JSON_THROW_ON_ERROR));
+        self::assertArrayHasKey('Exception', $this->invokeCleanup($Owner->getUUID()));
+
+        $this->setActor($BackendEdit, $this->fullyAuthenticatedSession($BackendEdit));
+        $authorizedResponse = $this->invokeSettings($Owner->getUUID());
+        self::assertArrayNotHasKey('Exception', $authorizedResponse);
+        self::assertStringContainsString($credentialName, $authorizedResponse['result']);
+        $authorizedCleanupResponse = $this->invokeCleanup($Owner->getUUID());
+        self::assertArrayNotHasKey('Exception', $authorizedCleanupResponse);
+        self::assertTrue($authorizedCleanupResponse['result']['hasCredentials']);
+    }
+
     public function testMissingCredentialDoesNotLeakCredentialStateWithoutAuthentication(): void
     {
         $Owner = $this->users['owner'];
@@ -287,8 +331,10 @@ final class DeleteCredentialAuthorizationTest extends TestCase
         return $User;
     }
 
-    private function createCredential(User $User): int
-    {
+    private function createCredential(
+        User $User,
+        string $name = 'Authorization test credential'
+    ): int {
         if (!$this->isWebAuthnStored($User)) {
             QUI::getDataBaseConnection()->update(
                 QUI\Utils\Doctrine::quoteIdentifier(UserManager::table()),
@@ -308,7 +354,7 @@ final class DeleteCredentialAuthorizationTest extends TestCase
             0,
             null,
             ['internal'],
-            'Authorization test credential',
+            $name,
             false,
             false
         );
@@ -353,6 +399,22 @@ final class DeleteCredentialAuthorizationTest extends TestCase
     {
         return QUI::getAjax()->callRequestFunction(self::AJAX_FUNCTION, [
             'id' => $id,
+            'userUuid' => $userUuid
+        ]);
+    }
+
+    /** @return array<string, mixed> */
+    private function invokeSettings(string $userUuid): array
+    {
+        return QUI::getAjax()->callRequestFunction(self::SETTINGS_AJAX_FUNCTION, [
+            'userUuid' => $userUuid
+        ]);
+    }
+
+    /** @return array<string, mixed> */
+    private function invokeCleanup(string $userUuid): array
+    {
+        return QUI::getAjax()->callRequestFunction(self::CLEANUP_AJAX_FUNCTION, [
             'userUuid' => $userUuid
         ]);
     }
