@@ -371,15 +371,16 @@ class Console
     public function title(): void
     {
         $params = $this->readArgv();
+
+        if (!$this->shouldDisplayTitle($params)) {
+            return;
+        }
+
         $version = QUI::getPackageManager()->getVersion();
         $year = date('Y');
 
         $lastUpdate = QUI::getPackageManager()->getLastUpdateDate();
         $lastUpdate = QUI::getLocale()->formatDate($lastUpdate);
-
-        if (isset($params['--noLogo']) || isset($params['_complete'])) {
-            return;
-        }
 
         $str = '
   _______          _________ _______  _______  _______  _______
@@ -408,6 +409,15 @@ class Console
 
         $this->message($licenceText, 'cyan', 'white');
         $this->clearMsg();
+    }
+
+    /**
+     * @param array<string, mixed> $params
+     */
+    protected function shouldDisplayTitle(array $params): bool
+    {
+        return empty($params)
+            || (count($params) === 1 && isset($params['--help']));
     }
 
     /**
