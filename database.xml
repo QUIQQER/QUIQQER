@@ -95,6 +95,21 @@
             <comment>This table contains WebAuthn / passkey credentials of QUIQQER users.</comment>
         </table>
 
+        <table name="security_throttles">
+            <field type="string" length="64">throttleKey</field>
+            <field type="string" length="255">package</field>
+            <field type="string" length="64">subjectKey</field>
+            <field type="string" length="32">reservationId</field>
+            <field type="bigint">expiresAt</field>
+
+            <primary>throttleKey</primary>
+            <index>package</index>
+            <index>subjectKey</index>
+            <index>expiresAt</index>
+
+            <comment>This table contains persistent throttle reservations for security-sensitive actions.</comment>
+        </table>
+
         <table name="groups">
             <field type="INT(11) NOT NULL DEFAULT 0">id</field>
             <field type="VARCHAR(50) NOT NULL">uuid</field>
