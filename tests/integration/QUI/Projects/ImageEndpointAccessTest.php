@@ -6,6 +6,7 @@ use DOMDocument;
 use DOMElement;
 use DOMXPath;
 use FilesystemIterator;
+use QUI\Projects\Fixtures\ExternalImageTestDouble;
 use QUI\Projects\Media;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -54,6 +55,8 @@ use const CURLOPT_HEADERFUNCTION;
 use const CURLOPT_HTTPHEADER;
 use const CURLOPT_RETURNTRANSFER;
 use const CURLOPT_TIMEOUT;
+
+require_once __DIR__ . '/Fixtures/ExternalImageTestDouble.php';
 
 class ImageEndpointAccessTest extends ProjectIntegrationTestCase
 {
@@ -257,12 +260,15 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
     public function testExternalSvgRefreshIsSanitizedBeforeStorageAndAjaxPreview(): void
     {
         $Image = self::getTestProject()->getMedia()->get(self::$externalImageId);
-        $externalUrl = 'http://127.0.0.1:' . self::$serverPort . '/' . basename(self::$externalMaliciousSvg);
+        $externalSvg = file_get_contents(self::$externalMaliciousSvg);
 
         self::assertInstanceOf(Media\Image::class, $Image);
+        self::assertIsString($externalSvg);
 
-        ProjectTestHelper::runAsSystemUser(static function () use ($Image, $externalUrl): void {
-            $Image->setAttribute('external', $externalUrl);
+        $Image = new ExternalImageTestDouble($Image->getAttributes(), $Image->getMedia(), $externalSvg);
+
+        ProjectTestHelper::runAsSystemUser(static function () use ($Image): void {
+            $Image->setAttribute('external', 'https://images.example.test/malicious.svg');
             $Image->save();
             $Image->updateExternalImage();
         });
@@ -282,7 +288,48 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
     {
         $Image = self::getTestProject()->getMedia()->get(self::$invalidExternalImageId);
         $original = file_get_contents($Image->getFullPath());
-        $externalUrl = 'http://127.0.0.1:' . self::$serverPort . '/' . basename(self::$externalInvalidSvg);
+        $externalSvg = file_get_contents(self::$externalInvalidSvg);
+
+        self::assertInstanceOf(Media\Image::class, $Image);
+        self::assertIsString($original);
+        self::assertIsString($externalSvg);
+
+        $Image = new ExternalImageTestDouble($Image->getAttributes(), $Image->getMedia(), $externalSvg);
+
+        ProjectTestHelper::runAsSystemUser(static function () use ($Image): void {
+            $Image->setAttribute('external', 'https://images.example.test/invalid.svg');
+            $Image->save();
+            $Image->updateExternalImage();
+        });
+
+        self::assertSame($original, file_get_contents($Image->getFullPath()));
+        self::assertFalse((bool)$Image->getAttribute('active'));
+    }
+
+    public function testExternalLoopbackRefreshDoesNotReplaceExistingImage(): void
+    {
+        $Image = self::getTestProject()->getMedia()->get(self::$externalImageId);
+        $original = file_get_contents($Image->getFullPath());
+        $externalUrl = 'http://127.0.0.1:' . self::$serverPort . '/' . basename(self::$externalMaliciousSvg);
+
+        self::assertInstanceOf(Media\Image::class, $Image);
+        self::assertIsString($original);
+
+        ProjectTestHelper::runAsSystemUser(static function () use ($Image, $externalUrl): void {
+            $Image->setAttribute('external', $externalUrl);
+            $Image->save();
+            $Image->updateExternalImage();
+        });
+
+        self::assertSame($original, file_get_contents($Image->getFullPath()));
+        self::assertFalse((bool)$Image->getAttribute('active'));
+    }
+
+    public function testLocalFileExternalRefreshDoesNotReplaceExistingImage(): void
+    {
+        $Image = self::getTestProject()->getMedia()->get(self::$invalidExternalImageId);
+        $original = file_get_contents($Image->getFullPath());
+        $externalUrl = 'file://' . self::$externalInvalidSvg;
 
         self::assertInstanceOf(Media\Image::class, $Image);
         self::assertIsString($original);

@@ -11,6 +11,7 @@ use QUI;
 use QUI\ExceptionStack;
 use QUI\Projects\Media;
 use QUI\Projects\Media\Utils as MediaUtils;
+use QUI\Security\PublicUrlFetcher;
 use QUI\Utils\Security\SvgSanitizer;
 use QUI\Utils\StringHelper;
 use QUI\Utils\System\File as FileUtils;
@@ -872,10 +873,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         try {
-            $file = QUI\Utils\Request\Url::get($external);
+            $file = $this->fetchExternalUrl((string)$external);
             $original = $this->getFullPath();
 
-            if (!is_string($file) || $file === '') {
+            if ($file === '') {
                 throw new QUI\Exception('The external image response is empty.');
             }
 
@@ -958,6 +959,14 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                 unlink($temporaryFile);
             }
         }
+    }
+
+    /**
+     * @throws QUI\Exception
+     */
+    protected function fetchExternalUrl(string $url): string
+    {
+        return (new PublicUrlFetcher())->get($url);
     }
 
     /**
