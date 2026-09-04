@@ -72,6 +72,7 @@ final class MediaUploadAuthorizationTest extends TestCase
         $this->Ajax = new Ajax();
         QUI::$Ajax = $this->Ajax;
         require dirname(__DIR__, 4) . '/admin/ajax/media/upload.php';
+        require dirname(__DIR__, 4) . '/admin/ajax/media/folder/create.php';
     }
 
     protected function tearDown(): void
@@ -167,6 +168,56 @@ final class MediaUploadAuthorizationTest extends TestCase
         self::assertFalse($RestrictedFolder->childWithNameExists('unauthorized'));
     }
 
+    public function testCreateFolderRejectsExplicitUserWithoutUploadPermission(): void
+    {
+        $this->setTargetFolderPermissions($this->Root, $this->User);
+
+        try {
+            $this->TargetFolder->createFolder('restricted-upload', $this->User);
+            self::fail('Folder was created without the parent upload permission.');
+        } catch (QUI\Permissions\Exception $Exception) {
+            self::assertSame(403, $Exception->getCode());
+        }
+
+        $this->assertFolderWasNotCreated('restricted-upload');
+    }
+
+    public function testCreateFolderRejectsExplicitUserWithoutEditPermission(): void
+    {
+        $this->setTargetFolderPermissions($this->User, $this->Root);
+
+        try {
+            $this->TargetFolder->createFolder('restricted-edit', $this->User);
+            self::fail('Folder was created without the parent edit permission.');
+        } catch (QUI\Permissions\Exception $Exception) {
+            self::assertSame(403, $Exception->getCode());
+        }
+
+        $this->assertFolderWasNotCreated('restricted-edit');
+    }
+
+    public function testLegacyFolderCreateAjaxRejectsRestrictedParent(): void
+    {
+        $this->setTargetFolderPermissions($this->Root, $this->Root);
+        $response = $this->callAjaxFolderCreate('legacy-restricted');
+
+        $this->assertPermissionDenied($response);
+        $this->assertFolderWasNotCreated('legacy-restricted');
+    }
+
+    public function testLegacyFolderCreateAjaxAllowsAuthorizedParent(): void
+    {
+        $this->setTargetFolderPermissions($this->User, $this->User);
+        $response = $this->callAjaxFolderCreate('legacy-allowed');
+
+        self::assertArrayNotHasKey('Exception', $response, json_encode($response, JSON_PRETTY_PRINT));
+        $Folder = $this->TargetFolder->getChildByName('legacy-allowed');
+
+        self::assertInstanceOf(Folder::class, $Folder);
+        self::assertSame($this->TargetFolder->getId(), $Folder->getParentId());
+        self::assertDirectoryExists(rtrim($this->TargetFolder->getFullPath(), '/') . '/legacy-allowed');
+    }
+
     public function testAjaxOverwriteRejectsMissingTargetEditPermission(): void
     {
         $TargetFile = $this->createOverwriteTarget();
@@ -232,6 +283,18 @@ final class MediaUploadAuthorizationTest extends TestCase
             'project' => $this->Project->getName(),
             'parentid' => $this->TargetFolder->getId(),
             'File' => $File
+        ]);
+    }
+
+    private function callAjaxFolderCreate(string $folderName): array
+    {
+        $this->setActor($this->User);
+
+        return $this->Ajax->callRequestFunction('ajax_media_folder_create', [
+            '_csrf' => CsrfToken::get(),
+            'project' => $this->Project->getName(),
+            'parentid' => $this->TargetFolder->getId(),
+            'newfolder' => $folderName
         ]);
     }
 
@@ -301,6 +364,15 @@ final class MediaUploadAuthorizationTest extends TestCase
         ], $this->Root);
     }
 
+    private function setTargetFolderPermissions(User $UploadUser, User $EditUser): void
+    {
+        $this->setActor($this->Root);
+        QUI::getPermissionManager()->setMediaPermissions($this->TargetFolder, [
+            'quiqqer.projects.media.upload' => [$UploadUser],
+            'quiqqer.projects.media.edit' => [$EditUser]
+        ], $this->Root);
+    }
+
     private function createOverwriteTarget(): Item
     {
         file_put_contents($this->temporaryFile, 'protected media content');
@@ -335,6 +407,12 @@ final class MediaUploadAuthorizationTest extends TestCase
         self::assertArrayHasKey('Exception', $response);
         self::assertSame(403, $response['Exception']['code'] ?? null);
         self::assertSame(QUI\Permissions\Exception::class, $response['Exception']['type'] ?? null);
+    }
+
+    private function assertFolderWasNotCreated(string $folderName): void
+    {
+        self::assertFalse($this->TargetFolder->childWithNameExists($folderName));
+        self::assertDirectoryDoesNotExist(rtrim($this->TargetFolder->getFullPath(), '/') . '/' . $folderName);
     }
 
     private function assertOverwriteTargetIsUnchanged(Item $TargetFile): void

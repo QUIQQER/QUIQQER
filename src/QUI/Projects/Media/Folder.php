@@ -535,7 +535,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         // copy me
-        $Copy = $Folder->createFolder($this->getAttribute('name'));
+        $Copy = $Folder->createFolder($this->getAttribute('name'), $PermissionUser);
 
         $attributes = $this->getAttributes();
 
@@ -589,10 +589,18 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Adds / create a subfolder
      *
+     * @param string $foldername
+     * @param User|null $PermissionUser
+     *
      * @throws QUI\Exception
      */
-    public function createFolder(string $foldername): Folder
-    {
+    public function createFolder(
+        string $foldername,
+        null | User $PermissionUser = null
+    ): Folder {
+        $this->checkPermission('quiqqer.projects.media.upload', $PermissionUser);
+        $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
+
         // Namensprüfung wegen unerlaubten Zeichen
         MediaUtils::checkFolderName($foldername);
 
@@ -600,7 +608,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $new_name = trim($foldername);
 
 
-        $User = QUI::getUserBySession();
+        $User = $PermissionUser ?? QUI::getUserBySession();
         $dir = $this->Media->getFullPath() . $this->getPath();
 
         if (is_dir($dir . $new_name)) {
@@ -1347,7 +1355,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         if (is_dir($file)) {
-            return $this->uploadFolder($file);
+            return $this->uploadFolder($file, false, $EditUser);
         }
 
         $fileInfo = FileUtils::getInfo($file);
@@ -1629,12 +1637,16 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @param string $path - Path to the dir
      * @param QUI\Projects\Media\Folder|false $Folder - (optional) Uploaded Folder
+     * @param User|null $PermissionUser
      *
      * @return Folder
      * @throws QUI\Exception
      */
-    protected function uploadFolder(string $path, false | Folder $Folder = false): Folder
-    {
+    protected function uploadFolder(
+        string $path,
+        false | Folder $Folder = false,
+        null | User $PermissionUser = null
+    ): Folder {
         $files = FileUtils::readDir($path);
 
         foreach ($files as $file) {
@@ -1645,11 +1657,11 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 try {
                     $NewFolder = $this->getChildByName($folderName);
                 } catch (QUI\Exception) {
-                    $NewFolder = $this->createFolder($folderName);
+                    $NewFolder = $this->createFolder($folderName, $PermissionUser);
                 }
 
                 if ($NewFolder instanceof Folder) {
-                    $NewFolder->uploadFolder($path . '/' . $file);
+                    $NewFolder->uploadFolder($path . '/' . $file, false, $PermissionUser);
                 }
 
                 continue;
@@ -1657,9 +1669,9 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
             // import files
             if ($Folder) {
-                $Folder->uploadFile($path . '/' . $file);
+                $Folder->uploadFile($path . '/' . $file, self::FILE_OVERWRITE_NONE, $PermissionUser);
             } else {
-                $this->uploadFile($path . '/' . $file);
+                $this->uploadFile($path . '/' . $file, self::FILE_OVERWRITE_NONE, $PermissionUser);
             }
         }
 

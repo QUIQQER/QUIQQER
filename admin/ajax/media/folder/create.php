@@ -26,7 +26,7 @@ QUI::getAjax()->registerFunction(
             );
         }
 
-        $Folder = $File->createFolder($newfolder);
+        $Folder = $File->createFolder($newfolder, QUI::getUserBySession());
 
         return QUI\Projects\Media\Utils::parseForMediaCenter($Folder);
     },
