@@ -144,6 +144,54 @@ class UserGroupToolIntegrationTest extends TestCase
         });
     }
 
+    public function testUpdateGroupRejectsSelfAsParent(): void
+    {
+        self::skipIfDatabaseOrSuperUserIsUnavailable();
+
+        $groupUuid = null;
+
+        try {
+            self::runAsRootUser(function (UserInterface $RootUser) use (&$groupUuid): void {
+                $RootGroup = QUI::getGroups()->get(QUI::conf('globals', 'root'));
+                $Group = $RootGroup->createChild(
+                    self::AUTHORIZATION_TEST_PREFIX . 'self-parent-' . bin2hex(random_bytes(5)),
+                    $RootUser
+                );
+                $groupUuid = $Group->getUUID();
+
+                $result = self::invokeToolRaw(new UpdateGroup(), [
+                    $groupUuid,
+                    [],
+                    $groupUuid
+                ]);
+
+                self::assertInstanceOf(CallToolResult::class, $result);
+
+                $Connection = QUI::getDataBaseConnection();
+                $Platform = $Connection->getDatabasePlatform();
+                $parentUuid = $Connection->createQueryBuilder()
+                    ->select('parent')
+                    ->from(QUI\Utils\Doctrine::quoteIdentifier(QUI\Groups\Manager::table()))
+                    ->where($Platform->quoteSingleIdentifier('uuid') . ' = :uuid')
+                    ->setParameter('uuid', $groupUuid)
+                    ->setMaxResults(1)
+                    ->executeQuery()
+                    ->fetchOne();
+
+                self::assertSame($RootGroup->getUUID(), $parentUuid);
+            });
+        } finally {
+            if ($groupUuid !== null) {
+                self::runAsRootUser(function () use ($groupUuid): void {
+                    try {
+                        QUI::getGroups()->get($groupUuid)->delete();
+                    } catch (Throwable) {
+                    }
+                });
+            }
+        }
+    }
+
     public function testDelegatedEditorCannotAssignUsersToStrongerOrRootGroups(): void
     {
         self::skipIfDatabaseOrSuperUserIsUnavailable();
