@@ -49,6 +49,20 @@ QUI::getAjax()->registerFunction(
                     throw $Exception;
                 }
             }
+
+            // Registration persists the credential before enabling the authenticator.
+            // Restore the flag if a credential was created while cleanup was saving the user.
+            $hasCredentials = !empty((new CredentialRepository())->findByUserUuid((string)$userUuid));
+
+            if ($hasCredentials) {
+                try {
+                    $User->enableAuthenticator(WebAuthnAuthenticator::class, QUI::getUsers()->getSystemUser());
+                } catch (QUI\Users\Exception $Exception) {
+                    if ($Exception->getCode() !== 404) {
+                        throw $Exception;
+                    }
+                }
+            }
         }
 
         return [

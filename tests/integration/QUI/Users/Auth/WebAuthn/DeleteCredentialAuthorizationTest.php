@@ -288,6 +288,73 @@ final class DeleteCredentialAuthorizationTest extends TestCase
         self::assertTrue($authorizedCleanupResponse['result']['hasCredentials']);
     }
 
+    public function testForeignEmptyCredentialCleanupRequiresBackendUserEditPermission(): void
+    {
+        $Owner = $this->users['owner'];
+        $BackendNoEdit = $this->users['backend-no-edit'];
+        $BackendEdit = $this->users['backend-edit'];
+
+        $this->setWebAuthnStored($Owner, true);
+        $this->setActor($BackendNoEdit, $this->fullyAuthenticatedSession($BackendNoEdit));
+
+        $rejectedResponse = $this->invokeCleanup($Owner->getUUID());
+
+        self::assertArrayHasKey('Exception', $rejectedResponse);
+        self::assertArrayNotHasKey('result', $rejectedResponse);
+        self::assertTrue($this->isWebAuthnStored($Owner));
+
+        $this->setActor($BackendEdit, $this->fullyAuthenticatedSession($BackendEdit));
+
+        $authorizedResponse = $this->invokeCleanup($Owner->getUUID());
+
+        self::assertArrayNotHasKey('Exception', $authorizedResponse);
+        self::assertFalse($authorizedResponse['result']['hasCredentials']);
+        self::assertFalse($this->isWebAuthnStored($Owner));
+    }
+
+    public function testCleanupRestoresAuthenticatorWhenCredentialAppearsDuringUserSave(): void
+    {
+        $Owner = $this->users['owner'];
+        $credentialCreated = false;
+        $credentialId = null;
+        QUI::getDataBaseConnection()->update(
+            QUI\Utils\Doctrine::quoteIdentifier(UserManager::table()),
+            ['su' => 1],
+            ['uuid' => $Owner->getUUID()]
+        );
+        $Owner->refresh();
+        self::assertTrue($Owner->isSU());
+        $this->setWebAuthnStored($Owner, true);
+        $this->setActor($Owner, $this->fullyAuthenticatedSession($Owner));
+        $listener = function (UserInterface $SavedUser) use (
+            $Owner,
+            &$credentialCreated,
+            &$credentialId
+        ): void {
+            if ($credentialCreated || $SavedUser->getUUID() !== $Owner->getUUID()) {
+                return;
+            }
+
+            $credentialCreated = true;
+            $credentialId = $this->createCredential($Owner, 'Concurrent registration credential', false);
+        };
+
+        QUI::getEvents()->addEvent('onUserSaveEnd', $listener);
+
+        try {
+            $response = $this->invokeCleanup($Owner->getUUID());
+        } finally {
+            QUI::getEvents()->removeEvent('onUserSaveEnd', $listener);
+        }
+
+        self::assertArrayNotHasKey('Exception', $response);
+        self::assertTrue($response['result']['hasCredentials']);
+        self::assertTrue($credentialCreated);
+        self::assertIsInt($credentialId);
+        self::assertNotNull((new CredentialRepository())->findById($credentialId));
+        self::assertTrue($this->isWebAuthnStored($Owner));
+    }
+
     public function testMissingCredentialDoesNotLeakCredentialStateWithoutAuthentication(): void
     {
         $Owner = $this->users['owner'];
@@ -333,15 +400,11 @@ final class DeleteCredentialAuthorizationTest extends TestCase
 
     private function createCredential(
         User $User,
-        string $name = 'Authorization test credential'
+        string $name = 'Authorization test credential',
+        bool $enableAuthenticator = true
     ): int {
-        if (!$this->isWebAuthnStored($User)) {
-            QUI::getDataBaseConnection()->update(
-                QUI\Utils\Doctrine::quoteIdentifier(UserManager::table()),
-                ['authenticator' => json_encode([WebAuthn::class], JSON_THROW_ON_ERROR)],
-                ['uuid' => $User->getUUID()]
-            );
-            $User->refresh();
+        if ($enableAuthenticator && !$this->isWebAuthnStored($User)) {
+            $this->setWebAuthnStored($User, true);
         }
 
         $Repository = new CredentialRepository();
@@ -443,6 +506,16 @@ final class DeleteCredentialAuthorizationTest extends TestCase
         $authenticators = is_string($stored) ? json_decode($stored, true) : [];
 
         return is_array($authenticators) && in_array(WebAuthn::class, $authenticators, true);
+    }
+
+    private function setWebAuthnStored(User $User, bool $enabled): void
+    {
+        QUI::getDataBaseConnection()->update(
+            QUI\Utils\Doctrine::quoteIdentifier(UserManager::table()),
+            ['authenticator' => json_encode($enabled ? [WebAuthn::class] : [], JSON_THROW_ON_ERROR)],
+            ['uuid' => $User->getUUID()]
+        );
+        $User->refresh();
     }
 
     private function cleanupFixtures(): void
