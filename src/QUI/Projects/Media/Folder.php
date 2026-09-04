@@ -484,6 +484,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         null | QUI\Interfaces\Users\User $PermissionUser = null
     ): QUI\Interfaces\Projects\Media\File {
         $this->checkCopyViewPermissions($PermissionUser);
+        $Folder->checkPermission('quiqqer.projects.media.upload', $PermissionUser);
+        $Folder->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
 
         return $this->copyToAfterPermissionCheck($Folder, $PermissionUser);
     }
