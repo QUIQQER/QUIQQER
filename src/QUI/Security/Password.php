@@ -56,11 +56,7 @@ class Password
         $password = '';
 
         for ($i = 0; $i < $length; $i++) {
-            try {
-                $password .= $charset[random_int(0, $charsetLength - 1)];
-            } catch (\Throwable) {
-                $password .= $charset[mt_rand(0, $charsetLength - 1)];
-            }
+            $password .= $charset[random_int(0, $charsetLength - 1)];
         }
 
         return $password;
