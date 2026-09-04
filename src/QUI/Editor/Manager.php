@@ -940,7 +940,7 @@ class Manager
      */
     public static function deleteToolbar(string $toolbar): void
     {
-        QUI\Permissions\Permission::hasPermission(
+        QUI\Permissions\Permission::checkPermission(
             'quiqqer.editors.toolbar.delete'
         );
 
@@ -967,16 +967,7 @@ class Manager
             'quiqqer.editors.toolbar.add'
         );
 
-        $toolbar = str_replace('.xml', '', $toolbar);
-
-        if (
-            $toolbar === ''
-            || preg_match('/[\x00-\x1F\x7F]/', $toolbar)
-            || str_contains($toolbar, '/')
-            || str_contains($toolbar, '\\')
-        ) {
-            throw new QUI\Exception('Invalid toolbar name.', 400);
-        }
+        $toolbar = self::normalizeToolbarFileName($toolbar);
 
         $folder = self::getToolbarsPath();
         $file = $folder . $toolbar . '.xml';
@@ -1003,7 +994,7 @@ class Manager
      */
     public static function saveToolbar(string $toolbar, string $xml): void
     {
-        QUI\Permissions\Permission::hasPermission(
+        QUI\Permissions\Permission::checkPermission(
             'quiqqer.editors.toolbar.save'
         );
 
@@ -1014,7 +1005,7 @@ class Manager
             ]);
         }
 
-        $toolbar = str_replace('.xml', '', $toolbar);
+        $toolbar = self::normalizeToolbarFileName($toolbar);
 
         $folder = self::getToolbarsPath();
         $file = $folder . $toolbar . '.xml';
@@ -1049,6 +1040,27 @@ class Manager
         file_put_contents($file, $xml);
 
         QUI\Cache\Manager::clear('settings/editor/xml');
+    }
+
+    /**
+     * Normalize a toolbar file name and reject paths.
+     *
+     * @throws QUI\Exception
+     */
+    private static function normalizeToolbarFileName(string $toolbar): string
+    {
+        $toolbar = str_replace('.xml', '', $toolbar);
+
+        if (
+            $toolbar === ''
+            || preg_match('/[\x00-\x1F\x7F]/', $toolbar)
+            || str_contains($toolbar, '/')
+            || str_contains($toolbar, '\\')
+        ) {
+            throw new QUI\Exception('Invalid toolbar name.', 400);
+        }
+
+        return $toolbar;
     }
 
     /**
