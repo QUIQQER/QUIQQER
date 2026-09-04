@@ -102,6 +102,24 @@ class AjaxTest extends TestCase
         $this->markTestIncomplete('Figure out how to test this');
     }
 
+    public function testCallExecutesDuplicateRequestFunctionOnlyOnce(): void
+    {
+        $Ajax = new Ajax();
+        $functionName = 'test_duplicate_request_function';
+        $callCount = 0;
+        $Ajax::registerFunction(
+            $functionName,
+            static function () use (&$callCount): int {
+                return ++$callCount;
+            }
+        );
+        $_REQUEST['_rf'] = json_encode(array_fill(0, 1_000, $functionName));
+
+        $Ajax->call();
+
+        self::assertSame(1, $callCount);
+    }
+
     public function testPermissions(): void
     {
         $this->markTestIncomplete('Figure out how to test this');
