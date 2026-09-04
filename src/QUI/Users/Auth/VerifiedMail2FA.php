@@ -18,6 +18,8 @@ use Random\RandomException;
  */
 class VerifiedMail2FA extends AbstractAuthenticator
 {
+    private const MAIL_THROTTLE_SECONDS = 60;
+
     public const USER_CODE_ATTRIBUTE = 'quiqqer.verified.2fa.mail.code';
     public const USER_CODE_VERIFYING_ATTRIBUTE = 'quiqqer.verifying.2fa.mail.code';
 
@@ -278,6 +280,17 @@ class VerifiedMail2FA extends AbstractAuthenticator
             $digitCode .= random_int(0, 9);
         }
 
+        $ThrottleDecision = QUI\Security\Throttle::acquireForUser(
+            $User,
+            'quiqqer/core',
+            'users.verified-mail-auth',
+            self::MAIL_THROTTLE_SECONDS
+        );
+
+        if (!$ThrottleDecision->isAllowed()) {
+            return;
+        }
+
         try {
             QUI::getSession()->set(self::USER_CODE_ATTRIBUTE, $digitCode);
 
@@ -292,6 +305,7 @@ class VerifiedMail2FA extends AbstractAuthenticator
                 ])
             );
         } catch (\Exception $exception) {
+            $ThrottleDecision->release();
             QUI\System\Log::addError($exception->getMessage(), [
                 'source' => self::class . '::sendAuthMailToSessionUser'
             ]);
@@ -342,6 +356,17 @@ class VerifiedMail2FA extends AbstractAuthenticator
             $digitCode .= random_int(0, 9);
         }
 
+        $ThrottleDecision = QUI\Security\Throttle::acquireForUser(
+            $User,
+            'quiqqer/core',
+            'users.verified-mail-enable',
+            self::MAIL_THROTTLE_SECONDS
+        );
+
+        if (!$ThrottleDecision->isAllowed()) {
+            return;
+        }
+
         try {
             QUI::getSession()->set(self::USER_CODE_VERIFYING_ATTRIBUTE, $digitCode);
 
@@ -356,6 +381,7 @@ class VerifiedMail2FA extends AbstractAuthenticator
                 ])
             );
         } catch (\Exception $exception) {
+            $ThrottleDecision->release();
             QUI\System\Log::addError($exception->getMessage(), [
                 'source' => self::class . '::sendEnableMailToSessionUser'
             ]);
