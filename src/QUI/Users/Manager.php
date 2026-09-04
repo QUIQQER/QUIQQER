@@ -1425,9 +1425,8 @@ class Manager
             QUI::getEvents()->fireEvent('userLoginError', [$userId, $Exception, $authenticator]);
 
             $UserAuthException = new QUI\Users\UserAuthException(
-                $Exception->getMessage(),
-                $Exception->getCode(),
-                $Exception->getContext()
+                ['quiqqer/core', 'exception.login.fail'],
+                401
             );
             $UserAuthException->setAttribute('reason', self::AUTH_ERROR_AUTH_ERROR);
 

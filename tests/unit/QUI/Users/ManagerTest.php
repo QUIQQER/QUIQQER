@@ -133,6 +133,53 @@ class ManagerTest extends TestCase
 
     #[RunInSeparateProcess]
     #[PreserveGlobalState(false)]
+    public function testAuthenticateReturnsUniformFailureForDifferentAuthenticationErrors(): void
+    {
+        QUI::$Session = new Session();
+
+        $Events = $this->createMock(EventsManager::class);
+        $Events->method('fireEvent')->willReturn([]);
+        QUI::$Events = $Events;
+
+        $responses = [];
+        $authenticationErrors = [
+            new Exception('User not found', 404, ['account' => 'missing']),
+            new Exception('Wrong password', 401, ['account' => 'existing'])
+        ];
+
+        foreach ($authenticationErrors as $AuthenticationError) {
+            $User = $this->createMock(User::class);
+            $User->method('getUUID')->willReturn('test-user-uuid');
+
+            $Authenticator = $this->createMock(AuthenticatorInterface::class);
+            $Authenticator->method('getUser')->willReturn($User);
+            $Authenticator->method('auth')->willThrowException($AuthenticationError);
+
+            try {
+                (new Manager())->authenticate($Authenticator);
+                self::fail('Authentication errors must be converted to UserAuthException.');
+            } catch (UserAuthException $Exception) {
+                $responses[] = [
+                    'message' => $Exception->getMessage(),
+                    'code' => $Exception->getCode(),
+                    'context' => $Exception->getContext(),
+                    'reason' => $Exception->getAttribute('reason')
+                ];
+            }
+        }
+
+        self::assertCount(2, $responses);
+        self::assertSame($responses[0], $responses[1]);
+        self::assertSame(401, $responses[0]['code']);
+        self::assertSame(
+            ['quiqqer/core', 'exception.login.fail'],
+            $responses[0]['context']['locale'] ?? null
+        );
+        self::assertSame(Manager::AUTH_ERROR_AUTH_ERROR, $responses[0]['reason']);
+    }
+
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function testLoginRegeneratesSessionBeforeStoringAuthenticatedState(): void
     {
         $Connection = DriverManager::getConnection([
