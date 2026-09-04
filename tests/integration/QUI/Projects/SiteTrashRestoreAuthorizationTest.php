@@ -164,7 +164,8 @@ final class SiteTrashRestoreAuthorizationTest extends TestCase
         QUI::getPermissionManager()->setPermissions($this->User, [
             'quiqqer.admin' => true,
             'quiqqer.projects.sites.view' => true,
-            'quiqqer.projects.sites.edit' => $canEditSites
+            'quiqqer.projects.sites.edit' => $canEditSites,
+            'quiqqer.projects.sites.new' => true
         ], $this->Root);
     }
 
