@@ -157,7 +157,7 @@ function handleJsonRequest(string $id, string $token, string $root, string $acti
     try {
         $Repository = new QUI\System\Update\RunRepository($root);
         $State = $Repository->load($id);
-        $State->assertToken($token);
+        $State->assertAuthorized($token, time());
 
         sendJson([
             'success' => true,
@@ -214,7 +214,7 @@ function handleSseRequest(string $id, string $token, string $root): void
         try {
             $Repository = new QUI\System\Update\RunRepository($root);
             $State = $Repository->load($id);
-            $State->assertToken($token);
+            $State->assertAuthorized($token, time());
             $log = readRunLog($root, $id);
 
             if ($log !== $lastLog) {

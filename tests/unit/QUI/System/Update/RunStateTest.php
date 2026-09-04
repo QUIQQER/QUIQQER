@@ -35,6 +35,16 @@ class RunStateTest extends TestCase
         $state->assertNotExpired(1601);
     }
 
+    public function testAuthorizationRejectsExpiredToken(): void
+    {
+        $state = RunState::create(str_repeat('a', 32), hash('sha256', 'secret-token'), 1000, 600);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The update run has expired.');
+
+        $state->assertAuthorized('secret-token', 1601);
+    }
+
     public function testAllowsValidPhaseTransition(): void
     {
         $state = RunState::create(str_repeat('a', 32), hash('sha256', 'secret-token'), 1000, 600);

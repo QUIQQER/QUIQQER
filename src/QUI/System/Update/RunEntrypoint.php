@@ -129,8 +129,7 @@ class RunEntrypoint
     ): ?RunState {
         $now = time();
         $state = $repository->load($id);
-        $state->assertToken($token);
-        $state->assertNotExpired($now);
+        $state->assertAuthorized($token, $now);
 
         if ($this->isFinalState($state)) {
             return null;

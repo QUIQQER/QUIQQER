@@ -6,6 +6,14 @@ use PHPUnit\Framework\TestCase;
 
 class RunWebEntrypointTest extends TestCase
 {
+    public function testStatusAndSseReadsRecheckTokenExpiration(): void
+    {
+        $root = dirname(__DIR__, 5);
+        $entrypoint = (string)file_get_contents($root . '/bin/update-run.php');
+
+        $this->assertSame(2, substr_count($entrypoint, '$State->assertAuthorized($token, time());'));
+    }
+
     public function testRunnerDoesNotAcceptOrPropagateTokensInQueryStrings(): void
     {
         $root = dirname(__DIR__, 5);

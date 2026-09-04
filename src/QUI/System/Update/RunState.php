@@ -253,6 +253,12 @@ class RunState
         }
     }
 
+    public function assertAuthorized(string $token, int $now): void
+    {
+        $this->assertToken($token);
+        $this->assertNotExpired($now);
+    }
+
     public function prepareWebAccess(string $token): void
     {
         if ($token === '') {
