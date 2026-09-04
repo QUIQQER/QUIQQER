@@ -1575,14 +1575,20 @@ class Edit extends Site
      * Erstellt eine Verknüpfung
      *
      * @param integer $pid
+     * @param QUI\Interfaces\Users\User|null $User - [optional] User creating the link
      *
      * @throws QUI\Exception
+     * @throws QUI\Permissions\Exception
      */
-    public function linked(int $pid): void
+    public function linked(int $pid, null | QUI\Interfaces\Users\User $User = null): void
     {
+        $this->checkPermission('quiqqer.projects.site.edit', $User);
         $this->assertNotDeleted();
 
         $Project = $this->getProject();
+        $LinkedParent = new self($Project, $pid);
+        $LinkedParent->checkPermission('quiqqer.projects.site.new', $User);
+        $LinkedParent->assertNotDeleted();
         $Parent = $this->getParent();
 
         if ($Parent === false) {
@@ -1628,7 +1634,7 @@ class Edit extends Site
         }
 
         $Connection->insert($table, [
-            "parent" => $pid,
+            "parent" => $LinkedParent->getId(),
             "child" => $this->getId(),
             "oparent" => $Parent->getId()
         ]);

@@ -28,7 +28,7 @@ class LinkSite extends AbstractSiteAdministrationTool
                     );
                     $Parent = self::getEditSite($project, $parentId, $lang);
                     $Parent->checkPermission('quiqqer.projects.site.new', Server::getRequestUser());
-                    $Site->linked($Parent->getId());
+                    $Site->linked($Parent->getId(), Server::getRequestUser());
 
                     return [
                         'linked' => true,
