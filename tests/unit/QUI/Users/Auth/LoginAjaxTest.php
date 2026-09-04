@@ -19,6 +19,66 @@ use ReflectionProperty;
 #[PreserveGlobalState(false)]
 class LoginAjaxTest extends TestCase
 {
+    public function testCrossSiteLoginRequestIsRejectedBeforeAuthenticationStarts(): void
+    {
+        $Session = $this->createMock(Session::class);
+        $Session->expects(self::never())->method('set');
+
+        $Events = $this->createMock(EventsManager::class);
+        $Events->expects(self::never())->method('fireEvent');
+
+        QUI::$Session = $Session;
+        QUI::$Events = $Events;
+        QUI::$Ajax = new Ajax();
+        $_SERVER['HTTP_SEC_FETCH_SITE'] = 'cross-site';
+
+        require dirname(__DIR__, 5) . '/admin/ajax/users/login.php';
+
+        $registeredCallables = Ajax::getRegisteredCallables();
+        $login = $registeredCallables['ajax_users_login']['callable'];
+
+        $this->expectException(QUI\Exception::class);
+        $this->expectExceptionCode(403);
+
+        $login(
+            'TestPrimaryAuthenticator',
+            ['username' => 'attacker', 'password' => 'correct-password'],
+            SessionFailureCounter::STEP_PRIMARY,
+            ['TestPrimaryAuthenticator']
+        );
+    }
+
+    public function testForeignLoginOriginIsRejectedWithoutFetchMetadata(): void
+    {
+        $Session = $this->createMock(Session::class);
+        $Session->expects(self::never())->method('set');
+
+        $Events = $this->createMock(EventsManager::class);
+        $Events->expects(self::never())->method('fireEvent');
+
+        QUI::$Session = $Session;
+        QUI::$Events = $Events;
+        QUI::$Ajax = new Ajax();
+        unset($_SERVER['HTTP_SEC_FETCH_SITE']);
+        $_SERVER['HTTP_ORIGIN'] = 'https://attacker.example';
+        $_SERVER['HTTP_HOST'] = 'victim.example';
+
+        require dirname(__DIR__, 5) . '/admin/ajax/users/login.php';
+
+        $registeredCallables = Ajax::getRegisteredCallables();
+        $login = $registeredCallables['ajax_users_login']['callable'];
+
+        $this->expectException(QUI\Exception::class);
+        $this->expectExceptionCode(403);
+
+        $login(
+            'TestPrimaryAuthenticator',
+            ['username' => 'attacker', 'password' => 'correct-password'],
+            SessionFailureCounter::STEP_PRIMARY,
+            ['TestPrimaryAuthenticator']
+        );
+    }
+
     public function testPrimaryAuthenticatorCannotBeReusedAsSecondaryAuthenticator(): void
     {
         $authenticator = 'TestPrimaryAuthenticator';

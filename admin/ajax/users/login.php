@@ -1,6 +1,7 @@
 <?php
 
 use QUI\Interfaces\Users\User;
+use QUI\Security\RequestOrigin;
 use QUI\System\Log;
 use QUI\Users\Auth\SessionFailureCounter;
 use QUI\Users\Auth\WebAuthn\Server as WebAuthnServer;
@@ -8,6 +9,8 @@ use QUI\Users\Auth\WebAuthn\Server as WebAuthnServer;
 QUI::getAjax()->registerFunction(
     'ajax_users_login',
     static function ($authenticator, $params, $authStep, null | string | array $authenticators = null) {
+        RequestOrigin::assertNotCrossOrigin();
+
         QUI::getEvents()->fireEvent('userLoginAjaxStart');
         QUI::getSession()->set('inAuthentication', 1);
 
