@@ -665,6 +665,8 @@ class Edit extends Site
 
         $Project = $this->getProject();
         $Parent = new self($Project, $pid);
+        $Parent->checkPermission('quiqqer.projects.site.new');
+        $Parent->assertNotDeleted();
         $children = $this->getChildrenIds(['active' => '0&1']);
 
         if (!is_array($children)) {
