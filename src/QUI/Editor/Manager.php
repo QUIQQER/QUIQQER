@@ -44,6 +44,7 @@ use function libxml_get_errors;
 use function libxml_use_internal_errors;
 use function md5;
 use function method_exists;
+use function preg_match;
 use function preg_replace;
 use function preg_replace_callback;
 use function rename;
@@ -962,11 +963,20 @@ class Manager
      */
     public static function addToolbar(string $toolbar): void
     {
-        QUI\Permissions\Permission::hasPermission(
+        QUI\Permissions\Permission::checkPermission(
             'quiqqer.editors.toolbar.add'
         );
 
         $toolbar = str_replace('.xml', '', $toolbar);
+
+        if (
+            $toolbar === ''
+            || preg_match('/[\x00-\x1F\x7F]/', $toolbar)
+            || str_contains($toolbar, '/')
+            || str_contains($toolbar, '\\')
+        ) {
+            throw new QUI\Exception('Invalid toolbar name.', 400);
+        }
 
         $folder = self::getToolbarsPath();
         $file = $folder . $toolbar . '.xml';
