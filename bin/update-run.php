@@ -324,7 +324,7 @@ function renderHtmlConsole(string $id): void
         header('Cache-Control: no-store');
     }
 
-    $encodedId = json_encode($id, JSON_UNESCAPED_SLASHES);
+    $encodedId = json_encode($id, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
     $title = htmlspecialchars('QUIQQER Update', ENT_QUOTES, 'UTF-8');
     $logo = htmlspecialchars(URL_BIN_DIR . 'quiqqer_logo.svg', ENT_QUOTES, 'UTF-8');
 
