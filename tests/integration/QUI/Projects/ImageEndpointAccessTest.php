@@ -408,9 +408,14 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
     public function testExistingAdminCacheContainingSvgIsSanitizedBeforeOutput(): void
     {
         $Project = self::getTestProject();
+        $Image = $Project->getMedia()->get(self::$activeImageId);
         $cacheDirectory = self::$varDirectory . 'media/cache/admin/'
             . $Project->getName() . '/' . $Project->getLang() . '/';
-        $cacheFile = $cacheDirectory . self::$activeImageId . '__500x500.png';
+        self::assertInstanceOf(Media\Image::class, $Image);
+
+        $dimensions = $Image->getResizeSize(500, 500);
+        $cacheFile = $cacheDirectory . self::$activeImageId
+            . '__' . $dimensions['height'] . 'x' . $dimensions['width'] . '.png';
 
         if (!is_dir($cacheDirectory)) {
             mkdir($cacheDirectory, 0777, true);
@@ -422,6 +427,40 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
             '_user' => 'backend-allowed',
             'quiadmin' => '1'
         ]));
+    }
+
+    public function testAdminPreviewUsesCanonicalDimensionsForCacheKey(): void
+    {
+        $Image = self::getTestProject()->getMedia()->get(self::$activeImageId);
+        self::assertInstanceOf(Media\Image::class, $Image);
+        $Image->deleteAdminCache();
+
+        foreach ([100, 200, 100_000] as $dimension) {
+            $Response = self::requestImage(self::$activeImageId, [
+                '_user' => 'backend-allowed',
+                'quiadmin' => '1',
+                'maxwidth' => (string)$dimension,
+                'maxheight' => (string)$dimension
+            ]);
+
+            self::assertSame(200, $Response['status'], self::failureMessage($Response));
+        }
+
+        $Project = self::getTestProject();
+        $cacheDirectory = self::$varDirectory . 'media/cache/admin/'
+            . $Project->getName() . '/' . $Project->getLang() . '/';
+        $dimensions = $Image->getResizeSize(100, 100);
+        $expectedCacheFile = $cacheDirectory . self::$activeImageId
+            . '__' . $dimensions['height'] . 'x' . $dimensions['width'] . '.png';
+        $cacheFiles = [];
+
+        foreach (self::getFilesBelow($cacheDirectory) as $cacheFile) {
+            if (str_starts_with(basename($cacheFile), self::$activeImageId . '__')) {
+                $cacheFiles[] = $cacheFile;
+            }
+        }
+
+        self::assertSame([$expectedCacheFile], $cacheFiles);
     }
 
     public function testPreviewProcessingNeverOutputsMalformedSvgOriginal(): void
