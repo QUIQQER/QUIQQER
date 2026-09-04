@@ -63,6 +63,33 @@ class GroupDbalLifecycleTest extends TestCase
         $this->assertFalse($this->groupRowExists($deletedGroupUuid));
     }
 
+    public function testGroupCannotBeMovedBelowItsDescendant(): void
+    {
+        $Groups = QUI::getGroups();
+        $SystemUser = QUI::getUsers()->getSystemUser();
+        $RootGroup = $Groups->get(QUI::conf('globals', 'root'));
+        $ParentGroup = $RootGroup->createChild(
+            self::TEST_PREFIX . 'parent-' . uniqid(),
+            $SystemUser
+        );
+        $ChildGroup = $ParentGroup->createChild(
+            self::TEST_PREFIX . 'child-' . uniqid(),
+            $SystemUser
+        );
+
+        try {
+            $ParentGroup->setParent($ChildGroup->getUUID());
+            self::fail('A group was moved below its own descendant.');
+        } catch (Exception $Exception) {
+            self::assertSame(400, $Exception->getCode());
+        }
+
+        self::assertSame(
+            $RootGroup->getUUID(),
+            $this->getGroupParentUuid($ParentGroup->getUUID())
+        );
+    }
+
     private static function skipIfDatabaseIsUnavailable(): void
     {
         try {
@@ -110,5 +137,20 @@ class GroupDbalLifecycleTest extends TestCase
             ->fetchAssociative();
 
         return !empty($row);
+    }
+
+    private function getGroupParentUuid(string $uuid): string
+    {
+        $Connection = self::getConnection();
+        $Platform = $Connection->getDatabasePlatform();
+
+        return (string)$Connection->createQueryBuilder()
+            ->select('parent')
+            ->from(QUI\Utils\Doctrine::quoteIdentifier(Manager::table()))
+            ->where($Platform->quoteSingleIdentifier('uuid') . ' = :uuid')
+            ->setParameter('uuid', $uuid)
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchOne();
     }
 }

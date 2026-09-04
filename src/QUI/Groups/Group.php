@@ -11,7 +11,6 @@ use QUI\Database\Exception;
 use Throwable;
 
 use function array_filter;
-use function array_flip;
 use function array_merge;
 use function count;
 use function explode;
@@ -799,23 +798,19 @@ class Group extends QUI\QDOM
         $NewParent = QUI::getGroups()->get($parentId);
         $children = $this->getChildrenIds(true);
 
-        if (!empty($children)) {
-            $children = array_flip($children);
-
-            if (isset($children[$NewParent->getId()])) {
-                throw new QUI\Groups\Exception(
-                    [
-                        'quiqqer/core',
-                        'exception.group.set.parent.not.allowed'
-                    ],
-                    400,
-                    [
-                        'groupId' => $this->getUUID(),
-                        'newParent' => $NewParent->getUUID(),
-                        'currentParent' => $this->getParent()?->getUUID()
-                    ]
-                );
-            }
+        if (in_array($NewParent->getUUID(), $children ?? [], true)) {
+            throw new QUI\Groups\Exception(
+                [
+                    'quiqqer/core',
+                    'exception.group.set.parent.not.allowed'
+                ],
+                400,
+                [
+                    'groupId' => $this->getUUID(),
+                    'newParent' => $NewParent->getUUID(),
+                    'currentParent' => $this->getParent()?->getUUID()
+                ]
+            );
         }
 
 
