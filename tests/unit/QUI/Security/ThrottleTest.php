@@ -35,7 +35,7 @@ class ThrottleTest extends TestCase
             . 'package VARCHAR(255) NOT NULL, '
             . 'subjectKey VARCHAR(64) NOT NULL, '
             . 'reservationId VARCHAR(32) NOT NULL, '
-            . 'expiresAt BIGINT NOT NULL'
+            . 'expiresAt BIGINT NOT NULL, attempts INTEGER NOT NULL DEFAULT 0'
             . ')'
         );
     }
@@ -159,6 +159,71 @@ class ThrottleTest extends TestCase
         self::assertSame(2, Throttle::clearForPackage('quiqqer/core'));
         self::assertSame(1, $this->countRows());
         self::assertFalse(Throttle::acquireForUser($User, 'vendor/package', 'action-a', 60)->isAllowed());
+    }
+
+
+    public function testIpBudgetExpiresWithoutSliding(): void
+    {
+        self::assertTrue(Throttle::acquireForIp('192.0.2.1', 'quiqqer/core', 'login', 2, 900));
+        $first = $this->Connection->fetchAssociative('SELECT * FROM ' . $this->table);
+        self::assertTrue(Throttle::acquireForIp('192.0.2.1', 'quiqqer/core', 'login', 2, 900));
+        self::assertFalse(Throttle::acquireForIp('192.0.2.1', 'quiqqer/core', 'login', 2, 900));
+        $last = $this->Connection->fetchAssociative('SELECT * FROM ' . $this->table);
+        self::assertSame($first['expiresAt'], $last['expiresAt']);
+        self::assertSame(2, (int)$last['attempts']);
+        self::assertStringNotContainsString('192.0.2.1', json_encode($last));
+        $this->Connection->update($this->table, ['expiresAt' => time() - 1], []);
+        self::assertTrue(Throttle::acquireForIp('192.0.2.1', 'quiqqer/core', 'login', 2, 900));
+        self::assertSame(1, (int)$this->Connection->fetchOne('SELECT attempts FROM ' . $this->table));
+    }
+
+    public function testEquivalentIpAddressesCannotSplitTheBudget(): void
+    {
+        foreach (
+            [
+            ['192.0.2.1', '::ffff:192.0.2.1'],
+            ['2001:db8::1', '2001:0db8:0000:0000:0000:0000:0000:0001']
+            ] as [$first, $second]
+        ) {
+            self::assertTrue(Throttle::acquireForIp($first, 'quiqqer/core', 'login', 1, 900));
+            self::assertFalse(Throttle::acquireForIp($second, 'quiqqer/core', 'login', 1, 900));
+        }
+    }
+
+    public function testIpActionsAndUserMailReservationsRemainIndependent(): void
+    {
+        self::assertTrue(Throttle::acquireForIp('192.0.2.1', 'quiqqer/core', 'login', 1, 900));
+        self::assertTrue(Throttle::acquireForIp('192.0.2.2', 'quiqqer/core', 'login', 1, 900));
+        self::assertTrue(Throttle::acquireForIp('192.0.2.1', 'quiqqer/core', 'lookup', 1, 900));
+        self::assertTrue(Throttle::acquireForIp('192.0.2.1', 'vendor/package', 'login', 1, 900));
+        $User = $this->createUser('192.0.2.1');
+        $Decision = Throttle::acquireForUser($User, 'quiqqer/core', 'login', 60);
+        self::assertTrue($Decision->isAllowed());
+        self::assertSame(1, Throttle::clearForUser($User));
+        $Decision->release();
+        self::assertFalse(Throttle::acquireForIp('192.0.2.1', 'quiqqer/core', 'login', 1, 900));
+        self::assertSame(3, Throttle::clearForPackage('quiqqer/core'));
+        self::assertSame(1, $this->countRows());
+    }
+
+    public function testDeniedIpReservationLeavesOuterTransactionUsable(): void
+    {
+        $this->Connection->transactional(function (): void {
+            self::assertTrue(Throttle::acquireForIp('192.0.2.1', 'quiqqer/core', 'login', 1, 900));
+            self::assertFalse(Throttle::acquireForIp('192.0.2.1', 'quiqqer/core', 'login', 1, 900));
+            self::assertTrue(Throttle::acquireForIp('192.0.2.2', 'quiqqer/core', 'login', 1, 900));
+            self::assertSame(2, $this->countRows());
+        });
+    }
+
+    public function testInvalidIpDoesNotCreateReservations(): void
+    {
+        try {
+            Throttle::acquireForIp('invalid', 'quiqqer/core', 'login', 1, 900);
+            self::fail('Invalid source accepted.');
+        } catch (\InvalidArgumentException) {
+            self::assertSame(0, $this->countRows());
+        }
     }
 
     private function createUser(string $uuid): User

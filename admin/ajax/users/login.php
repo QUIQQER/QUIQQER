@@ -11,6 +11,28 @@ QUI::getAjax()->registerFunction(
     static function ($authenticator, $params, $authStep, null | string | array $authenticators = null) {
         RequestOrigin::assertNotCrossOrigin();
 
+        // One budget across frontend/backend, authenticators and browser sessions.
+        $source = QUI::getRequest()->getClientIp();
+        $limit = filter_var(QUI::conf('auth_settings', 'loginIpLimit'), FILTER_VALIDATE_INT, [
+            'options' => ['min_range' => 1, 'max_range' => 1000000]
+        ]);
+
+        if (
+            $source === null
+            || !QUI\Security\Throttle::acquireForIp(
+                $source,
+                'quiqqer/core',
+                'users.login',
+                $limit === false ? 60 : $limit,
+                900
+            )
+        ) {
+            throw new QUI\Users\UserAuthException(
+                ['quiqqer/core', 'exception.login.fail.ip_throttled'],
+                429
+            );
+        }
+
         QUI::getEvents()->fireEvent('userLoginAjaxStart');
         QUI::getSession()->set('inAuthentication', 1);
 
@@ -224,13 +246,11 @@ QUI::getAjax()->registerFunction(
             }
         }
 
-
         // result
         $SessionUser = QUI::getUserBySession();
 
         $control = $Login->create();
         $control .= QUI\Control\Manager::getCSS();
-
 
         return [
             'authenticator' => $next,

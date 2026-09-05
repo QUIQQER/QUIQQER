@@ -101,6 +101,7 @@
             <field type="string" length="64">subjectKey</field>
             <field type="string" length="32">reservationId</field>
             <field type="bigint">expiresAt</field>
+            <field type="integer" default="0">attempts</field>
 
             <primary>throttleKey</primary>
             <index>package</index>

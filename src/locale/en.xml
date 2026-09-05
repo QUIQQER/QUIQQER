@@ -4122,6 +4122,15 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="exception.login.fail.user_deleted">
             <en><![CDATA[Login failed. User is marked as deleted.]]></en>
         </locale>
+        <locale name="quiqqer.settings.auth.loginIpLimit">
+            <en><![CDATA[Login attempts per IP address (15 minutes)]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.loginIpLimit.description">
+            <en><![CDATA[Shared limit for all frontend and backend login attempts, including unknown usernames and new sessions. Users sharing an IP address share this limit. Default: 60.]]></en>
+        </locale>
+        <locale name="exception.login.fail.ip_throttled">
+            <en><![CDATA[Too many login attempts from this IP address. Please try again in 15 minutes.]]></en>
+        </locale>
         <locale name="exception.login.fail.login_locked">
             <en><![CDATA[Login failed. Login for this user is currently locked. Please try again later.]]></en>
         </locale>

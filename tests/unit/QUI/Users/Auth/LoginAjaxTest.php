@@ -2,6 +2,7 @@
 
 namespace QUI\Users\Auth;
 
+use Doctrine\DBAL\DriverManager;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\TestCase;
@@ -19,6 +20,142 @@ use ReflectionProperty;
 #[PreserveGlobalState(false)]
 class LoginAjaxTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        $Connection = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+        (new ReflectionProperty(QUI::class, 'QueryBuilder'))->setValue(null, $Connection);
+        $table = $Connection->getDatabasePlatform()->quoteIdentifier(QUI\Security\Throttle::table());
+        $Connection->executeStatement(
+            'CREATE TABLE ' . $table . ' (throttleKey VARCHAR(64) PRIMARY KEY, '
+            . 'package VARCHAR(255) NOT NULL, subjectKey VARCHAR(64) NOT NULL, '
+            . 'reservationId VARCHAR(32) NOT NULL, expiresAt BIGINT NOT NULL, '
+            . 'attempts INTEGER NOT NULL DEFAULT 0)'
+        );
+        QUI::getRequest()->server->set('REMOTE_ADDR', '192.0.2.1');
+    }
+
+
+    public function testLoginBudgetSurvivesNewSessionsAndUnknownUsernames(): void
+    {
+        $Config = $this->createMock(Config::class);
+        $Config->method('get')->willReturnCallback(
+            static fn(string $section, ?string $key = null): mixed =>
+                $section === 'auth_settings' && $key === 'loginIpLimit' ? 2 : false
+        );
+        QUI::$Conf = $Config;
+        QUI::$Events = $this->createMock(EventsManager::class);
+        QUI::$Ajax = new Ajax();
+        $Nobody = $this->createMock(User::class);
+        $Nobody->method('getUUID')->willReturn('');
+        $Users = $this->createMock(UserManager::class);
+        $Users->method('getUserBySession')->willReturn($Nobody);
+        $Users->expects(self::exactly(2))->method('authenticate')->willReturnCallback(
+            static function (): never {
+                $Exception = new QUI\Users\UserAuthException(['quiqqer/core', 'exception.login.fail'], 401);
+                $Exception->setAttribute('reason', UserManager::AUTH_ERROR_AUTH_ERROR);
+                throw $Exception;
+            }
+        );
+        QUI::$Users = $Users;
+        $Handler = $this->createMock(Handler::class);
+        $Handler->method('getGlobalFrontendAuthenticators')->willReturn([QUIQQER::class]);
+        $Handler->method('getGlobalBackendAuthenticators')->willReturn([QUIQQER::class]);
+        (new ReflectionProperty(Handler::class, 'Instance'))->setValue(null, $Handler);
+        require dirname(__DIR__, 5) . '/admin/ajax/users/login.php';
+        $login = Ajax::getRegisteredCallables()['ajax_users_login']['callable'];
+
+        foreach (['known-user', 'unknown-user', 'another-unknown-user'] as $index => $username) {
+            QUI::$Session = new QUI\System\Console\Session();
+            QUI::getRequest()->server->set('HTTP_X_FORWARDED_FOR', '198.51.100.' . ($index + 1));
+            try {
+                $login(QUIQQER::class, ['username' => $username, 'password' => 'wrong'], 'primary');
+                self::fail('Authentication unexpectedly succeeded.');
+            } catch (QUI\Users\UserAuthException $Exception) {
+                self::assertSame($index === 2 ? 429 : 401, $Exception->getCode());
+            }
+        }
+
+        self::assertSame(2, (int)QUI::getDataBaseConnection()->fetchOne(
+            'SELECT attempts FROM ' . QUI\Security\Throttle::table()
+        ));
+    }
+
+
+    public function testMissingSourceCannotStartAuthentication(): void
+    {
+        QUI::getRequest()->server->remove('REMOTE_ADDR');
+        $Events = $this->createMock(EventsManager::class);
+        $Events->expects(self::never())->method('fireEvent');
+        QUI::$Events = $Events;
+        QUI::$Ajax = new Ajax();
+        require dirname(__DIR__, 5) . '/admin/ajax/users/login.php';
+        $login = Ajax::getRegisteredCallables()['ajax_users_login']['callable'];
+
+        $this->expectException(QUI\Users\UserAuthException::class);
+        $this->expectExceptionCode(429);
+        $login(QUIQQER::class, ['username' => 'unknown', 'password' => 'wrong'], 'primary');
+    }
+
+    public function testUnavailableThrottleStorageCannotStartAuthentication(): void
+    {
+        QUI::getDataBaseConnection()->createSchemaManager()->dropTable(QUI\Security\Throttle::table());
+        $Events = $this->createMock(EventsManager::class);
+        $Events->expects(self::never())->method('fireEvent');
+        QUI::$Events = $Events;
+        QUI::$Ajax = new Ajax();
+        require dirname(__DIR__, 5) . '/admin/ajax/users/login.php';
+        $login = Ajax::getRegisteredCallables()['ajax_users_login']['callable'];
+
+        $this->expectException(\Doctrine\DBAL\Exception::class);
+        $login(QUIQQER::class, ['username' => 'unknown', 'password' => 'wrong'], 'primary');
+    }
+
+    public static function invalidIpLimits(): array
+    {
+        return [[null], [0], [-1], ['invalid'], [1000001]];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('invalidIpLimits')]
+    public function testInvalidLimitUsesDefaultInsteadOfDisablingProtection(mixed $limit): void
+    {
+        for ($i = 0; $i < 59; $i++) {
+            self::assertTrue(QUI\Security\Throttle::acquireForIp(
+                '192.0.2.1',
+                'quiqqer/core',
+                'users.login',
+                60,
+                900
+            ));
+        }
+
+        $Config = $this->createMock(Config::class);
+        $Config->method('get')->willReturnCallback(
+            static fn(string $section, ?string $key = null): mixed =>
+                $section === 'auth_settings' && $key === 'loginIpLimit' ? $limit : false
+        );
+        QUI::$Conf = $Config;
+        QUI::$Session = new QUI\System\Console\Session();
+        QUI::$Events = $this->createMock(EventsManager::class);
+        QUI::$Ajax = new Ajax();
+        $Handler = $this->createMock(Handler::class);
+        $Handler->method('getGlobalFrontendAuthenticators')->willReturn([]);
+        $Handler->method('getGlobalBackendAuthenticators')->willReturn([]);
+        (new ReflectionProperty(Handler::class, 'Instance'))->setValue(null, $Handler);
+        require dirname(__DIR__, 5) . '/admin/ajax/users/login.php';
+        $login = Ajax::getRegisteredCallables()['ajax_users_login']['callable'];
+
+        try {
+            $login('unconfigured-authenticator', [], 'primary');
+            self::fail('Unconfigured authenticator accepted.');
+        } catch (QUI\Users\Auth\Exception $Exception) {
+            self::assertSame(404, $Exception->getCode());
+        }
+
+        $this->expectException(QUI\Users\UserAuthException::class);
+        $this->expectExceptionCode(429);
+        $login('unconfigured-authenticator', [], 'primary');
+    }
+
     public function testCrossSiteLoginRequestIsRejectedBeforeAuthenticationStarts(): void
     {
         $Session = $this->createMock(Session::class);

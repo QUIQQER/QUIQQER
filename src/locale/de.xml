@@ -4253,6 +4253,15 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         <locale name="exception.login.fail.user_deleted">
             <de><![CDATA[Login fehlgeschlagen. Benutzer ist als gelöscht markiert.]]></de>
         </locale>
+        <locale name="quiqqer.settings.auth.loginIpLimit">
+            <de><![CDATA[Loginversuche pro IP-Adresse (15 Minuten)]]></de>
+        </locale>
+        <locale name="quiqqer.settings.auth.loginIpLimit.description">
+            <de><![CDATA[Gemeinsames Limit für alle Loginversuche im Frontend und Backend, auch mit unbekannten Benutzernamen und neuen Sessions. Gemeinsam genutzte IP-Adressen teilen das Limit. Standard: 60.]]></de>
+        </locale>
+        <locale name="exception.login.fail.ip_throttled">
+            <de><![CDATA[Zu viele Loginversuche von dieser IP-Adresse. Bitte versuchen Sie es in 15 Minuten erneut.]]></de>
+        </locale>
         <locale name="exception.login.fail.login_locked">
             <de><![CDATA[
                 Login fehlgeschlagen. Der Login für diesen Benutzer ist z.Z. gesperrt. Bitte versuchen Sie es später noch einmal.]]></de>
