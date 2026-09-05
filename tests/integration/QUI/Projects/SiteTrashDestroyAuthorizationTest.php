@@ -6,9 +6,6 @@ namespace QUI\Projects;
 
 use Mcp\Schema\Result\CallToolResult;
 use Mcp\Server\Builder;
-use PHPUnit\Framework\Attributes\PreserveGlobalState;
-use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
-use PHPUnit\Framework\TestCase;
 use QUI;
 use QUI\AI\MCP\Server;
 use QUI\Ajax;
@@ -24,9 +21,7 @@ use QUI\Users\User;
 use ReflectionProperty;
 use Throwable;
 
-#[RunTestsInSeparateProcesses]
-#[PreserveGlobalState(false)]
-final class SiteTrashDestroyAuthorizationTest extends TestCase
+final class SiteTrashDestroyAuthorizationTest extends ProjectAuthorizationTestCase
 {
     private const TEST_PREFIX = 'site-trash-destroy-auth-';
 
@@ -75,6 +70,11 @@ final class SiteTrashDestroyAuthorizationTest extends TestCase
 
     protected function tearDown(): void
     {
+        if (!isset($this->managerSessionProperty)) {
+            parent::tearDown();
+            return;
+        }
+
         $cleanupFailure = null;
 
         try {
@@ -88,9 +88,8 @@ final class SiteTrashDestroyAuthorizationTest extends TestCase
             $this->requestUserProperty->setValue(null, $this->previousRequestUser);
             QUI::$Session = $this->previousSession;
             QUI::$Ajax = $this->previousAjax;
+            parent::tearDown();
         }
-
-        parent::tearDown();
 
         if ($cleanupFailure !== null) {
             throw $cleanupFailure;

@@ -5,9 +5,6 @@ declare(strict_types=1);
 namespace QUI\MCP;
 
 use Mcp\Server\Builder;
-use PHPUnit\Framework\Attributes\PreserveGlobalState;
-use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
-use PHPUnit\Framework\TestCase;
 use QUI;
 use QUI\AI\MCP\Server;
 use QUI\Ajax;
@@ -20,6 +17,7 @@ use QUI\Projects\Media\Folder;
 use QUI\Projects\Media\Item;
 use QUI\Projects\Project;
 use QUI\Projects\ProjectTestHelper;
+use QUI\Projects\ProjectAuthorizationTestCase;
 use QUI\Security\CsrfToken;
 use QUI\System\Console\Session as ConsoleSession;
 use QUI\Users\Manager as UserManager;
@@ -27,9 +25,7 @@ use QUI\Users\User;
 use ReflectionProperty;
 use Throwable;
 
-#[RunTestsInSeparateProcesses]
-#[PreserveGlobalState(false)]
-final class MediaCopyAuthorizationTest extends TestCase
+final class MediaCopyAuthorizationTest extends ProjectAuthorizationTestCase
 {
     private const TEST_PREFIX = 'media-copy-auth-';
 
@@ -88,6 +84,11 @@ final class MediaCopyAuthorizationTest extends TestCase
 
     protected function tearDown(): void
     {
+        if (!isset($this->managerSessionProperty)) {
+            parent::tearDown();
+            return;
+        }
+
         $cleanupFailure = null;
 
         try {
@@ -102,9 +103,8 @@ final class MediaCopyAuthorizationTest extends TestCase
             $this->requestUserProperty->setValue(null, $this->previousRequestUser);
             QUI::$Session = $this->previousSession;
             QUI::$Ajax = $this->previousAjax;
+            parent::tearDown();
         }
-
-        parent::tearDown();
 
         if ($cleanupFailure !== null) {
             throw $cleanupFailure;

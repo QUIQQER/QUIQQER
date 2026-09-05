@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace QUI\Projects;
 
-use PHPUnit\Framework\Attributes\PreserveGlobalState;
-use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
-use PHPUnit\Framework\TestCase;
 use QUI;
 use QUI\Ajax;
 use QUI\Interfaces\Users\User as UserInterface;
@@ -20,9 +17,7 @@ use QUI\Users\User;
 use ReflectionProperty;
 use Throwable;
 
-#[RunTestsInSeparateProcesses]
-#[PreserveGlobalState(false)]
-final class SiteChildrenEndpointAuthorizationTest extends TestCase
+final class SiteChildrenEndpointAuthorizationTest extends ProjectAuthorizationTestCase
 {
     private const TEST_PREFIX = 'site-children-auth-';
     private const CHILD_TITLE = 'Restricted child';
@@ -71,6 +66,11 @@ final class SiteChildrenEndpointAuthorizationTest extends TestCase
 
     protected function tearDown(): void
     {
+        if (!isset($this->managerSessionProperty)) {
+            parent::tearDown();
+            return;
+        }
+
         $cleanupFailure = null;
 
         try {
@@ -83,9 +83,8 @@ final class SiteChildrenEndpointAuthorizationTest extends TestCase
             $this->permissionUserProperty->setValue(null, $this->previousPermissionUser);
             QUI::$Session = $this->previousSession;
             QUI::$Ajax = $this->previousAjax;
+            parent::tearDown();
         }
-
-        parent::tearDown();
 
         if ($cleanupFailure !== null) {
             throw $cleanupFailure;

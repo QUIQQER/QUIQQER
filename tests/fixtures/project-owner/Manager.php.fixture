@@ -1,0 +1,16 @@
+<?php
+
+namespace QUI\Projects;
+
+final class Manager
+{
+    public static function getConfig(): self
+    {
+        return new self();
+    }
+
+    public function toArray(): array
+    {
+        return $GLOBALS['argv'][3] === 'cleanup' ? ['phpunit' => []] : [];
+    }
+}

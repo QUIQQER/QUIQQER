@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace QUI\Projects;
 
-use PHPUnit\Framework\Attributes\PreserveGlobalState;
-use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
-use PHPUnit\Framework\TestCase;
 use QUI;
 use QUI\Ajax;
 use QUI\Interfaces\Users\User as UserInterface;
@@ -22,9 +19,7 @@ use QUI\Users\User;
 use ReflectionProperty;
 use Throwable;
 
-#[RunTestsInSeparateProcesses]
-#[PreserveGlobalState(false)]
-final class MediaUploadAuthorizationTest extends TestCase
+final class MediaUploadAuthorizationTest extends ProjectAuthorizationTestCase
 {
     private const TEST_PREFIX = 'media-upload-auth-';
 
@@ -77,6 +72,11 @@ final class MediaUploadAuthorizationTest extends TestCase
 
     protected function tearDown(): void
     {
+        if (!isset($this->managerSessionProperty)) {
+            parent::tearDown();
+            return;
+        }
+
         $cleanupFailure = null;
 
         try {
@@ -90,9 +90,8 @@ final class MediaUploadAuthorizationTest extends TestCase
             $this->permissionUserProperty->setValue(null, $this->previousPermissionUser);
             QUI::$Session = $this->previousSession;
             QUI::$Ajax = $this->previousAjax;
+            parent::tearDown();
         }
-
-        parent::tearDown();
 
         if ($cleanupFailure !== null) {
             throw $cleanupFailure;

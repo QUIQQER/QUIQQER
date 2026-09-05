@@ -15,6 +15,7 @@ final class ProjectTestHelper
 
     private static ?string $projectName = null;
     private static ?string $createdProjectName = null;
+    private static ?int $createdProjectProcessId = null;
     private static bool $cleanupRegistered = false;
 
     public static function getProject(): Project
@@ -37,7 +38,7 @@ final class ProjectTestHelper
 
     public static function cleanup(): void
     {
-        if (self::$createdProjectName === null) {
+        if (self::$createdProjectName === null || self::$createdProjectProcessId !== getmypid()) {
             return;
         }
 
@@ -45,22 +46,14 @@ final class ProjectTestHelper
 
         try {
             self::withSystemUser(static function () use ($projectName): void {
-                self::runCleanupStep(static fn () => self::deleteProjectConfig($projectName));
-                self::runCleanupStep(static fn () => self::dropProjectTables($projectName));
-                self::runCleanupStep(static fn () => self::deleteProjectPermissionRows($projectName));
-                self::runCleanupStep(static fn () => self::deleteProjectLocaleFiles($projectName));
-                self::runCleanupStep(static fn () => self::moveProjectDirectoriesToTemp($projectName));
-                self::runCleanupStep(static function (): void {
-                    Manager::cleanup();
-                    Manager::$Standard = null;
-                    QUI\Cache\Manager::clearProjectsCache();
-                });
+                QUI\System\TestCleanup::cleanupProject($projectName);
             });
         } catch (Throwable) {
             // Cleanup must not hide the actual PHPUnit result.
         } finally {
             self::$projectName = null;
             self::$createdProjectName = null;
+            self::$createdProjectProcessId = null;
         }
     }
 
@@ -71,6 +64,7 @@ final class ProjectTestHelper
 
         $projectName = self::getAvailableProjectName();
         self::$createdProjectName = $projectName;
+        self::$createdProjectProcessId = (int)getmypid();
 
         try {
             self::withSystemUser(static function () use ($projectName): void {
@@ -117,6 +111,7 @@ final class ProjectTestHelper
         if (
             !in_array(self::BASE_PROJECT_NAME, $existingProjects, true)
             && !self::projectLocaleFilesExist(self::BASE_PROJECT_NAME)
+            && QUI\System\TestCleanup::claimProject(self::BASE_PROJECT_NAME)
         ) {
             return self::BASE_PROJECT_NAME;
         }
@@ -127,12 +122,17 @@ final class ProjectTestHelper
             if (
                 !in_array($projectName, $existingProjects, true)
                 && !self::projectLocaleFilesExist($projectName)
+                && QUI\System\TestCleanup::claimProject($projectName)
             ) {
                 return $projectName;
             }
         }
 
-        return self::BASE_PROJECT_NAME . '_' . substr(md5((string)microtime(true)), 0, 8);
+        do {
+            $projectName = self::BASE_PROJECT_NAME . '_' . bin2hex(random_bytes(8));
+        } while (!QUI\System\TestCleanup::claimProject($projectName));
+
+        return $projectName;
     }
 
     public static function runAsSystemUser(callable $Callback): mixed
@@ -163,55 +163,6 @@ final class ProjectTestHelper
         }
     }
 
-    private static function dropProjectTables(string $projectName): void
-    {
-        $SchemaManager = QUI::getSchemaManager();
-        $tablePrefix = QUI_DB_PRFX . $projectName . '_';
-
-        foreach ($SchemaManager->listTableNames() as $tableName) {
-            if (!str_starts_with($tableName, $tablePrefix)) {
-                continue;
-            }
-
-            self::runCleanupStep(static fn () => $SchemaManager->dropTable($tableName));
-        }
-    }
-
-    private static function runCleanupStep(callable $Callback): void
-    {
-        try {
-            $Callback();
-        } catch (Throwable) {
-            // Continue with the remaining cleanup steps.
-        }
-    }
-
-    private static function deleteProjectPermissionRows(string $projectName): void
-    {
-        $Connection = QUI::getDataBaseConnection();
-        $SchemaManager = QUI::getSchemaManager();
-        $permissionProjectTable = QUI::getDBTableName(QUI\Permissions\Manager::TABLE) . '2projects';
-        $permissionSitesTable = QUI::getDBTableName(QUI\Permissions\Manager::TABLE) . '2sites';
-
-        if ($SchemaManager->tablesExist([$permissionProjectTable])) {
-            $Connection->delete($permissionProjectTable, ['project' => $projectName]);
-        }
-
-        if ($SchemaManager->tablesExist([$permissionSitesTable])) {
-            $Connection->delete($permissionSitesTable, ['project' => $projectName]);
-        }
-    }
-
-    private static function deleteProjectConfig(string $projectName): void
-    {
-        try {
-            $Config = Manager::getConfig();
-            $Config->del($projectName);
-            $Config->save();
-        } catch (Throwable) {
-        }
-    }
-
     private static function projectLocaleFilesExist(string $projectName): bool
     {
         $localeFiles = glob(VAR_DIR . 'locale/*/LC_MESSAGES/project_' . $projectName . '.ini.php');
@@ -221,35 +172,5 @@ final class ProjectTestHelper
         }
 
         return is_dir(VAR_DIR . 'locale/bin/project/' . $projectName);
-    }
-
-    private static function deleteProjectLocaleFiles(string $projectName): void
-    {
-        foreach (glob(VAR_DIR . 'locale/*/LC_MESSAGES/project_' . $projectName . '.ini.php') ?: [] as $localeFile) {
-            unlink($localeFile);
-        }
-
-        $localeBinDirectory = VAR_DIR . 'locale/bin/project/' . $projectName;
-
-        if (is_dir($localeBinDirectory)) {
-            QUI::getTemp()->moveToTemp($localeBinDirectory);
-        }
-    }
-
-    private static function moveProjectDirectoriesToTemp(string $projectName): void
-    {
-        foreach (
-            [
-            CMS_DIR . 'media/sites/' . $projectName,
-            CMS_DIR . 'media/cache/' . $projectName,
-            USR_DIR . $projectName
-            ] as $directory
-        ) {
-            if (!is_dir($directory)) {
-                continue;
-            }
-
-            QUI::getTemp()->moveToTemp($directory);
-        }
     }
 }

@@ -1,0 +1,40 @@
+<?php
+
+require __DIR__ . '/project-owner/Manager.php.fixture';
+require __DIR__ . '/project-owner/File.php.fixture';
+require __DIR__ . '/project-owner/QUI.php.fixture';
+
+define('VAR_DIR', $argv[2] . '/');
+require $argv[1];
+putenv('QUIQQER_TEST_CLEANUP_OWNER_PROCESS_ID=' . getmypid());
+
+switch ($argv[3]) {
+    case 'hold':
+        echo QUI\System\TestCleanup::claimProject('phpunit') ? "claimed\n" : "busy\n";
+        fgets(STDIN);
+        break;
+
+    case 'claim':
+        echo QUI\System\TestCleanup::claimProject('phpunit') ? "claimed\n" : "busy\n";
+        break;
+
+    case 'cleanup':
+        echo json_encode(QUI\System\TestCleanup::execute()), "\n";
+        break;
+
+    case 'fork':
+        QUI\System\TestCleanup::register();
+        echo 'parent:', getmypid(), "\n";
+        $child = pcntl_fork();
+
+        if ($child === -1) {
+            throw new RuntimeException('Could not fork test process.');
+        }
+
+        if ($child === 0) {
+            exit(0);
+        }
+
+        pcntl_waitpid($child, $status);
+        break;
+}

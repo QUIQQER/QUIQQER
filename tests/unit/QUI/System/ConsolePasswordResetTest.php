@@ -58,7 +58,10 @@ final class ConsolePasswordResetTest extends TestCase
         $output = $Console->output;
         self::assertStringContainsString('alice', $output);
         self::assertStringContainsString($uuid, $output);
-        self::assertStringContainsString('Username or UUID: ', $output);
+        self::assertStringContainsString(
+            QUI::getLocale()->get('quiqqer/core', 'console.tool.passwordreset.prompt.identifier') . ' ',
+            $output
+        );
         self::assertSame(2, preg_match_all('/\(y\/[Nn]\) /', $output));
         self::assertStringContainsString(PHP_EOL . $generatedPassword . PHP_EOL, $output);
         self::assertStringEndsWith($generatedPassword . PHP_EOL, $output);

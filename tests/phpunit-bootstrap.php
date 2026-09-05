@@ -19,5 +19,6 @@ require_once __DIR__ . '/stubs/QUI/FrontendUsers/InvalidFormField.php';
 require_once __DIR__ . '/stubs/QUI/FrontendUsers/AbstractRegistrar.php';
 require_once __DIR__ . '/integration/QUI/Projects/ProjectTestHelper.php';
 require_once __DIR__ . '/integration/QUI/Projects/ProjectIntegrationTestCase.php';
+require_once __DIR__ . '/integration/QUI/Projects/ProjectAuthorizationTestCase.php';
 
 QUI\System\TestCleanup::register();

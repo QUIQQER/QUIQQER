@@ -40,6 +40,9 @@ final class TestCleanup
     private static bool $cleanupRunning = false;
     private static bool $registered = false;
 
+    /** @var array<string, array{processId: int, handle: resource}> */
+    private static array $projectLocks = [];
+
     public static function register(): void
     {
         if (
@@ -90,7 +93,7 @@ final class TestCleanup
      */
     public static function execute(): array
     {
-        if (self::$cleanupRunning || self::$cleanupCompleted) {
+        if (!self::isCleanupOwnerProcess() || self::$cleanupRunning || self::$cleanupCompleted) {
             return [];
         }
 
@@ -118,39 +121,124 @@ final class TestCleanup
         }
     }
 
-    public static function cleanupProject(string $projectName): void
+    /**
+     * Reserve a test project before creating it. The OS releases the lock if the process dies.
+     */
+    public static function claimProject(string $projectName): bool
+    {
+        self::assertTestProjectName($projectName);
+
+        if (isset(self::$projectLocks[$projectName])) {
+            return self::$projectLocks[$projectName]['processId'] === getmypid();
+        }
+
+        $directory = dirname(self::projectLockFile($projectName));
+        QUI\Utils\System\File::mkdir($directory);
+        $Lock = self::openProjectLock($projectName);
+
+        if ($Lock === false) {
+            return false;
+        }
+
+        self::$projectLocks[$projectName] = ['processId' => (int)getmypid(), 'handle' => $Lock];
+        return true;
+    }
+
+    /** @return bool False when another live test process owns the project. */
+    public static function cleanupProject(string $projectName): bool
+    {
+        self::assertTestProjectName($projectName);
+        $Lock = self::acquireCleanupLock($projectName);
+
+        if ($Lock === false) {
+            return false;
+        }
+
+        try {
+            $errors = [];
+            $steps = [
+                static fn() => self::deleteProjectConfig($projectName),
+                static fn() => self::dropProjectTables($projectName),
+                static fn() => self::deleteProjectPermissionRows($projectName),
+                static fn() => self::deleteProjectLocaleFiles($projectName),
+                static fn() => self::moveProjectDirectoriesToTemp($projectName),
+                static function (): void {
+                    QUI\Projects\Manager::cleanup();
+                    QUI\Projects\Manager::$Standard = null;
+                    QUI\Cache\Manager::clearProjectsCache();
+                }
+            ];
+
+            foreach ($steps as $step) {
+                try {
+                    $step();
+                } catch (Throwable $Exception) {
+                    $errors[] = $Exception->getMessage();
+                }
+            }
+
+            if ($errors !== []) {
+                throw new QUI\Exception(
+                    'PHPUnit project cleanup failed for "' . $projectName . '": ' . implode('; ', $errors)
+                );
+            }
+            return true;
+        } finally {
+            if (is_resource($Lock)) {
+                flock($Lock, LOCK_UN);
+                fclose($Lock);
+            }
+
+            if (isset(self::$projectLocks[$projectName])) {
+                $OwnedLock = self::$projectLocks[$projectName]['handle'];
+                flock($OwnedLock, LOCK_UN);
+                fclose($OwnedLock);
+                unset(self::$projectLocks[$projectName]);
+            }
+        }
+    }
+
+    private static function assertTestProjectName(string $projectName): void
     {
         if (!self::isPhpUnitProjectName($projectName)) {
             throw new QUI\Exception('Only PHPUnit projects can be removed by the test cleanup.');
         }
+    }
 
-        $errors = [];
-        $steps = [
-            static fn() => self::deleteProjectConfig($projectName),
-            static fn() => self::dropProjectTables($projectName),
-            static fn() => self::deleteProjectPermissionRows($projectName),
-            static fn() => self::deleteProjectLocaleFiles($projectName),
-            static fn() => self::moveProjectDirectoriesToTemp($projectName),
-            static function (): void {
-                QUI\Projects\Manager::cleanup();
-                QUI\Projects\Manager::$Standard = null;
-                QUI\Cache\Manager::clearProjectsCache();
-            }
-        ];
+    private static function projectLockFile(string $projectName): string
+    {
+        return VAR_DIR . 'phpunit-project-locks/' . hash('sha256', $projectName) . '.lock';
+    }
 
-        foreach ($steps as $step) {
-            try {
-                $step();
-            } catch (Throwable $Exception) {
-                $errors[] = $Exception->getMessage();
-            }
+    /** @return resource|false */
+    private static function openProjectLock(string $projectName): mixed
+    {
+        $Lock = fopen(self::projectLockFile($projectName), 'c');
+
+        if ($Lock === false) {
+            throw new \RuntimeException('Could not open PHPUnit project lock.');
         }
 
-        if ($errors !== []) {
-            throw new QUI\Exception(
-                'PHPUnit project cleanup failed for "' . $projectName . '": ' . implode('; ', $errors)
-            );
+        if (!flock($Lock, LOCK_EX | LOCK_NB)) {
+            fclose($Lock);
+            return false;
         }
+
+        return $Lock;
+    }
+
+    /** @return resource|bool */
+    private static function acquireCleanupLock(string $projectName): mixed
+    {
+        if (isset(self::$projectLocks[$projectName])) {
+            return self::$projectLocks[$projectName]['processId'] === getmypid();
+        }
+
+        if (!file_exists(self::projectLockFile($projectName))) {
+            return true;
+        }
+
+        return self::openProjectLock($projectName);
     }
 
     private static function handleSignal(int $signal): never
@@ -194,11 +282,15 @@ final class TestCleanup
                 && self::isPhpUnitProjectName($name)
         ));
 
+        $removed = [];
+
         foreach ($projects as $projectName) {
-            self::cleanupProject($projectName);
+            if (self::cleanupProject($projectName)) {
+                $removed[] = $projectName;
+            }
         }
 
-        return $projects;
+        return $removed;
     }
 
     private static function isPhpUnitProjectName(string $projectName): bool
@@ -210,15 +302,42 @@ final class TestCleanup
     private static function dropProjectTables(string $projectName): void
     {
         $SchemaManager = QUI::getSchemaManager();
-        $tablePrefix = QUI_DB_PRFX . $projectName . '_';
+        $projectNames = array_keys(QUI\Projects\Manager::getConfig()->toArray());
 
-        foreach ($SchemaManager->listTableNames() as $tableName) {
-            if (!str_starts_with($tableName, $tablePrefix)) {
-                continue;
-            }
-
+        foreach (self::projectTables($projectName, $SchemaManager->listTableNames(), $projectNames) as $tableName) {
             $SchemaManager->dropTable($tableName);
         }
+    }
+
+    /**
+     * @param list<string> $tableNames
+     * @param list<string> $projectNames
+     * @return list<string>
+     */
+    private static function projectTables(string $projectName, array $tableNames, array $projectNames): array
+    {
+        $prefix = QUI_DB_PRFX . $projectName . '_';
+        $otherPrefixes = [];
+
+        foreach ($projectNames as $otherName) {
+            if ($otherName !== $projectName && str_starts_with($otherName . '_', $projectName . '_')) {
+                $otherPrefixes[] = QUI_DB_PRFX . $otherName . '_';
+            }
+        }
+
+        return array_values(array_filter($tableNames, static function (string $table) use ($prefix, $otherPrefixes): bool {
+            if (!str_starts_with($table, $prefix)) {
+                return false;
+            }
+
+            foreach ($otherPrefixes as $otherPrefix) {
+                if (str_starts_with($table, $otherPrefix)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }));
     }
 
     private static function deleteProjectPermissionRows(string $projectName): void
@@ -227,6 +346,7 @@ final class TestCleanup
         $SchemaManager = QUI::getSchemaManager();
         $permissionProjectTable = QUI::getDBTableName(QUI\Permissions\Manager::TABLE) . '2projects';
         $permissionSitesTable = QUI::getDBTableName(QUI\Permissions\Manager::TABLE) . '2sites';
+        $permissionMediaTable = QUI::getDBTableName(QUI\Permissions\Manager::TABLE) . '2media';
 
         if ($SchemaManager->tablesExist([$permissionProjectTable])) {
             $Connection->delete($permissionProjectTable, ['project' => $projectName]);
@@ -234,6 +354,10 @@ final class TestCleanup
 
         if ($SchemaManager->tablesExist([$permissionSitesTable])) {
             $Connection->delete($permissionSitesTable, ['project' => $projectName]);
+        }
+
+        if ($SchemaManager->tablesExist([$permissionMediaTable])) {
+            $Connection->delete($permissionMediaTable, ['project' => $projectName]);
         }
     }
 
@@ -246,6 +370,24 @@ final class TestCleanup
 
     private static function deleteProjectLocaleFiles(string $projectName): void
     {
+        // Otherwise a later translator publish recreates files for deleted fixtures.
+        $Connection = QUI::getDataBaseConnection();
+        $table = QUI\Translator::table();
+
+        if (QUI::getSchemaManager()->tablesExist([$table])) {
+            $ids = $Connection->createQueryBuilder()
+                ->select('id')
+                ->from(QUI\Utils\Doctrine::quoteIdentifier($table))
+                ->where(QUI\Utils\Doctrine::quoteIdentifier('groups') . ' = :group')
+                ->setParameter('group', 'project/' . $projectName)
+                ->executeQuery()
+                ->fetchFirstColumn();
+
+            foreach ($ids as $id) {
+                QUI\Translator::deleteById((int)$id);
+            }
+        }
+
         foreach (glob(VAR_DIR . 'locale/*/LC_MESSAGES/project_' . $projectName . '.ini.php') ?: [] as $localeFile) {
             if (is_file($localeFile)) {
                 unlink($localeFile);
@@ -265,7 +407,8 @@ final class TestCleanup
             [
             CMS_DIR . 'media/sites/' . $projectName,
             CMS_DIR . 'media/cache/' . $projectName,
-            USR_DIR . $projectName
+            USR_DIR . $projectName,
+            VAR_DIR . 'media/trash/' . $projectName
             ] as $directory
         ) {
             if (!file_exists($directory)) {
