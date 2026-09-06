@@ -15,11 +15,16 @@ switch ($argv[3]) {
         break;
 
     case 'claim':
+    case 'claim-existing':
         echo QUI\System\TestCleanup::claimProject('phpunit') ? "claimed\n" : "busy\n";
         break;
 
     case 'cleanup':
         echo json_encode(QUI\System\TestCleanup::execute()), "\n";
+        break;
+
+    case 'cleanup-unclaimed':
+        echo json_encode(QUI\System\TestCleanup::cleanupProject('phpunit')), "\n";
         break;
 
     case 'fork':

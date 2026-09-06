@@ -11,6 +11,6 @@ final class Manager
 
     public function toArray(): array
     {
-        return $GLOBALS['argv'][3] === 'cleanup' ? ['phpunit' => []] : [];
+        return in_array($GLOBALS['argv'][3], ['cleanup', 'claim-existing'], true) ? ['phpunit' => []] : [];
     }
 }

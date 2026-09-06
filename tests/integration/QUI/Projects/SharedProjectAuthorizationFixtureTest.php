@@ -20,6 +20,7 @@ final class SharedProjectAuthorizationFixtureTest extends TestCase
     {
         $projectName = 'phpunit_locale_cleanup_' . bin2hex(random_bytes(5));
         $group = 'project/' . $projectName;
+        self::assertTrue(QUI\System\TestCleanup::claimProject($projectName));
 
         try {
             QUI\Translator::add($group, 'title');

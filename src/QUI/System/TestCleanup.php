@@ -27,7 +27,7 @@ use const SIGTERM;
 use const SIG_IGN;
 
 /**
- * Removes PHPUnit projects after interrupted or completed test runs.
+ * Removes projects explicitly reserved by the current PHPUnit process.
  */
 final class TestCleanup
 {
@@ -132,6 +132,10 @@ final class TestCleanup
             return self::$projectLocks[$projectName]['processId'] === getmypid();
         }
 
+        if (array_key_exists($projectName, QUI\Projects\Manager::getConfig()->toArray())) {
+            return false;
+        }
+
         $directory = dirname(self::projectLockFile($projectName));
         QUI\Utils\System\File::mkdir($directory);
         $Lock = self::openProjectLock($projectName);
@@ -184,11 +188,6 @@ final class TestCleanup
             }
             return true;
         } finally {
-            if (is_resource($Lock)) {
-                flock($Lock, LOCK_UN);
-                fclose($Lock);
-            }
-
             if (isset(self::$projectLocks[$projectName])) {
                 $OwnedLock = self::$projectLocks[$projectName]['handle'];
                 flock($OwnedLock, LOCK_UN);
@@ -227,18 +226,13 @@ final class TestCleanup
         return $Lock;
     }
 
-    /** @return resource|bool */
-    private static function acquireCleanupLock(string $projectName): mixed
+    private static function acquireCleanupLock(string $projectName): bool
     {
         if (isset(self::$projectLocks[$projectName])) {
             return self::$projectLocks[$projectName]['processId'] === getmypid();
         }
 
-        if (!file_exists(self::projectLockFile($projectName))) {
-            return true;
-        }
-
-        return self::openProjectLock($projectName);
+        return false;
     }
 
     private static function handleSignal(int $signal): never
@@ -276,10 +270,9 @@ final class TestCleanup
      */
     private static function cleanupProjects(): array
     {
-        $projects = array_values(array_filter(
-            array_keys(QUI\Projects\Manager::getConfig()->toArray()),
-            static fn(mixed $name): bool => is_string($name)
-                && self::isPhpUnitProjectName($name)
+        $projects = array_keys(array_filter(
+            self::$projectLocks,
+            static fn(array $owner): bool => $owner['processId'] === getmypid()
         ));
 
         $removed = [];

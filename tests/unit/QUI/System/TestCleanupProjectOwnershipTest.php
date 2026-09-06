@@ -31,6 +31,13 @@ final class TestCleanupProjectOwnershipTest extends TestCase
         parent::tearDown();
     }
 
+    public function testUnclaimedExistingProjectIsNotRemoved(): void
+    {
+        self::assertSame("[]\n", $this->runProcess('cleanup'));
+        self::assertSame("false\n", $this->runProcess('cleanup-unclaimed'));
+        self::assertSame("busy\n", $this->runProcess('claim-existing'));
+    }
+
     public function testAnotherTestRunCannotRemoveAnActiveProject(): void
     {
         [$Owner, $pipes] = $this->startProcess('hold');
