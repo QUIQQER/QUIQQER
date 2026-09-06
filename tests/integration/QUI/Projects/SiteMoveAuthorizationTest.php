@@ -123,6 +123,26 @@ final class SiteMoveAuthorizationTest extends ProjectAuthorizationTestCase
         self::assertSame($this->targetId, $this->getSourceParentId());
     }
 
+    public function testUrlRefreshRejectsMissingViewPermission(): void
+    {
+        require dirname(__DIR__, 4) . '/admin/ajax/site/getUrl.php';
+        QUI::getPermissionManager()->setSitePermissions(
+            new Edit($this->Project, $this->sourceId),
+            ['quiqqer.projects.site.view' => [$this->Root]],
+            $this->Root
+        );
+        $this->setActor($this->User);
+
+        $response = $this->Ajax->callRequestFunction('ajax_site_getUrl', [
+            '_csrf' => CsrfToken::get(),
+            'project' => json_encode($this->Project->toArray()),
+            'id' => $this->sourceId
+        ]);
+
+        self::assertArrayHasKey('Exception', $response);
+        self::assertSame(QUI\Permissions\Exception::class, $response['Exception']['type']);
+    }
+
     /**
      * @return array<string, mixed>
      */

@@ -37,6 +37,7 @@ define('classes/projects/Project', [
             '$onChildDelete',
             '$onSiteLoad',
             '$onSiteSave',
+            '$onSiteMove',
             '$onSiteCreate',
             '$onSiteActivate',
             '$onSiteDeactivate',
@@ -98,6 +99,7 @@ define('classes/projects/Project', [
             Site.addEvents({
                 onDelete: this.$onSiteDelete,
                 onSave: this.$onSiteSave,
+                onMove: this.$onSiteMove,
                 onActivate: this.$onSiteActivate,
                 onDeactivate: this.$onSiteDeactivate,
                 onCreateChild: this.$onSiteCreate,
@@ -450,6 +452,13 @@ define('classes/projects/Project', [
          */
         $onSiteSave: function (Site) {
             this.fireEvent('siteSave', [this, Site]);
+        },
+
+        /**
+         * Notify open editors that their ancestor paths may have changed.
+         */
+        $onSiteMove: function (Site, parentId) {
+            this.fireEvent('siteMove', [this, Site, parentId]);
         },
 
         /**

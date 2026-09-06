@@ -103,6 +103,8 @@ define('controls/projects/project/site/Panel', [
             '$onSiteActivate',
             '$onSiteDeactivate',
             '$onSiteSave',
+            '$onSiteUrlChange',
+            '$onProjectSiteMove',
             '$onSiteDelete',
             '$onKeyDown'
         ],
@@ -589,8 +591,10 @@ define('controls/projects/project/site/Panel', [
                 onActivate  : this.$onSiteActivate,
                 onDeactivate: this.$onSiteDeactivate,
                 onSave      : this.$onSiteSave,
+                onUrlChange : this.$onSiteUrlChange,
                 onDelete    : this.$onSiteDelete
             });
+            Site.getProject().addEvent('siteMove', this.$onProjectSiteMove);
 
             this.Loader.show();
 
@@ -737,6 +741,8 @@ define('controls/projects/project/site/Panel', [
             Site.removeEvent('onActivate', this.$onSiteActivate);
             Site.removeEvent('onDeactivate', this.$onSiteDeactivate);
             Site.removeEvent('onSave', this.$onSiteSave);
+            Site.removeEvent('onUrlChange', this.$onSiteUrlChange);
+            Site.getProject().removeEvent('siteMove', this.$onProjectSiteMove);
             Site.removeEvent('onDelete', this.$onSiteDelete);
 
             Site.clearWorkingStorage();
@@ -1782,13 +1788,13 @@ define('controls/projects/project/site/Panel', [
          * init the name input key events
          */
         $bindNameInputUrlFilter: function () {
-            const Site = this.getSite(),
+            const Panel = this,
+                  Site = this.getSite(),
                   Body = this.$Container;
 
-            const NameInput     = Body.getElement('input[name="site-name"]'),
-                  UrlDisplay    = Body.getElement('.site-url-display'),
-                  UrlEditButton = Body.getElement('.site-url-display-edit'),
-                  siteUrl       = Site.getUrl();
+            const NameInput     = Body.querySelector('[data-name="siteName"]'),
+                  UrlDisplay    = Body.querySelector('[data-name="siteUrl"]'),
+                  UrlEditButton = Body.querySelector('[data-name="siteUrlEdit"]');
 
             if (!NameInput) {
                 return;
@@ -1807,7 +1813,7 @@ define('controls/projects/project/site/Panel', [
                 return;
             }
 
-            UrlDisplay.set("html", Site.getUrl());
+            UrlDisplay.textContent = Site.getUrl();
 
             new QUIButton({
                 icon  : 'fa fa-edit',
@@ -1832,8 +1838,7 @@ define('controls/projects/project/site/Panel', [
             }).inject(UrlEditButton);
 
             // filter
-            let sitePath = siteUrl.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '') + '/',
-                lastPos  = null,
+            let lastPos  = null,
                 hold     = false;
 
             NameInput.set({
@@ -1861,9 +1866,7 @@ define('controls/projects/project/site/Panel', [
                             QUIElmUtils.setCursorPosition(this, lastPos - 1);
                         }
 
-                        if (parseInt(Site.getId(), 10) !== 1) {
-                            UrlDisplay.set('html', sitePath + this.value + QUIQQER.Rewrite.SUFFIX);
-                        }
+                        Panel.$onSiteUrlChange();
                     },
 
                     blur: function () {
@@ -2116,6 +2119,43 @@ define('controls/projects/project/site/Panel', [
         /**
          * Site event methods
          */
+
+        $onProjectSiteMove: function (Project, MovedSite) {
+            const Site = this.getSite();
+
+            if (Site !== MovedSite) {
+                // The moved site has already refreshed itself. Other open editors
+                // may belong to descendants, even if their ancestors are not loaded.
+                return Site.refreshUrl().catch(() => {});
+            }
+        },
+
+        $onSiteUrlChange: function (UpdatedSite) {
+            if (UpdatedSite) {
+                this.refresh();
+            }
+
+            if (!this.$Container) {
+                return;
+            }
+
+            const NameInput = this.$Container.querySelector('[data-name="siteName"]');
+            const UrlDisplay = this.$Container.querySelector('[data-name="siteUrl"]');
+
+            if (!NameInput || !UrlDisplay) {
+                return;
+            }
+
+            const Site = this.getSite();
+
+            if (parseInt(Site.getId(), 10) === 1) {
+                UrlDisplay.textContent = '/';
+                return;
+            }
+
+            const sitePath = Site.getUrl().replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '') + '/';
+            UrlDisplay.textContent = sitePath + NameInput.value + QUIQQER.Rewrite.SUFFIX;
+        },
 
         /**
          * event on site save

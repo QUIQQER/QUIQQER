@@ -55,6 +55,7 @@ define('classes/projects/project/Site', [
             this.$has_children = false;
             this.$parentid = false;
             this.$loaded = false;
+            this.$urlRequest = 0;
 
             this.$workingId = 'site-' +
                 Project.getName() + '-' +
@@ -97,6 +98,7 @@ define('classes/projects/project/Site', [
                 Site = this;
 
             Ajax.get('ajax_site_get', function (result) {
+                Site.$urlRequest++;
                 Site.setAttributes(result.attributes);
                 //Site.clearWorkingStorage();
 
@@ -212,6 +214,25 @@ define('classes/projects/project/Site', [
             }
 
             return '';
+        },
+
+        /**
+         * Refresh location metadata without replacing unsaved editor attributes.
+         */
+        refreshUrl: function () {
+            const request = ++this.$urlRequest;
+
+            return new Promise((resolve, reject) => {
+                Ajax.get('ajax_site_getUrl', result => {
+                    if (request === this.$urlRequest) {
+                        this.$url = result.url;
+                        this.$parentid = result.parentid;
+                        this.fireEvent('urlChange', [this]);
+                    }
+
+                    resolve();
+                }, {...this.ajaxParams(), onError: reject});
+            });
         },
 
         /**
@@ -402,6 +423,7 @@ define('classes/projects/project/Site', [
                 params.onError = reject;
 
                 Ajax.post('ajax_site_save', function (result) {
+                    Site.$urlRequest++;
                     if (result && result.attributes) {
                         Site.setAttributes(result.attributes);
                     }
@@ -474,16 +496,19 @@ define('classes/projects/project/Site', [
                 params.onError = reject;
 
                 Ajax.post('ajax_site_move', function (result) {
-                    if (typeof callback === 'function') {
-                        callback(result);
-                    }
+                    Site.$parentid = newParentId;
 
-                    Site.fireEvent('move', [
-                        Site,
-                        newParentId
-                    ]);
+                    // A failed URL refresh must not hide an already completed move.
+                    // Ajax reports the refresh error through its normal error handling.
+                    Site.refreshUrl().catch(() => {}).then(() => {
+                        Site.fireEvent('move', [Site, newParentId]);
 
-                    resolve(result);
+                        if (typeof callback === 'function') {
+                            callback(result);
+                        }
+
+                        resolve(result);
+                    });
                 }, params);
             }.bind(this));
         },
