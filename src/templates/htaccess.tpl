@@ -7,11 +7,7 @@
     RewriteBase {$URL_DIR}
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{ldelim}HTTP:Authorization{rdelim}]
 
-{if $forceHttps}
-    # Redirect non https traffic to https. For a safer web.
-    RewriteCond %{ldelim}HTTPS{rdelim} !on
-    RewriteRule (.*) https://%{ldelim}HTTP_HOST{rdelim}%{ldelim}REQUEST_URI{rdelim} [R=301,END]
-{/if}
+{$httpsRedirects}
 
     RewriteRule ^{$URL_SYS_ADMIN_DIR}$ {$URL_DIR}{$URL_SYS_DIR} [R=301,END]
 

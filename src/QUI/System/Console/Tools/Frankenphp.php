@@ -63,10 +63,11 @@ class Frankenphp extends QUI\System\Console\Tool
             # How to use this FrankenPHP config file:
             # 1. Include this file inside the site's Caddyfile block.
             # 2. Keep domain names, TLS, logging and other server-wide settings in the user-owned Caddyfile.
+            # 3. Include HTTP sites as well so the configured HTTPS target takes precedence over automatic HTTPS redirects.
             #
             # Usage example:
             #
-            #     example.com {
+            #     http://example.com, https://example.com {
             #         import $frankenphpConfigFile
             #     }
             #
@@ -80,16 +81,7 @@ class Frankenphp extends QUI\System\Console\Tool
 
             CADDY;
 
-        if (QUI::conf("webserver", "forceHttps")) {
-            $frankenphpConfig .= <<<CADDY
-
-                @quiqqer_http {
-                    protocol http
-                }
-                redir @quiqqer_http https://{host}{uri} permanent
-
-                CADDY;
-        }
+        $frankenphpConfig .= HttpsRedirects::fromConfig()->caddy();
 
         $frankenphpConfig .= <<<CADDY
 

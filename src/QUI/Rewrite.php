@@ -793,7 +793,7 @@ class Rewrite
      *
      * @param array<array-key, mixed> $vhosts
      */
-    private static function getCanonicalHostRedirectUrl(
+    public static function getCanonicalHostRedirectUrl(
         Request $Request,
         array $vhosts,
         bool $forceHttps,
