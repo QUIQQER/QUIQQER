@@ -1524,21 +1524,13 @@ class User implements QUIUserInterface
      * @throws QUI\Exception
      * @todo do it as a plugin
      */
-    public function getCurrency(): string
+    public function getCurrency(): ?QUI\ERP\Currency\Currency
     {
-        try {
-            QUI::getPackage('quiqqer/currency');
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::writeException($Exception, QUI\System\Log::LEVEL_ALERT);
-            return 'EUR';
-        }
-
         if (
-            class_exists('QUI\ERP\Currency\Handler')
-            && $this->getAttribute('currency')
+            $this->getAttribute('currency')
             && Currencies::existCurrency($this->getAttribute('currency'))
         ) {
-            return $this->getAttribute('currency');
+            return Currencies::getCurrency($this->getAttribute('currency'));
         }
 
         $Country = $this->getCountry();
@@ -1546,20 +1538,12 @@ class User implements QUIUserInterface
         if ($Country) {
             $currency = $Country->getCurrencyCode();
 
-            if (class_exists('QUI\ERP\Currency\Handler') && Currencies::existCurrency($currency)) {
-                return $currency;
+            if (Currencies::existCurrency($currency)) {
+                return Currencies::getCurrency($currency);
             }
         }
 
-        if (class_exists('QUI\ERP\Currency\Handler')) {
-            $Currency = Currencies::getDefaultCurrency();
-
-            if ($Currency !== null) {
-                return $Currency->getCode();
-            }
-        }
-
-        return 'EUR';
+        return Currencies::getDefaultCurrency();
     }
 
     public function getCountry(): ?QUI\Countries\Country
