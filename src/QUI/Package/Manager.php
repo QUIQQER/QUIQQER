@@ -492,10 +492,6 @@ class Manager extends QUI\QDOM
             $composerJson->{'minimum-stability'} = 'stable';
         }
 
-        if (isset($composerJson->{'prefer-stable'}) && $composerJson->{'prefer-stable'} === false) {
-            $composerJson->{'minimum-stability'} = 'dev';
-        }
-
         if (!isset($composerJson->{'prefer-stable'})) {
             $composerJson->{'prefer-stable'} = true;
         }
