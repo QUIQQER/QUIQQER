@@ -96,6 +96,88 @@ class RewriteCanonicalHostTest extends TestCase
      */
     public static function canonicalRedirectProvider(): iterable
     {
+        $base = ['project' => 'example'];
+
+        $cases = [
+            'override enables www with inactive global setting' => [
+                'http://example.com/a?b=1', ['example.com' => $base + ['wwwRedirect' => 'www']], false, '',
+                'http://www.example.com/a?b=1'
+            ],
+            'override wins over opposite global setting' => [
+                'http://www.example.com/a', ['example.com' => $base + ['wwwRedirect' => 'nonwww']], false, 'www',
+                'http://example.com/a'
+            ],
+            'none disables global www redirect' => [
+                'http://example.com/a', ['example.com' => $base + ['wwwRedirect' => 'none']], false, 'www', null
+            ],
+            'none keeps www variant during HTTPS redirect' => [
+                'http://www.example.com/a', ['example.com' => $base + ['wwwRedirect' => 'none']], true, 'nonwww',
+                'https://www.example.com/a'
+            ],
+            'empty override inherits global setting' => [
+                'http://example.com/a', ['example.com' => $base + ['wwwRedirect' => '']], false, 'www',
+                'http://www.example.com/a'
+            ],
+            'invalid stored override falls back to global setting' => [
+                'http://example.com/a', ['example.com' => $base + ['wwwRedirect' => []]], false, 'www',
+                'http://www.example.com/a'
+            ],
+            'counterpart of second VHost is recognized' => [
+                'http://www.example.com:8080/a',
+                ['unrelated.example' => $base, 'example.com' => $base + ['wwwRedirect' => 'nonwww']],
+                false, '', 'http://example.com:8080/a'
+            ],
+            'canonical counterpart does not loop' => [
+                'https://www.example.com/a', ['example.com' => $base + ['wwwRedirect' => 'www']], true, '', null
+            ],
+            'explicit counterpart overrides inferred variant' => [
+                'http://www.example.com/a',
+                ['example.com' => $base + ['wwwRedirect' => 'nonwww'],
+                 'www.example.com' => $base + ['wwwRedirect' => 'none']],
+                false, 'nonwww', null
+            ],
+            'explicit HTTPS host stays authoritative' => [
+                'http://example.com/a',
+                ['example.com' => $base + ['wwwRedirect' => 'www', 'httpshost' => 'secure.example.com']],
+                true, '', 'https://secure.example.com/a'
+            ],
+            'wildcard override uses matched host' => [
+                'http://www.shop.example.com/a', ['*.example.com' => $base + ['wwwRedirect' => 'nonwww']],
+                false, '', 'http://shop.example.com/a'
+            ],
+            'IPv4 does not receive www prefix' => [
+                'http://127.0.0.1:8080/a', ['127.0.0.1' => $base + ['wwwRedirect' => 'www']], false, '', null
+            ],
+            'IPv6 does not receive www prefix' => [
+                'http://[::1]:8080/a', ['[::1]' => $base + ['wwwRedirect' => 'www']], false, '', null
+            ],
+            'localhost does not receive www prefix' => [
+                'http://localhost/a', ['localhost' => $base + ['wwwRedirect' => 'www']], false, '', null
+            ],
+            'opposing explicit variants do not create a redirect loop' => [
+                'http://example.com/a',
+                ['example.com' => $base + ['wwwRedirect' => 'www'],
+                 'www.example.com' => $base + ['wwwRedirect' => 'nonwww']],
+                false, '', null
+            ],
+            'opposing explicit variants still enforce HTTPS' => [
+                'http://example.com/a',
+                ['example.com' => $base + ['wwwRedirect' => 'www'],
+                 'www.example.com' => $base + ['wwwRedirect' => 'nonwww']],
+                true, '', 'https://example.com/a'
+            ],
+            'conflicting configuration never reflects an unknown host' => [
+                'http://attacker.test:8080/a',
+                ['example.com' => $base + ['wwwRedirect' => 'www'],
+                 'www.example.com' => $base + ['wwwRedirect' => 'nonwww']],
+                true, '', 'https://example.com/a'
+            ],
+        ];
+
+        foreach ($cases as $name => [$url, $hosts, $https, $global, $expected]) {
+            yield $name => [$url, $hosts, $https, $global, '', '', $expected];
+        }
+
         $vhosts = [
             'www.example.com' => [
                 'project' => 'example',

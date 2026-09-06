@@ -719,31 +719,13 @@ class Rewrite
         }
 
         $vhosts = $this->getVHosts();
-        $httpHost = $_SERVER['HTTP_HOST'] ?? null;
-        $vhost = false;
+        $vhost = System\VhostManager::findVhost($_SERVER['HTTP_HOST'] ?? '', $vhosts);
 
         if (empty($vhosts)) {
             return [];
         }
 
-        if ($httpHost && isset($vhosts[$httpHost])) {
-            $vhost = $httpHost;
-        }
-
-        if (!$vhost) {
-            foreach ($vhosts as $host => $vhostData) {
-                if (!str_contains($host, '*')) {
-                    continue;
-                }
-
-                if (fnmatch($host, $httpHost, FNM_CASEFOLD)) {
-                    $vhost = $host;
-                    break;
-                }
-            }
-        }
-
-        if (isset($vhosts[$vhost])) {
+        if ($vhost !== null && isset($vhosts[$vhost])) {
             $this->vhostData = $vhosts[$vhost];
         }
 
@@ -819,10 +801,6 @@ class Rewrite
         string $globalHost,
         string $globalHttpsHost
     ): ?string {
-        if (!$forceHttps && !in_array($wwwRedirect, ['www', 'nonwww'], true)) {
-            return null;
-        }
-
         $requestHost = $Request->getHost();
 
         if ($requestHost === '') {
@@ -840,6 +818,13 @@ class Rewrite
             return null;
         }
 
+        $globalWwwRedirect = $wwwRedirect;
+        $wwwRedirect = System\VhostManager::getWwwRedirect($route['wwwRedirect'], $globalWwwRedirect);
+
+        if (!$forceHttps && $wwwRedirect === 'none') {
+            return null;
+        }
+
         $targetScheme = $forceHttps ? 'https' : $Request->getScheme();
         $targetHost = $route['host'];
         $usesConfiguredHttpsHost = false;
@@ -854,18 +839,20 @@ class Rewrite
         }
 
         if (!$usesConfiguredHttpsHost) {
-            $normalizedHost = strtolower($targetHost);
+            $targetHost = System\VhostManager::getWwwRedirectHost($targetHost, $wwwRedirect);
 
-            if (
-                $wwwRedirect === 'www'
-                && !str_starts_with($normalizedHost, 'www.')
-                && str_contains($targetHost, '.')
-            ) {
-                $targetHost = 'www.' . $targetHost;
-            }
+            // Do not bounce between separately configured WWW variants with opposing policies.
+            $targetVhost = System\VhostManager::findVhost($targetHost, $vhosts);
 
-            if ($wwwRedirect === 'nonwww' && str_starts_with($normalizedHost, 'www.')) {
-                $targetHost = substr($targetHost, 4);
+            if ($targetVhost !== null && strtolower($targetVhost) === strtolower($targetHost)) {
+                $targetMode = System\VhostManager::getWwwRedirect(
+                    $vhosts[$targetVhost][System\VhostManager::WWW_REDIRECT_CONFIG_KEY] ?? '',
+                    $globalWwwRedirect
+                );
+
+                if (System\VhostManager::getWwwRedirectHost($targetHost, $targetMode) !== $targetHost) {
+                    $targetHost = $route['host'];
+                }
             }
         }
 
@@ -892,7 +879,7 @@ class Rewrite
     /**
      * @param array<array-key, mixed> $vhosts
      *
-     * @return array{host: string, httpshost: string, matched: bool}|null
+     * @return array{host: string, httpshost: string, matched: bool, wwwRedirect: mixed}|null
      */
     private static function getCanonicalVhostRoute(
         string $requestHost,
@@ -900,44 +887,18 @@ class Rewrite
         string $globalHost,
         string $globalHttpsHost
     ): ?array {
-        foreach ($vhosts as $host => $data) {
-            if (!is_string($host) || !is_array($data)) {
-                continue;
-            }
+        $host = System\VhostManager::findVhost($requestHost, $vhosts);
 
-            if (strtolower($host) === strtolower($requestHost)) {
-                return self::createCanonicalVhostRoute($host, $data, true);
-            }
-
+        if ($host !== null) {
+            $data = $vhosts[$host];
             $httpsHost = self::normalizeConfiguredHttpHost($data['httpshost'] ?? '');
+            $route = self::createCanonicalVhostRoute($requestHost, $data, true);
 
-            if ($httpsHost !== '' && strtolower($httpsHost) === strtolower($requestHost)) {
-                return self::createCanonicalVhostRoute($host, $data, true);
-            }
-        }
-
-        foreach ($vhosts as $host => $data) {
-            if (!is_string($host) || !is_array($data)) {
-                continue;
+            if (str_contains($httpsHost, '*') && fnmatch($httpsHost, $requestHost, FNM_CASEFOLD)) {
+                $route['httpshost'] = $requestHost;
             }
 
-            $httpsHost = self::normalizeConfiguredHttpHost($data['httpshost'] ?? '');
-
-            if (
-                (str_contains($host, '*') && fnmatch($host, $requestHost, FNM_CASEFOLD))
-                || (
-                    str_contains($httpsHost, '*')
-                    && fnmatch($httpsHost, $requestHost, FNM_CASEFOLD)
-                )
-            ) {
-                $route = self::createCanonicalVhostRoute($requestHost, $data, true);
-
-                if (str_contains($httpsHost, '*') && fnmatch($httpsHost, $requestHost, FNM_CASEFOLD)) {
-                    $route['httpshost'] = $requestHost;
-                }
-
-                return $route;
-            }
+            return $route;
         }
 
         foreach ($vhosts as $host => $data) {
@@ -962,21 +923,23 @@ class Rewrite
         return [
             'host' => $host,
             'httpshost' => self::normalizeConfiguredHttpHost($globalHttpsHost),
-            'matched' => strtolower($host) === strtolower($requestHost)
+            'matched' => strtolower($host) === strtolower($requestHost),
+            'wwwRedirect' => ''
         ];
     }
 
     /**
      * @param array<string, mixed> $data
      *
-     * @return array{host: string, httpshost: string, matched: bool}
+     * @return array{host: string, httpshost: string, matched: bool, wwwRedirect: mixed}
      */
     private static function createCanonicalVhostRoute(string $host, array $data, bool $matched): array
     {
         return [
             'host' => trim($host, '/'),
             'httpshost' => self::normalizeConfiguredHttpHost($data['httpshost'] ?? ''),
-            'matched' => $matched
+            'matched' => $matched,
+            'wwwRedirect' => $data[System\VhostManager::WWW_REDIRECT_CONFIG_KEY] ?? ''
         ];
     }
 
@@ -1052,22 +1015,13 @@ class Rewrite
             $targetScheme = 'https';
         }
 
-        $targetHost = $route['host'];
-
-        if ($targetScheme === 'https' && $route['httpshost'] !== '') {
-            $targetHost = $route['httpshost'];
-        }
-
-        $requestHost = $Request->getHost();
-
-        if (
-            str_contains($targetHost, '*')
-            && fnmatch($targetHost, $requestHost, FNM_CASEFOLD)
-        ) {
-            $targetHost = $Request->getHttpHost();
-        } elseif ($requestHost === $targetHost) {
-            $targetHost = $Request->getHttpHost();
-        }
+        $targetHost = self::getProjectLanguageRouteHost(
+            $Request,
+            $route,
+            $VHosts->getList(),
+            $targetScheme,
+            (string)QUI::conf('webserver', 'wwwRedirect')
+        );
 
         $targetPath = self::buildProjectLanguageRoutePath(
             $route['path'],
@@ -1089,6 +1043,46 @@ class Rewrite
         $Redirect->setStatusCode(Response::HTTP_MOVED_PERMANENTLY);
         $Redirect->send();
         exit;
+    }
+
+    /**
+     * Preserve the requested WWW variant for language routing when WWW redirects are disabled.
+     *
+     * @param array{host: string, httpshost: string} $route
+     * @param array<array-key, mixed> $vhosts
+     */
+    private static function getProjectLanguageRouteHost(
+        Request $Request,
+        array $route,
+        array $vhosts,
+        string $targetScheme,
+        string $globalWwwRedirect
+    ): string {
+        $usesHttpsHost = $targetScheme === 'https' && $route['httpshost'] !== '';
+        $targetHost = $usesHttpsHost ? $route['httpshost'] : $route['host'];
+        $requestHost = $Request->getHost();
+        $owner = System\VhostManager::findVhost($targetHost, $vhosts);
+
+        if (
+            !$usesHttpsHost
+            && $owner !== null
+            && $owner === System\VhostManager::findVhost($requestHost, $vhosts)
+            && System\VhostManager::getWwwRedirect(
+                $vhosts[$owner][System\VhostManager::WWW_REDIRECT_CONFIG_KEY] ?? '',
+                $globalWwwRedirect
+            ) === 'none'
+        ) {
+            return $Request->getHttpHost();
+        }
+
+        if (
+            $requestHost === $targetHost
+            || (str_contains($targetHost, '*') && fnmatch($targetHost, $requestHost, FNM_CASEFOLD))
+        ) {
+            return $Request->getHttpHost();
+        }
+
+        return $targetHost;
     }
 
     /**

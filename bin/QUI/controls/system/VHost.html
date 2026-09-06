@@ -18,9 +18,17 @@
                            id="{{idPrefix}}-domain"
                            data-name="domain"
                            type="text"
+                           aria-describedby="{{idPrefix}}-domain-description"
                            disabled
                     />
                 </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="field-container-item-desc" id="{{idPrefix}}-domain-description">
+                    {{descriptionDomainVariants}}
+                </div>
             </td>
         </tr>
         <tr>
@@ -77,6 +85,34 @@
                 </label>
             </td>
         </tr>
+        </tbody>
+    </table>
+
+    <table class="data-table data-table-flexbox control-system-vhost-redirects">
+        <thead>
+        <tr><th>{{titleRedirects}}</th></tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <label class="field-container" for="{{idPrefix}}-www-redirect">
+                    <span class="field-container-item">{{labelWwwRedirect}}</span>
+                    <select class="field-container-field"
+                            id="{{idPrefix}}-www-redirect"
+                            data-name="www-redirect"
+                            aria-describedby="{{idPrefix}}-www-description"
+                    >
+                        <option value="">{{optionWwwGlobal}}</option>
+                        <option value="www">{{optionWww}}</option>
+                        <option value="nonwww">{{optionNonWww}}</option>
+                        <option value="none">{{optionWwwNone}}</option>
+                    </select>
+                </label>
+                <div class="field-container-item-desc" id="{{idPrefix}}-www-description">
+                    {{descriptionWwwRedirect}}
+                </div>
+            </td>
+        </tr>
         <tr>
             <td>
                 <label class="field-container" for="{{idPrefix}}-https-host">
@@ -86,8 +122,12 @@
                     <input class="field-container-field"
                            id="{{idPrefix}}-https-host"
                            data-name="https-host"
+                           aria-describedby="{{idPrefix}}-https-description"
                     />
                 </label>
+                <div class="field-container-item-desc" id="{{idPrefix}}-https-description">
+                    {{descriptionHttpsHost}}
+                </div>
             </td>
         </tr>
         </tbody>

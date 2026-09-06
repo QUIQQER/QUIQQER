@@ -1622,6 +1622,27 @@
         <locale name="system.vhost.table.hostdata">
             <de><![CDATA[Host-Daten]]></de>
         </locale>
+        <locale name="system.vhost.table.redirects">
+            <de><![CDATA[Umleitungen]]></de>
+        </locale>
+        <locale name="system.vhost.domain.variants">
+            <de><![CDATA[Die Domain mit und ohne www verwendet diese Einstellungen, sofern die andere Variante nicht als eigener VHost angelegt ist. Beide Domains müssen im DNS und Webserver eingerichtet sein.]]></de>
+        </locale>
+        <locale name="system.vhost.wwwRedirect.global">
+            <de><![CDATA[Globale Einstellung übernehmen]]></de>
+        </locale>
+        <locale name="system.vhost.wwwRedirect.description">
+            <de><![CDATA[Diese Auswahl hat Vorrang vor der globalen WWW-Einstellung. Ohne WWW-Umleitung bleibt die angeforderte Hostvariante erhalten; die globale HTTPS-Umleitung bleibt wirksam.]]></de>
+        </locale>
+        <locale name="system.vhost.httpshost.description">
+            <de><![CDATA[Optionaler abweichender Host für HTTPS. Ein eingetragener HTTPS-Host hat bei HTTPS-Aufrufen Vorrang vor der WWW-Auswahl.]]></de>
+        </locale>
+        <locale name="exception.vhost.invalid.wwwRedirect">
+            <de><![CDATA[Ungültige WWW-Umleitung. Erlaubt sind die globale Einstellung, www, nonwww oder none.]]></de>
+        </locale>
+        <locale name="exception.vhost.conflicting.wwwRedirect">
+            <de><![CDATA[Diese WWW-Umleitung widerspricht der Einstellung von [host] und würde eine Umleitungsschleife erzeugen. Bitte stimmen Sie die Einstellungen beider VHosts aufeinander ab.]]></de>
+        </locale>
         <locale name="system.vhost.table.languages">
             <de><![CDATA[Sprachzuweisungen]]></de>
         </locale>

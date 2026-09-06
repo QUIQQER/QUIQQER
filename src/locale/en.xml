@@ -1608,6 +1608,27 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="system.vhost.table.hostdata">
             <en><![CDATA[Host data]]></en>
         </locale>
+        <locale name="system.vhost.table.redirects">
+            <en><![CDATA[Redirects]]></en>
+        </locale>
+        <locale name="system.vhost.domain.variants">
+            <en><![CDATA[The domain with and without www uses these settings unless the other variant has its own VHost. Both domains must be configured in DNS and on the web server.]]></en>
+        </locale>
+        <locale name="system.vhost.wwwRedirect.global">
+            <en><![CDATA[Use global setting]]></en>
+        </locale>
+        <locale name="system.vhost.wwwRedirect.description">
+            <en><![CDATA[This choice overrides the global WWW setting. Without a WWW redirect, the requested host variant is preserved; the global HTTPS redirect still applies.]]></en>
+        </locale>
+        <locale name="system.vhost.httpshost.description">
+            <en><![CDATA[Optional alternate host for HTTPS. A configured HTTPS host takes precedence over the WWW choice for HTTPS requests.]]></en>
+        </locale>
+        <locale name="exception.vhost.invalid.wwwRedirect">
+            <en><![CDATA[Invalid WWW redirect. Allowed values are the global setting, www, nonwww or none.]]></en>
+        </locale>
+        <locale name="exception.vhost.conflicting.wwwRedirect">
+            <en><![CDATA[This WWW redirect conflicts with the setting of [host] and would create a redirect loop. Please align the settings of both VHosts.]]></en>
+        </locale>
         <locale name="system.vhost.table.languages">
             <en><![CDATA[Language assignments]]></en>
         </locale>
