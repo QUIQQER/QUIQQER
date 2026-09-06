@@ -7,14 +7,18 @@
 namespace QUI\Projects\Media;
 
 use Exception;
+use Intervention\Image\Interfaces\ImageInterface;
+use Intervention\Image\Exceptions\EncoderException;
 use QUI;
 use QUI\ExceptionStack;
+use QUI\Lock\Locker;
 use QUI\Projects\Media;
 use QUI\Projects\Media\Utils as MediaUtils;
 use QUI\Security\PublicUrlFetcher;
 use QUI\Utils\Security\SvgSanitizer;
 use QUI\Utils\StringHelper;
 use QUI\Utils\System\File as FileUtils;
+use Symfony\Component\Lock\LockInterface;
 
 use function array_key_exists;
 use function array_map;
@@ -147,13 +151,31 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             $height = $resizeSize['height'];
         }
 
-        $Media = $this->Media;
-        $original = $this->getFullPath();
         $cacheFile = $this->getSizeCachePath($width, $height);
         $isSvg = in_array($this->getAttribute('mime_type'), ['image/svg', 'image/svg+xml'], true);
 
-        if (file_exists($cacheFile)) {
-            if ($isSvg) {
+        if (!$isSvg && file_exists($cacheFile)) {
+            return $cacheFile;
+        }
+
+        // The configured namespace identifies the installation across different server paths.
+        $resource = str_starts_with($cacheFile, CMS_DIR) ? substr($cacheFile, strlen(CMS_DIR)) : $cacheFile;
+
+        return Locker::synchronized('media-size-cache:' . $resource, function (LockInterface $Lock) use (
+            $cacheFile,
+            $width,
+            $height,
+            $isSvg
+        ): string {
+            // Another process may have generated this variant while we waited.
+            clearstatcache(true, $cacheFile);
+            $sanitizedSvg = null;
+
+            if (file_exists($cacheFile)) {
+                if (!$isSvg) {
+                    return $cacheFile;
+                }
+
                 $cachedSvg = file_get_contents($cacheFile);
                 $sanitizedSvg = is_string($cachedSvg) ? SvgSanitizer::sanitize($cachedSvg) : '';
 
@@ -161,13 +183,64 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                     throw new QUI\Exception('Invalid SVG media.', ErrorCodes::FILE_IMAGE_CORRUPT);
                 }
 
-                if ($sanitizedSvg !== $cachedSvg && file_put_contents($cacheFile, $sanitizedSvg) === false) {
-                    throw new QUI\Exception('Invalid SVG media.', ErrorCodes::FILE_IMAGE_CORRUPT);
+                if ($sanitizedSvg === $cachedSvg) {
+                    return $cacheFile;
                 }
             }
 
-            return $cacheFile;
-        }
+            FileUtils::mkdir(dirname($cacheFile));
+            $temporaryFile = tempnam(dirname($cacheFile), '.quiqqer-image-');
+
+            if ($temporaryFile === false) {
+                throw new QUI\Exception('Unable to create temporary image cache file.');
+            }
+
+            try {
+                // tempnam may fall back to the system directory; publication must stay on the same filesystem.
+                if (dirname($temporaryFile) !== realpath(dirname($cacheFile))) {
+                    throw new QUI\Exception('Unable to create temporary image cache file in the cache directory.');
+                }
+
+                $Image = null;
+
+                if ($sanitizedSvg !== null) {
+                    if (file_put_contents($temporaryFile, $sanitizedSvg) === false) {
+                        throw new QUI\Exception('Invalid SVG media.', ErrorCodes::FILE_IMAGE_CORRUPT);
+                    }
+                } else {
+                    $Image = $this->generateSizeCache($temporaryFile, $cacheFile, $width, $height);
+                }
+
+                // Never publish a partial image or a result from an expired lock owner.
+                $Lock->refresh();
+
+                if (!chmod($temporaryFile, 0666 & ~umask()) || !rename($temporaryFile, $cacheFile)) {
+                    throw new QUI\Exception('Unable to publish image cache file.');
+                }
+
+                if ($Image !== null) {
+                    QUI::getEvents()->fireEvent('mediaCreateSizeCache', [$this, $Image]);
+                }
+
+                return $cacheFile;
+            } finally {
+                if (file_exists($temporaryFile)) {
+                    unlink($temporaryFile);
+                }
+            }
+        }, ttl: 1200.0); // Image rendering can run for up to 1000 seconds.
+    }
+
+    /** Render to a private file; the caller publishes it only once it is complete. */
+    private function generateSizeCache(
+        string $cacheFile,
+        string $targetFile,
+        false | int $width,
+        false | int $height
+    ): ?ImageInterface {
+        $Media = $this->Media;
+        $original = $this->getFullPath();
+        $isSvg = in_array($this->getAttribute('mime_type'), ['image/svg', 'image/svg+xml'], true);
 
         // create cache folder
         FileUtils::mkdir(dirname($cacheFile));
@@ -180,22 +253,26 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                 throw new QUI\Exception('Invalid SVG media.', ErrorCodes::FILE_IMAGE_CORRUPT);
             }
 
-            return $cacheFile;
+            return null;
         }
 
         // quiqqer/core#782
         if ($this->getAttribute('mime_type') == 'image/gif' && $this->isAnimated()) {
-            FileUtils::copy($original, $cacheFile);
+            if (!copy($original, $cacheFile)) {
+                throw new QUI\Exception('Unable to copy image cache file.');
+            }
 
-            return $cacheFile;
+            return null;
         }
 
         $effects = $this->getEffects();
 
         if ($width === false && $height === false && empty($effects)) {
-            FileUtils::copy($original, $cacheFile);
+            if (!copy($original, $cacheFile)) {
+                throw new QUI\Exception('Unable to copy image cache file.');
+            }
 
-            return $cacheFile;
+            return null;
         }
 
         // create image
@@ -203,119 +280,126 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         set_time_limit(1000);
 
         try {
-            $Image = $Media->getImageManager()->read($original);
-        } catch (Exception $Exception) {
-            QUI\System\Log::addDebug($Exception->getMessage());
-            FileUtils::copy($original, $cacheFile);
-
-            return $cacheFile;
-        }
-
-
-        if ($width || $height) {
-            if (!$width) {
-                $width = null;
-            }
-
-            if (!$height) {
-                $height = null;
-            }
-
-            $Image->scaleDown(
-                $width === null ? null : (int)$width,
-                $height === null ? null : (int)$height
-            );
-        }
-
-        // effects
-        if (isset($effects['blur']) && is_numeric($effects['blur'])) {
-            $blur = (int)$effects['blur'];
-
-            if ($blur > 0 && $blur <= 100) {
-                $Image->blur($blur);
-            }
-        }
-
-        if (isset($effects['brightness']) && is_numeric($effects['brightness'])) {
-            $brightness = (int)$effects['brightness'];
-
-            if ($brightness !== 0 && $brightness >= -100 && $brightness <= 100) {
-                $Image->brightness($brightness);
-            }
-        }
-
-        if (isset($effects['contrast']) && is_numeric($effects['contrast'])) {
-            $contrast = (int)$effects['contrast'];
-
-            if ($contrast !== 0 && $contrast >= -100 && $contrast <= 100) {
-                $Image->contrast($contrast);
-            }
-        }
-
-        if (isset($effects['greyscale']) && $effects['greyscale'] == 1) {
-            $Image->greyscale();
-        }
-
-        // watermark
-        $Watermark = $this->getWatermark();
-
-        try {
-            if ($Watermark) {
-                $pos = $this->getWatermarkPosition();
-                $ratio = $this->getWatermarkRatio();
-                $WatermarkImage = $Media->getImageManager()->read($Watermark->getFullPath());
-
-                switch ($pos) {
-                    case "top-left":
-                    case "top":
-                    case "top-right":
-                    case "left":
-                    case "center":
-                    case "right":
-                    case "bottom-left":
-                    case "bottom":
-                    case "bottom-right":
-                        $watermarkPosition = $pos;
-                        break;
-
-                    default:
-                        $watermarkPosition = 'bottom-right';
+            try {
+                $Image = $Media->getImageManager()->read($original);
+            } catch (Exception $Exception) {
+                QUI\System\Log::addDebug($Exception->getMessage());
+                if (!copy($original, $cacheFile)) {
+                    throw new QUI\Exception('Unable to copy image cache file.');
                 }
 
-                // ratio calc
-                if (is_numeric($ratio)) {
-                    $ratio = (float)$ratio;
-                    $imageHeight = $Image->height();
-                    $imageWidth = $Image->width();
+                return null;
+            }
 
-                    $imageHeight = (int)($imageHeight * ($ratio / 100));
-                    $imageWidth = (int)($imageWidth * ($ratio / 100));
 
-                    $WatermarkImage->scaleDown($imageWidth, $imageHeight);
+            if ($width || $height) {
+                if (!$width) {
+                    $width = null;
                 }
 
-                $Image->place($WatermarkImage, (string)$watermarkPosition);
+                if (!$height) {
+                    $height = null;
+                }
+
+                $Image->scaleDown(
+                    $width === null ? null : (int)$width,
+                    $height === null ? null : (int)$height
+                );
             }
-        } catch (Exception $Exception) {
-            QUI\System\Log::addInfo($Exception->getMessage(), [
-                'file' => $this->getFullPath(),
-                'fileId' => $this->getId(),
-                'info' => 'watermark creation'
-            ]);
+
+            // effects
+            if (isset($effects['blur']) && is_numeric($effects['blur'])) {
+                $blur = (int)$effects['blur'];
+
+                if ($blur > 0 && $blur <= 100) {
+                    $Image->blur($blur);
+                }
+            }
+
+            if (isset($effects['brightness']) && is_numeric($effects['brightness'])) {
+                $brightness = (int)$effects['brightness'];
+
+                if ($brightness !== 0 && $brightness >= -100 && $brightness <= 100) {
+                    $Image->brightness($brightness);
+                }
+            }
+
+            if (isset($effects['contrast']) && is_numeric($effects['contrast'])) {
+                $contrast = (int)$effects['contrast'];
+
+                if ($contrast !== 0 && $contrast >= -100 && $contrast <= 100) {
+                    $Image->contrast($contrast);
+                }
+            }
+
+            if (isset($effects['greyscale']) && $effects['greyscale'] == 1) {
+                $Image->greyscale();
+            }
+
+            // watermark
+            $Watermark = $this->getWatermark();
+
+            try {
+                if ($Watermark) {
+                    $pos = $this->getWatermarkPosition();
+                    $ratio = $this->getWatermarkRatio();
+                    $WatermarkImage = $Media->getImageManager()->read($Watermark->getFullPath());
+
+                    switch ($pos) {
+                        case "top-left":
+                        case "top":
+                        case "top-right":
+                        case "left":
+                        case "center":
+                        case "right":
+                        case "bottom-left":
+                        case "bottom":
+                        case "bottom-right":
+                            $watermarkPosition = $pos;
+                            break;
+
+                        default:
+                            $watermarkPosition = 'bottom-right';
+                    }
+
+                    // ratio calc
+                    if (is_numeric($ratio)) {
+                        $ratio = (float)$ratio;
+                        $imageHeight = $Image->height();
+                        $imageWidth = $Image->width();
+
+                        $imageHeight = (int)($imageHeight * ($ratio / 100));
+                        $imageWidth = (int)($imageWidth * ($ratio / 100));
+
+                        $WatermarkImage->scaleDown($imageWidth, $imageHeight);
+                    }
+
+                    $Image->place($WatermarkImage, (string)$watermarkPosition);
+                }
+            } catch (Exception $Exception) {
+                QUI\System\Log::addInfo($Exception->getMessage(), [
+                    'file' => $this->getFullPath(),
+                    'fileId' => $this->getId(),
+                    'info' => 'watermark creation'
+                ]);
+            }
+
+            // create folders
+            FileUtils::mkdir(dirname($cacheFile));
+
+            // The temporary file has no extension; preserve the requested output format.
+            try {
+                $Encoded = $Image->encodeByPath($targetFile);
+            } catch (EncoderException) {
+                $Encoded = $Image->encodeByMediaType();
+            }
+
+            $Encoded->save($cacheFile);
+
+            return $Image;
+        } finally {
+            set_time_limit((int)$time);
         }
-
-        // create folders
-        FileUtils::mkdir(dirname($cacheFile));
-
-        // save cache image
-        $Image->save($cacheFile);
-
-        // reset to the normal limit
-        set_time_limit((int)$time);
-
-        QUI::getEvents()->fireEvent('mediaCreateSizeCache', [$this, $Image]);
-
-        return $cacheFile;
     }
 
     /**
