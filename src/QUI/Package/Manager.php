@@ -1109,6 +1109,16 @@ class Manager extends QUI\QDOM
     }
 
     /**
+     * Discard installed-package lists before setup reads newly installed packages.
+     */
+    public function clearInstalledPackagesCache(): void
+    {
+        $this->list = [];
+        $this->installedPackages = null;
+        QUI\Cache\LongTermCache::clear(self::CACHE_NAME_TYPES);
+    }
+
+    /**
      * Return the installed packages
      *
      * @return array<int, array<string, mixed>>

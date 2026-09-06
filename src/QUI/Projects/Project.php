@@ -1792,7 +1792,7 @@ class Project implements \Stringable
 
         // set default settings and current settings
         QUI\Cache\Manager::clear(
-            'qui/projects/' . $this->getName()
+            $this->getCachePath()
         );
 
         $defaults = QUI\Projects\Manager::getProjectConfigList($this);
@@ -1814,6 +1814,8 @@ class Project implements \Stringable
         }
 
         $Config->save();
+
+        $this->refresh();
 
         if (!empty($setupOptions['executePackagesSetup'])) {
             QUI\Setup::executeEachPackageSetup();
