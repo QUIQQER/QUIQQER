@@ -1943,16 +1943,23 @@ define('controls/projects/project/site/Panel', [
             if (!this.getContent().querySelector('[data-name="editingLockNotice"]')) {
                 const Notice = document.createElement('div');
                 Notice.dataset.name = 'editingLockNotice';
-                Notice.className = 'messages-message message-attention';
+                Notice.className = 'messages-message message-attention qui-site-lock-notice';
                 Notice.setAttribute('role', 'alert');
-                Notice.textContent = Locale.get(lg, 'projects.project.site.panel.lockLost');
+                const Text = document.createElement('span');
+                Text.dataset.name = 'editingLockText';
+                Text.className = 'qui-site-lock-notice-text';
+                Text.textContent = Locale.get(lg, 'projects.project.site.panel.lockLost');
+                Notice.append(Text);
                 this.$Container.before(Notice);
 
                 if (typeof USER !== 'undefined' && USER.isSU) {
-                    new QUIButton({
-                        text: Locale.get(lg, 'projects.project.site.panel.unlock'),
-                        events: {onClick: () => this.unlockSite()}
-                    }).inject(Notice);
+                    const Unlock = document.createElement('button');
+                    Unlock.type = 'button';
+                    Unlock.dataset.name = 'editingLockUnlock';
+                    Unlock.className = 'btn qui-site-lock-notice-unlock';
+                    Unlock.textContent = Locale.get(lg, 'projects.project.site.panel.unlock');
+                    Unlock.addEventListener('click', () => this.unlockSite());
+                    Notice.append(Unlock);
                 }
             }
         },
