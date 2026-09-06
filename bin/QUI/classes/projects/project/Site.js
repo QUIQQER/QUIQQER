@@ -15,9 +15,10 @@ define('classes/projects/project/Site', [
 
     'qui/QUI',
     'qui/classes/DOM',
-    'Ajax'
+    'Ajax',
+    'Locale'
 
-], function (QUI, DOM, Ajax) {
+], function (QUI, DOM, Ajax, QUILocale) {
     "use strict";
 
     /**
@@ -374,13 +375,30 @@ define('classes/projects/project/Site', [
          * @param {Function} [onfinish] - (optional), callback function
          * @return {Promise}
          */
-        save: function (onfinish) {
+        save: function (onfinish, lockToken = null) {
+            // Callers without an open editor acquire a lease for this one save.
+            if (lockToken === null) {
+                const token = Array.from(crypto.getRandomValues(new Uint8Array(16)), value => value.toString(16).padStart(2, '0')).join('');
+                const request = action => new Promise((resolve, reject) => {
+                    Ajax.post('ajax_site_' + action, resolve, {
+                        ...this.ajaxParams(), token, force: 0, onError: reject
+                    });
+                });
+                return request('lock').then(acquired => {
+                    if (acquired !== true) {
+                        throw new Error(QUILocale.get('quiqqer/core', 'exception.site.is.being.edited'));
+                    }
+                    return this.save(onfinish, token).finally(() => request('unlock'));
+                });
+            }
+
             var Site = this,
                 params = this.ajaxParams(),
                 status = this.getAttribute('active');
 
             return new Promise(function (resolve, reject) {
                 params.attributes = JSON.encode(Site.getAttributes());
+                params.lockToken = lockToken ?? '';
                 params.onError = reject;
 
                 Ajax.post('ajax_site_save', function (result) {
@@ -560,6 +578,7 @@ define('classes/projects/project/Site', [
                 var params = this.ajaxParams();
 
                 params.onError = reject;
+                params.force = 1;
 
                 Ajax.post('ajax_site_unlock', function () {
                     if (typeof callback === 'function') {

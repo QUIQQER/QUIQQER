@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <locales>
     <groups name="quiqqer/core" datatype="js,php">
+        <locale name="projects.project.site.panel.lockLost">
+            <en><![CDATA[The editing lock is unavailable or has been lost. Saving is disabled. Keep a copy of your changes, then reopen the page.]]></en>
+        </locale>
         <locale name="processLocks.title">
             <en><![CDATA[Process locks]]></en>
         </locale>

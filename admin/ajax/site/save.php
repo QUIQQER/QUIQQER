@@ -12,7 +12,11 @@
 
 QUI::getAjax()->registerFunction(
     'ajax_site_save',
-    static function ($project, $id, $attributes) {
+    static function ($project, $id, $attributes, $lockToken) {
+        if (!is_string($lockToken)) {
+            throw new QUI\Exception('Invalid editing lock token.', 400);
+        }
+
         $Project = QUI::getProjectManager()->decode($project);
         $Site = new QUI\Projects\Site\Edit($Project, (int)$id);
 
@@ -20,20 +24,16 @@ QUI::getAjax()->registerFunction(
 
         $attributes = json_decode($attributes, true);
 
-        try {
-            $Site->setAttributes($attributes);
+        $Site->setAttributes($attributes);
 
-            if ($Site->getAttribute('release_from') || $Site->getAttribute('release_to')) {
-                $Site->setAttribute('auto_release', 1);
-            } else {
-                $Site->setAttribute('auto_release', 0);
-            }
-
-            $Site->save();
-            $Site->refresh();
-        } catch (QUI\Exception $Exception) {
-            QUI::getMessagesHandler()->addError($Exception->getMessage());
+        if ($Site->getAttribute('release_from') || $Site->getAttribute('release_to')) {
+            $Site->setAttribute('auto_release', 1);
+        } else {
+            $Site->setAttribute('auto_release', 0);
         }
+
+        $Site->saveWithLock($lockToken);
+        $Site->refresh();
 
         QUI::getEvents()->fireEvent('onSiteSaveAjaxEnd', [$Site]);
 
@@ -52,6 +52,6 @@ QUI::getAjax()->registerFunction(
 
         return [];
     },
-    ['project', 'id', 'attributes'],
+    ['project', 'id', 'attributes', 'lockToken'],
     'Permission::checkAdminUser'
 );

@@ -27,6 +27,7 @@ use function time;
 class Locker
 {
     private static ?LockFactory $ProcessLockFactory = null;
+    private static ?EditingLocks $EditingLocks = null;
 
     /**
      * Override the process lock backend during application bootstrap.
@@ -36,6 +37,39 @@ class Locker
     public static function setProcessLockStore(?PersistingStoreInterface $Store): void
     {
         self::$ProcessLockFactory = $Store === null ? null : new LockFactory($Store);
+        self::$EditingLocks = null;
+    }
+
+    public static function editing(): EditingLocks
+    {
+        if (self::$EditingLocks !== null) {
+            return self::$EditingLocks;
+        }
+
+        $dsn = QUI::conf('locks', 'dsn') ?: 'flock';
+        $namespace = 'editing-' . hash('sha256', QUI::conf('locks', 'namespace') ?: CMS_DIR);
+
+        if ($dsn === 'flock' || str_starts_with($dsn, 'flock://')) {
+            $path = $dsn === 'flock' ? VAR_DIR . 'locks/' : substr($dsn, 8);
+            $Store = new \Symfony\Component\Cache\Adapter\FilesystemAdapter($namespace, 0, $path . '/editing');
+        } elseif ($dsn === 'dbal') {
+            $Store = new EditingDbalAdapter(
+                QUI::getDataBaseConnection(),
+                $namespace,
+                0,
+                ['db_table' => QUI::getDBTableName('editing_locks')]
+            );
+        } elseif (preg_match('~^rediss?://~', $dsn)) {
+            $Store = new \Symfony\Component\Cache\Adapter\RedisAdapter(
+                \Symfony\Component\Cache\Adapter\RedisAdapter::createConnection($dsn),
+                $namespace
+            );
+        } else {
+            throw new Exception('The configured backend does not support editing locks.', 503);
+        }
+
+        $Store->setLogger(new StoreLogger());
+        return self::$EditingLocks = new EditingLocks($Store);
     }
 
     /**
