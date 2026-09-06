@@ -430,6 +430,13 @@
             </params>
 
             <categories>
+                <category name="process_locks" require="controls/system/settings/ProcessLocks" index="10">
+                    <text>
+                        <locale group="quiqqer/core" var="processLocks.title"/>
+                    </text>
+                    <icon>fa fa-lock</icon>
+                </category>
+
                 <category name="settings" require="controls/system/settings/Config" index="1">
                     <text>
                         <locale group="quiqqer/core" var="quiqqer.settings.general.title"/>

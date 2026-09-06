@@ -88,6 +88,9 @@ QUI::getAjax()->registerFunction(
             }
 
             if ($isCoreConfigFile) {
+                // Process lock credentials are handled by their dedicated settings endpoint.
+                unset($params['locks']);
+
                 // overwrite openssl settings is not allowed
                 if (isset($params['openssl'])) {
                     unset($params['openssl']);

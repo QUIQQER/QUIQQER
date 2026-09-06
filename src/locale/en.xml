@@ -1,6 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <locales>
     <groups name="quiqqer/core" datatype="js,php">
+        <locale name="processLocks.title">
+            <en><![CDATA[Process locks]]></en>
+        </locale>
+        <locale name="processLocks.backend">
+            <en><![CDATA[Backend]]></en>
+        </locale>
+        <locale name="processLocks.flock">
+            <en><![CDATA[File system]]></en>
+        </locale>
+        <locale name="processLocks.dbal">
+            <en><![CDATA[QUIQQER database]]></en>
+        </locale>
+        <locale name="processLocks.namespace">
+            <en><![CDATA[Namespace]]></en>
+        </locale>
+        <locale name="processLocks.namespaceHelp">
+            <en><![CDATA[Use the same identifier on every server of this installation. Empty: use the installation path.]]></en>
+        </locale>
+        <locale name="processLocks.path">
+            <en><![CDATA[Directory]]></en>
+        </locale>
+        <locale name="processLocks.pathHelp">
+            <en><![CDATA[Leave empty for the default var/locks/ directory. File locks coordinate processes on the same server.]]></en>
+        </locale>
+        <locale name="processLocks.dbalHelp">
+            <en><![CDATA[Uses the configured QUIQQER database and a dedicated process lock table.]]></en>
+        </locale>
+        <locale name="processLocks.host">
+            <en><![CDATA[Redis host]]></en>
+        </locale>
+        <locale name="processLocks.port">
+            <en><![CDATA[Port]]></en>
+        </locale>
+        <locale name="processLocks.database">
+            <en><![CDATA[Redis database]]></en>
+        </locale>
+        <locale name="processLocks.username">
+            <en><![CDATA[Username]]></en>
+        </locale>
+        <locale name="processLocks.password">
+            <en><![CDATA[Password]]></en>
+        </locale>
+        <locale name="processLocks.clearPassword">
+            <en><![CDATA[Remove stored password]]></en>
+        </locale>
+        <locale name="processLocks.passwordKept">
+            <en><![CDATA[Keep stored password]]></en>
+        </locale>
+        <locale name="processLocks.tls">
+            <en><![CDATA[Use TLS]]></en>
+        </locale>
+        <locale name="processLocks.redisHelp">
+            <en><![CDATA[Use a separate Redis database that survives application cache clears. An empty password field keeps the stored password. A Redis client must be installed on the server.]]></en>
+        </locale>
+        <locale name="processLocks.custom">
+            <en><![CDATA[Custom (already configured)]]></en>
+        </locale>
+        <locale name="processLocks.customHelp">
+            <en><![CDATA[This store was configured outside this interface. Its connection is preserved when saving unless another backend is selected.]]></en>
+        </locale>
+        <locale name="processLocks.changeHelp">
+            <en><![CDATA[When changing backends, protected operations may briefly run in parallel. Restart long-running workers to use the new store.]]></en>
+        </locale>
+        <locale name="processLocks.test">
+            <en><![CDATA[Test connection]]></en>
+        </locale>
+        <locale name="processLocks.testing">
+            <en><![CDATA[Testing lock …]]></en>
+        </locale>
+        <locale name="processLocks.testSuccess">
+            <en><![CDATA[The connection works. You can now save these settings.]]></en>
+        </locale>
+        <locale name="processLocks.testFailed">
+            <en><![CDATA[Connection test failed. Check connection details, server availability, permissions and the installed Redis client.]]></en>
+        </locale>
+        <locale name="processLocks.loadFailed">
+            <en><![CDATA[Could not load settings. Please reopen the category.]]></en>
+        </locale>
+        <locale name="processLocks.notReady">
+            <en><![CDATA[Please wait until loading or connection testing has finished.]]></en>
+        </locale>
+        <locale name="processLocks.saved">
+            <en><![CDATA[The process lock settings have been saved.]]></en>
+        </locale>
+        <locale name="processLocks.saveFailed">
+            <en><![CDATA[Could not save process locks. Check the entered values and permissions.]]></en>
+        </locale>
+        <locale name="processLocks.invalid">
+            <en><![CDATA[Invalid process lock settings.]]></en>
+        </locale>
         <locale name="yes">
             <en><![CDATA[Yes]]></en>
         </locale>

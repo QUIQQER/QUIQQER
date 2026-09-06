@@ -1,0 +1,125 @@
+<!-- Fields deliberately have no form names: credentials must not enter generic settings or workspace snapshots. -->
+<table class="data-table data-table-flexbox" data-name="fields">
+    <thead>
+    <tr><th>{{labels.title}}</th></tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">{{labels.backend}}</span>
+                <select class="field-container-field" data-name="backend">
+                    <option value="flock">{{labels.flock}}</option>
+                    <option value="dbal">{{labels.dbal}}</option>
+                    <option value="redis">Redis</option>
+                </select>
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">{{labels.namespace}}</span>
+                <input class="field-container-field" data-name="namespace" type="text"
+                       aria-describedby="{{idPrefix}}-namespace-help"/>
+            </label>
+            <div class="field-container-item-desc" id="{{idPrefix}}-namespace-help">{{labels.namespaceHelp}}</div>
+        </td>
+    </tr>
+    </tbody>
+    <tbody data-name="flockFields">
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">{{labels.path}}</span>
+                <input class="field-container-field" data-name="path" type="text"
+                       aria-describedby="{{idPrefix}}-path-help"/>
+            </label>
+            <div class="field-container-item-desc" id="{{idPrefix}}-path-help">{{labels.pathHelp}}</div>
+        </td>
+    </tr>
+    </tbody>
+    <tbody data-name="dbalHelp" hidden>
+    <tr>
+        <td><div class="field-container-item-desc">{{labels.dbalHelp}}</div></td>
+    </tr>
+    </tbody>
+    <tbody data-name="redisFields" hidden>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">{{labels.host}}</span>
+                <input class="field-container-field" data-name="host" type="text"/>
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">{{labels.port}}</span>
+                <input class="field-container-field" data-name="port" type="number" min="1" max="65535"/>
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">{{labels.database}}</span>
+                <input class="field-container-field" data-name="database" type="number" min="0" max="2147483647"/>
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">{{labels.username}}</span>
+                <input class="field-container-field" data-name="username" type="text"/>
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">{{labels.password}}</span>
+                <input class="field-container-field" data-name="password" type="password"
+                       autocomplete="new-password" aria-describedby="{{idPrefix}}-redis-help"/>
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container hasCheckbox">
+                <span class="field-container-item">{{labels.clearPassword}}</span>
+                <span class="field-container-field"><input data-name="clearPassword" type="checkbox"/></span>
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container hasCheckbox">
+                <span class="field-container-item">{{labels.tls}}</span>
+                <span class="field-container-field"><input data-name="tls" type="checkbox"/></span>
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td><div class="field-container-item-desc" id="{{idPrefix}}-redis-help">{{labels.redisHelp}}</div></td>
+    </tr>
+    </tbody>
+    <tbody data-name="customHelp" hidden>
+    <tr>
+        <td><div class="field-container-item-desc">{{labels.customHelp}}</div></td>
+    </tr>
+    </tbody>
+    <tbody>
+    <tr>
+        <td><div class="field-container-item-desc">{{labels.changeHelp}}</div></td>
+    </tr>
+    <tr>
+        <td data-name="testButton"></td>
+    </tr>
+    <tr>
+        <td><div data-name="status" role="status" aria-live="polite"></div></td>
+    </tr>
+    </tbody>
+</table>

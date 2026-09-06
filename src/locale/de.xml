@@ -1,6 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <locales>
     <groups name="quiqqer/core" datatype="js,php">
+        <locale name="processLocks.title">
+            <de><![CDATA[Prozesssperren]]></de>
+        </locale>
+        <locale name="processLocks.backend">
+            <de><![CDATA[Backend]]></de>
+        </locale>
+        <locale name="processLocks.flock">
+            <de><![CDATA[Dateisystem]]></de>
+        </locale>
+        <locale name="processLocks.dbal">
+            <de><![CDATA[QUIQQER-Datenbank]]></de>
+        </locale>
+        <locale name="processLocks.namespace">
+            <de><![CDATA[Namespace]]></de>
+        </locale>
+        <locale name="processLocks.namespaceHelp">
+            <de><![CDATA[Auf allen Servern dieser Installation dieselbe Kennung verwenden. Leer: Kennung aus dem Installationspfad.]]></de>
+        </locale>
+        <locale name="processLocks.path">
+            <de><![CDATA[Verzeichnis]]></de>
+        </locale>
+        <locale name="processLocks.pathHelp">
+            <de><![CDATA[Leer lassen für das Standardverzeichnis var/locks/. Dateisperren koordinieren Prozesse auf demselben Server.]]></de>
+        </locale>
+        <locale name="processLocks.dbalHelp">
+            <de><![CDATA[Verwendet die konfigurierte QUIQQER-Datenbank und eine eigene Tabelle für Prozesssperren.]]></de>
+        </locale>
+        <locale name="processLocks.host">
+            <de><![CDATA[Redis-Host]]></de>
+        </locale>
+        <locale name="processLocks.port">
+            <de><![CDATA[Port]]></de>
+        </locale>
+        <locale name="processLocks.database">
+            <de><![CDATA[Redis-Datenbank]]></de>
+        </locale>
+        <locale name="processLocks.username">
+            <de><![CDATA[Benutzername]]></de>
+        </locale>
+        <locale name="processLocks.password">
+            <de><![CDATA[Passwort]]></de>
+        </locale>
+        <locale name="processLocks.clearPassword">
+            <de><![CDATA[Gespeichertes Passwort entfernen]]></de>
+        </locale>
+        <locale name="processLocks.passwordKept">
+            <de><![CDATA[Gespeichertes Passwort beibehalten]]></de>
+        </locale>
+        <locale name="processLocks.tls">
+            <de><![CDATA[TLS verwenden]]></de>
+        </locale>
+        <locale name="processLocks.redisHelp">
+            <de><![CDATA[Eine separate Redis-Datenbank verwenden, die beim Leeren des Anwendungscaches erhalten bleibt. Ein leeres Passwortfeld behält das gespeicherte Passwort bei. Auf dem Server muss ein Redis-Client installiert sein.]]></de>
+        </locale>
+        <locale name="processLocks.custom">
+            <de><![CDATA[Benutzerdefiniert (bereits konfiguriert)]]></de>
+        </locale>
+        <locale name="processLocks.customHelp">
+            <de><![CDATA[Dieser Store wurde außerhalb dieser Oberfläche konfiguriert. Seine Verbindung bleibt beim Speichern erhalten, sofern kein anderes Backend gewählt wird.]]></de>
+        </locale>
+        <locale name="processLocks.changeHelp">
+            <de><![CDATA[Beim Backend-Wechsel können geschützte Arbeiten kurzzeitig parallel laufen. Dauerhaft laufende Worker übernehmen den neuen Store nach einem Neustart.]]></de>
+        </locale>
+        <locale name="processLocks.test">
+            <de><![CDATA[Verbindung prüfen]]></de>
+        </locale>
+        <locale name="processLocks.testing">
+            <de><![CDATA[Sperre wird geprüft …]]></de>
+        </locale>
+        <locale name="processLocks.testSuccess">
+            <de><![CDATA[Die Verbindung funktioniert. Du kannst diese Einstellungen jetzt speichern.]]></de>
+        </locale>
+        <locale name="processLocks.testFailed">
+            <de><![CDATA[Verbindungstest fehlgeschlagen. Bitte Verbindungsdaten, Server-Erreichbarkeit, Berechtigungen und installierten Redis-Client prüfen.]]></de>
+        </locale>
+        <locale name="processLocks.loadFailed">
+            <de><![CDATA[Einstellungen konnten nicht geladen werden. Bitte die Kategorie erneut öffnen.]]></de>
+        </locale>
+        <locale name="processLocks.notReady">
+            <de><![CDATA[Bitte warten, bis Laden oder Verbindungstest abgeschlossen ist.]]></de>
+        </locale>
+        <locale name="processLocks.saved">
+            <de><![CDATA[Die Einstellungen für Prozesssperren wurden gespeichert.]]></de>
+        </locale>
+        <locale name="processLocks.saveFailed">
+            <de><![CDATA[Prozesssperren konnten nicht gespeichert werden. Bitte die Eingaben und Berechtigungen prüfen.]]></de>
+        </locale>
+        <locale name="processLocks.invalid">
+            <de><![CDATA[Ungültige Einstellungen für Prozesssperren.]]></de>
+        </locale>
         <locale name="yes">
             <de><![CDATA[Ja]]></de>
         </locale>
