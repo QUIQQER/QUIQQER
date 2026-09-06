@@ -36,5 +36,6 @@ while (!file_exists($directory . '/go')) {
     }
     usleep(10000);
 }
-$acquired = $Locks->acquire('site:concurrent', 'editor-' . $id, str_repeat(dechex((int)$id + 1), 32));
+$owner = !empty($argv[4]) ? $argv[4] : 'editor-' . $id;
+$acquired = $Locks->acquire('site:concurrent', $owner, str_repeat(dechex((int)$id + 1), 32));
 file_put_contents($directory . '/done-' . $id, $acquired ? '1' : '0');

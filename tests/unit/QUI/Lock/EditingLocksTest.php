@@ -60,15 +60,63 @@ class EditingLocksTest extends TestCase
         $two = str_repeat('b', 32);
         self::assertTrue($First->acquire('site:one', 'alice', $one));
         self::assertFalse($Second->acquire('site:one', 'bob', $two));
-        self::assertFalse($Second->acquire('site:one', 'alice', $two), 'Two tabs of the same user have distinct ownership.');
+        self::assertTrue($Second->acquire('site:one', 'alice', $two), 'The same user may open another tab or reload.');
         self::assertTrue($Second->refresh('site:one', 'alice', $one));
         self::assertArrayNotHasKey('token', $Second->status('site:one'));
+        self::assertArrayNotHasKey('tokens', $Second->status('site:one'));
+        self::assertSame('saved', $Second->run('site:one', 'alice', $two, fn() => 'saved'));
         self::assertTrue($First->release('site:one', 'alice', $one));
-        self::assertTrue($Second->acquire('site:one', 'alice', $two));
+        self::assertTrue($Second->refresh('site:one', 'alice', $two));
+        self::assertFalse($First->acquire('site:one', 'bob', $one));
         self::assertFalse($First->release('site:one', 'alice', $one));
         self::assertFalse($First->refresh('site:one', 'alice', $one));
         self::assertSame('alice', $Second->status('site:one')['owner']);
+        self::assertTrue($Second->release('site:one', 'alice', $two));
+        self::assertTrue($First->acquire('site:one', 'bob', $one));
         self::assertTrue($First->acquire('site:two', 'bob', $one));
+    }
+
+    #[DataProvider('backends')]
+    public function testAbandonedTabsExpireIndependentlyOfActiveTabs(string $backend): void
+    {
+        $Store = $this->store($backend);
+        $expired = str_repeat('a', 32);
+        $active = str_repeat('b', 32);
+        $Item = $Store->getItem(hash('sha256', 'site:one'));
+        $Item->set([
+            'owner' => 'alice',
+            'tokens' => [$expired => time() - 1, $active => time() + 60],
+            'expires' => time() + 60
+        ]);
+        self::assertTrue($Store->save($Item));
+        $Locks = new EditingLocks($this->store($backend));
+        self::assertFalse($Locks->refresh('site:one', 'alice', $expired));
+        self::assertFalse($Locks->release('site:one', 'alice', $expired));
+        self::assertTrue($Locks->refresh('site:one', 'alice', $active));
+        self::assertFalse($Locks->acquire('site:one', 'bob', $expired));
+        self::assertTrue($Locks->release('site:one', 'alice', $active));
+        self::assertNull($Locks->status('site:one'));
+    }
+
+    #[DataProvider('backends')]
+    public function testExistingSingleEditorRecordAllowsAnotherEditorOfTheSameUser(string $backend): void
+    {
+        $Store = $this->store($backend);
+        $old = str_repeat('a', 32);
+        $new = str_repeat('b', 32);
+        $Item = $Store->getItem(hash('sha256', 'site:one'));
+        $Item->set(['owner' => 'alice', 'token' => $old, 'expires' => time() + 60]);
+        self::assertTrue($Store->save($Item));
+        $Locks = new EditingLocks($this->store($backend));
+        self::assertTrue($Locks->acquire('site:one', 'alice', $new));
+        self::assertTrue($Locks->refresh('site:one', 'alice', $old));
+        self::assertTrue($Locks->release('site:one', 'alice', $old));
+        self::assertTrue($Locks->refresh('site:one', 'alice', $new));
+        self::assertTrue($Locks->release('site:one', 'alice', '', true));
+        self::assertTrue($Locks->acquire('site:one', 'bob', $old));
+        self::assertFalse($Locks->release('site:one', 'alice', $new));
+        self::assertFalse($Locks->refresh('site:one', 'alice', $new));
+        self::assertSame('bob', $Locks->status('site:one')['owner']);
     }
 
     #[DataProvider('backends')]
@@ -132,14 +180,19 @@ class EditingLocksTest extends TestCase
         (new EditingLocks($Store))->acquire('site:one', 'alice', str_repeat('a', 32));
     }
 
-    #[DataProvider('backends')]
-    public function testConcurrentEditorsHaveExactlyOneOwnerAfterAllRequestsExit(string $backend): void
+    public static function concurrentEditors(): array
+    {
+        return [['files', false], ['dbal', false], ['files', true], ['dbal', true]];
+    }
+
+    #[DataProvider('concurrentEditors')]
+    public function testConcurrentEditorsHaveExactlyOneUserAfterAllRequestsExit(string $backend, bool $sameUser): void
     {
         $processes = [];
         try {
             for ($id = 0; $id < 4; $id++) {
                 $process = proc_open([PHP_BINARY, __DIR__ . '/Fixtures/editing-lock-worker.php',
-                    $this->directory, $backend, (string)$id], [
+                    $this->directory, $backend, (string)$id, $sameUser ? 'shared-user' : ''], [
                     1 => ['file', $this->directory . '/output-' . $id, 'w'],
                     2 => ['file', $this->directory . '/error-' . $id, 'w']
                 ], $pipes);
@@ -162,9 +215,15 @@ class EditingLocksTest extends TestCase
             }
             $processes = [];
             $results = array_map('file_get_contents', glob($this->directory . '/done-*'));
-            self::assertSame(1, array_sum(array_map('intval', $results)));
+            self::assertSame($sameUser ? 4 : 1, array_sum(array_map('intval', $results)));
             $Locks = new EditingLocks($this->store($backend));
             self::assertNotNull($Locks->status('site:concurrent'));
+
+            if ($sameUser) {
+                for ($id = 0; $id < 4; $id++) {
+                    self::assertTrue($Locks->refresh('site:concurrent', 'shared-user', str_repeat(dechex($id + 1), 32)));
+                }
+            }
         } finally {
             foreach ($processes as $process) {
                 if (is_resource($process)) {

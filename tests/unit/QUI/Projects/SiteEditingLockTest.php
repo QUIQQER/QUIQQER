@@ -58,7 +58,8 @@ class SiteEditingLockTest extends TestCase
         $two = str_repeat('b', 32);
         self::assertTrue($Site->acquireEditingLock($one));
         self::assertFalse($Site->isLockedFromOther());
-        self::assertFalse($Site->acquireEditingLock($two));
+        self::assertTrue($Site->acquireEditingLock($two));
+        self::assertTrue($Site->refreshLock($two));
         $Site->releaseEditingLock($two);
         self::assertTrue($Site->refreshLock($one));
         $Site->releaseEditingLock($one);

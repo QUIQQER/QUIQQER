@@ -17,7 +17,7 @@ class EditingLocks
     {
     }
 
-    /** @return array{owner: string, token: string, expires: int}|null */
+    /** @return array{owner: string, tokens: array<string, int>, expires: int}|null */
     private function read(string $resource): ?array
     {
         $Item = $this->Store->getItem(hash('sha256', $resource));
@@ -29,7 +29,7 @@ class EditingLocks
         $data = $Item->get();
 
         if (
-            !is_array($data) || !is_string($data['owner'] ?? null) || !is_string($data['token'] ?? null)
+            !is_array($data) || !is_string($data['owner'] ?? null)
             || !is_int($data['expires'] ?? null)
         ) {
             throw new Exception('Invalid editing lock record.', 503);
@@ -39,14 +39,39 @@ class EditingLocks
             return null;
         }
 
-        return $data;
+        // Existing single-editor records remain valid until they expire or are updated.
+        $tokens = $data['tokens'] ?? null;
+        if ($tokens === null && is_string($data['token'] ?? null)) {
+            $tokens = [$data['token'] => $data['expires']];
+        }
+
+        if (!is_array($tokens)) {
+            throw new Exception('Invalid editing lock record.', 503);
+        }
+
+        $activeTokens = [];
+        foreach ($tokens as $token => $expires) {
+            if (!is_string($token) || !preg_match('/^[a-f0-9]{32,128}$/D', $token) || !is_int($expires)) {
+                throw new Exception('Invalid editing lock record.', 503);
+            }
+
+            if ($expires > time()) {
+                $activeTokens[$token] = $expires;
+            }
+        }
+
+        if ($activeTokens === []) {
+            return null;
+        }
+
+        return ['owner' => $data['owner'], 'tokens' => $activeTokens, 'expires' => max($activeTokens)];
     }
 
-    /** @param array{owner: string, token: string, expires: int} $record */
+    /** @param array{owner: string, tokens: array<string, int>, expires: int} $record */
     private function write(string $resource, array $record): void
     {
         $Item = $this->Store->getItem(hash('sha256', $resource));
-        $Item->set($record)->expiresAfter(self::LIFETIME);
+        $Item->set($record)->expiresAfter(max(1, $record['expires'] - time()));
 
         if (!$this->Store->save($Item)) {
             throw new Exception('Unable to persist editing lock.', 503);
@@ -74,11 +99,14 @@ class EditingLocks
         return $this->guard($resource, function () use ($resource, $owner, $token): bool {
             $record = $this->read($resource);
 
-            if ($record !== null && !$this->owns($record, $owner, $token)) {
+            if ($record !== null && $record['owner'] !== $owner) {
                 return false;
             }
 
-            $this->write($resource, ['owner' => $owner, 'token' => $token, 'expires' => time() + self::LIFETIME]);
+            $expires = time() + self::LIFETIME;
+            $tokens = $record['tokens'] ?? [];
+            $tokens[$token] = $expires;
+            $this->write($resource, ['owner' => $owner, 'tokens' => $tokens, 'expires' => max($tokens)]);
             return true;
         });
     }
@@ -92,7 +120,8 @@ class EditingLocks
                 return false;
             }
 
-            $record['expires'] = time() + self::LIFETIME;
+            $record['tokens'][$token] = time() + self::LIFETIME;
+            $record['expires'] = max($record['tokens']);
             $this->write($resource, $record);
             return true;
         });
@@ -105,6 +134,16 @@ class EditingLocks
 
             if ($record === null || (!$force && !$this->owns($record, $owner, $token))) {
                 return false;
+            }
+
+            if (!$force) {
+                unset($record['tokens'][$token]);
+
+                if ($record['tokens'] !== []) {
+                    $record['expires'] = max($record['tokens']);
+                    $this->write($resource, $record);
+                    return true;
+                }
             }
 
             if (!$this->Store->deleteItem(hash('sha256', $resource))) {
@@ -135,8 +174,9 @@ class EditingLocks
                 throw new Exception(['quiqqer/core', 'exception.site.is.being.edited'], 703);
             }
 
-            if ($record !== null) {
-                $record['expires'] = time() + self::LIFETIME;
+            if ($record !== null && $token !== null) {
+                $record['tokens'][$token] = time() + self::LIFETIME;
+                $record['expires'] = max($record['tokens']);
                 $this->write($resource, $record);
             }
 
@@ -144,10 +184,10 @@ class EditingLocks
         });
     }
 
-    /** @param array{owner: string, token: string, expires: int} $record */
+    /** @param array{owner: string, tokens: array<string, int>, expires: int} $record */
     private function owns(array $record, string $owner, string $token): bool
     {
-        return $record['owner'] === $owner && hash_equals($record['token'], $token);
+        return $record['owner'] === $owner && isset($record['tokens'][$token]);
     }
 
     /** @template T

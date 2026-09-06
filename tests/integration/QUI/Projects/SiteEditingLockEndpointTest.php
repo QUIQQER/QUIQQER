@@ -36,7 +36,7 @@ class SiteEditingLockEndpointTest extends ProjectIntegrationTestCase
                 (new \ReflectionProperty(QUI::getUsers(), 'Session'))->setValue(QUI::getUsers(), $Root);
                 QUI\Permissions\Permission::setUser($Root);
                 QUI::$Ajax = new QUI\Ajax();
-                foreach (['lock', 'refreshLock', 'unlock', 'save'] as $action) {
+                foreach (['lock', 'refreshLock', 'unlock', 'save', 'isLockedFromOther'] as $action) {
                     require dirname(__DIR__, 4) . '/admin/ajax/site/' . $action . '.php';
                 }
 
@@ -46,13 +46,24 @@ class SiteEditingLockEndpointTest extends ProjectIntegrationTestCase
                     QUI::getAjax()->callRequestFunction('ajax_site_' . $action, array_merge($params, $extra));
                 $locked = $request('lock');
                 self::assertTrue($locked['result'], json_encode($locked));
-                self::assertFalse($request('lock', ['token' => $newToken])['result']);
+                self::assertTrue($request('lock', ['token' => $newToken])['result']);
                 self::assertTrue($request('refreshLock')['result']);
+                self::assertTrue($request('refreshLock', ['token' => $newToken])['result']);
+                self::assertFalse($request('isLockedFromOther')['result']);
 
                 $result = $request('save', ['attributes' => json_encode(['title' => 'Saved']), 'lockToken' => $token]);
                 self::assertArrayNotHasKey('Exception', $result, json_encode($result));
                 $Site->refresh();
                 self::assertSame('Saved', $Site->getAttribute('title'));
+
+                $request('unlock');
+                self::assertTrue($request('refreshLock', ['token' => $newToken])['result']);
+                self::assertFalse($request('refreshLock')['result']);
+                $result = $request('save', [
+                    'attributes' => json_encode(['title' => 'Saved in another tab']), 'lockToken' => $newToken
+                ]);
+                self::assertArrayNotHasKey('Exception', $result, json_encode($result));
+                self::assertTrue($request('lock')['result']);
 
                 $request('unlock', ['force' => 1]);
                 self::assertTrue($request('lock', ['token' => $newToken])['result']);
@@ -62,7 +73,7 @@ class SiteEditingLockEndpointTest extends ProjectIntegrationTestCase
                 $result = $request('save', ['attributes' => json_encode(['title' => 'Stale']), 'lockToken' => $token]);
                 self::assertArrayHasKey('Exception', $result);
                 $Site->refresh();
-                self::assertSame('Saved', $Site->getAttribute('title'));
+                self::assertSame('Saved in another tab', $Site->getAttribute('title'));
 
                 $result = $request('save', ['attributes' => json_encode(['title' => 'Missing token'])]);
                 self::assertArrayHasKey('Exception', $result);
