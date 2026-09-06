@@ -19,7 +19,7 @@ final class ProjectSettingsCategoryEndpointSecurityTest extends ProjectIntegrati
         $Project = self::getTestProject();
 
         QUI::$Ajax = new Ajax();
-        $coreDirectory = dirname(__DIR__, 4);
+        $coreDirectory = OPT_DIR . 'quiqqer/core';
         $projectSettingsXml = USR_DIR . $Project->getName() . '/settings.xml';
         $projectData = json_encode($Project->toArray(), JSON_THROW_ON_ERROR);
 

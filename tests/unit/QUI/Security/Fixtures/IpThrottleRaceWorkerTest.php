@@ -2,7 +2,7 @@
 
 namespace QUI\Security\Fixtures;
 
-use Doctrine\DBAL\DriverManager;
+use QUITests\Support\DatabaseEnvironment;
 use PHPUnit\Framework\TestCase;
 use QUI;
 use QUI\Security\Throttle;
@@ -19,7 +19,7 @@ final class IpThrottleRaceWorkerTest extends TestCase
         }
 
         $input = json_decode(file_get_contents($filename), true, flags: JSON_THROW_ON_ERROR);
-        $Connection = DriverManager::getConnection($input['connection']);
+        $Connection = DatabaseEnvironment::createConnection($input['database']);
 
         if ($Connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\SQLitePlatform) {
             $Connection->executeStatement('PRAGMA busy_timeout = 10000');
@@ -37,7 +37,7 @@ final class IpThrottleRaceWorkerTest extends TestCase
             usleep(10000);
         }
 
-        $allowed = Throttle::acquireForIp('192.0.2.99', 'quiqqer/core', 'users.login', 2, 900);
+        $allowed = Throttle::acquireForIp($input['ip'], 'quiqqer/core', 'users.login', 2, 900);
         file_put_contents($input['result'], json_encode($allowed, JSON_THROW_ON_ERROR));
         self::assertIsBool($allowed);
         $Connection->close();

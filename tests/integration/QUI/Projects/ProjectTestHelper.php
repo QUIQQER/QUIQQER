@@ -145,11 +145,9 @@ final class ProjectTestHelper
         $Users = QUI::getUsers();
         $SystemUser = $Users->getSystemUser();
         $SessionProperty = new ReflectionProperty($Users, 'Session');
-        $SessionProperty->setAccessible(true);
         $PreviousSessionUser = $SessionProperty->getValue($Users);
 
         $PermissionUserProperty = new ReflectionProperty(Permission::class, 'User');
-        $PermissionUserProperty->setAccessible(true);
         $PreviousPermissionUser = $PermissionUserProperty->getValue();
 
         $SessionProperty->setValue($Users, $SystemUser);

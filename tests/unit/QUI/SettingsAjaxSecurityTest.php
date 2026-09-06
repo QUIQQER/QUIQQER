@@ -16,7 +16,7 @@ final class SettingsAjaxSecurityTest extends TestCase
     {
         \QUI::$Ajax = new Ajax();
 
-        $coreDirectory = dirname(__DIR__, 3);
+        $coreDirectory = OPT_DIR . 'quiqqer/core';
         require $coreDirectory . '/admin/ajax/settings/save.php';
 
         $callable = Ajax::getRegisteredCallables()['ajax_settings_save']['callable'];
@@ -44,7 +44,7 @@ final class SettingsAjaxSecurityTest extends TestCase
     {
         \QUI::$Ajax = new Ajax();
 
-        $coreDirectory = dirname(__DIR__, 3);
+        $coreDirectory = OPT_DIR . 'quiqqer/core';
         require $coreDirectory . '/admin/ajax/settings/get.php';
 
         $callable = Ajax::getRegisteredCallables()['ajax_settings_get']['callable'];

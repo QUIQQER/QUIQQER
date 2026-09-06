@@ -116,11 +116,14 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
 
         self::$testDirectory = sys_get_temp_dir() . '/quiqqer-image-endpoint-'
             . bin2hex(random_bytes(8));
-        self::$varDirectory = self::$testDirectory . '/var/';
+        self::$varDirectory = getenv('GITLAB_CI') === 'true' ? self::$testDirectory . '/var/' : VAR_DIR;
         self::$serverLog = self::$testDirectory . '/server.log';
 
-        mkdir(self::$varDirectory . 'sessions', 0777, true);
-        mkdir(self::$varDirectory . 'logs', 0777, true);
+        foreach ([self::$testDirectory, self::$varDirectory . 'sessions', self::$varDirectory . 'logs'] as $directory) {
+            if (!is_dir($directory)) {
+                mkdir($directory, 0700, true);
+            }
+        }
 
         self::createMediaFixtures();
         self::writeHttpEndpointWrapper();
@@ -588,7 +591,7 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
         ]);
 
         self::assertGreaterThanOrEqual(400, $Response['status'], self::failureMessage($Response));
-        self::assertSame(403, json_decode($Response['body'], true)['code'] ?? null);
+        self::assertSame(403, json_decode($Response['body'], true)['code'] ?? null, self::failureMessage($Response));
         self::assertStringNotContainsString('0123456789', $Response['body']);
         self::assertArrayNotHasKey('content-disposition', $Response['headers']);
     }
@@ -615,7 +618,7 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
         ]);
 
         self::assertGreaterThanOrEqual(400, $Response['status'], self::failureMessage($Response));
-        self::assertSame(403, json_decode($Response['body'], true)['code'] ?? null);
+        self::assertSame(403, json_decode($Response['body'], true)['code'] ?? null, self::failureMessage($Response));
         self::assertArrayNotHasKey('content-disposition', $Response['headers']);
     }
 
@@ -645,7 +648,7 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
         ]);
 
         self::assertGreaterThanOrEqual(400, $Response['status'], self::failureMessage($Response));
-        self::assertSame(403, json_decode($Response['body'], true)['code'] ?? null);
+        self::assertSame(403, json_decode($Response['body'], true)['code'] ?? null, self::failureMessage($Response));
         self::assertStringNotContainsString('0123456789', $Response['body']);
         self::assertArrayNotHasKey('accept-ranges', $Response['headers']);
         self::assertArrayNotHasKey('content-range', $Response['headers']);
@@ -1070,7 +1073,9 @@ if (isset($_GET['health'])) {
 }
 
 define('QUIQQER_SYSTEM', true);
-define('VAR_DIR', %VAR_DIRECTORY%);
+if (getenv('GITLAB_CI') === 'true') {
+    define('VAR_DIR', %VAR_DIRECTORY%);
+}
 
 require %BOOTSTRAP_FILE%;
 

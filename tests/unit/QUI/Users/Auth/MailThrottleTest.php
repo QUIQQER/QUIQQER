@@ -28,6 +28,8 @@ class MailThrottleTest extends TestCase
 
     protected function setUp(): void
     {
+        // Resolve the project while the complete fixture database is still installed.
+        QUI::getRewrite()->getProject();
         $this->Connection = DriverManager::getConnection([
             'driver' => 'pdo_sqlite',
             'memory' => true
