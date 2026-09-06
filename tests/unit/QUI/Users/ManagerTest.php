@@ -180,6 +180,71 @@ class ManagerTest extends TestCase
 
     #[RunInSeparateProcess]
     #[PreserveGlobalState(false)]
+    public function testLoginRejectsExpiredAccountWithDisplayableError(): void
+    {
+        $Connection = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+        $table = Manager::table();
+        $Connection->executeStatement(
+            'CREATE TABLE ' . $Connection->getDatabasePlatform()->quoteIdentifier($table)
+            . ' (id INTEGER PRIMARY KEY, uuid VARCHAR(36), expire VARCHAR(19), secHash VARCHAR(32), active INTEGER)'
+        );
+        $userId = 'expired-user-uuid';
+        $expire = '2000-01-01 00:00:00';
+        $Connection->insert($table, [
+            'id' => 42,
+            'uuid' => $userId,
+            'expire' => $expire,
+            'secHash' => '',
+            'active' => 1
+        ]);
+        (new ReflectionProperty(QUI::class, 'QueryBuilder'))->setValue(null, $Connection);
+
+        $User = $this->createMock(User::class);
+        $User->method('getUUID')->willReturn($userId);
+        $User->expects(self::never())->method('refresh');
+        $Manager = $this->getMockBuilder(Manager::class)->onlyMethods(['get'])->getMock();
+        $Manager->method('get')->with($userId)->willReturn($User);
+
+        $Session = new Session();
+        $Session->set('auth-primary', 1);
+        $Session->set('uid', $userId);
+        QUI::$Session = $Session;
+        QUI::$Users = $Manager;
+        $Config = $this->createMock(Config::class);
+        $Config->method('get')->willReturn(false);
+        QUI::$Conf = $Config;
+
+        $loginError = null;
+        $Events = $this->createMock(EventsManager::class);
+        $Events->method('fireEvent')->willReturnCallback(
+            static function (string $event, array $arguments) use (&$loginError, $userId): array {
+                if ($event === 'userLoginError') {
+                    self::assertSame($userId, $arguments[0]);
+                    $loginError = $arguments[1];
+                }
+
+                return [];
+            }
+        );
+        QUI::$Events = $Events;
+
+        try {
+            $Manager->login();
+            self::fail('Expired accounts must not log in.');
+        } catch (Exception $Exception) {
+            self::assertSame(401, $Exception->getCode());
+            self::assertSame(Manager::AUTH_ERROR_LOGIN_EXPIRED, $Exception->getAttribute('reason'));
+            self::assertSame(
+                QUI::getLocale()->get('quiqqer/core', 'exception.login.expire', ['expire' => $expire]),
+                $Exception->getMessage()
+            );
+            self::assertSame($Exception, $loginError);
+            self::assertFalse((bool)$Session->get('auth'));
+        }
+    }
+
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function testLoginRegeneratesSessionBeforeStoringAuthenticatedState(): void
     {
         $Connection = DriverManager::getConnection([

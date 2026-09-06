@@ -1232,7 +1232,8 @@ class Manager
             $Exception = new QUI\Users\Exception(
                 QUI::getLocale()->get('quiqqer/core', 'exception.login.expire', [
                     'expire' => $userData['expire']
-                ])
+                ]),
+                401
             );
 
             $Exception->setAttribute('reason', self::AUTH_ERROR_LOGIN_EXPIRED);
