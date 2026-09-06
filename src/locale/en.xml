@@ -1798,6 +1798,18 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="login.title">
             <en><![CDATA[Login]]></en>
         </locale>
+        <locale name="login.check.cookies">
+            <en><![CDATA[Signing in requires cookies. Your browser cannot store them at the moment. Please allow cookies for this website and check again. If the problem persists, clear the stored website data and reload the page.]]></en>
+        </locale>
+        <locale name="login.check.session">
+            <en><![CDATA[The sign-in session could not be confirmed. Please reload the page and try again. If the problem persists, contact the website operator.]]></en>
+        </locale>
+        <locale name="login.check.connection">
+            <en><![CDATA[The connection for signing in could not be checked. Please check your internet connection and try again. If the problem persists, contact the website operator.]]></en>
+        </locale>
+        <locale name="login.check.retry">
+            <en><![CDATA[Check again]]></en>
+        </locale>
         <locale name="window.logout.title">
             <en><![CDATA[Logout]]></en>
         </locale>

@@ -21,13 +21,12 @@ define('controls/users/Login', [
     'qui/utils/Form',
     'Ajax',
     'Locale',
+    'utils/LoginCheck',
 
     'css!controls/users/Login.css'
 
-], function (QUI, QUIControl, QUILoader, QUIFormUtils, QUIAjax, QUILocale) {
+], function (QUI, QUIControl, QUILoader, QUIFormUtils, QUIAjax, QUILocale, LoginCheck) {
     'use strict';
-
-    let onInjectIsRunning = false;
 
     return new Class({
 
@@ -65,7 +64,10 @@ define('controls/users/Login', [
 
             this.addEvents({
                 onImport: this.$onImport,
-                onInject: this.$onInject
+                onInject: this.$onInject,
+                onDestroy: () => {
+                    this.$loginCheckDestroyed = true;
+                }
             });
         },
 
@@ -97,22 +99,22 @@ define('controls/users/Login', [
          * event : on inject
          */
         $onInject: function () {
-            if (onInjectIsRunning) {
+            if (this.$onInjectIsRunning) {
                 return;
             }
 
-            onInjectIsRunning = true;
+            this.$onInjectIsRunning = true;
 
             if (this.getAttribute('showLoader')) {
                 this.Loader.show();
             }
 
-            this.getLoginControl().then((responseData) => {
+            this.$checkLoginAvailability().then(() => this.getLoginControl()).then((responseData) => {
                 return this.$handleLoginResponse(responseData);
             }).then((responseData) => {
                 return this.$buildAuthenticator(responseData.control);
             }).then(() => {
-                onInjectIsRunning = false;
+                this.$onInjectIsRunning = false;
 
                 this.fireEvent('load', [this]);
                 QUI.fireEvent('quiqqerUserAuthLoginLoad', [this]);
@@ -127,6 +129,17 @@ define('controls/users/Login', [
                     }, {
                         duration: 250
                     });
+                }
+            }).catch((error) => {
+                this.$onInjectIsRunning = false;
+
+                if (this.$loginCheckDestroyed) {
+                    return;
+                }
+
+                this.Loader.hide();
+                if (!error.loginCheck) {
+                    this.$showLoginCheckError('connection');
                 }
             });
         },
@@ -149,6 +162,7 @@ define('controls/users/Login', [
             }
 
             this.$refreshForm();
+            this.$checkLoginAvailability().catch(() => {});
             this.fireEvent('load', [this]);
             QUI.fireEvent('quiqqerUserAuthLoginLoad', [this]);
 
@@ -162,6 +176,101 @@ define('controls/users/Login', [
         },
 
         /**
+         * Check the browser and session before showing or submitting an authenticator.
+         */
+        $checkLoginAvailability: function () {
+            if (this.$loginCheckDestroyed) {
+                return Promise.reject(Object.assign(new Error('cancelled'), {loginCheck: 'cancelled'}));
+            }
+
+            const container = this.getElm().querySelector('[data-name="quiqqer-users-login-container"]');
+            const retry = this.getElm().querySelector('[data-name="login-check-retry"]');
+
+            if (container) {
+                container.inert = true;
+                container.setAttribute('aria-busy', 'true');
+            }
+
+            if (retry) {
+                retry.disabled = true;
+            }
+
+            if (this.getAttribute('showLoader')) {
+                this.Loader.show();
+            }
+
+            return LoginCheck.check().then(() => {
+                if (this.$loginCheckDestroyed) {
+                    throw Object.assign(new Error('cancelled'), {loginCheck: 'cancelled'});
+                }
+
+                this.getElm().querySelector('[data-name="login-check-notice"]')?.remove();
+
+                if (container) {
+                    container.inert = false;
+                }
+            }).catch((error) => {
+                if (this.$loginCheckDestroyed) {
+                    throw error;
+                }
+
+                this.$showLoginCheckError(error.loginCheck || 'connection');
+                this.fireEvent('authNext', [this]);
+                QUI.fireEvent('quiqqerUserAuthNext', [this]);
+                throw error;
+            }).finally(() => {
+                if (this.$loginCheckDestroyed) {
+                    return;
+                }
+
+                this.Loader.hide();
+
+                if (container) {
+                    container.removeAttribute('aria-busy');
+                }
+
+                if (retry) {
+                    retry.disabled = false;
+                }
+            });
+        },
+
+        $showLoginCheckError: function (reason) {
+            const root = this.getElm();
+            let notice = root.querySelector('[data-name="login-check-notice"]');
+
+            if (!notice) {
+                notice = document.createElement('div');
+                notice.dataset.name = 'login-check-notice';
+                notice.className = 'messages-message message-attention quiqqer-login-check';
+
+                const message = document.createElement('p');
+                message.dataset.name = 'login-check-message';
+                message.setAttribute('role', 'alert');
+
+                const retry = document.createElement('button');
+                retry.type = 'button';
+                retry.dataset.name = 'login-check-retry';
+                retry.className = 'btn btn-secondary';
+                retry.textContent = QUILocale.get('quiqqer/core', 'login.check.retry');
+                retry.addEventListener('click', () => {
+                    if (root.querySelector('[data-name="quiqqer-users-login-container"]')) {
+                        this.$checkLoginAvailability().catch(() => {});
+                    } else {
+                        this.$onInject();
+                    }
+                });
+
+                notice.append(message, retry);
+                root.prepend(notice);
+            }
+
+            notice.querySelector('[data-name="login-check-message"]').textContent = QUILocale.get(
+                'quiqqer/core', 'login.check.' + reason
+            );
+        },
+
+        /**
          * Refresh the form data and set events to the current form
          */
         $refreshForm: function () {
@@ -170,6 +279,10 @@ define('controls/users/Login', [
                 e.preventDefault();
 
                 this.auth(e.target).catch((err) => {
+                    if (err.loginCheck) {
+                        return;
+                    }
+
                     this.fireEvent('userLoginError', [err, this]);
                     QUI.fireEvent('quiqqerUserAuthLoginUserLoginError', [err, this]);
                 });
@@ -512,6 +625,10 @@ define('controls/users/Login', [
          * Execute the current authentication
          */
         auth: function (Form) {
+            return this.$checkLoginAvailability().then(() => this.$authenticate(Form));
+        },
+
+        $authenticate: function (Form) {
             if (this.getAttribute('showLoader')) {
                 this.Loader.show();
             }

@@ -1813,6 +1813,18 @@
         <locale name="login.title">
             <de><![CDATA[Login]]></de>
         </locale>
+        <locale name="login.check.cookies">
+            <de><![CDATA[Die Anmeldung benötigt Cookies. Dein Browser kann diese momentan nicht speichern. Bitte erlaube Cookies für diese Website und prüfe erneut. Falls das Problem bestehen bleibt, lösche die gespeicherten Website-Daten und lade die Seite neu.]]></de>
+        </locale>
+        <locale name="login.check.session">
+            <de><![CDATA[Die Anmeldesitzung konnte nicht bestätigt werden. Bitte lade die Seite neu und versuche es noch einmal. Falls das Problem bestehen bleibt, wende dich an den Betreiber der Website.]]></de>
+        </locale>
+        <locale name="login.check.connection">
+            <de><![CDATA[Die Verbindung zur Anmeldung konnte nicht geprüft werden. Bitte prüfe deine Internetverbindung und versuche es erneut. Falls das Problem bestehen bleibt, wende dich an den Betreiber der Website.]]></de>
+        </locale>
+        <locale name="login.check.retry">
+            <de><![CDATA[Erneut prüfen]]></de>
+        </locale>
         <locale name="window.logout.title">
             <de><![CDATA[Abmelden]]></de>
         </locale>
