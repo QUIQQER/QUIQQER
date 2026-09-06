@@ -619,8 +619,7 @@ class Output extends Singleton
         }
 
         $url = $this->extendUrlWithParams($url, $params);
-        $vhosts = QUI::vhosts();
-        $url = $this->prependProjectLanguagePath($url, $Project, $vhosts);
+        $url = $this->prependProjectLanguagePath($url, $Project);
 
         // If the output project is different than the one of the page
         // Then use absolute domain path
@@ -686,23 +685,13 @@ class Output extends Singleton
     }
 
     /**
-     * Prefix a rewritten site path with its configured Path-language.
-     *
-     * Languages without an explicit route retain the legacy /<language>/
-     * fallback whenever VHosts are configured.
-     *
-     * @param array<array-key, mixed> $vhosts
+     * Prefix a rewritten site path with the project's language path.
      */
     private function prependProjectLanguagePath(
         string $url,
-        Project $Project,
-        array $vhosts
+        Project $Project
     ): string {
         $languagePath = $Project->getVHostPath();
-
-        if ($languagePath === '' && !$Project->hasVHost() && !empty($vhosts)) {
-            $languagePath = $Project->getLang();
-        }
 
         if ($languagePath === '') {
             return $url;

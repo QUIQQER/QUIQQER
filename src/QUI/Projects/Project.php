@@ -936,11 +936,23 @@ class Project implements \Stringable
     }
 
     /**
-     * Return the language path below the VHost root without surrounding slashes.
+     * Return the language path without surrounding slashes.
+     * Unassigned languages use a prefix for multilingual projects or when VHosts
+     * are configured, preserving the legacy fallback for unassigned projects.
      */
     public function getVHostPath(): string
     {
-        return $this->getVHostRoute()['path'] ?? '';
+        $route = $this->getVHostRoute();
+
+        if ($route !== null) {
+            return $route['path'];
+        }
+
+        if (!empty(QUI::vhosts()) || count($this->getLanguages()) > 1) {
+            return $this->getLang();
+        }
+
+        return '';
     }
 
     /**
