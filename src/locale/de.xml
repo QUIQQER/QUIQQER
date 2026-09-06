@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <locales>
     <groups name="quiqqer/core" datatype="js,php">
+        <locale name="projects.popup.search">
+            <de><![CDATA[Seiten suchen: Titel, Name oder ID]]></de>
+        </locale>
+        <locale name="projects.popup.search.loading">
+            <de><![CDATA[Seiten werden gesucht …]]></de>
+        </locale>
+        <locale name="projects.popup.search.count">
+            <de><![CDATA[[count] Seiten gefunden.]]></de>
+        </locale>
+        <locale name="projects.popup.search.limited">
+            <de><![CDATA[[count] Seiten angezeigt. Bitte grenze die Suche weiter ein.]]></de>
+        </locale>
+        <locale name="projects.popup.search.error">
+            <de><![CDATA[Die Suche konnte nicht geladen werden. Bitte versuche es erneut.]]></de>
+        </locale>
+        <locale name="projects.popup.selection.remove">
+            <de><![CDATA[[title] aus der Auswahl entfernen]]></de>
+        </locale>
         <locale name="projects.project.site.panel.lockLost">
             <de><![CDATA[Die Bearbeitungssperre ist nicht verfügbar oder wurde verloren. Speichern ist gesperrt. Sichere deine Änderungen und öffne die Seite anschließend erneut.]]></de>
         </locale>
