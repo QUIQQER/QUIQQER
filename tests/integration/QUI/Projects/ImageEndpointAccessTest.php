@@ -590,6 +590,7 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
             '_user' => 'backend-denied'
         ]);
 
+        self::assertStringStartsWith('application/json', $Response['headers']['content-type'] ?? '');
         self::assertGreaterThanOrEqual(400, $Response['status'], self::failureMessage($Response));
         self::assertSame(403, json_decode($Response['body'], true)['code'] ?? null, self::failureMessage($Response));
         self::assertStringNotContainsString('0123456789', $Response['body']);
@@ -617,6 +618,7 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
             '_user' => 'backend-denied'
         ]);
 
+        self::assertStringStartsWith('application/json', $Response['headers']['content-type'] ?? '');
         self::assertGreaterThanOrEqual(400, $Response['status'], self::failureMessage($Response));
         self::assertSame(403, json_decode($Response['body'], true)['code'] ?? null, self::failureMessage($Response));
         self::assertArrayNotHasKey('content-disposition', $Response['headers']);
@@ -647,6 +649,7 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
             '_user' => 'backend-denied'
         ]);
 
+        self::assertStringStartsWith('application/json', $Response['headers']['content-type'] ?? '');
         self::assertGreaterThanOrEqual(400, $Response['status'], self::failureMessage($Response));
         self::assertSame(403, json_decode($Response['body'], true)['code'] ?? null, self::failureMessage($Response));
         self::assertStringNotContainsString('0123456789', $Response['body']);
@@ -1073,6 +1076,11 @@ if (isset($_GET['health'])) {
 }
 
 define('QUIQQER_SYSTEM', true);
+// Match the real Ajax entrypoint before bootstrapping the request.
+if (isset($_GET['_ajax_preview']) || isset($_GET['_ajax_download']) || isset($_GET['_ajax_folder_download'])) {
+    define('QUIQQER_AJAX', true);
+}
+
 if (getenv('GITLAB_CI') === 'true') {
     define('VAR_DIR', %VAR_DIRECTORY%);
 }
