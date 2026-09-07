@@ -481,7 +481,6 @@ class Manager extends QUI\QDOM
 
         if (DEVELOPMENT) {
             $composerJson->{'minimum-stability'} = 'dev';
-            $composerJson->config->{'preferred-install'} = 'source';
 
             if (!isset($composerJson->{'prefer-stable'})) {
                 $composerJson->{'prefer-stable'} = false;

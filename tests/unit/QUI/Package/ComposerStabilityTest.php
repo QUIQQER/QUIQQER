@@ -95,6 +95,46 @@ final class ComposerStabilityTest extends TestCase
         self::assertTrue($config['prefer-stable']);
     }
 
+    public function testRegeneratingComposerJsonPrefersArchives(): void
+    {
+        file_put_contents($this->directory . 'composer.json', json_encode([
+            'config' => ['preferred-install' => 'source'],
+            'require' => ['php' => '^8.2']
+        ], JSON_THROW_ON_ERROR));
+
+        for ($refresh = 0; $refresh < 2; $refresh++) {
+            $this->Manager->refreshServerList();
+            $config = $this->readComposerJson();
+
+            self::assertSame('dist', $config['config']['preferred-install']);
+            self::assertSame(DEVELOPMENT ? 'dev' : 'stable', $config['minimum-stability']);
+            self::assertSame(!DEVELOPMENT, $config['prefer-stable']);
+        }
+    }
+
+    public function testDevelopmentModeAlsoPrefersArchives(): void
+    {
+        // DEVELOPMENT is immutable, so exercise the real generator in a separate runtime.
+        $Process = proc_open([
+            PHP_BINARY,
+            dirname(__DIR__, 4) . '/tools/phpunit',
+            '--no-configuration',
+            '--bootstrap',
+            __DIR__ . '/Fixtures/development-bootstrap.php',
+            '--filter',
+            'testRegeneratingComposerJsonPrefersArchives',
+            __FILE__
+        ], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+
+        self::assertIsResource($Process);
+        $output = stream_get_contents($pipes[1]);
+        $errors = stream_get_contents($pipes[2]);
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+
+        self::assertSame(0, proc_close($Process), $errors . $output);
+    }
+
     private function readComposerJson(): array
     {
         return json_decode(file_get_contents($this->directory . 'composer.json'), true, flags: JSON_THROW_ON_ERROR);
