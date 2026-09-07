@@ -64,7 +64,7 @@
     "quiqqer/login-logger": "^2",
     "quiqqer/messages": "^2",
     "quiqqer/meta": "^3",
-    "quiqqer/qui": "^1.6",
+    "quiqqer/qui": "^1.13.0",
     "quiqqer/qui-php": "^2",
     "quiqqer/requirements": "^3.3.0",
     "quiqqer/smarty": "^3|^4",
