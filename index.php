@@ -38,6 +38,8 @@ use QUI\Utils\System\Debug;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
+$isPageRequest = false;
+
 try {
     require_once 'bootstrap.php';
 
@@ -84,6 +86,7 @@ try {
     // start
     $Rewrite = QUI::getRewrite();
     $Rewrite->exec();
+    $isPageRequest = true;
 
     $Project = $Rewrite->getProject();
     $Site = $Rewrite->getSite();
@@ -309,7 +312,12 @@ try {
     $Response->send();
 
     QUI::getEvents()->fireEvent('responseSent', [$Response]);
-} catch (Exception $Exception) {
+} catch (Throwable $Exception) {
+    // API handlers run during rewrite. Keep their PHP errors in the global handler.
+    if (!$isPageRequest && !($Exception instanceof Exception)) {
+        throw $Exception;
+    }
+
     if ($Exception->getCode() === 705) { // site not found
         QUI\System\Log::addInfo($Exception->getMessage(), [
             'request' => $_REQUEST
@@ -320,6 +328,7 @@ try {
 
     if (!headers_sent()) {
         http_response_code(503);
+        header('Content-Type: text/html; charset=UTF-8');
     }
 
     echo file_get_contents(
