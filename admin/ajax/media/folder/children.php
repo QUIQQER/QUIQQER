@@ -25,6 +25,8 @@ QUI::getAjax()->registerFunction(
             return [];
         }
 
+        $File->checkPermission('quiqqer.projects.media.view');
+
         if (is_string($params)) {
             $params = json_decode($params, true);
         }

@@ -22,7 +22,7 @@ QUI::getAjax()->registerFunction(
 
         // rename check
         if (isset($attributes['name']) && $File->getAttribute('name') != $attributes['name']) {
-            $File->rename($attributes['name']);
+            $File->rename($attributes['name'], QUI::getUserBySession());
 
             unset($attributes['name']);
         }

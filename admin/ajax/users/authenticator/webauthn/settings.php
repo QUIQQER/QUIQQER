@@ -19,7 +19,11 @@ QUI::getAjax()->registerFunction(
         }
 
         if ($userUuid !== '' && $userUuid !== $User->getUUID()) {
-            QUI\Permissions\Permission::checkAdminUser();
+            QUI\Permissions\Permission::checkAdminUser($User);
+            QUI\Permissions\Permission::checkPermission(
+                'quiqqer.admin.users.edit',
+                $User
+            );
             $User = QUI::getUsers()->get($userUuid);
         }
 

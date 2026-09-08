@@ -60,6 +60,7 @@ define('controls/users/password/send/SendPassword', [
             this.$Password = null;
             this.$PasswordRepeat = null;
             this.$ForceNew = null;
+            this.$GeneratePasswordButton = null;
 
             this.addEvents({
                 onOpen: this.$onOpen,
@@ -71,8 +72,7 @@ define('controls/users/password/send/SendPassword', [
          * event: on open
          */
         $onOpen: function () {
-            const self = this,
-                Content = this.getContent();
+            const Content = this.getContent();
 
             Content.set({
                 html: Mustache.render(template, {
@@ -104,11 +104,11 @@ define('controls/users/password/send/SendPassword', [
                 PasswordFields.set('type', 'password');
             });
 
-            new QUIButton({
+            this.$GeneratePasswordButton = new QUIButton({
                 textimage: 'fa fa-lock',
                 text: QUILocale.get(lg, 'users.user.btn.password.generate'),
                 events: {
-                    onClick: self.$generatePassword
+                    onClick: this.$generatePassword
                 }
             }).inject(this.$Password, 'after');
 
@@ -121,8 +121,6 @@ define('controls/users/password/send/SendPassword', [
          * Event: onSubmit
          */
         $onSubmit: function () {
-            const self = this;
-
             const pw1 = this.$Password.value.trim(),
                 pw2 = this.$PasswordRepeat.value.trim();
 
@@ -138,10 +136,10 @@ define('controls/users/password/send/SendPassword', [
 
             this.Loader.show();
 
-            this.$setAndSendPassword().then(function () {
-                self.close();
-            }, function () {
-                self.Loader.hide();
+            this.$setAndSendPassword().then(() => {
+                this.close();
+            }, () => {
+                this.Loader.hide();
             });
         },
 
@@ -150,10 +148,27 @@ define('controls/users/password/send/SendPassword', [
          * it saves not the passwords!!
          */
         $generatePassword: function () {
-            const newPassword = Math.random().toString(36).slice(-8);
+            const resetLoadingState = () => {
+                this.$Password.disabled = false;
+                this.$PasswordRepeat.disabled = false;
+                this.$GeneratePasswordButton.setAttribute('textimage', 'fa fa-lock');
+                this.$GeneratePasswordButton.enable();
+            };
 
-            this.$Password.value = newPassword;
-            this.$PasswordRepeat.value = newPassword;
+            this.$Password.disabled = true;
+            this.$PasswordRepeat.disabled = true;
+            this.$GeneratePasswordButton.setAttribute('textimage', 'fa fa-spinner fa-spin');
+            this.$GeneratePasswordButton.disable();
+
+            QUIAjax.get('ajax_user_generateRandomPassword', (newPassword) => {
+                this.$Password.value = newPassword;
+                this.$PasswordRepeat.value = newPassword;
+
+                resetLoadingState();
+            }, {
+                'package': 'quiqqer/core',
+                onError: resetLoadingState
+            });
         },
 
         /**
@@ -162,14 +177,12 @@ define('controls/users/password/send/SendPassword', [
          * @return {Promise}
          */
         $setAndSendPassword: function () {
-            const self = this;
-
-            return new Promise(function (resolve, reject) {
-                QUIAjax.get('ajax_user_setAndSendPassword', resolve, {
+            return new Promise((resolve, reject) => {
+                QUIAjax.post('ajax_user_setAndSendPassword', resolve, {
                     'package': 'quiqqer/core',
-                    userId: self.getAttribute('userId'),
-                    newPassword: self.$Password.value.trim(),
-                    forceNew: self.$ForceNew.checked ? 1 : 0,
+                    userId: this.getAttribute('userId'),
+                    newPassword: this.$Password.value.trim(),
+                    forceNew: this.$ForceNew.checked ? 1 : 0,
                     onError: reject
                 });
             });

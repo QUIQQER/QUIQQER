@@ -193,6 +193,11 @@ class Ajax extends QUI\QDOM
 
         foreach ($_rfs as $_rf) {
             $_rf = QUI\Utils\Security\Orthos::clear($_rf);
+
+            if (array_key_exists($_rf, $result)) {
+                continue;
+            }
+
             $result[$_rf] = $this->callRequestFunction($_rf);
         }
 

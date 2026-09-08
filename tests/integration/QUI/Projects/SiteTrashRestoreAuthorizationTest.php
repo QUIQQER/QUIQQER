@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace QUI\Projects;
 
-use PHPUnit\Framework\Attributes\PreserveGlobalState;
-use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
-use PHPUnit\Framework\TestCase;
 use QUI;
 use QUI\AI\MCP\Server;
 use QUI\Ajax;
@@ -21,9 +18,7 @@ use QUI\Users\User;
 use ReflectionProperty;
 use Throwable;
 
-#[RunTestsInSeparateProcesses]
-#[PreserveGlobalState(false)]
-final class SiteTrashRestoreAuthorizationTest extends TestCase
+final class SiteTrashRestoreAuthorizationTest extends ProjectAuthorizationTestCase
 {
     private const TEST_PREFIX = 'site-trash-restore-auth-';
 
@@ -73,6 +68,11 @@ final class SiteTrashRestoreAuthorizationTest extends TestCase
 
     protected function tearDown(): void
     {
+        if (!isset($this->managerSessionProperty)) {
+            parent::tearDown();
+            return;
+        }
+
         $cleanupFailure = null;
 
         try {
@@ -86,9 +86,8 @@ final class SiteTrashRestoreAuthorizationTest extends TestCase
             $this->requestUserProperty->setValue(null, $this->previousRequestUser);
             QUI::$Session = $this->previousSession;
             QUI::$Ajax = $this->previousAjax;
+            parent::tearDown();
         }
-
-        parent::tearDown();
 
         if ($cleanupFailure !== null) {
             throw $cleanupFailure;
@@ -164,7 +163,8 @@ final class SiteTrashRestoreAuthorizationTest extends TestCase
         QUI::getPermissionManager()->setPermissions($this->User, [
             'quiqqer.admin' => true,
             'quiqqer.projects.sites.view' => true,
-            'quiqqer.projects.sites.edit' => $canEditSites
+            'quiqqer.projects.sites.edit' => $canEditSites,
+            'quiqqer.projects.sites.new' => true
         ], $this->Root);
     }
 

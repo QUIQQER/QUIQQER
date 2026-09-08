@@ -20,7 +20,11 @@ QUI::getAjax()->registerFunction(
         }
 
         if ($userUuid !== '' && $userUuid !== $User->getUUID()) {
-            QUI\Permissions\Permission::checkAdminUser();
+            QUI\Permissions\Permission::checkAdminUser($User);
+            QUI\Permissions\Permission::checkPermission(
+                'quiqqer.admin.users.edit',
+                $User
+            );
             $User = QUI::getUsers()->get($userUuid);
         }
 
@@ -43,6 +47,20 @@ QUI::getAjax()->registerFunction(
             } catch (QUI\Users\Exception $Exception) {
                 if ($Exception->getCode() !== 404) {
                     throw $Exception;
+                }
+            }
+
+            // Registration persists the credential before enabling the authenticator.
+            // Restore the flag if a credential was created while cleanup was saving the user.
+            $hasCredentials = !empty((new CredentialRepository())->findByUserUuid((string)$userUuid));
+
+            if ($hasCredentials) {
+                try {
+                    $User->enableAuthenticator(WebAuthnAuthenticator::class, QUI::getUsers()->getSystemUser());
+                } catch (QUI\Users\Exception $Exception) {
+                    if ($Exception->getCode() !== 404) {
+                        throw $Exception;
+                    }
                 }
             }
         }

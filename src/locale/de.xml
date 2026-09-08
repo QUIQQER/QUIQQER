@@ -1,6 +1,117 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <locales>
     <groups name="quiqqer/core" datatype="js,php">
+        <locale name="projects.popup.search">
+            <de><![CDATA[Seiten suchen: Titel, Name oder ID]]></de>
+        </locale>
+        <locale name="projects.popup.search.loading">
+            <de><![CDATA[Seiten werden gesucht …]]></de>
+        </locale>
+        <locale name="projects.popup.search.count">
+            <de><![CDATA[[count] Seiten gefunden.]]></de>
+        </locale>
+        <locale name="projects.popup.search.limited">
+            <de><![CDATA[[count] Seiten angezeigt. Bitte grenze die Suche weiter ein.]]></de>
+        </locale>
+        <locale name="projects.popup.search.error">
+            <de><![CDATA[Die Suche konnte nicht geladen werden. Bitte versuche es erneut.]]></de>
+        </locale>
+        <locale name="projects.popup.selection.remove">
+            <de><![CDATA[[title] aus der Auswahl entfernen]]></de>
+        </locale>
+        <locale name="projects.project.site.panel.lockLost">
+            <de><![CDATA[Die Bearbeitungssperre ist nicht verfügbar oder wurde verloren. Speichern ist gesperrt. Sichere deine Änderungen und öffne die Seite anschließend erneut.]]></de>
+        </locale>
+        <locale name="processLocks.title">
+            <de><![CDATA[Prozesssperren]]></de>
+        </locale>
+        <locale name="processLocks.backend">
+            <de><![CDATA[Backend]]></de>
+        </locale>
+        <locale name="processLocks.flock">
+            <de><![CDATA[Dateisystem]]></de>
+        </locale>
+        <locale name="processLocks.dbal">
+            <de><![CDATA[QUIQQER-Datenbank]]></de>
+        </locale>
+        <locale name="processLocks.namespace">
+            <de><![CDATA[Namespace]]></de>
+        </locale>
+        <locale name="processLocks.namespaceHelp">
+            <de><![CDATA[Auf allen Servern dieser Installation dieselbe Kennung verwenden. Leer: Kennung aus dem Installationspfad.]]></de>
+        </locale>
+        <locale name="processLocks.path">
+            <de><![CDATA[Verzeichnis]]></de>
+        </locale>
+        <locale name="processLocks.pathHelp">
+            <de><![CDATA[Leer lassen für das Standardverzeichnis var/locks/. Dateisperren koordinieren Prozesse auf demselben Server.]]></de>
+        </locale>
+        <locale name="processLocks.dbalHelp">
+            <de><![CDATA[Verwendet die konfigurierte QUIQQER-Datenbank und eine eigene Tabelle für Prozesssperren.]]></de>
+        </locale>
+        <locale name="processLocks.host">
+            <de><![CDATA[Redis-Host]]></de>
+        </locale>
+        <locale name="processLocks.port">
+            <de><![CDATA[Port]]></de>
+        </locale>
+        <locale name="processLocks.database">
+            <de><![CDATA[Redis-Datenbank]]></de>
+        </locale>
+        <locale name="processLocks.username">
+            <de><![CDATA[Benutzername]]></de>
+        </locale>
+        <locale name="processLocks.password">
+            <de><![CDATA[Passwort]]></de>
+        </locale>
+        <locale name="processLocks.clearPassword">
+            <de><![CDATA[Gespeichertes Passwort entfernen]]></de>
+        </locale>
+        <locale name="processLocks.passwordKept">
+            <de><![CDATA[Gespeichertes Passwort beibehalten]]></de>
+        </locale>
+        <locale name="processLocks.tls">
+            <de><![CDATA[TLS verwenden]]></de>
+        </locale>
+        <locale name="processLocks.redisHelp">
+            <de><![CDATA[Eine separate Redis-Datenbank verwenden, die beim Leeren des Anwendungscaches erhalten bleibt. Ein leeres Passwortfeld behält das gespeicherte Passwort bei. Auf dem Server muss ein Redis-Client installiert sein.]]></de>
+        </locale>
+        <locale name="processLocks.custom">
+            <de><![CDATA[Benutzerdefiniert (bereits konfiguriert)]]></de>
+        </locale>
+        <locale name="processLocks.customHelp">
+            <de><![CDATA[Dieser Store wurde außerhalb dieser Oberfläche konfiguriert. Seine Verbindung bleibt beim Speichern erhalten, sofern kein anderes Backend gewählt wird.]]></de>
+        </locale>
+        <locale name="processLocks.changeHelp">
+            <de><![CDATA[Beim Backend-Wechsel können geschützte Arbeiten kurzzeitig parallel laufen. Dauerhaft laufende Worker übernehmen den neuen Store nach einem Neustart.]]></de>
+        </locale>
+        <locale name="processLocks.test">
+            <de><![CDATA[Verbindung prüfen]]></de>
+        </locale>
+        <locale name="processLocks.testing">
+            <de><![CDATA[Sperre wird geprüft …]]></de>
+        </locale>
+        <locale name="processLocks.testSuccess">
+            <de><![CDATA[Die Verbindung funktioniert. Du kannst diese Einstellungen jetzt speichern.]]></de>
+        </locale>
+        <locale name="processLocks.testFailed">
+            <de><![CDATA[Verbindungstest fehlgeschlagen. Bitte Verbindungsdaten, Server-Erreichbarkeit, Berechtigungen und installierten Redis-Client prüfen.]]></de>
+        </locale>
+        <locale name="processLocks.loadFailed">
+            <de><![CDATA[Einstellungen konnten nicht geladen werden. Bitte die Kategorie erneut öffnen.]]></de>
+        </locale>
+        <locale name="processLocks.notReady">
+            <de><![CDATA[Bitte warten, bis Laden oder Verbindungstest abgeschlossen ist.]]></de>
+        </locale>
+        <locale name="processLocks.saved">
+            <de><![CDATA[Die Einstellungen für Prozesssperren wurden gespeichert.]]></de>
+        </locale>
+        <locale name="processLocks.saveFailed">
+            <de><![CDATA[Prozesssperren konnten nicht gespeichert werden. Bitte die Eingaben und Berechtigungen prüfen.]]></de>
+        </locale>
+        <locale name="processLocks.invalid">
+            <de><![CDATA[Ungültige Einstellungen für Prozesssperren.]]></de>
+        </locale>
         <locale name="yes">
             <de><![CDATA[Ja]]></de>
         </locale>
@@ -1622,6 +1733,27 @@
         <locale name="system.vhost.table.hostdata">
             <de><![CDATA[Host-Daten]]></de>
         </locale>
+        <locale name="system.vhost.table.redirects">
+            <de><![CDATA[Umleitungen]]></de>
+        </locale>
+        <locale name="system.vhost.domain.variants">
+            <de><![CDATA[Die Domain mit und ohne www verwendet diese Einstellungen, sofern die andere Variante nicht als eigener VHost angelegt ist. Beide Domains müssen im DNS und Webserver eingerichtet sein.]]></de>
+        </locale>
+        <locale name="system.vhost.wwwRedirect.global">
+            <de><![CDATA[Globale Einstellung übernehmen]]></de>
+        </locale>
+        <locale name="system.vhost.wwwRedirect.description">
+            <de><![CDATA[Diese Auswahl hat Vorrang vor der globalen WWW-Einstellung. Ohne WWW-Umleitung bleibt die angeforderte Hostvariante erhalten; die globale HTTPS-Umleitung bleibt wirksam.]]></de>
+        </locale>
+        <locale name="system.vhost.httpshost.description">
+            <de><![CDATA[Optionaler abweichender Host für HTTPS. Ein eingetragener HTTPS-Host hat bei HTTPS-Aufrufen Vorrang vor der WWW-Auswahl.]]></de>
+        </locale>
+        <locale name="exception.vhost.invalid.wwwRedirect">
+            <de><![CDATA[Ungültige WWW-Umleitung. Erlaubt sind die globale Einstellung, www, nonwww oder none.]]></de>
+        </locale>
+        <locale name="exception.vhost.conflicting.wwwRedirect">
+            <de><![CDATA[Diese WWW-Umleitung widerspricht der Einstellung von [host] und würde eine Umleitungsschleife erzeugen. Bitte stimmen Sie die Einstellungen beider VHosts aufeinander ab.]]></de>
+        </locale>
         <locale name="system.vhost.table.languages">
             <de><![CDATA[Sprachzuweisungen]]></de>
         </locale>
@@ -1680,6 +1812,18 @@
 
         <locale name="login.title">
             <de><![CDATA[Login]]></de>
+        </locale>
+        <locale name="login.check.cookies">
+            <de><![CDATA[Die Anmeldung benötigt Cookies. Dein Browser kann diese momentan nicht speichern. Bitte erlaube Cookies für diese Website und prüfe erneut. Falls das Problem bestehen bleibt, lösche die gespeicherten Website-Daten und lade die Seite neu.]]></de>
+        </locale>
+        <locale name="login.check.session">
+            <de><![CDATA[Die Anmeldesitzung konnte nicht bestätigt werden. Bitte lade die Seite neu und versuche es noch einmal. Falls das Problem bestehen bleibt, wende dich an den Betreiber der Website.]]></de>
+        </locale>
+        <locale name="login.check.connection">
+            <de><![CDATA[Die Verbindung zur Anmeldung konnte nicht geprüft werden. Bitte prüfe deine Internetverbindung und versuche es erneut. Falls das Problem bestehen bleibt, wende dich an den Betreiber der Website.]]></de>
+        </locale>
+        <locale name="login.check.retry">
+            <de><![CDATA[Erneut prüfen]]></de>
         </locale>
         <locale name="window.logout.title">
             <de><![CDATA[Abmelden]]></de>
@@ -4253,6 +4397,15 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         <locale name="exception.login.fail.user_deleted">
             <de><![CDATA[Login fehlgeschlagen. Benutzer ist als gelöscht markiert.]]></de>
         </locale>
+        <locale name="quiqqer.settings.auth.loginIpLimit">
+            <de><![CDATA[Loginversuche pro IP-Adresse (15 Minuten)]]></de>
+        </locale>
+        <locale name="quiqqer.settings.auth.loginIpLimit.description">
+            <de><![CDATA[Gemeinsames Limit für alle Loginversuche im Frontend und Backend, auch mit unbekannten Benutzernamen und neuen Sessions. Gemeinsam genutzte IP-Adressen teilen das Limit. Standard: 60.]]></de>
+        </locale>
+        <locale name="exception.login.fail.ip_throttled">
+            <de><![CDATA[Zu viele Loginversuche von dieser IP-Adresse. Bitte versuchen Sie es in 15 Minuten erneut.]]></de>
+        </locale>
         <locale name="exception.login.fail.login_locked">
             <de><![CDATA[
                 Login fehlgeschlagen. Der Login für diesen Benutzer ist z.Z. gesperrt. Bitte versuchen Sie es später noch einmal.]]></de>
@@ -5834,7 +5987,14 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
             <de><![CDATA[Führt ein System-Setup aus]]></de>
         </locale>
         <locale name="console.systemtool.password-reset">
-            <de><![CDATA[Initiiert ein Passwort-Reset]]></de>
+            <de><![CDATA[
+            Initiiert einen Passwort-Reset für einen Benutzernamen oder eine UUID.
+            Verwendung: ./console password-reset [Benutzername-oder-UUID] [--no-interaction] [--password-stdin]
+            Wenn der Benutzername oder die UUID angegeben wird, entfällt die Abfrage der Kennung. Die Sicherheitsabfragen bleiben erforderlich, sofern --no-interaction nicht verwendet wird.
+            --no-interaction überspringt beide Sicherheitsabfragen und erfordert einen Benutzernamen oder eine UUID als Argument.
+            --password-stdin liest das neue Passwort aus einer Zeile auf STDIN, statt eines zu generieren, und gibt das übergebene Passwort nicht aus.
+            Exitcodes: 0 = Passwort geändert; 1 = unerwarteter Laufzeitfehler; 2 = ungültige Kennung oder Benutzer nicht gefunden; 3 = abgebrochen oder erforderliche Eingabe fehlt.
+            ]]></de>
         </locale>
         <locale name="console.systemtool.clear-cache-path">
             <de><![CDATA[Löscht einen bestimmten cache path.]]></de>
@@ -5913,22 +6073,37 @@ Beim nächsten Login werden Sie aufgefordert ein neues Passwort zu vergeben.
         <locale name="console.tool.passwordreset.warning">
             <de><![CDATA[ACHTUNG! Dieses setzt das Passwort eines Benutzers unwiderbringlich zurück!]]></de>
         </locale>
-        <locale name="console.tool.passwordreset.prompt.username">
-            <de><![CDATA[Benutzername:]]></de>
+        <locale name="console.tool.passwordreset.prompt.identifier">
+            <de><![CDATA[Benutzername oder UUID:]]></de>
         </locale>
         <locale name="console.tool.passwordreset.prompt.confirm">
             <de><![CDATA[
-            Sind Sie sicher, dass Sie das passwort des benutzers '[username]' zurücksetzen möchten? (y/n)
+            Sind Sie sicher, dass Sie das Passwort des Benutzers '[username]' (UUID: [uuid]) zurücksetzen möchten? (y/N)
             ]]></de>
         </locale>
         <locale name="console.tool.passwordreset.prompt.confirm2">
-            <de><![CDATA[Sind Sie wirklich sicher? Dies kann nicht rückgängig gemacht werden! (y/n)]]></de>
+            <de><![CDATA[Sind Sie wirklich sicher? Dies kann nicht rückgängig gemacht werden! (y/N)]]></de>
         </locale>
         <locale name="console.tool.passwordreset.user.not.found">
             <de><![CDATA[Der gegebene Benutzer wurde nicht gefunden]]></de>
         </locale>
+        <locale name="console.tool.passwordreset.identifier.required">
+            <de><![CDATA[Bei Verwendung von --no-interaction muss ein Benutzername oder eine UUID angegeben werden]]></de>
+        </locale>
+        <locale name="console.tool.passwordreset.password.stdin.required">
+            <de><![CDATA[--password-stdin erfordert ein nicht leeres Passwort auf STDIN]]></de>
+        </locale>
+        <locale name="console.tool.passwordreset.cancelled">
+            <de><![CDATA[Der Passwort-Reset wurde abgebrochen]]></de>
+        </locale>
+        <locale name="console.tool.passwordreset.error">
+            <de><![CDATA[Der Passwort-Reset ist unerwartet fehlgeschlagen]]></de>
+        </locale>
         <locale name="console.tool.passwordreset.success">
-            <de><![CDATA[Das passwort wurde erfolgreich geändert! Das neue Passwort ist '[password]']]></de>
+            <de><![CDATA[Das Passwort wurde erfolgreich geändert! Das neue Passwort lautet:]]></de>
+        </locale>
+        <locale name="console.tool.passwordreset.success.custom">
+            <de><![CDATA[Das Passwort wurde erfolgreich geändert!]]></de>
         </locale>
         <locale name="exception.zip.extension.not.installed">
             <de><![CDATA[

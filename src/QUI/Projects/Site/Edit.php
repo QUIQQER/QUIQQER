@@ -665,6 +665,8 @@ class Edit extends Site
 
         $Project = $this->getProject();
         $Parent = new self($Project, $pid);
+        $Parent->checkPermission('quiqqer.projects.site.new');
+        $Parent->assertNotDeleted();
         $children = $this->getChildrenIds(['active' => '0&1']);
 
         if (!is_array($children)) {
@@ -735,6 +737,28 @@ class Edit extends Site
      */
     public function save(?QUI\Interfaces\Users\User $SaveUser = null): void
     {
+        $this->runLockedSave($SaveUser, null);
+    }
+
+    /** Save an editor request only while its exact lease is still valid. */
+    public function saveWithLock(string $token, ?QUI\Interfaces\Users\User $SaveUser = null): void
+    {
+        $this->runLockedSave($SaveUser, $token);
+    }
+
+    private function runLockedSave(?QUI\Interfaces\Users\User $SaveUser, ?string $token): void
+    {
+        $SaveUser ??= QUI::getUserBySession();
+        Locker::editing()->run(
+            'site:' . $this->getLockKey(),
+            (string)$SaveUser->getUUID(),
+            $token,
+            fn() => $this->saveWithEditingLock($SaveUser)
+        );
+    }
+
+    private function saveWithEditingLock(QUI\Interfaces\Users\User $SaveUser): void
+    {
         try {
             $this->checkPermission('quiqqer.projects.site.edit', $SaveUser);
         } catch (QUI\Exception) {
@@ -747,42 +771,6 @@ class Edit extends Site
         }
 
         $this->assertNotDeleted();
-
-        if (!$SaveUser) {
-            $SaveUser = QUI::getUserBySession();
-        }
-
-        $mid = $this->isLockedFromOther();
-
-        if ($mid) {
-            if (is_int($mid) || is_string($mid)) {
-                try {
-                    $User = QUI::getUsers()->get($mid);
-                } catch (QUI\Exception) {
-                }
-            }
-
-            if (isset($User)) {
-                throw new QUI\Exception(
-                    QUI::getLocale()->get(
-                        'quiqqer/core',
-                        'exception.site.is.being.edited.user',
-                        [
-                            'username' => $User->getName()
-                        ]
-                    ),
-                    703
-                );
-            }
-
-            throw new QUI\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/core',
-                    'exception.site.is.being.edited'
-                ),
-                703
-            );
-        }
 
         $Project = $this->getProject();
         $name = $this->getAttribute('name');
@@ -1102,57 +1090,25 @@ class Edit extends Site
      */
     public function isLockedFromOther(): bool | int | string
     {
-        $uid = $this->isLocked();
-
-        if ($uid === false) {
-            return false;
-        }
-
-        if (QUI::getUserBySession()->getId() == $uid) {
-            return false;
-        }
-
-        try {
-            $time = Locker::getLockTime(
-                QUI::getPackage('quiqqer/core'),
-                $this->getLockKey()
-            );
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
-
-            return true;
-        }
-
-        $max_life_time = (int)QUI::conf('session', 'max_life_time');
-
-        if ($time > $max_life_time) {
-            $this->unlock();
-
-            return false;
-        }
-
-        if (isset($uid['id'])) {
-            return $uid['id'];
-        }
-
-        return $uid;
+        return $this->isLocked();
     }
 
-    /**
-     * is the page currently edited
-     */
+    /** Return the UUID of the other editor, or false if unoccupied/owned by this user. */
     public function isLocked(): bool | string
     {
-        try {
-            return Locker::isLocked(
-                QUI::getPackage('quiqqer/core'),
-                $this->getLockKey()
-            );
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
+        $record = Locker::editing()->status('site:' . $this->getLockKey());
 
-            return true;
+        if ($record === null) {
+            return false;
         }
+
+        $owner = (string)QUI::getUserBySession()->getUUID();
+
+        if ($record['owner'] === $owner) {
+            return false;
+        }
+
+        return $record['owner'];
     }
 
     /**
@@ -1172,14 +1128,7 @@ class Edit extends Site
      */
     protected function unlock(): void
     {
-        try {
-            Locker::unlock(
-                QUI::getPackage('quiqqer/core'),
-                $this->getLockKey()
-            );
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
-        }
+        $this->unlockWithRights();
     }
 
     /**
@@ -1575,14 +1524,20 @@ class Edit extends Site
      * Erstellt eine Verknüpfung
      *
      * @param integer $pid
+     * @param QUI\Interfaces\Users\User|null $User - [optional] User creating the link
      *
      * @throws QUI\Exception
+     * @throws QUI\Permissions\Exception
      */
-    public function linked(int $pid): void
+    public function linked(int $pid, null | QUI\Interfaces\Users\User $User = null): void
     {
+        $this->checkPermission('quiqqer.projects.site.edit', $User);
         $this->assertNotDeleted();
 
         $Project = $this->getProject();
+        $LinkedParent = new self($Project, $pid);
+        $LinkedParent->checkPermission('quiqqer.projects.site.new', $User);
+        $LinkedParent->assertNotDeleted();
         $Parent = $this->getParent();
 
         if ($Parent === false) {
@@ -1628,7 +1583,7 @@ class Edit extends Site
         }
 
         $Connection->insert($table, [
-            "parent" => $pid,
+            "parent" => $LinkedParent->getId(),
             "child" => $this->getId(),
             "oparent" => $Parent->getId()
         ]);
@@ -1711,36 +1666,43 @@ class Edit extends Site
      */
     public function lock(): bool
     {
-        if ($this->isLockedFromOther()) {
-            return false;
-        }
-
-        if ($this->isLocked()) {
-            return true;
-        }
-
-        try {
-            $this->checkPermission('quiqqer.projects.site.edit');
-        } catch (QUI\Exception) {
-            return false;
-        }
-
-        Locker::lock(
-            QUI::getPackage('quiqqer/core'),
-            $this->getLockKey()
-        );
-
-        return true;
+        return $this->acquireEditingLock(bin2hex(random_bytes(32)));
     }
 
-    /**
-     * Ein SuperUser kann eine Seite trotzdem demakieren wenn er möchte
-     *
-     * @todo eigenes recht dafür einführen
-     */
+    public function acquireEditingLock(string $token): bool
+    {
+        $this->checkPermission('quiqqer.projects.site.edit');
+        return Locker::editing()->acquire(
+            'site:' . $this->getLockKey(),
+            (string)QUI::getUserBySession()->getUUID(),
+            $token
+        );
+    }
+
+    public function refreshLock(string $token): bool
+    {
+        $this->checkPermission('quiqqer.projects.site.edit');
+        return Locker::editing()->refresh('site:' . $this->getLockKey(), (string)QUI::getUserBySession()->getUUID(), $token);
+    }
+
+    /** Release only this editor's lease; stale requests cannot release its successor. */
+    public function releaseEditingLock(string $token): void
+    {
+        $this->checkPermission('quiqqer.projects.site.edit');
+        Locker::editing()->release('site:' . $this->getLockKey(), (string)QUI::getUserBySession()->getUUID(), $token);
+    }
+
+    /** Forced removal is restricted to super/system users. */
     public function unlockWithRights(): void
     {
-        $this->unlock();
+        $User = QUI::getUserBySession();
+        $this->checkPermission('quiqqer.projects.site.edit', $User);
+
+        if (!$User->isSU() && !QUI::getUsers()->isSystemUser($User)) {
+            throw new QUI\Permissions\Exception(['quiqqer/core', 'exception.permissions.edit'], 403);
+        }
+
+        Locker::editing()->release('site:' . $this->getLockKey(), (string)$User->getUUID(), '', true);
     }
 
     /**

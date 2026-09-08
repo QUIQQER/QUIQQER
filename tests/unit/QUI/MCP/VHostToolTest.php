@@ -10,6 +10,13 @@ use ReflectionMethod;
 
 class VHostToolTest extends TestCase
 {
+    public function testWwwOverrideCanExplicitlyReturnToGlobal(): void
+    {
+        $Method = new ReflectionMethod(AbstractVHostTool::class, 'buildVHostData');
+        $result = $Method->invoke(null, ['wwwRedirect' => 'none'], null, null, null, null, null, null, '');
+        self::assertSame('', $result['wwwRedirect']);
+    }
+
     public function testBuildVHostDataPreservesOmittedValues(): void
     {
         $buildVHostData = new ReflectionMethod(
@@ -24,7 +31,8 @@ class VHostToolTest extends TestCase
                 'path_langs' => 'es,fr',
                 'template' => 'quiqqer/example',
                 'error' => 'example,en,1',
-                'httpshost' => 'secure.example.eu'
+                'httpshost' => 'secure.example.eu',
+                'wwwRedirect' => 'none'
             ],
             $buildVHostData->invoke(
                 null,
@@ -34,7 +42,8 @@ class VHostToolTest extends TestCase
                     'path_langs' => 'es,fr',
                     'template' => 'quiqqer/example',
                     'error' => 'example,en,1',
-                    'httpshost' => 'secure.example.eu'
+                    'httpshost' => 'secure.example.eu',
+                    'wwwRedirect' => 'none'
                 ]
             )
         );
@@ -54,7 +63,8 @@ class VHostToolTest extends TestCase
                 'path_langs' => '',
                 'template' => '',
                 'error' => '',
-                'httpshost' => ''
+                'httpshost' => '',
+                'wwwRedirect' => ''
             ],
             $buildVHostData->invoke(
                 null,
@@ -85,7 +95,8 @@ class VHostToolTest extends TestCase
                 'pathLanguages' => ['es', 'fr'],
                 'template' => 'quiqqer/example',
                 'error' => '',
-                'httpsHost' => 'secure.example.eu'
+                'httpsHost' => 'secure.example.eu',
+                'wwwRedirect' => 'www'
             ],
             $parseVHost->invoke(
                 null,
@@ -95,7 +106,8 @@ class VHostToolTest extends TestCase
                     'lang' => 'en',
                     'path_langs' => 'es,fr',
                     'template' => 'quiqqer/example',
-                    'httpshost' => 'secure.example.eu'
+                    'httpshost' => 'secure.example.eu',
+                    'wwwRedirect' => 'www'
                 ]
             )
         );

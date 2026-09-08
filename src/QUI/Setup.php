@@ -558,6 +558,8 @@ EOT;
      */
     public static function executeEachProjectSetup(array $setupOptions = []): void
     {
+        QUI::getPackageManager()->clearInstalledPackagesCache();
+
         $projects = Projects\Manager::getProjects(true);
 
         if (!isset($setupOptions['executePackagesSetup'])) {

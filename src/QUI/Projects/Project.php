@@ -936,11 +936,23 @@ class Project implements \Stringable
     }
 
     /**
-     * Return the language path below the VHost root without surrounding slashes.
+     * Return the language path without surrounding slashes.
+     * Unassigned languages use a prefix for multilingual projects or when VHosts
+     * are configured, preserving the legacy fallback for unassigned projects.
      */
     public function getVHostPath(): string
     {
-        return $this->getVHostRoute()['path'] ?? '';
+        $route = $this->getVHostRoute();
+
+        if ($route !== null) {
+            return $route['path'];
+        }
+
+        if (!empty(QUI::vhosts()) || count($this->getLanguages()) > 1) {
+            return $this->getLang();
+        }
+
+        return '';
     }
 
     /**
@@ -1792,7 +1804,7 @@ class Project implements \Stringable
 
         // set default settings and current settings
         QUI\Cache\Manager::clear(
-            'qui/projects/' . $this->getName()
+            $this->getCachePath()
         );
 
         $defaults = QUI\Projects\Manager::getProjectConfigList($this);
@@ -1814,6 +1826,8 @@ class Project implements \Stringable
         }
 
         $Config->save();
+
+        $this->refresh();
 
         if (!empty($setupOptions['executePackagesSetup'])) {
             QUI\Setup::executeEachPackageSetup();

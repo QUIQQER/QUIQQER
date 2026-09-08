@@ -66,6 +66,18 @@ class EventHandler
     }
 
     /**
+     * Remove security throttle reservations when their user is deleted.
+     */
+    public static function onUserDelete(QUI\Interfaces\Users\User $User): void
+    {
+        try {
+            QUI\Security\Throttle::clearForUser($User);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
+    }
+
+    /**
      * @throws QUI\Exception
      */
     public static function onPackageSetup(QUI\Package\Package $Package): void

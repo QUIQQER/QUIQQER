@@ -56,6 +56,25 @@ class ProjectSiteDbalTest extends ProjectIntegrationTestCase
         ], $query);
     }
 
+    public function testLanguageLinksUseTheConfiguredDatabasePrefix(): void
+    {
+        $Project = self::getTestProject();
+        $Root = $Project->firstChild()->getEdit();
+        $id = $Root->createChild(['name' => 'phpunit-language-' . bin2hex(random_bytes(6))]);
+        $Site = new Site\Edit($Project, $id);
+        $Connection = QUI::getDataBaseConnection();
+        $table = QUI::getDBTableName($Project->getName() . '_multilingual');
+        $language = $Project->getLang();
+        $Connection->insert(QUI\Utils\Doctrine::quoteIdentifier($table), [$language => $id]);
+
+        try {
+            self::assertSame($id, $Site->getLangIds()[$language]);
+        } finally {
+            $Connection->delete(QUI\Utils\Doctrine::quoteIdentifier($table), [$language => $id]);
+            $Site->getEdit()->delete();
+        }
+    }
+
     public function testSiteChildCanBeCreatedAndLoadedFromTestProject(): void
     {
         $Project = self::getTestProject();

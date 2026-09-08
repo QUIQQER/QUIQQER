@@ -59,7 +59,7 @@ class Update extends AbstractTool
                 'properties' => [
                     'action' => [
                         'type' => 'string',
-                        'description' => 'Update action. prepare creates a run and returns tokenized URLs; start creates and starts a background run; status polls one run; active lists active runs; history lists recent runs; cancel cancels one run.',
+                        'description' => 'Update action. prepare creates a run and returns separate CLI and one-time web tokens; start creates and starts a background run; status polls one run; active lists active runs; history lists recent runs; cancel cancels one run.',
                         'enum' => ['prepare', 'start', 'status', 'active', 'history', 'cancel']
                     ],
                     'id' => [
@@ -140,6 +140,7 @@ class Update extends AbstractTool
             'active' => false,
             'id' => $State->getId(),
             'token' => $token,
+            'webToken' => $Launch->getWebToken(),
             'webUrl' => $Launch->getWebUrl(),
             'jsonRunUrl' => self::withQuery($Launch->getWebUrl(), [
                 'output' => 'json',

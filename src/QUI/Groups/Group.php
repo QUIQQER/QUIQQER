@@ -11,7 +11,6 @@ use QUI\Database\Exception;
 use Throwable;
 
 use function array_filter;
-use function array_flip;
 use function array_merge;
 use function count;
 use function explode;
@@ -331,16 +330,27 @@ class Group extends QUI\QDOM
             return [];
         }
 
-        $this->parentIds[] = $result[0]['parent'];
+        $visited = [$this->getUUID() => true];
+        $parentId = $result[0]['parent'];
 
-        if (!empty($result[0]['parent'])) {
-            $this->getParentIdsHelper($result[0]['parent']);
+        if (isset($visited[(string)$parentId])) {
+            return $this->parentIds;
+        }
+
+        $this->parentIds[] = $parentId;
+
+        if (!empty($parentId)) {
+            $visited[(string)$parentId] = true;
+            $this->getParentIdsHelper($parentId, $visited);
         }
 
         return $this->parentIds ?? [];
     }
 
-    private function getParentIdsHelper(int | string $id): void
+    /**
+     * @param array<string, bool> $visited
+     */
+    private function getParentIdsHelper(int | string $id, array &$visited): void
     {
         try {
             $Platform = QUI::getDataBaseConnection()->getDatabasePlatform();
@@ -357,15 +367,20 @@ class Group extends QUI\QDOM
             return;
         }
 
-        $result = $row ? [$row] : [];
-
-        if (empty($result[0]['parent'])) {
+        if (!$row || !isset($row['parent'])) {
             return;
         }
 
-        $this->parentIds[] = $result[0]['parent'];
+        $parentId = $row['parent'];
 
-        $this->getParentIdsHelper($result[0]['parent']);
+        if (empty($parentId) || isset($visited[(string)$parentId])) {
+            return;
+        }
+
+        $visited[(string)$parentId] = true;
+        $this->parentIds[] = $parentId;
+
+        $this->getParentIdsHelper($parentId, $visited);
     }
 
     /**
@@ -501,12 +516,21 @@ class Group extends QUI\QDOM
             return $this->childrenIds;
         }
 
+        $visited = [$this->getUUID() => true];
+
         foreach ($result as $entry) {
             if (isset($entry['uuid'])) {
+                $uuid = (string)$entry['uuid'];
+
+                if (isset($visited[$uuid])) {
+                    continue;
+                }
+
+                $visited[$uuid] = true;
                 $this->childrenIds[] = $entry['uuid'];
 
                 if ($recursive) {
-                    $this->getChildrenIdsHelper($entry['uuid']);
+                    $this->getChildrenIdsHelper($entry['uuid'], $visited);
                 }
             }
         }
@@ -515,9 +539,10 @@ class Group extends QUI\QDOM
     }
 
     /**
+     * @param array<string, bool> $visited
      * @throws QUI\Database\Exception
      */
-    private function getChildrenIdsHelper(int | string $id): void
+    private function getChildrenIdsHelper(int | string $id, array &$visited): void
     {
         try {
             $Platform = QUI::getDataBaseConnection()->getDatabasePlatform();
@@ -536,8 +561,15 @@ class Group extends QUI\QDOM
         }
 
         foreach ($result as $entry) {
+            $uuid = (string)$entry['uuid'];
+
+            if (isset($visited[$uuid])) {
+                continue;
+            }
+
+            $visited[$uuid] = true;
             $this->childrenIds[] = $entry['uuid'];
-            $this->getChildrenIdsHelper($entry['uuid']);
+            $this->getChildrenIdsHelper($entry['uuid'], $visited);
         }
     }
 
@@ -799,23 +831,22 @@ class Group extends QUI\QDOM
         $NewParent = QUI::getGroups()->get($parentId);
         $children = $this->getChildrenIds(true);
 
-        if (!empty($children)) {
-            $children = array_flip($children);
-
-            if (isset($children[$NewParent->getId()])) {
-                throw new QUI\Groups\Exception(
-                    [
-                        'quiqqer/core',
-                        'exception.group.set.parent.not.allowed'
-                    ],
-                    400,
-                    [
-                        'groupId' => $this->getUUID(),
-                        'newParent' => $NewParent->getUUID(),
-                        'currentParent' => $this->getParent()?->getUUID()
-                    ]
-                );
-            }
+        if (
+            $NewParent->getUUID() === $this->getUUID()
+            || in_array($NewParent->getUUID(), $children ?? [], true)
+        ) {
+            throw new QUI\Groups\Exception(
+                [
+                    'quiqqer/core',
+                    'exception.group.set.parent.not.allowed'
+                ],
+                400,
+                [
+                    'groupId' => $this->getUUID(),
+                    'newParent' => $NewParent->getUUID(),
+                    'currentParent' => $this->getParent()?->getUUID()
+                ]
+            );
         }
 
 

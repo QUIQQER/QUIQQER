@@ -397,6 +397,7 @@ define('controls/packages/System', [
                 this.$preparedRun = {
                     id: result.id,
                     url: this.getAbsoluteRunUrl(result.url),
+                    token: result.token || null,
                     state: result.run
                 };
                 this.renderRunState(QUILocale.get(lg, 'packages.panel.update.run.prepared'));
@@ -404,7 +405,9 @@ define('controls/packages/System', [
                 this.loadRunHistory();
 
                 if (runWindow && this.$preparedRun.url) {
-                    runWindow.location.href = this.$preparedRun.url;
+                    if (this.submitUpdateRun(this.$preparedRun.url, this.$preparedRun.token, runWindow)) {
+                        this.$preparedRun.token = null;
+                    }
                 }
             }).catch((Exception) => {
                 if (runWindow) {
@@ -424,8 +427,52 @@ define('controls/packages/System', [
                 return;
             }
 
-            window.open(this.getAbsoluteRunUrl(this.$preparedRun.url), '_blank');
+            if (this.submitUpdateRun(this.$preparedRun.url, this.$preparedRun.token)) {
+                this.$preparedRun.token = null;
+            }
+
             this.startRunPolling();
+        },
+
+        /**
+         * Open an update runner and exchange its one-time token via POST.
+         *
+         * @param {String} url
+         * @param {String|null} token
+         * @param {Window|null} [runWindow]
+         * @returns {Boolean}
+         */
+        submitUpdateRun: function (url, token, runWindow) {
+            const TargetWindow = runWindow || window.open('about:blank', '_blank');
+
+            if (!TargetWindow) {
+                return false;
+            }
+
+            url = this.getAbsoluteRunUrl(url);
+
+            if (!token) {
+                TargetWindow.location.href = url;
+                return true;
+            }
+
+            const TargetDocument = TargetWindow.document;
+            const Form = TargetDocument.createElement('form');
+            const TokenInput = TargetDocument.createElement('input');
+
+            TargetDocument.title = 'QUIQQER update';
+            TargetDocument.body.textContent = 'Opening update ...';
+            Form.method = 'post';
+            Form.action = url;
+            Form.hidden = true;
+            TokenInput.type = 'hidden';
+            TokenInput.name = 'token';
+            TokenInput.value = token;
+            Form.appendChild(TokenInput);
+            TargetDocument.body.appendChild(Form);
+            Form.submit();
+
+            return true;
         },
 
         /**

@@ -522,7 +522,7 @@ class Template extends QUI\QDOM
 
             if ($hasTemplateParent) {
                 $parent = $this->TemplatePackage->getTemplateParent();
-                $this->TemplateParent = $this->getRegisteredTemplatePackage($parent->getName());
+                $this->TemplateParent = $this->getRegisteredTemplatePackage($parent?->getName());
             }
         } else {
             $projectTemplate = '';
@@ -587,7 +587,7 @@ class Template extends QUI\QDOM
 
                         if ($hasTemplateParent) {
                             $parent = $this->TemplatePackage->getTemplateParent();
-                            $this->TemplateParent = $this->getRegisteredTemplatePackage($parent->getName());
+                            $this->TemplateParent = $this->getRegisteredTemplatePackage($parent?->getName());
                         }
                     } else {
                         $projectTemplate = '';

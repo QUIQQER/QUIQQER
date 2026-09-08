@@ -7,9 +7,16 @@ use QUI;
 use function array_merge;
 use function class_exists;
 use function class_implements;
+use function fclose;
 use function file_exists;
 use function file_put_contents;
+use function flock;
+use function fopen;
 use function get_class;
+use function is_array;
+use function is_resource;
+use function is_string;
+use function json_decode;
 use function trim;
 
 /**
@@ -126,5 +133,105 @@ class ProviderHandler
     {
         self::getConfig()->set('status', $Provider::class, $status);
         self::getConfig()->save();
+    }
+
+    public static function prepareExecution(string $provider, string $data): bool
+    {
+        if (
+            !class_exists($provider)
+            || !is_a($provider, InstallationWizardInterface::class, true)
+        ) {
+            return false;
+        }
+
+        $lock = self::acquireExecutionLock();
+
+        try {
+            $Config = self::getConfig();
+            $Config->reload();
+            $Config->set('execute', 'provider', $provider);
+            $Config->set('execute', 'data', $data);
+            $Config->set('status', $provider, self::STATUS_SET_UP_STARTED);
+            $Config->save();
+        } finally {
+            self::releaseExecutionLock($lock);
+        }
+
+        return true;
+    }
+
+    /**
+     * Atomically returns and consumes the pending provider execution.
+     *
+     * @return array{provider: class-string<InstallationWizardInterface>, data: array<array-key, mixed>}
+     */
+    public static function claimExecution(): array
+    {
+        $lock = self::acquireExecutionLock();
+
+        try {
+            $Config = self::getConfig();
+            $Config->reload();
+            $provider = $Config->get('execute', 'provider');
+            $data = $Config->get('execute', 'data');
+
+            if (
+                !is_string($provider)
+                || !is_a($provider, InstallationWizardInterface::class, true)
+                || (int)$Config->get('status', $provider) !== self::STATUS_SET_UP_STARTED
+            ) {
+                throw new \UnexpectedValueException('No pending installation wizard execution.');
+            }
+
+            $data = is_string($data) ? json_decode($data, true) : null;
+
+            if (!is_array($data)) {
+                throw new \UnexpectedValueException('Invalid installation wizard execution data.');
+            }
+
+            $Config->del('execute');
+            $Config->save();
+
+            /** @var class-string<InstallationWizardInterface> $provider */
+            return [
+                'provider' => $provider,
+                'data' => $data
+            ];
+        } finally {
+            self::releaseExecutionLock($lock);
+        }
+    }
+
+    /**
+     * @return resource
+     */
+    private static function acquireExecutionLock()
+    {
+        $Config = self::getConfig();
+        $lock = fopen($Config->getFilename(), 'c+');
+
+        if ($lock === false) {
+            throw new \RuntimeException('Could not open installation wizard execution lock.');
+        }
+
+        if (!flock($lock, LOCK_EX)) {
+            fclose($lock);
+            throw new \RuntimeException('Could not acquire installation wizard execution lock.');
+        }
+
+        return $lock;
+    }
+
+    /**
+     * @param resource $lock
+     */
+    private static function releaseExecutionLock($lock): void
+    {
+        if (!is_resource($lock)) {
+            return;
+        }
+
+        flock($lock, LOCK_UN);
+        fclose($lock);
     }
 }

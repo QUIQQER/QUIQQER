@@ -17,7 +17,7 @@ QUI::getAjax()->registerFunction(
         $Media = $Project->getMedia();
         $Item = $Media->get($id);
 
-        $Item->rename($newname);
+        $Item->rename($newname, QUI::getUserBySession());
 
         return $Item->getAttribute('name');
     },

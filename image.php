@@ -248,19 +248,42 @@ try {
         $_REQUEST['maxheight'] = 500;
     }
 
-    if ($isAdmin && Media\Utils::isImage($File)) {
-        if (!isset($_REQUEST['maxwidth'])) {
-            $_REQUEST['maxwidth'] = null;
+    if ($isAdmin && $File instanceof Media\Image) {
+        $maxWidth = filter_var($_REQUEST['maxwidth'] ?? null, FILTER_VALIDATE_INT, [
+            'options' => ['min_range' => 1]
+        ]);
+        $maxHeight = filter_var($_REQUEST['maxheight'] ?? null, FILTER_VALIDATE_INT, [
+            'options' => ['min_range' => 1]
+        ]);
+
+        if ($maxWidth === false && $maxHeight === false) {
+            $maxWidth = 500;
+            $maxHeight = 500;
         }
 
-        if (!isset($_REQUEST['maxheight'])) {
-            $_REQUEST['maxheight'] = null;
+        $maxCacheSize = (int)$Project->getConfig('media_maxImageCacheSize');
+
+        if ($maxCacheSize <= 0) {
+            $maxCacheSize = (int)$Project->getConfig('media_maxUploadSize');
         }
 
-        if (!$_REQUEST['maxwidth'] && !$_REQUEST['maxheight']) {
-            $_REQUEST['maxwidth'] = 500;
-            $_REQUEST['maxheight'] = 500;
+        if ($maxCacheSize <= 0) {
+            $maxCacheSize = 4000;
         }
+
+        if ($maxWidth !== false) {
+            $maxWidth = min($maxWidth, $maxCacheSize);
+        }
+
+        if ($maxHeight !== false) {
+            $maxHeight = min($maxHeight, $maxCacheSize);
+        }
+
+        $resizeSize = isset($_REQUEST['noresize'])
+            ? $File->getResizeSize()
+            : $File->getResizeSize($maxWidth, $maxHeight);
+        $resizeWidth = (int)$resizeSize['width'];
+        $resizeHeight = (int)$resizeSize['height'];
 
         $cacheDir = VAR_DIR . 'media/cache/admin/'
             . $Project->getName() . '/'
@@ -280,8 +303,8 @@ try {
         }
 
         $cacheFile = $cacheDir . $File->getId()
-            . '__' . $_REQUEST['maxheight'] . 'x'
-            . $_REQUEST['maxwidth'] . '.' . $ext;
+            . '__' . $resizeHeight . 'x'
+            . $resizeWidth . '.' . $ext;
 
         if (getMediaMimeType($cacheFile) === 'image/svg+xml') {
             sendMediaFile($cacheFile, 'image/svg+xml', $file, false);
@@ -309,7 +332,7 @@ try {
         }
 
         if (!isset($_REQUEST['noresize'])) {
-            $Image->scaleDown($_REQUEST['maxwidth'], $_REQUEST['maxheight']);
+            $Image->scaleDown($resizeWidth, $resizeHeight);
         }
 
         $Image->save($cacheFile);

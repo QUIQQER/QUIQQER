@@ -22,10 +22,6 @@ class LocaleTest extends TestCase
 
     public function testResetCurrent(): void
     {
-        $this->markTestSkipped(
-            'Test skipped: resetCurrent is bugged, thus testing is worthless (see quiqqer/core#1333)'
-        );
-
         $sut = new Locale();
         $testLanguage = 'fr';
 

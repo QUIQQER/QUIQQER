@@ -319,6 +319,20 @@ define('controls/desktop/panels/XML', [
                                 } else {
                                     self.$Control.imports(Form);
                                 }
+
+                                // Categories can load additional settings asynchronously.
+                                const Control = self.$Control;
+
+                                if (typeof Control.whenLoaded === 'function') {
+                                    const hideLoader = () => {
+                                        if (self.$Control === Control) {
+                                            self.Loader.hide();
+                                        }
+                                    };
+
+                                    Promise.resolve(Control.whenLoaded()).then(hideLoader, hideLoader);
+                                    return;
+                                }
                             }
                         }
 

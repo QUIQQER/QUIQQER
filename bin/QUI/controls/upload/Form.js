@@ -545,7 +545,7 @@ define('controls/upload/Form', [
 
                 IconForm.getElement(
                     '.controls-upload-form-single-container-select'
-                ).set('html', Input.files[0].name);
+                ).textContent = Input.files[0].name;
 
                 self.$files = Input.files;
             });
@@ -813,7 +813,7 @@ define('controls/upload/Form', [
             const Container = Input.getParent('.qui-form-upload'),
                 FileInfo = Container.getElement('.controls-upload-form-fileinfo');
 
-            FileInfo.set('html', File.name);
+            FileInfo.textContent = File.name;
 
             FileInfo.setStyle(
                 'background-image',

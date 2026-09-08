@@ -1,15 +1,24 @@
 @CHARSET "UTF-8";
 
 .control-system-vhost {
+    --_section-gap: var(--quiqqer-core-vhost-section-gap, 20px);
+    --_description-padding: var(--quiqqer-core-vhost-description-padding, 10px);
     box-sizing: border-box;
+    container-type: inline-size;
     height: 100%;
     overflow: auto;
     padding: 20px;
     width: 100%;
 }
 
-.control-system-vhost-path-languages {
-    margin-top: 20px;
+.control-system-vhost-path-languages,
+.control-system-vhost-redirects {
+    margin-top: var(--_section-gap);
+}
+
+.control-system-vhost :focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
 }
 
 .control-system-vhost-path-languages-description {
@@ -30,4 +39,25 @@
     flex: 0 0 auto;
     margin: 0;
     width: auto;
+}
+
+@container (max-width: 600px) {
+    .control-system-vhost .field-container {
+        flex-direction: column;
+    }
+
+    .control-system-vhost .field-container-item,
+    .control-system-vhost .field-container-field {
+        flex: auto;
+        min-width: 0;
+        width: 100%;
+    }
+
+    .control-system-vhost .field-container-item-desc {
+        padding-inline-start: var(--_description-padding);
+    }
+
+    .control-system-vhost .control-system-vhost-path-language {
+        overflow-wrap: anywhere;
+    }
 }

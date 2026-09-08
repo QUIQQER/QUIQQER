@@ -42,6 +42,7 @@ QUI::getAjax()->registerFunction(
             if ($coreConfigFile !== false && $file === $coreConfigFile) {
                 unset($config['db']);
                 unset($config['openssl']);
+                unset($config['locks']);
                 unset($config['globals']['salt']);
                 unset($config['globals']['saltlength']);
 
@@ -65,6 +66,8 @@ QUI::getAjax()->registerFunction(
                 }
             }
         }
+
+        unset($config['locks']);
 
         return $config;
     },

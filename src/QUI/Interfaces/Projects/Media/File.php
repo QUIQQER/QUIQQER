@@ -104,7 +104,7 @@ interface File
      *
      * @throws Exception
      */
-    public function save(): void;
+    public function save(null | QUI\Interfaces\Users\User $PermissionUser = null): void;
 
     /**
      * @return void
@@ -130,9 +130,15 @@ interface File
      */
     public function deleteCache(): void;
 
-    public function moveTo(Folder $Folder): void;
+    public function moveTo(
+        Folder $Folder,
+        null | QUI\Interfaces\Users\User $PermissionUser = null
+    ): void;
 
-    public function copyTo(Folder $Folder): QUI\Interfaces\Projects\Media\File;
+    public function copyTo(
+        Folder $Folder,
+        null | QUI\Interfaces\Users\User $PermissionUser = null
+    ): QUI\Interfaces\Projects\Media\File;
 
     public function getMedia(): Media;
 

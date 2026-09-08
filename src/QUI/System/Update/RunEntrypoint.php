@@ -44,7 +44,8 @@ class RunEntrypoint
         ?array $query = null,
         ?array $argv = null,
         ?string $sapi = null,
-        ?int $now = null
+        ?int $now = null,
+        bool $includeCliCommand = true
     ): int {
         $sapi ??= (string)php_sapi_name();
         $query ??= $_GET;
@@ -110,7 +111,7 @@ class RunEntrypoint
                 'error' => $Exception->getMessage()
             ];
 
-            if ($sapi !== 'cli') {
+            if ($sapi !== 'cli' && $includeCliCommand) {
                 $payload['cliCommand'] = $this->createCliCommand($id, $root, $token);
             }
 
@@ -128,8 +129,7 @@ class RunEntrypoint
     ): ?RunState {
         $now = time();
         $state = $repository->load($id);
-        $state->assertToken($token);
-        $state->assertNotExpired($now);
+        $state->assertAuthorized($token, $now);
 
         if ($this->isFinalState($state)) {
             return null;

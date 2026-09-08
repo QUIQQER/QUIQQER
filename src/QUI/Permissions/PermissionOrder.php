@@ -14,7 +14,6 @@ use QUI\Interfaces\Users\User as UserInterface;
 use function is_bool;
 use function is_int;
 use function is_string;
-use function method_exists;
 
 /**
  * Class PermissionOrder
@@ -45,10 +44,6 @@ class PermissionOrder
         $result = null;
 
         foreach ($list as $Object) {
-            if (!method_exists($Object, 'hasPermission')) {
-                continue;
-            }
-
             if (QUI::getGroups()->isGroup($Object)) {
                 /* @var $Object Group */
                 $hasPermissionResult = $Object->hasPermission($permission);
@@ -93,10 +88,6 @@ class PermissionOrder
 
         /* @var $Object Group */
         foreach ($list as $Object) {
-            if (!method_exists($Object, 'hasPermission')) {
-                continue;
-            }
-
             $hasPermissionResult = $Object->hasPermission($permission);
 
             if ($hasPermissionResult === false) {
@@ -137,10 +128,6 @@ class PermissionOrder
 
         /* @var $Group Group */
         foreach ($list as $Object) {
-            if (!method_exists($Object, 'hasPermission')) {
-                continue;
-            }
-
             if (QUI::getGroups()->isGroup($Object)) {
                 /* @var $Object Group */
                 $hasPermissionResult = $Object->hasPermission($permission);

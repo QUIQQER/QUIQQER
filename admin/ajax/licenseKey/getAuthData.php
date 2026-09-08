@@ -38,5 +38,8 @@ QUI::getAjax()->registerFunction(
         ];
     },
     [],
-    'Permission::checkAdminUser'
+    [
+        'Permission::checkAdminUser',
+        'quiqqer.system.update'
+    ]
 );

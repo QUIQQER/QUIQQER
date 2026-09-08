@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace QUITests\Template;
 
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use QUI;
 use QUI\Interfaces\Projects\Site;
@@ -113,6 +114,33 @@ final class FetchSiteSecurityTest extends TestCase
 
         $this->render('', 'standard');
         self::assertSame(['parent-index'], $GLOBALS['quiqqerTemplateMarkers']);
+    }
+
+    #[DataProvider('missingTemplateParentProvider')]
+    public function testMissingTemplateParentStillRendersChildTemplate(bool $viaVHost): void
+    {
+        $Package = $this->registerPackage('vendor/child');
+        $Package->method('hasTemplateParent')->willReturn(true);
+        $Package->method('getTemplateParent')->willReturn(null);
+        $this->installedTemplates[] = 'vendor/child';
+        $this->marker('packages/child/index.php', 'child-index');
+        $this->Engine->expects(self::once())->method('fetch');
+
+        if ($viaVHost) {
+            QUI::$Rewrite = $this->createMock(QUI\Rewrite::class);
+            QUI::$Rewrite->method('getVHosts')->willReturn([
+                ['project' => 'project', 'template' => 'vendor/child']
+            ]);
+        }
+
+        $this->render($viaVHost ? '' : 'vendor/child', 'standard');
+
+        self::assertSame(['child-index'], $GLOBALS['quiqqerTemplateMarkers']);
+    }
+
+    public static function missingTemplateParentProvider(): array
+    {
+        return ['project template' => [false], 'virtual host template' => [true]];
     }
 
     public function testRegisteredSiteTypeUsesTemplateAndProjectOverrideOrder(): void

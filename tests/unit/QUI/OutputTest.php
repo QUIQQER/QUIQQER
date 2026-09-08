@@ -13,7 +13,6 @@ class OutputTest extends TestCase
     {
         $Project = $this->createMock(Project::class);
         $Project->method('getVHostPath')->willReturn('es');
-        $Project->method('hasVHost')->willReturn(true);
 
         $prependProjectLanguagePath = new ReflectionMethod(
             Output::class,
@@ -25,8 +24,7 @@ class OutputTest extends TestCase
             $prependProjectLanguagePath->invoke(
                 new Output(),
                 'example',
-                $Project,
-                ['www.example.eu' => []]
+                $Project
             )
         );
     }
@@ -35,7 +33,6 @@ class OutputTest extends TestCase
     {
         $Project = $this->createMock(Project::class);
         $Project->method('getVHostPath')->willReturn('');
-        $Project->method('hasVHost')->willReturn(true);
 
         $prependProjectLanguagePath = new ReflectionMethod(
             Output::class,
@@ -47,31 +44,7 @@ class OutputTest extends TestCase
             $prependProjectLanguagePath->invoke(
                 new Output(),
                 'example',
-                $Project,
-                ['www.example.eu' => []]
-            )
-        );
-    }
-
-    public function testUnassignedLanguageKeepsLegacyLanguagePrefix(): void
-    {
-        $Project = $this->createMock(Project::class);
-        $Project->method('getVHostPath')->willReturn('');
-        $Project->method('hasVHost')->willReturn(false);
-        $Project->method('getLang')->willReturn('es');
-
-        $prependProjectLanguagePath = new ReflectionMethod(
-            Output::class,
-            'prependProjectLanguagePath'
-        );
-
-        self::assertSame(
-            'es/example',
-            $prependProjectLanguagePath->invoke(
-                new Output(),
-                'example',
-                $Project,
-                ['www.example.eu' => []]
+                $Project
             )
         );
     }

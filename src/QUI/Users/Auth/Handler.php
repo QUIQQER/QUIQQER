@@ -31,6 +31,8 @@ use function usort;
  */
 class Handler
 {
+    private const PASSWORD_RESET_MAIL_THROTTLE_SECONDS = 60;
+
     /**
      * global instance
      */
@@ -348,6 +350,31 @@ class Handler
             return;
         }
 
+        $ThrottleDecision = QUI\Security\Throttle::acquireForUser(
+            $User,
+            'quiqqer/core',
+            'users.password-reset-mail',
+            self::PASSWORD_RESET_MAIL_THROTTLE_SECONDS
+        );
+
+        if (!$ThrottleDecision->isAllowed()) {
+            return;
+        }
+
+        try {
+            $this->sendPasswordResetVerificationMailNow($User, $email);
+        } catch (\Throwable $Exception) {
+            $ThrottleDecision->release();
+            throw $Exception;
+        }
+    }
+
+    /**
+     * @throws QUI\Exception
+     * @throws \PHPMailer\PHPMailer\Exception
+     */
+    private function sendPasswordResetVerificationMailNow(QUI\Users\User $User, string $email): void
+    {
         $Project = QUI::getRewrite()->getProject();
 
         $verification = $this->verificationFactory->createLinkVerification(

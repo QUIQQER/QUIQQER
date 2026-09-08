@@ -44,6 +44,103 @@ abstract class AbstractGroupTool extends AbstractUserTool
         self::checkPermission('quiqqer.admin.users.view');
     }
 
+    protected static function checkGroupAssignmentPermission(Group $Group): void
+    {
+        self::checkGroupMembershipMutationPermission(
+            $Group,
+            'Only superusers may assign users to the root group.',
+            'The selected group grants permissions that the current user may not delegate.'
+        );
+    }
+
+    protected static function checkGroupRemovalPermission(Group $Group): void
+    {
+        self::checkGroupMembershipMutationPermission(
+            $Group,
+            'Only superusers may remove users from the root group.',
+            'The selected group grants permissions that the current user may not revoke.'
+        );
+    }
+
+    private static function checkGroupMembershipMutationPermission(
+        Group $Group,
+        string $rootGroupMessage,
+        string $delegationMessage
+    ): void {
+        $RequestUser = Server::getRequestUser();
+
+        if ($RequestUser->isSU()) {
+            return;
+        }
+
+        $rootGroupId = QUI::conf('globals', 'root');
+
+        if (
+            (string)$Group->getUUID() === (string)$rootGroupId
+            || (string)$Group->getId() === (string)$rootGroupId
+        ) {
+            throw new QUI\Permissions\Exception(
+                $rootGroupMessage,
+                403
+            );
+        }
+
+        $PermissionManager = QUI::getPermissionManager();
+        $permissionList = $PermissionManager->getPermissionList('groups');
+
+        foreach ($PermissionManager->getPermissions($Group) as $permission => $groupValue) {
+            if (empty($groupValue)) {
+                continue;
+            }
+
+            $type = $permissionList[$permission]['type'] ?? null;
+            $userValue = Permission::hasPermission($permission, $RequestUser);
+
+            if (
+                is_string($type)
+                && self::isPermissionWithinDelegationCeiling($type, $groupValue, $userValue)
+            ) {
+                continue;
+            }
+
+            throw new QUI\Permissions\Exception(
+                $delegationMessage,
+                403,
+                ['permission' => $permission]
+            );
+        }
+    }
+
+    private static function isPermissionWithinDelegationCeiling(
+        string $type,
+        mixed $groupValue,
+        mixed $userValue
+    ): bool {
+        return match ($type) {
+            'bool' => (bool)$userValue,
+            'int' => is_numeric($userValue) && (int)$userValue >= (int)$groupValue,
+            'array' => is_array($groupValue)
+                && is_array($userValue)
+                && array_diff($groupValue, $userValue) === [],
+            'group', 'groups', 'user', 'users', 'users_and_groups' => self::isIdentifierListWithinDelegationCeiling(
+                (string)$groupValue,
+                is_string($userValue) || is_int($userValue) ? (string)$userValue : ''
+            ),
+            default => is_string($groupValue)
+                && is_string($userValue)
+                && hash_equals($groupValue, $userValue)
+        };
+    }
+
+    private static function isIdentifierListWithinDelegationCeiling(string $groupValue, string $userValue): bool
+    {
+        $notEmpty = static fn(string $value): bool => $value !== '';
+        $groupValues = array_filter(array_map('trim', explode(',', $groupValue)), $notEmpty);
+        $userValues = array_filter(array_map('trim', explode(',', $userValue)), $notEmpty);
+
+        return array_diff($groupValues, $userValues) === [];
+    }
+
     protected static function checkGroupDeletePermission(): void
     {
         self::checkCorePermission();

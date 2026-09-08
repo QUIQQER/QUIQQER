@@ -20,6 +20,7 @@ QUI::getAjax()->registerFunction(
         $Project = QUI\Projects\Manager::getProject($project);
         $Media = $Project->getMedia();
         $Folder = $Media->get((int)$parentid);
+        $PermissionUser = QUI::getUserBySession();
 
         if ($Folder->getType() !== Folder::class) {
             throw new QUI\Exception(
@@ -27,7 +28,7 @@ QUI::getAjax()->registerFunction(
             );
         }
 
-        $Folder->checkPermission('quiqqer.projects.media.upload');
+        $Folder->checkPermission('quiqqer.projects.media.upload', $PermissionUser);
 
         /* @var $Folder QUI\Projects\Media\Folder */
         /* @var $File QUI\QDOM */
@@ -52,12 +53,12 @@ QUI::getAjax()->registerFunction(
                 if ($Folder->childWithNameExists($folder)) {
                     $Folder = $Folder->getChildByName($folder);
                 } else {
-                    $Folder = $Folder->createFolder($folder);
+                    $Folder = $Folder->createFolder($folder, $PermissionUser);
                 }
             }
         }
 
-        return $Folder->uploadFile($file, Folder::FILE_OVERWRITE_TRUE)->getAttributes();
+        return $Folder->uploadFile($file, Folder::FILE_OVERWRITE_TRUE, $PermissionUser)->getAttributes();
     },
     ['project', 'parentid', 'File'],
     'Permission::checkAdminUser'

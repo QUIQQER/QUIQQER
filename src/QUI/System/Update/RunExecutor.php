@@ -23,8 +23,7 @@ class RunExecutor
 
         try {
             $state = $this->repository->load($id);
-            $state->assertToken($token);
-            $state->assertNotExpired($now);
+            $state->assertAuthorized($token, $now);
             $isAuthorized = true;
             $state->markRunning($now);
             $this->repository->save($state);

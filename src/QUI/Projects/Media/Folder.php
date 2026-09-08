@@ -155,6 +155,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function rename(string $newName, null | QUI\Interfaces\Users\User $PermissionUser = null): void
     {
+        $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
+
         if (empty($newName)) {
             throw new QUI\Exception(
                 ['quiqqer/core', 'exception.media.folder.name.invalid'],
@@ -354,6 +356,13 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         QUI\Projects\Media\Folder $Folder,
         null | QUI\Interfaces\Users\User $PermissionUser = null
     ): void {
+        $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
+        $Folder->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
+
+        if ($this->getId() === $Folder->getId() || in_array($this->getId(), $Folder->getParentIds(), true)) {
+            throw new QUI\Exception('A folder cannot be moved into itself or one of its descendants.');
+        }
+
         $Parent = $this->getParent();
 
         if ($Folder->getId() === $Parent->getId()) {
@@ -377,53 +386,92 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         $old_path = StringUtils::replaceDblSlashes($old_path);
         $new_path = StringUtils::replaceDblSlashes($new_path);
+        $oldFullPath = $this->Media->getFullPath() . $old_path;
+        $newFullPath = $this->Media->getFullPath() . $new_path;
+        $filesystemMoved = false;
 
-        // update children paths
-        $Connection->createQueryBuilder()
-            ->update($Platform->quoteSingleIdentifier($this->Media->getTable()))
-            ->set(
-                $Platform->quoteSingleIdentifier("file"),
-                "REPLACE(" . $Platform->quoteSingleIdentifier("file") . ", :oldpath, :newpath)"
-            )
-            ->where($Platform->quoteSingleIdentifier("file") . " LIKE :search")
-            ->setParameter("oldpath", StringUtils::replaceDblSlashes($old_path . "/"))
-            ->setParameter("newpath", StringUtils::replaceDblSlashes($new_path . "/"))
-            ->setParameter("search", $old_path . "%")
-            ->executeStatement();
+        try {
+            $Connection->transactional(function () use (
+                $Connection,
+                $Platform,
+                $old_path,
+                $new_path,
+                $oldFullPath,
+                $newFullPath,
+                $Parent,
+                $Folder,
+                &$filesystemMoved
+            ): void {
+                // update children paths
+                $Connection->createQueryBuilder()
+                    ->update($Platform->quoteSingleIdentifier($this->Media->getTable()))
+                    ->set(
+                        $Platform->quoteSingleIdentifier("file"),
+                        "REPLACE(" . $Platform->quoteSingleIdentifier("file") . ", :oldpath, :newpath)"
+                    )
+                    ->where($Platform->quoteSingleIdentifier("file") . " LIKE :search")
+                    ->setParameter("oldpath", StringUtils::replaceDblSlashes($old_path . "/"))
+                    ->setParameter("newpath", StringUtils::replaceDblSlashes($new_path . "/"))
+                    ->setParameter("search", $old_path . "%")
+                    ->executeStatement();
 
-        // update me
-        $file = StringUtils::replaceDblSlashes($new_path . '/');
+                // update me
+                $file = StringUtils::replaceDblSlashes($new_path . '/');
 
+                $Connection->update(
+                    $this->Media->getTable(),
+                    [
+                        'file' => $file,
+                        'pathHash' => md5($file)
+                    ],
+                    ['id' => $this->getId()]
+                );
 
-        QUI::getDataBaseConnection()->update(
-            $this->Media->getTable(),
-            [
-                'file' => $file,
-                'pathHash' => md5($file)
-            ],
-            ['id' => $this->getId()]
-        );
+                // set the new parent relationship
+                $updatedRelations = $Connection->update(
+                    $this->Media->getTable('relations'),
+                    [
+                        'parent' => $Folder->getId()
+                    ],
+                    [
+                        'parent' => $Parent->getId(),
+                        'child' => $this->getId()
+                    ]
+                );
 
-        // set the new parent relationship
-        QUI::getDataBaseConnection()->update(
-            $this->Media->getTable('relations'),
-            [
-                'parent' => $Folder->getId()
-            ],
-            [
-                'parent' => $Parent->getId(),
-                'child' => $this->getId()
-            ]
-        );
+                if ((int)$updatedRelations !== 1) {
+                    throw new QUI\Exception('Could not update the media folder parent relation.');
+                }
 
-        FileUtils::move(
-            $this->Media->getFullPath() . $old_path,
-            $this->Media->getFullPath() . $new_path
-        );
+                if (!FileUtils::move($oldFullPath, $newFullPath)) {
+                    throw new QUI\Exception('Could not move media folder on the filesystem.');
+                }
+
+                $filesystemMoved = true;
+            });
+        } catch (\Throwable $Exception) {
+            if ($filesystemMoved) {
+                try {
+                    if (!FileUtils::move($newFullPath, $oldFullPath)) {
+                        throw new QUI\Exception('Could not roll back media folder move on the filesystem.');
+                    }
+                } catch (\Throwable $RollbackException) {
+                    throw new QUI\Exception(
+                        'Media folder move failed and its filesystem rollback could not be completed.',
+                        500,
+                        ['rollbackException' => $RollbackException->getMessage()],
+                        $Exception
+                    );
+                }
+            }
+
+            throw $Exception;
+        }
 
         // @todo rename cache instead of delete
         $this->deleteCache();
-        $this->setAttribute('file', $new_path);
+        $this->setAttribute('file', StringUtils::replaceDblSlashes($new_path . '/'));
+        $this->parent_id = $Folder->getId();
     }
 
     /**
@@ -436,6 +484,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         null | QUI\Interfaces\Users\User $PermissionUser = null
     ): QUI\Interfaces\Projects\Media\File {
         $this->checkCopyViewPermissions($PermissionUser);
+        $Folder->checkPermission('quiqqer.projects.media.upload', $PermissionUser);
+        $Folder->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
 
         return $this->copyToAfterPermissionCheck($Folder, $PermissionUser);
     }
@@ -487,7 +537,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         // copy me
-        $Copy = $Folder->createFolder($this->getAttribute('name'));
+        $Copy = $Folder->createFolder($this->getAttribute('name'), $PermissionUser);
 
         $attributes = $this->getAttributes();
 
@@ -541,10 +591,18 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Adds / create a subfolder
      *
+     * @param string $foldername
+     * @param User|null $PermissionUser
+     *
      * @throws QUI\Exception
      */
-    public function createFolder(string $foldername): Folder
-    {
+    public function createFolder(
+        string $foldername,
+        null | User $PermissionUser = null
+    ): Folder {
+        $this->checkPermission('quiqqer.projects.media.upload', $PermissionUser);
+        $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
+
         // Namensprüfung wegen unerlaubten Zeichen
         MediaUtils::checkFolderName($foldername);
 
@@ -552,7 +610,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $new_name = trim($foldername);
 
 
-        $User = QUI::getUserBySession();
+        $User = $PermissionUser ?? QUI::getUserBySession();
         $dir = $this->Media->getFullPath() . $this->getPath();
 
         if (is_dir($dir . $new_name)) {
@@ -1299,7 +1357,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         if (is_dir($file)) {
-            return $this->uploadFolder($file);
+            return $this->uploadFolder($file, false, $EditUser);
         }
 
         $fileInfo = FileUtils::getInfo($file);
@@ -1393,14 +1451,17 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             // overwrite file
             try {
                 $Item = MediaUtils::getElement($new_file);
+                $Item->checkPermission('quiqqer.projects.media.edit', $EditUser);
+                $Item->checkPermission('quiqqer.projects.media.del', $EditUser);
                 $Item->deleteCache();
-
-                $Item->deactivate();
-                $Item->delete();
+                $Item->deactivate($EditUser);
+                $Item->delete($EditUser);
 
                 if ($options == self::FILE_OVERWRITE_DESTROY) {
-                    $Item->destroy();
+                    $Item->destroy($EditUser);
                 }
+            } catch (QUI\Permissions\Exception $Exception) {
+                throw $Exception;
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::addDebug(
                     $Exception->getMessage(),
@@ -1578,12 +1639,16 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @param string $path - Path to the dir
      * @param QUI\Projects\Media\Folder|false $Folder - (optional) Uploaded Folder
+     * @param User|null $PermissionUser
      *
      * @return Folder
      * @throws QUI\Exception
      */
-    protected function uploadFolder(string $path, false | Folder $Folder = false): Folder
-    {
+    protected function uploadFolder(
+        string $path,
+        false | Folder $Folder = false,
+        null | User $PermissionUser = null
+    ): Folder {
         $files = FileUtils::readDir($path);
 
         foreach ($files as $file) {
@@ -1594,11 +1659,11 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 try {
                     $NewFolder = $this->getChildByName($folderName);
                 } catch (QUI\Exception) {
-                    $NewFolder = $this->createFolder($folderName);
+                    $NewFolder = $this->createFolder($folderName, $PermissionUser);
                 }
 
                 if ($NewFolder instanceof Folder) {
-                    $NewFolder->uploadFolder($path . '/' . $file);
+                    $NewFolder->uploadFolder($path . '/' . $file, false, $PermissionUser);
                 }
 
                 continue;
@@ -1606,9 +1671,9 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
             // import files
             if ($Folder) {
-                $Folder->uploadFile($path . '/' . $file);
+                $Folder->uploadFile($path . '/' . $file, self::FILE_OVERWRITE_NONE, $PermissionUser);
             } else {
-                $this->uploadFile($path . '/' . $file);
+                $this->uploadFile($path . '/' . $file, self::FILE_OVERWRITE_NONE, $PermissionUser);
             }
         }
 

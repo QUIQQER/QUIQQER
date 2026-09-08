@@ -1,6 +1,117 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <locales>
     <groups name="quiqqer/core" datatype="js,php">
+        <locale name="projects.popup.search">
+            <en><![CDATA[Search pages: title, name or ID]]></en>
+        </locale>
+        <locale name="projects.popup.search.loading">
+            <en><![CDATA[Searching for pages …]]></en>
+        </locale>
+        <locale name="projects.popup.search.count">
+            <en><![CDATA[[count] pages found.]]></en>
+        </locale>
+        <locale name="projects.popup.search.limited">
+            <en><![CDATA[Showing [count] pages. Please narrow your search.]]></en>
+        </locale>
+        <locale name="projects.popup.search.error">
+            <en><![CDATA[The search could not be loaded. Please try again.]]></en>
+        </locale>
+        <locale name="projects.popup.selection.remove">
+            <en><![CDATA[Remove [title] from the selection]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.lockLost">
+            <en><![CDATA[The editing lock is unavailable or has been lost. Saving is disabled. Keep a copy of your changes, then reopen the page.]]></en>
+        </locale>
+        <locale name="processLocks.title">
+            <en><![CDATA[Process locks]]></en>
+        </locale>
+        <locale name="processLocks.backend">
+            <en><![CDATA[Backend]]></en>
+        </locale>
+        <locale name="processLocks.flock">
+            <en><![CDATA[File system]]></en>
+        </locale>
+        <locale name="processLocks.dbal">
+            <en><![CDATA[QUIQQER database]]></en>
+        </locale>
+        <locale name="processLocks.namespace">
+            <en><![CDATA[Namespace]]></en>
+        </locale>
+        <locale name="processLocks.namespaceHelp">
+            <en><![CDATA[Use the same identifier on every server of this installation. Empty: use the installation path.]]></en>
+        </locale>
+        <locale name="processLocks.path">
+            <en><![CDATA[Directory]]></en>
+        </locale>
+        <locale name="processLocks.pathHelp">
+            <en><![CDATA[Leave empty for the default var/locks/ directory. File locks coordinate processes on the same server.]]></en>
+        </locale>
+        <locale name="processLocks.dbalHelp">
+            <en><![CDATA[Uses the configured QUIQQER database and a dedicated process lock table.]]></en>
+        </locale>
+        <locale name="processLocks.host">
+            <en><![CDATA[Redis host]]></en>
+        </locale>
+        <locale name="processLocks.port">
+            <en><![CDATA[Port]]></en>
+        </locale>
+        <locale name="processLocks.database">
+            <en><![CDATA[Redis database]]></en>
+        </locale>
+        <locale name="processLocks.username">
+            <en><![CDATA[Username]]></en>
+        </locale>
+        <locale name="processLocks.password">
+            <en><![CDATA[Password]]></en>
+        </locale>
+        <locale name="processLocks.clearPassword">
+            <en><![CDATA[Remove stored password]]></en>
+        </locale>
+        <locale name="processLocks.passwordKept">
+            <en><![CDATA[Keep stored password]]></en>
+        </locale>
+        <locale name="processLocks.tls">
+            <en><![CDATA[Use TLS]]></en>
+        </locale>
+        <locale name="processLocks.redisHelp">
+            <en><![CDATA[Use a separate Redis database that survives application cache clears. An empty password field keeps the stored password. A Redis client must be installed on the server.]]></en>
+        </locale>
+        <locale name="processLocks.custom">
+            <en><![CDATA[Custom (already configured)]]></en>
+        </locale>
+        <locale name="processLocks.customHelp">
+            <en><![CDATA[This store was configured outside this interface. Its connection is preserved when saving unless another backend is selected.]]></en>
+        </locale>
+        <locale name="processLocks.changeHelp">
+            <en><![CDATA[When changing backends, protected operations may briefly run in parallel. Restart long-running workers to use the new store.]]></en>
+        </locale>
+        <locale name="processLocks.test">
+            <en><![CDATA[Test connection]]></en>
+        </locale>
+        <locale name="processLocks.testing">
+            <en><![CDATA[Testing lock …]]></en>
+        </locale>
+        <locale name="processLocks.testSuccess">
+            <en><![CDATA[The connection works. You can now save these settings.]]></en>
+        </locale>
+        <locale name="processLocks.testFailed">
+            <en><![CDATA[Connection test failed. Check connection details, server availability, permissions and the installed Redis client.]]></en>
+        </locale>
+        <locale name="processLocks.loadFailed">
+            <en><![CDATA[Could not load settings. Please reopen the category.]]></en>
+        </locale>
+        <locale name="processLocks.notReady">
+            <en><![CDATA[Please wait until loading or connection testing has finished.]]></en>
+        </locale>
+        <locale name="processLocks.saved">
+            <en><![CDATA[The process lock settings have been saved.]]></en>
+        </locale>
+        <locale name="processLocks.saveFailed">
+            <en><![CDATA[Could not save process locks. Check the entered values and permissions.]]></en>
+        </locale>
+        <locale name="processLocks.invalid">
+            <en><![CDATA[Invalid process lock settings.]]></en>
+        </locale>
         <locale name="yes">
             <en><![CDATA[Yes]]></en>
         </locale>
@@ -1608,6 +1719,27 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="system.vhost.table.hostdata">
             <en><![CDATA[Host data]]></en>
         </locale>
+        <locale name="system.vhost.table.redirects">
+            <en><![CDATA[Redirects]]></en>
+        </locale>
+        <locale name="system.vhost.domain.variants">
+            <en><![CDATA[The domain with and without www uses these settings unless the other variant has its own VHost. Both domains must be configured in DNS and on the web server.]]></en>
+        </locale>
+        <locale name="system.vhost.wwwRedirect.global">
+            <en><![CDATA[Use global setting]]></en>
+        </locale>
+        <locale name="system.vhost.wwwRedirect.description">
+            <en><![CDATA[This choice overrides the global WWW setting. Without a WWW redirect, the requested host variant is preserved; the global HTTPS redirect still applies.]]></en>
+        </locale>
+        <locale name="system.vhost.httpshost.description">
+            <en><![CDATA[Optional alternate host for HTTPS. A configured HTTPS host takes precedence over the WWW choice for HTTPS requests.]]></en>
+        </locale>
+        <locale name="exception.vhost.invalid.wwwRedirect">
+            <en><![CDATA[Invalid WWW redirect. Allowed values are the global setting, www, nonwww or none.]]></en>
+        </locale>
+        <locale name="exception.vhost.conflicting.wwwRedirect">
+            <en><![CDATA[This WWW redirect conflicts with the setting of [host] and would create a redirect loop. Please align the settings of both VHosts.]]></en>
+        </locale>
         <locale name="system.vhost.table.languages">
             <en><![CDATA[Language assignments]]></en>
         </locale>
@@ -1665,6 +1797,18 @@ You can also ignore the console user permissions check with '--ignore-file-permi
 
         <locale name="login.title">
             <en><![CDATA[Login]]></en>
+        </locale>
+        <locale name="login.check.cookies">
+            <en><![CDATA[Signing in requires cookies. Your browser cannot store them at the moment. Please allow cookies for this website and check again. If the problem persists, clear the stored website data and reload the page.]]></en>
+        </locale>
+        <locale name="login.check.session">
+            <en><![CDATA[The sign-in session could not be confirmed. Please reload the page and try again. If the problem persists, contact the website operator.]]></en>
+        </locale>
+        <locale name="login.check.connection">
+            <en><![CDATA[The connection for signing in could not be checked. Please check your internet connection and try again. If the problem persists, contact the website operator.]]></en>
+        </locale>
+        <locale name="login.check.retry">
+            <en><![CDATA[Check again]]></en>
         </locale>
         <locale name="window.logout.title">
             <en><![CDATA[Logout]]></en>
@@ -4122,6 +4266,15 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="exception.login.fail.user_deleted">
             <en><![CDATA[Login failed. User is marked as deleted.]]></en>
         </locale>
+        <locale name="quiqqer.settings.auth.loginIpLimit">
+            <en><![CDATA[Login attempts per IP address (15 minutes)]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.loginIpLimit.description">
+            <en><![CDATA[Shared limit for all frontend and backend login attempts, including unknown usernames and new sessions. Users sharing an IP address share this limit. Default: 60.]]></en>
+        </locale>
+        <locale name="exception.login.fail.ip_throttled">
+            <en><![CDATA[Too many login attempts from this IP address. Please try again in 15 minutes.]]></en>
+        </locale>
         <locale name="exception.login.fail.login_locked">
             <en><![CDATA[Login failed. Login for this user is currently locked. Please try again later.]]></en>
         </locale>
@@ -5657,7 +5810,14 @@ After logging in you will be prompted to set a new password.
             <en><![CDATA[Execute a system setup]]></en>
         </locale>
         <locale name="console.systemtool.password-reset">
-            <en><![CDATA[Initiates a password reset]]></en>
+            <en><![CDATA[
+            Initiates a password reset for a username or UUID.
+            Usage: ./console password-reset [username-or-UUID] [--no-interaction] [--password-stdin]
+            If the username or UUID is provided, the identifier prompt is skipped. Confirmation prompts remain required unless --no-interaction is used.
+            --no-interaction skips both confirmation prompts and requires a username or UUID argument.
+            --password-stdin reads the new password from one line on STDIN instead of generating one and does not print the supplied password.
+            Exit codes: 0 = password changed; 1 = unexpected/runtime failure; 2 = invalid identifier or user not found; 3 = cancelled or required input missing.
+            ]]></en>
         </locale>
         <locale name="console.systemtool.clear-cache-path">
             <en><![CDATA[Deletes a specific cache path. (--path="")]]></en>
@@ -5734,22 +5894,37 @@ After logging in you will be prompted to set a new password.
             <en><![CDATA[Password reset]]></en>
         </locale>
         <locale name="console.tool.passwordreset.warning">
-            <en><![CDATA[ATTENTION! This tool will ireversibly reset the password of a user!]]></en>
+            <en><![CDATA[ATTENTION! This tool will irreversibly reset the password of a user!]]></en>
         </locale>
-        <locale name="console.tool.passwordreset.prompt.username">
-            <en><![CDATA[Username:]]></en>
+        <locale name="console.tool.passwordreset.prompt.identifier">
+            <en><![CDATA[Username or UUID:]]></en>
         </locale>
         <locale name="console.tool.passwordreset.prompt.confirm">
-            <en><![CDATA[Are you sure you want to reset the password of the user '[username]'? (y/n)]]></en>
+            <en><![CDATA[Are you sure you want to reset the password of the user '[username]' (UUID: [uuid])? (y/N)]]></en>
         </locale>
         <locale name="console.tool.passwordreset.prompt.confirm2">
-            <en><![CDATA[Are you really sure? This change can not be undone! (y/n)]]></en>
+            <en><![CDATA[Are you really sure? This change can not be undone! (y/N)]]></en>
         </locale>
         <locale name="console.tool.passwordreset.user.not.found">
             <en><![CDATA[The given user was not found]]></en>
         </locale>
+        <locale name="console.tool.passwordreset.identifier.required">
+            <en><![CDATA[A username or UUID is required when using --no-interaction]]></en>
+        </locale>
+        <locale name="console.tool.passwordreset.password.stdin.required">
+            <en><![CDATA[--password-stdin requires a non-empty password on STDIN]]></en>
+        </locale>
+        <locale name="console.tool.passwordreset.cancelled">
+            <en><![CDATA[The password reset was cancelled]]></en>
+        </locale>
+        <locale name="console.tool.passwordreset.error">
+            <en><![CDATA[The password reset failed unexpectedly]]></en>
+        </locale>
         <locale name="console.tool.passwordreset.success">
-            <en><![CDATA[The password has been changed successfully. The new password is '[password]']]></en>
+            <en><![CDATA[The password has been changed successfully. The new password is:]]></en>
+        </locale>
+        <locale name="console.tool.passwordreset.success.custom">
+            <en><![CDATA[The password has been changed successfully.]]></en>
         </locale>
         <locale name="exception.zip.extension.not.installed">
             <en><![CDATA[

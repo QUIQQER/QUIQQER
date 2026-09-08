@@ -14,10 +14,14 @@ define('controls/projects/Popup', [
     'Projects',
     'Locale',
     'controls/projects/project/Sitemap',
+    'Ajax',
+    'Mustache',
+    'text!controls/projects/Popup.html',
 
-    'css!controls/projects/Popup.css'
+    'css!controls/projects/Popup.css',
+    'css!qui/controls/messages/Message.css'
 
-], function (QUIPopup, QUISelect, Projects, Locale, ProjectMap) {
+], function (QUIPopup, QUISelect, Projects, Locale, ProjectMap, Ajax, Mustache, template) {
     "use strict";
 
     return new Class({
@@ -53,10 +57,17 @@ define('controls/projects/Popup', [
             this.$Map         = null;
             this.$Information = null;
             this.$Select      = null;
+            this.$selectedSites = new Map();
+            this.$treeSelection = new Set();
+            this.$searchRevision = 0;
+            this.$searchTimer = null;
+            this.$searchClosed = false;
 
             this.addEvents({
                 onOpen     : this.$onOpen,
-                onOpenBegin: this.$onOpenBegin
+                onOpenBegin: this.$onOpenBegin,
+                onCloseBegin: () => this.$cancelSearch(),
+                onDestroy: () => this.$cancelSearch()
             });
         },
 
@@ -71,19 +82,37 @@ define('controls/projects/Popup', [
 
             this.Loader.show();
 
-            Content.set(
-                'html',
-
-                '<div class="qui-project-popup-header box"></div>' +
-                '<div class="qui-project-popup-body box"></div>'
-            );
+            this.$searchClosed = false;
+            Content.classList.add('qui-project-popup-content');
+            Content.innerHTML = Mustache.render(template, {
+                searchLabel: Locale.get('quiqqer/core', 'projects.popup.search'),
+                searchButtonLabel: Locale.get('quiqqer/core', 'projects.project.site.btn.start')
+            });
 
             Content.setStyles({
                 padding: 0
             });
 
-            this.$Header = Content.getElement('.qui-project-popup-header');
-            this.$Body   = Content.getElement('.qui-project-popup-body');
+            this.$Header = Content.querySelector('[data-name="header"]');
+            this.$Body = Content.querySelector('[data-name="tree"]');
+            this.$Search = Content.querySelector('[data-name="search"]');
+            this.$Results = Content.querySelector('[data-name="results"]');
+            this.$ResultList = Content.querySelector('[data-name="resultList"]');
+            this.$Status = Content.querySelector('[data-name="status"]');
+            this.$Selection = Content.querySelector('[data-name="selection"]');
+            this.$SearchButton = Content.querySelector('[data-name="searchButton"]');
+            this.$Search.addEventListener('input', () => this.$scheduleSearch());
+            this.$SearchButton.addEventListener('click', () => this.$scheduleSearch(true));
+            this.$Search.addEventListener('keydown', event => {
+                if (event.key === 'Enter' || (event.key === 'Escape' && this.$Search.value)) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    if (event.key === 'Escape') {
+                        this.$Search.value = '';
+                    }
+                    this.$scheduleSearch(true);
+                }
+            });
 
             if (this.getAttribute('information')) {
                 this.$Information = new Element('div', {
@@ -117,6 +146,9 @@ define('controls/projects/Popup', [
 
             // load the projects
             Projects.getList(function (result) {
+                if (this.$searchClosed) {
+                    return;
+                }
                 var i, len, langs, project;
 
                 var selfLangs      = self.getAttribute('langs'),
@@ -204,6 +236,11 @@ define('controls/projects/Popup', [
             }
 
             this.Loader.show();
+            clearTimeout(this.$searchTimer);
+            this.$searchRevision++;
+            this.$selectedSites.clear();
+            this.$treeSelection.clear();
+            this.$renderSelection();
 
             if (this.$Map) {
                 this.$Map.destroy();
@@ -218,9 +255,188 @@ define('controls/projects/Popup', [
             });
 
             this.$Map.inject(this.$Body);
+            this.$Map.getMap().addEvent('childClick', () => {
+                queueMicrotask(() => {
+                    if (!this.$searchClosed && !this.$Body.hidden) {
+                        this.$captureTreeSelection();
+                    }
+                });
+            });
             this.$Map.open();
+            this.$scheduleSearch();
 
             this.Loader.hide();
+        },
+
+        $cancelSearch: function () {
+            this.$searchClosed = true;
+            this.$searchRevision++;
+            clearTimeout(this.$searchTimer);
+        },
+
+        $captureTreeSelection: function () {
+            const children = this.$Map.getSelectedChildren();
+            const current = new Set(children.map(Item => Number(Item.getAttribute('value'))));
+
+            for (const id of this.$treeSelection) {
+                if (!current.has(id)) {
+                    this.$selectedSites.delete(id);
+                }
+            }
+
+            if (!this.getAttribute('multiple') && current.size) {
+                this.$selectedSites.clear();
+            }
+
+            for (const Item of children) {
+                const id = Number(Item.getAttribute('value'));
+                this.$selectedSites.set(id, {id, title: Item.getAttribute('text')});
+            }
+
+            this.$treeSelection = current;
+            this.$renderSelection();
+        },
+
+        $syncTreeSelection: function () {
+            const Sitemap = this.$Map.getMap();
+            Sitemap.deselectAllChildren();
+            this.$treeSelection.clear();
+
+            for (const id of this.$selectedSites.keys()) {
+                const Item = Sitemap.getChildrenByValue(id)[0];
+                if (Item) {
+                    Item.select({control: true});
+                    this.$treeSelection.add(id);
+                }
+            }
+        },
+
+        $scheduleSearch: function (immediate = false) {
+            clearTimeout(this.$searchTimer);
+            const revision = ++this.$searchRevision;
+            const search = this.$Search.value.trim();
+
+            if (!this.$Map || this.$searchClosed) {
+                return;
+            }
+
+            this.$SearchButton.disabled = false;
+
+            if (!this.$Body.hidden) {
+                this.$captureTreeSelection();
+            }
+
+            this.$Body.hidden = search !== '';
+            this.$Results.hidden = search === '';
+            this.$ResultList.replaceChildren();
+
+            if (!search) {
+                this.$Results.removeAttribute('aria-busy');
+                this.$syncTreeSelection();
+                return;
+            }
+
+            this.$Results.setAttribute('aria-busy', 'true');
+            this.$Status.textContent = Locale.get('quiqqer/core', 'projects.popup.search.loading');
+            const [project, lang] = this.$Select.getValue().split(',');
+            this.$searchTimer = setTimeout(() => {
+                Ajax.get('ajax_project_sites_searchForSelection', result => {
+                    if (revision !== this.$searchRevision || this.$searchClosed) {
+                        return;
+                    }
+                    this.$Results.removeAttribute('aria-busy');
+                    this.$renderResults(result);
+                }, {
+                    project: JSON.stringify({name: project, lang}),
+                    search,
+                    showError: false,
+                    onError: () => {
+                        if (revision === this.$searchRevision && !this.$searchClosed) {
+                            this.$Results.removeAttribute('aria-busy');
+                            this.$Status.textContent = Locale.get('quiqqer/core', 'projects.popup.search.error');
+                        }
+                    }
+                });
+            }, immediate ? 0 : 250);
+        },
+
+        $renderResults: function (result) {
+            this.$ResultList.replaceChildren();
+            this.$Status.textContent = Locale.get('quiqqer/core',
+                result.limited ? 'projects.popup.search.limited' : 'projects.popup.search.count',
+                {count: result.items.length});
+
+            for (const site of result.items) {
+                const id = Number(site.id);
+                const Item = document.createElement('li');
+                const Label = document.createElement('label');
+                const Input = document.createElement('input');
+                Input.type = this.getAttribute('multiple') ? 'checkbox' : 'radio';
+                Input.name = 'site-search-' + this.getId();
+                Input.dataset.name = 'resultSelection';
+                Input.value = id;
+                Input.checked = this.$selectedSites.has(id);
+                const Icon = document.createElement('span');
+                Icon.className = 'fa fa-file-o';
+                Icon.setAttribute('aria-hidden', 'true');
+                const Text = document.createElement('span');
+                Text.className = 'qui-project-popup-result-text';
+                const Title = document.createElement('span');
+                Title.className = 'qui-project-popup-result-title';
+                Title.textContent = site.title || site.name || '';
+                Text.append(Title);
+                if (site.name && site.name !== site.title) {
+                    const Name = document.createElement('small');
+                    Name.textContent = site.name;
+                    Text.append(Name);
+                }
+                const Id = document.createElement('span');
+                Id.className = 'qui-project-popup-result-id';
+                Id.textContent = '#' + id;
+                Label.append(Input, Icon, Text, Id);
+                Item.append(Label);
+                this.$ResultList.append(Item);
+                Input.addEventListener('change', () => {
+                    if (!this.getAttribute('multiple')) {
+                        this.$selectedSites.clear();
+                    }
+                    if (Input.checked) {
+                        this.$selectedSites.set(id, site);
+                    } else {
+                        this.$selectedSites.delete(id);
+                    }
+                    this.$syncTreeSelection();
+                    this.$renderSelection();
+                });
+            }
+        },
+
+        $renderSelection: function () {
+            this.$Selection.replaceChildren();
+            this.$Selection.hidden = !this.getAttribute('multiple') || this.$selectedSites.size === 0;
+
+            if (this.$Selection.hidden) {
+                return;
+            }
+
+            for (const [id, site] of this.$selectedSites) {
+                const Button = document.createElement('button');
+                const title = (site.title || site.name || '') + ' (#' + id + ')';
+                Button.type = 'button';
+                Button.className = 'qui-button';
+                Button.textContent = title + ' ×';
+                Button.setAttribute('aria-label', Locale.get('quiqqer/core', 'projects.popup.selection.remove', {title}));
+                Button.addEventListener('click', () => {
+                    this.$selectedSites.delete(id);
+                    this.$syncTreeSelection();
+                    for (const Input of this.$ResultList.querySelectorAll('[data-name="resultSelection"]')) {
+                        Input.checked = this.$selectedSites.has(Number(Input.value));
+                    }
+                    this.$renderSelection();
+                    this.$Search.focus();
+                });
+                this.$Selection.append(Button);
+            }
         },
 
         /**
@@ -243,15 +459,15 @@ define('controls/projects/Popup', [
                 project = value[0],
                 lang    = value[1];
 
-            var children      = this.$Map.getSelectedChildren();
+            if (!this.$Body.hidden) {
+                this.$captureTreeSelection();
+            }
             var projectString = 'project=' + project + '&' + 'lang=' + lang;
 
-            ids = children.map(function (o) {
-                return o.getAttribute('value');
-            });
+            ids = Array.from(this.$selectedSites.keys());
 
-            urls = children.map(function (o) {
-                return 'index.php?id=' + o.getAttribute('value') + '&' + projectString;
+            urls = ids.map(function (id) {
+                return 'index.php?id=' + id + '&' + projectString;
             });
 
             var result = {

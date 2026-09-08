@@ -34,10 +34,7 @@ class CreateFolder extends AbstractTool
                         throw new \QUI\Exception('Media item is not a folder.');
                     }
 
-                    $Parent->checkPermission('quiqqer.projects.media.upload', Server::getRequestUser());
-                    $Parent->checkPermission('quiqqer.projects.media.edit', Server::getRequestUser());
-
-                    $Folder = $Parent->createFolder($name);
+                    $Folder = $Parent->createFolder($name, Server::getRequestUser());
 
                     return [
                         'created' => true,

@@ -69,6 +69,7 @@ define('controls/users/User', [
             QUI.Controls.$cids[this.$uid] = this;
 
             this.$AddressGrid = null;
+            this.$PasswordGenerateButton = null;
             this.parent(options);
 
             this.addEvents({
@@ -523,7 +524,7 @@ define('controls/users/User', [
                 if (PasswordField) {
                     PasswordField.setStyle('float', 'left');
 
-                    new QUIButton({
+                    this.$PasswordGenerateButton = new QUIButton({
                         textimage: 'fa fa-lock',
                         text: QUILocale.get(lg, 'users.user.btn.password.generate'),
                         events: {
@@ -1166,21 +1167,39 @@ define('controls/users/User', [
                 Form = Body.getElement('form'),
                 Pass1 = Form.elements.password,
                 Pass2 = Form.elements.password2,
-                Show = Form.elements.showPasswords;
+                Show = Form.elements.showPasswords,
+                Button = this.$PasswordGenerateButton;
 
             if (!Pass1 || !Pass2) {
                 return;
             }
 
-            const newPassword = Math.random().toString(36).slice(-8);
+            const resetLoadingState = () => {
+                Pass1.disabled = false;
+                Pass2.disabled = false;
+                Button.setAttribute('textimage', 'fa fa-lock');
+                Button.enable();
+            };
 
-            Pass1.value = newPassword;
-            Pass2.value = newPassword;
+            Pass1.disabled = true;
+            Pass2.disabled = true;
+            Button.setAttribute('textimage', 'fa fa-spinner fa-spin');
+            Button.disable();
 
-            if (!Show.checked) {
-                Show.checked = true;
-                Show.fireEvent('change');
-            }
+            QUIAjax.get('ajax_user_generateRandomPassword', (newPassword) => {
+                Pass1.value = newPassword;
+                Pass2.value = newPassword;
+
+                if (!Show.checked) {
+                    Show.checked = true;
+                    Show.fireEvent('change');
+                }
+
+                resetLoadingState();
+            }, {
+                'package': 'quiqqer/core',
+                onError: resetLoadingState
+            });
         },
 
         /**

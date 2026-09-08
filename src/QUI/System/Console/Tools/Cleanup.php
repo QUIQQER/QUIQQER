@@ -50,6 +50,10 @@ class Cleanup extends QUI\System\Console\Tool
         QUI\Cron\QuiqqerCrons::clearSessions();
         $this->write('[OK]');
 
+        $this->writeLn('- Purge expired security throttles ');
+        QUI\Security\Throttle::cleanupExpired();
+        $this->write('[OK]');
+
         // clear all workspaces from users which are nor admin users
         $this->writeLn('- Cleanup workspaces ');
         QUI\Workspace\Manager::cleanup();
