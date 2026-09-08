@@ -1,0 +1,13 @@
+<?php
+
+namespace QUI\Utils\System;
+
+final class File
+{
+    public static function mkdir(string $directory): void
+    {
+        if (!is_dir($directory)) {
+            mkdir($directory, 0700, true);
+        }
+    }
+}

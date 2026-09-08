@@ -9,6 +9,13 @@ namespace QUI\Lock;
 use QUI;
 use QUI\Package\Package;
 use Stash\Interfaces\ItemInterface;
+use Symfony\Component\Lock\Exception\LockExpiredException;
+use Symfony\Component\Lock\LockFactory;
+use Symfony\Component\Lock\LockInterface;
+use Symfony\Component\Lock\PersistingStoreInterface;
+use Symfony\Component\Lock\Store\DoctrineDbalStore;
+use Symfony\Component\Lock\Store\FlockStore;
+use Symfony\Component\Lock\Store\StoreFactory;
 
 use function is_null;
 use function time;
@@ -19,6 +26,167 @@ use function time;
  */
 class Locker
 {
+    private static ?LockFactory $ProcessLockFactory = null;
+    private static ?EditingLocks $EditingLocks = null;
+
+    /**
+     * Override the process lock backend during application bootstrap.
+     * Passing null restores the backend configured in conf.ini.php [locks].
+     * Configure the same shared store on all workers before acquiring locks.
+     */
+    public static function setProcessLockStore(?PersistingStoreInterface $Store): void
+    {
+        self::$ProcessLockFactory = $Store === null ? null : new LockFactory($Store);
+        self::$EditingLocks = null;
+    }
+
+    public static function editing(): EditingLocks
+    {
+        if (self::$EditingLocks !== null) {
+            return self::$EditingLocks;
+        }
+
+        $dsn = QUI::conf('locks', 'dsn') ?: 'flock';
+        $namespace = 'editing-' . hash('sha256', QUI::conf('locks', 'namespace') ?: CMS_DIR);
+
+        if ($dsn === 'flock' || str_starts_with($dsn, 'flock://')) {
+            $path = $dsn === 'flock' ? VAR_DIR . 'locks/' : substr($dsn, 8);
+            $Store = new \Symfony\Component\Cache\Adapter\FilesystemAdapter($namespace, 0, $path . '/editing');
+        } elseif ($dsn === 'dbal') {
+            $Store = new EditingDbalAdapter(
+                QUI::getDataBaseConnection(),
+                $namespace,
+                0,
+                ['db_table' => QUI::getDBTableName('editing_locks')]
+            );
+        } elseif (preg_match('~^rediss?://~', $dsn)) {
+            $Store = new \Symfony\Component\Cache\Adapter\RedisAdapter(
+                \Symfony\Component\Cache\Adapter\RedisAdapter::createConnection($dsn),
+                $namespace
+            );
+        } else {
+            throw new Exception('The configured backend does not support editing locks.', 503);
+        }
+
+        $Store->setLogger(new StoreLogger());
+        return self::$EditingLocks = new EditingLocks($Store);
+    }
+
+    /**
+     * Create an independent process lock, without acquiring it.
+     * The TTL applies to expiring backends; file locks last until release or process exit.
+     * [locks] namespace defaults to CMS_DIR; distributed nodes must use the same namespace.
+     */
+    public static function createProcessLock(string $key, float $ttl = 300.0): LockInterface
+    {
+        if ($key === '' || !is_finite($ttl) || $ttl <= 0) {
+            throw new \InvalidArgumentException('Process locks require a key and a finite, positive TTL.');
+        }
+
+        $namespace = QUI::conf('locks', 'namespace');
+
+        if (!is_string($namespace) || $namespace === '') {
+            $namespace = CMS_DIR;
+        }
+
+        $resource = 'quiqqer-process-' . hash('sha256', $namespace . "\0" . $key);
+
+        return self::getProcessLockFactory()->createLock($resource, $ttl);
+    }
+
+    /**
+     * Execute a callback while owning a process lock. Timeout and TTL are seconds.
+     * Long-running callbacks must refresh expiring locks before their TTL elapses.
+     * Timeout bounds contention retries, not blocking backend I/O or callback execution.
+     * For cache generation, recheck the cached value inside the callback.
+     * Ownership checks cannot undo side effects performed after a lease expired.
+     *
+     * @template T
+     * @param callable(LockInterface): T $callback
+     * @return T
+     * @throws TimeoutException
+     */
+    public static function synchronized(
+        string $key,
+        callable $callback,
+        float $timeout = 10.0,
+        float $ttl = 300.0
+    ): mixed {
+        if (!is_finite($timeout) || $timeout < 0) {
+            throw new \InvalidArgumentException('Process lock timeout must be finite and non-negative.');
+        }
+
+        $Lock = self::createProcessLock($key, $ttl);
+        $deadline = hrtime(true) / 1e9 + $timeout;
+
+        while (!$Lock->acquire()) {
+            $remaining = $deadline - hrtime(true) / 1e9;
+
+            if ($remaining <= 0) {
+                throw new TimeoutException('Timed out waiting for a process lock.', 503);
+            }
+
+            usleep((int)min(50000, ceil($remaining * 1e6)));
+
+            if (hrtime(true) / 1e9 >= $deadline) {
+                throw new TimeoutException('Timed out waiting for a process lock.', 503);
+            }
+        }
+
+        try {
+            $result = $callback($Lock);
+
+            if (!$Lock->isAcquired()) {
+                throw new LockExpiredException('Process lock ownership was lost during the callback.');
+            }
+
+            return $result;
+        } finally {
+            $Lock->release();
+        }
+    }
+
+    /**
+     * conf.ini.php [locks] dsn: flock (default), flock:///path, dbal, or a Symfony store DSN.
+     * Redis DSNs require ext-redis or another supported client and a database separate from cache clears.
+     * The dbal store uses the prefixed process_locks table, created on first acquisition if missing.
+     * Provision it in advance when DDL is restricted; acquire outside application transactions.
+     * Never delete active flock files. Configured backend failures do not fall back to local locks.
+     */
+    private static function getProcessLockFactory(): LockFactory
+    {
+        if (self::$ProcessLockFactory !== null) {
+            return self::$ProcessLockFactory;
+        }
+
+        $dsn = QUI::conf('locks', 'dsn');
+
+        self::$ProcessLockFactory = new LockFactory(self::createProcessLockStore($dsn ?: 'flock'));
+
+        return self::$ProcessLockFactory;
+    }
+
+    /** Create a store without replacing the active factory, e.g. for a connection test. */
+    public static function createProcessLockStore(string $dsn): PersistingStoreInterface
+    {
+
+        if ($dsn === '' || $dsn === 'flock') {
+            $Store = new FlockStore(VAR_DIR . 'locks/');
+        } elseif ($dsn === 'dbal') {
+            $Store = new DoctrineDbalStore(QUI::getDataBaseConnection(), [
+                'db_table' => QUI::getDBTableName('process_locks')
+            ]);
+        } else {
+            if (in_array($dsn, ['null', 'in-memory'], true)) {
+                throw new \InvalidArgumentException('A shared process lock backend is required.');
+            }
+
+            $Store = StoreFactory::createStore($dsn);
+        }
+
+        return $Store;
+    }
+
     /**
      * Lock an item or an object and checks the permissions
      *

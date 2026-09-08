@@ -7,7 +7,8 @@ class RunLaunch
     public function __construct(
         private readonly Run $run,
         private readonly string $webUrl,
-        private readonly string $cliCommand
+        private readonly string $cliCommand,
+        private readonly string $webToken = ''
     ) {
     }
 
@@ -24,5 +25,10 @@ class RunLaunch
     public function getCliCommand(): string
     {
         return $this->cliCommand;
+    }
+
+    public function getWebToken(): string
+    {
+        return $this->webToken;
     }
 }

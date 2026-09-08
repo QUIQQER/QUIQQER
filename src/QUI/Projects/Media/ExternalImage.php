@@ -276,7 +276,7 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
     /**
      * placeholder - do nothing
      */
-    public function save(): void
+    public function save(null | QUI\Interfaces\Users\User $PermissionUser = null): void
     {
         // do nothing
     }
@@ -312,8 +312,10 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
      * placeholder - do nothing
      * @throws Exception
      */
-    public function moveTo(QUI\Projects\Media\Folder $Folder): void
-    {
+    public function moveTo(
+        QUI\Projects\Media\Folder $Folder,
+        null | QUI\Interfaces\Users\User $PermissionUser = null
+    ): void {
         throw new QUI\Exception('External images can not be moved');
     }
 
@@ -321,8 +323,10 @@ class ExternalImage extends QUI\QDOM implements QUI\Interfaces\Projects\Media\Fi
      * placeholder - do nothing
      * @throws Exception
      */
-    public function copyTo(QUI\Projects\Media\Folder $Folder): QUI\Interfaces\Projects\Media\File
-    {
+    public function copyTo(
+        QUI\Projects\Media\Folder $Folder,
+        null | QUI\Interfaces\Users\User $PermissionUser = null
+    ): QUI\Interfaces\Projects\Media\File {
         throw new QUI\Exception('External images can not be copied');
     }
 

@@ -7,6 +7,7 @@
 namespace QUI\Interfaces\Users;
 
 use QUI\Countries\Country;
+use QUI\ERP\Currency\Currency;
 use QUI\Exception;
 use QUI\Groups\Group;
 use QUI\Interfaces\Users\User as QUIUserInterface;
@@ -75,6 +76,11 @@ interface User
      */
     public function getName(): string;
 
+    /**
+     * Returns a name suitable for display, falling back to the user name
+     */
+    public function getDisplayName(): string;
+
     public function getUsername(): string;
 
     /**
@@ -99,6 +105,18 @@ interface User
      * is the user active or not?
      */
     public function getStatus(): int;
+
+    /**
+     * Returns the directly assigned permission value, or false if it is absent
+     */
+    public function hasPermission(string $permission): bool | string;
+
+    /**
+     * Checks the effective permission of this user, including group permissions
+     *
+     * @throws \QUI\Permissions\Exception
+     */
+    public function checkPermission(string $permission): void;
 
     /**
      * Has the user the right?
@@ -128,6 +146,13 @@ interface User
     public function getGroups(bool $array = true): array;
 
     public function getCountry(): null | Country;
+
+    /**
+     * Returns the user's currency, or null if no default currency is available
+     *
+     * @throws Exception
+     */
+    public function getCurrency(): ?Currency;
 
     public function getAvatar(): Image | null;
 
@@ -253,6 +278,14 @@ interface User
     public function getAddress(int | string $id): Address;
 
     public function getStandardAddress(): null | Address;
+
+    /**
+     * Returns the current address, falling back to the standard address
+     * Users without an address return null or false
+     *
+     * @throws Exception
+     */
+    public function getCurrentAddress(): null | bool | Address;
 
     /**
      * @return array<string, Address>

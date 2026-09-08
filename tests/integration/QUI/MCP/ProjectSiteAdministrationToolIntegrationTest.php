@@ -43,6 +43,8 @@ class ProjectSiteAdministrationToolIntegrationTest extends ProjectIntegrationTes
         self::getTestProject();
         $projectName = 'phpunit_mcp_lifecycle_' . substr(md5(uniqid('', true)), 0, 8);
         $renamedProjectName = $projectName . '_renamed';
+        self::assertTrue(TestCleanup::claimProject($projectName));
+        self::assertTrue(TestCleanup::claimProject($renamedProjectName));
 
         self::runAsRootUser(function () use ($projectName, $renamedProjectName): void {
             try {

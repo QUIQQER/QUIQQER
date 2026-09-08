@@ -73,13 +73,25 @@ class PermissionOrderTest extends TestCase
         );
     }
 
-    public function testPermissionIgnoresUserWithoutHasPermissionMethod(): void
+    public function testPermissionReturnsFalseForUserWithoutPermission(): void
     {
         $User = $this->createMock(UserInterface::class);
+        $User->expects($this->once())->method('hasPermission')->with(self::PERMISSION)->willReturn(false);
 
         $this->assertFalse(
             PermissionOrder::permission(self::PERMISSION, [$User])
         );
+    }
+
+    public function testPermissionOrdersUseUserInterfacePermissionValues(): void
+    {
+        $User = $this->createMock(UserInterface::class);
+        $User->method('hasPermission')->with(self::PERMISSION)->willReturn('12');
+        $Group = $this->createGroupWithPermission(4);
+
+        $this->assertSame(12, PermissionOrder::permission(self::PERMISSION, [$Group, $User]));
+        $this->assertSame(12, PermissionOrder::maxInteger(self::PERMISSION, [$Group, $User]));
+        $this->assertSame(4, PermissionOrder::minInteger(self::PERMISSION, [$User, $Group]));
     }
 
     public function testMaxIntegerReturnsHighestPermissionValue(): void

@@ -15,9 +15,10 @@ define('classes/projects/project/Site', [
 
     'qui/QUI',
     'qui/classes/DOM',
-    'Ajax'
+    'Ajax',
+    'Locale'
 
-], function (QUI, DOM, Ajax) {
+], function (QUI, DOM, Ajax, QUILocale) {
     "use strict";
 
     /**
@@ -54,6 +55,7 @@ define('classes/projects/project/Site', [
             this.$has_children = false;
             this.$parentid = false;
             this.$loaded = false;
+            this.$urlRequest = 0;
 
             this.$workingId = 'site-' +
                 Project.getName() + '-' +
@@ -96,6 +98,7 @@ define('classes/projects/project/Site', [
                 Site = this;
 
             Ajax.get('ajax_site_get', function (result) {
+                Site.$urlRequest++;
                 Site.setAttributes(result.attributes);
                 //Site.clearWorkingStorage();
 
@@ -211,6 +214,25 @@ define('classes/projects/project/Site', [
             }
 
             return '';
+        },
+
+        /**
+         * Refresh location metadata without replacing unsaved editor attributes.
+         */
+        refreshUrl: function () {
+            const request = ++this.$urlRequest;
+
+            return new Promise((resolve, reject) => {
+                Ajax.get('ajax_site_getUrl', result => {
+                    if (request === this.$urlRequest) {
+                        this.$url = result.url;
+                        this.$parentid = result.parentid;
+                        this.fireEvent('urlChange', [this]);
+                    }
+
+                    resolve();
+                }, {...this.ajaxParams(), onError: reject});
+            });
         },
 
         /**
@@ -374,16 +396,34 @@ define('classes/projects/project/Site', [
          * @param {Function} [onfinish] - (optional), callback function
          * @return {Promise}
          */
-        save: function (onfinish) {
+        save: function (onfinish, lockToken = null) {
+            // Callers without an open editor acquire a lease for this one save.
+            if (lockToken === null) {
+                const token = Array.from(crypto.getRandomValues(new Uint8Array(16)), value => value.toString(16).padStart(2, '0')).join('');
+                const request = action => new Promise((resolve, reject) => {
+                    Ajax.post('ajax_site_' + action, resolve, {
+                        ...this.ajaxParams(), token, force: 0, onError: reject
+                    });
+                });
+                return request('lock').then(acquired => {
+                    if (acquired !== true) {
+                        throw new Error(QUILocale.get('quiqqer/core', 'exception.site.is.being.edited'));
+                    }
+                    return this.save(onfinish, token).finally(() => request('unlock'));
+                });
+            }
+
             var Site = this,
                 params = this.ajaxParams(),
                 status = this.getAttribute('active');
 
             return new Promise(function (resolve, reject) {
                 params.attributes = JSON.encode(Site.getAttributes());
+                params.lockToken = lockToken ?? '';
                 params.onError = reject;
 
                 Ajax.post('ajax_site_save', function (result) {
+                    Site.$urlRequest++;
                     if (result && result.attributes) {
                         Site.setAttributes(result.attributes);
                     }
@@ -456,16 +496,19 @@ define('classes/projects/project/Site', [
                 params.onError = reject;
 
                 Ajax.post('ajax_site_move', function (result) {
-                    if (typeof callback === 'function') {
-                        callback(result);
-                    }
+                    Site.$parentid = newParentId;
 
-                    Site.fireEvent('move', [
-                        Site,
-                        newParentId
-                    ]);
+                    // A failed URL refresh must not hide an already completed move.
+                    // Ajax reports the refresh error through its normal error handling.
+                    Site.refreshUrl().catch(() => {}).then(() => {
+                        Site.fireEvent('move', [Site, newParentId]);
 
-                    resolve(result);
+                        if (typeof callback === 'function') {
+                            callback(result);
+                        }
+
+                        resolve(result);
+                    });
                 }, params);
             }.bind(this));
         },
@@ -560,6 +603,7 @@ define('classes/projects/project/Site', [
                 var params = this.ajaxParams();
 
                 params.onError = reject;
+                params.force = 1;
 
                 Ajax.post('ajax_site_unlock', function () {
                     if (typeof callback === 'function') {

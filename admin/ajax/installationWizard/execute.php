@@ -4,27 +4,11 @@
  * Execute the setup for the specific provider
  */
 
-use QUI\InstallationWizard\InstallationWizardInterface;
 use QUI\InstallationWizard\ProviderHandler;
 
 QUI::getAjax()->registerFunction(
     'ajax_installationWizard_execute',
-    static function ($provider, $data): bool {
-        if (!class_exists($provider)) {
-            return false;
-        }
-
-        $interfaces = class_implements($provider);
-
-        if (!isset($interfaces[InstallationWizardInterface::class])) {
-            return false;
-        }
-
-        ProviderHandler::getConfig()->set('execute', 'provider', $provider);
-        ProviderHandler::getConfig()->set('execute', 'data', $data);
-        ProviderHandler::getConfig()->save();
-        return true;
-    },
+    static fn(string $provider, string $data): bool => ProviderHandler::prepareExecution($provider, $data),
     ['provider', 'data'],
     'Permission::checkSU'
 );

@@ -127,5 +127,12 @@ class Session
     {
     }
 
+    public function regenerate(): bool
+    {
+        $this->id = uniqid();
+
+        return true;
+    }
+
     // endregion
 }

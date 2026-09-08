@@ -33,10 +33,12 @@ QUI::getAjax()->registerFunction(
             );
         }
 
+        $PermissionUser = QUI::getUserBySession();
+
         foreach ($ids as $id) {
             try {
                 $Item = $Media->get((int)$id);
-                $Item->copyTo($Folder);
+                $Item->copyTo($Folder, $PermissionUser);
             } catch (QUI\Exception $Exception) {
                 QUI::getMessagesHandler()->addError(
                     $Exception->getMessage()

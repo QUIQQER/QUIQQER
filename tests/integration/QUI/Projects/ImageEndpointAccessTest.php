@@ -6,6 +6,7 @@ use DOMDocument;
 use DOMElement;
 use DOMXPath;
 use FilesystemIterator;
+use QUI\Projects\Fixtures\ExternalImageTestDouble;
 use QUI\Projects\Media;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -54,6 +55,8 @@ use const CURLOPT_HEADERFUNCTION;
 use const CURLOPT_HTTPHEADER;
 use const CURLOPT_RETURNTRANSFER;
 use const CURLOPT_TIMEOUT;
+
+require_once __DIR__ . '/Fixtures/ExternalImageTestDouble.php';
 
 class ImageEndpointAccessTest extends ProjectIntegrationTestCase
 {
@@ -113,11 +116,14 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
 
         self::$testDirectory = sys_get_temp_dir() . '/quiqqer-image-endpoint-'
             . bin2hex(random_bytes(8));
-        self::$varDirectory = self::$testDirectory . '/var/';
+        self::$varDirectory = getenv('GITLAB_CI') === 'true' ? self::$testDirectory . '/var/' : VAR_DIR;
         self::$serverLog = self::$testDirectory . '/server.log';
 
-        mkdir(self::$varDirectory . 'sessions', 0777, true);
-        mkdir(self::$varDirectory . 'logs', 0777, true);
+        foreach ([self::$testDirectory, self::$varDirectory . 'sessions', self::$varDirectory . 'logs'] as $directory) {
+            if (!is_dir($directory)) {
+                mkdir($directory, 0700, true);
+            }
+        }
 
         self::createMediaFixtures();
         self::writeHttpEndpointWrapper();
@@ -257,12 +263,15 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
     public function testExternalSvgRefreshIsSanitizedBeforeStorageAndAjaxPreview(): void
     {
         $Image = self::getTestProject()->getMedia()->get(self::$externalImageId);
-        $externalUrl = 'http://127.0.0.1:' . self::$serverPort . '/' . basename(self::$externalMaliciousSvg);
+        $externalSvg = file_get_contents(self::$externalMaliciousSvg);
 
         self::assertInstanceOf(Media\Image::class, $Image);
+        self::assertIsString($externalSvg);
 
-        ProjectTestHelper::runAsSystemUser(static function () use ($Image, $externalUrl): void {
-            $Image->setAttribute('external', $externalUrl);
+        $Image = new ExternalImageTestDouble($Image->getAttributes(), $Image->getMedia(), $externalSvg);
+
+        ProjectTestHelper::runAsSystemUser(static function () use ($Image): void {
+            $Image->setAttribute('external', 'https://images.example.test/malicious.svg');
             $Image->save();
             $Image->updateExternalImage();
         });
@@ -282,7 +291,48 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
     {
         $Image = self::getTestProject()->getMedia()->get(self::$invalidExternalImageId);
         $original = file_get_contents($Image->getFullPath());
-        $externalUrl = 'http://127.0.0.1:' . self::$serverPort . '/' . basename(self::$externalInvalidSvg);
+        $externalSvg = file_get_contents(self::$externalInvalidSvg);
+
+        self::assertInstanceOf(Media\Image::class, $Image);
+        self::assertIsString($original);
+        self::assertIsString($externalSvg);
+
+        $Image = new ExternalImageTestDouble($Image->getAttributes(), $Image->getMedia(), $externalSvg);
+
+        ProjectTestHelper::runAsSystemUser(static function () use ($Image): void {
+            $Image->setAttribute('external', 'https://images.example.test/invalid.svg');
+            $Image->save();
+            $Image->updateExternalImage();
+        });
+
+        self::assertSame($original, file_get_contents($Image->getFullPath()));
+        self::assertFalse((bool)$Image->getAttribute('active'));
+    }
+
+    public function testExternalLoopbackRefreshDoesNotReplaceExistingImage(): void
+    {
+        $Image = self::getTestProject()->getMedia()->get(self::$externalImageId);
+        $original = file_get_contents($Image->getFullPath());
+        $externalUrl = 'http://127.0.0.1:' . self::$serverPort . '/' . basename(self::$externalMaliciousSvg);
+
+        self::assertInstanceOf(Media\Image::class, $Image);
+        self::assertIsString($original);
+
+        ProjectTestHelper::runAsSystemUser(static function () use ($Image, $externalUrl): void {
+            $Image->setAttribute('external', $externalUrl);
+            $Image->save();
+            $Image->updateExternalImage();
+        });
+
+        self::assertSame($original, file_get_contents($Image->getFullPath()));
+        self::assertFalse((bool)$Image->getAttribute('active'));
+    }
+
+    public function testLocalFileExternalRefreshDoesNotReplaceExistingImage(): void
+    {
+        $Image = self::getTestProject()->getMedia()->get(self::$invalidExternalImageId);
+        $original = file_get_contents($Image->getFullPath());
+        $externalUrl = 'file://' . self::$externalInvalidSvg;
 
         self::assertInstanceOf(Media\Image::class, $Image);
         self::assertIsString($original);
@@ -361,9 +411,14 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
     public function testExistingAdminCacheContainingSvgIsSanitizedBeforeOutput(): void
     {
         $Project = self::getTestProject();
+        $Image = $Project->getMedia()->get(self::$activeImageId);
         $cacheDirectory = self::$varDirectory . 'media/cache/admin/'
             . $Project->getName() . '/' . $Project->getLang() . '/';
-        $cacheFile = $cacheDirectory . self::$activeImageId . '__500x500.png';
+        self::assertInstanceOf(Media\Image::class, $Image);
+
+        $dimensions = $Image->getResizeSize(500, 500);
+        $cacheFile = $cacheDirectory . self::$activeImageId
+            . '__' . $dimensions['height'] . 'x' . $dimensions['width'] . '.png';
 
         if (!is_dir($cacheDirectory)) {
             mkdir($cacheDirectory, 0777, true);
@@ -375,6 +430,40 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
             '_user' => 'backend-allowed',
             'quiadmin' => '1'
         ]));
+    }
+
+    public function testAdminPreviewUsesCanonicalDimensionsForCacheKey(): void
+    {
+        $Image = self::getTestProject()->getMedia()->get(self::$activeImageId);
+        self::assertInstanceOf(Media\Image::class, $Image);
+        $Image->deleteAdminCache();
+
+        foreach ([100, 200, 100_000] as $dimension) {
+            $Response = self::requestImage(self::$activeImageId, [
+                '_user' => 'backend-allowed',
+                'quiadmin' => '1',
+                'maxwidth' => (string)$dimension,
+                'maxheight' => (string)$dimension
+            ]);
+
+            self::assertSame(200, $Response['status'], self::failureMessage($Response));
+        }
+
+        $Project = self::getTestProject();
+        $cacheDirectory = self::$varDirectory . 'media/cache/admin/'
+            . $Project->getName() . '/' . $Project->getLang() . '/';
+        $dimensions = $Image->getResizeSize(100, 100);
+        $expectedCacheFile = $cacheDirectory . self::$activeImageId
+            . '__' . $dimensions['height'] . 'x' . $dimensions['width'] . '.png';
+        $cacheFiles = [];
+
+        foreach (self::getFilesBelow($cacheDirectory) as $cacheFile) {
+            if (str_starts_with(basename($cacheFile), self::$activeImageId . '__')) {
+                $cacheFiles[] = $cacheFile;
+            }
+        }
+
+        self::assertSame([$expectedCacheFile], $cacheFiles);
     }
 
     public function testPreviewProcessingNeverOutputsMalformedSvgOriginal(): void
@@ -501,8 +590,9 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
             '_user' => 'backend-denied'
         ]);
 
+        self::assertStringStartsWith('application/json', $Response['headers']['content-type'] ?? '');
         self::assertGreaterThanOrEqual(400, $Response['status'], self::failureMessage($Response));
-        self::assertSame(403, json_decode($Response['body'], true)['code'] ?? null);
+        self::assertSame(403, json_decode($Response['body'], true)['code'] ?? null, self::failureMessage($Response));
         self::assertStringNotContainsString('0123456789', $Response['body']);
         self::assertArrayNotHasKey('content-disposition', $Response['headers']);
     }
@@ -528,8 +618,9 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
             '_user' => 'backend-denied'
         ]);
 
+        self::assertStringStartsWith('application/json', $Response['headers']['content-type'] ?? '');
         self::assertGreaterThanOrEqual(400, $Response['status'], self::failureMessage($Response));
-        self::assertSame(403, json_decode($Response['body'], true)['code'] ?? null);
+        self::assertSame(403, json_decode($Response['body'], true)['code'] ?? null, self::failureMessage($Response));
         self::assertArrayNotHasKey('content-disposition', $Response['headers']);
     }
 
@@ -558,8 +649,9 @@ class ImageEndpointAccessTest extends ProjectIntegrationTestCase
             '_user' => 'backend-denied'
         ]);
 
+        self::assertStringStartsWith('application/json', $Response['headers']['content-type'] ?? '');
         self::assertGreaterThanOrEqual(400, $Response['status'], self::failureMessage($Response));
-        self::assertSame(403, json_decode($Response['body'], true)['code'] ?? null);
+        self::assertSame(403, json_decode($Response['body'], true)['code'] ?? null, self::failureMessage($Response));
         self::assertStringNotContainsString('0123456789', $Response['body']);
         self::assertArrayNotHasKey('accept-ranges', $Response['headers']);
         self::assertArrayNotHasKey('content-range', $Response['headers']);
@@ -984,7 +1076,14 @@ if (isset($_GET['health'])) {
 }
 
 define('QUIQQER_SYSTEM', true);
-define('VAR_DIR', %VAR_DIRECTORY%);
+// Match the real Ajax entrypoint before bootstrapping the request.
+if (isset($_GET['_ajax_preview']) || isset($_GET['_ajax_download']) || isset($_GET['_ajax_folder_download'])) {
+    define('QUIQQER_AJAX', true);
+}
+
+if (getenv('GITLAB_CI') === 'true') {
+    define('VAR_DIR', %VAR_DIRECTORY%);
+}
 
 require %BOOTSTRAP_FILE%;
 

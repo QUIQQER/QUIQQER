@@ -47,7 +47,10 @@ abstract class AbstractVHostTool extends AbstractTool
             ),
             'template' => is_string($data['template'] ?? null) ? $data['template'] : '',
             'error' => is_string($data['error'] ?? null) ? $data['error'] : '',
-            'httpsHost' => is_string($data['httpshost'] ?? null) ? $data['httpshost'] : ''
+            'httpsHost' => is_string($data['httpshost'] ?? null) ? $data['httpshost'] : '',
+            'wwwRedirect' => is_string($data[VhostManager::WWW_REDIRECT_CONFIG_KEY] ?? null)
+                ? $data[VhostManager::WWW_REDIRECT_CONFIG_KEY]
+                : ''
         ];
     }
 
@@ -66,13 +69,17 @@ abstract class AbstractVHostTool extends AbstractTool
         ?array $pathLanguages = null,
         ?string $template = null,
         ?string $error = null,
-        ?string $httpsHost = null
+        ?string $httpsHost = null,
+        ?string $wwwRedirect = null
     ): array {
         $project ??= is_string($existing['project'] ?? null) ? $existing['project'] : '';
         $rootLanguage ??= is_string($existing['lang'] ?? null) ? $existing['lang'] : '';
         $template ??= is_string($existing['template'] ?? null) ? $existing['template'] : '';
         $error ??= is_string($existing['error'] ?? null) ? $existing['error'] : '';
         $httpsHost ??= is_string($existing['httpshost'] ?? null) ? $existing['httpshost'] : '';
+        $wwwRedirect ??= is_string($existing[VhostManager::WWW_REDIRECT_CONFIG_KEY] ?? null)
+            ? $existing[VhostManager::WWW_REDIRECT_CONFIG_KEY]
+            : '';
 
         if ($pathLanguages === null) {
             $pathLanguages = VhostManager::parsePathLanguages(
@@ -99,7 +106,8 @@ abstract class AbstractVHostTool extends AbstractTool
             ),
             'template' => trim($template),
             'error' => trim($error),
-            'httpshost' => trim($httpsHost)
+            'httpshost' => trim($httpsHost),
+            VhostManager::WWW_REDIRECT_CONFIG_KEY => $wwwRedirect
         ];
     }
 
@@ -143,7 +151,12 @@ abstract class AbstractVHostTool extends AbstractTool
                 'type' => 'string',
                 'description' => 'Optional error site as project,lang,id.'
             ],
-            'httpsHost' => ['type' => 'string', 'description' => 'Optional HTTPS host name.']
+            'httpsHost' => ['type' => 'string', 'description' => 'Optional HTTPS host name.'],
+            'wwwRedirect' => [
+                'type' => 'string',
+                'enum' => ['', 'www', 'nonwww', 'none'],
+                'description' => 'WWW redirect override. Empty inherits the global setting; none disables WWW redirects.'
+            ]
         ];
     }
 }

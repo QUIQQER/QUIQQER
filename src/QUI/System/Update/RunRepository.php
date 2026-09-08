@@ -115,6 +115,10 @@ class RunRepository
             }
         }
 
+        if (is_array($data['process'] ?? null)) {
+            unset($data['process']['command']);
+        }
+
         $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
         if ($json === false || file_put_contents($stateFile, $json) === false) {

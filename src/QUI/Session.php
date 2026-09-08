@@ -427,6 +427,21 @@ class Session
     }
 
     /**
+     * Regenerate the session ID and invalidate the previous session.
+     *
+     * Use this when the session crosses a privilege boundary. Unlike
+     * refresh(), this prevents the previous session ID from being reused.
+     */
+    public function regenerate(): bool
+    {
+        if (!$this->Session) {
+            return false;
+        }
+
+        return $this->Session->migrate(true);
+    }
+
+    /**
      * Session setup
      *
      * @throws \Exception

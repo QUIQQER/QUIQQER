@@ -8,6 +8,7 @@ namespace QUI\Users;
 
 use QUI;
 use QUI\Countries\Country;
+use QUI\ERP\Currency\Currency;
 use QUI\ERP\Currency\Handler as Currencies;
 use QUI\Exception;
 use QUI\Groups\Group;
@@ -242,6 +243,11 @@ class Nobody extends QUI\QDOM implements User
         return QUI::getLocale()->get('quiqqer/core', 'nobody.name');
     }
 
+    public function getDisplayName(): string
+    {
+        return $this->getName();
+    }
+
     public function getUsername(): string
     {
         return QUI::getLocale()->get('quiqqer/core', 'nobody.username');
@@ -277,20 +283,13 @@ class Nobody extends QUI\QDOM implements User
         );
     }
 
-    /**
-     * @return string|\QUI\ERP\Currency\Currency|null
-     */
-    public function getCurrency()
+    public function getCurrency(): ?Currency
     {
-        if (!class_exists('QUI\ERP\Currency\Handler')) {
-            throw new QUI\Exception('Currency handler not found');
-        }
-
         if (QUI::getSession()->get('currency')) {
             $currency = QUI::getSession()->get('currency');
 
             if (Currencies::existCurrency($currency)) {
-                return $currency;
+                return Currencies::getCurrency($currency);
             }
         }
 
@@ -300,7 +299,7 @@ class Nobody extends QUI\QDOM implements User
             $currency = $Country->getCurrencyCode();
 
             if (Currencies::existCurrency($currency)) {
-                return $currency;
+                return Currencies::getCurrency($currency);
             }
         }
 
@@ -370,6 +369,11 @@ class Nobody extends QUI\QDOM implements User
         return null;
     }
 
+    public function getCurrentAddress(): null | Address
+    {
+        return $this->getStandardAddress();
+    }
+
     public function getStatus(): int
     {
         return 1;
@@ -396,6 +400,14 @@ class Nobody extends QUI\QDOM implements User
         $list = QUI::getPermissionManager()->getUserPermissionData($this);
 
         return $list[$permission] ?? false;
+    }
+
+    /**
+     * @throws QUI\Permissions\Exception
+     */
+    public function checkPermission(string $permission): void
+    {
+        QUI\Permissions\Permission::checkPermission($permission, $this);
     }
 
     /**

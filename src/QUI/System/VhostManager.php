@@ -36,8 +36,120 @@ use function trim;
 class VhostManager
 {
     public const PATH_LANGUAGES_CONFIG_KEY = 'path_langs';
+    public const WWW_REDIRECT_CONFIG_KEY = 'wwwRedirect';
 
     protected ?Config $Config = null;
+
+    /**
+     * Resolve an optional VHost override against the global WWW preference.
+     */
+    public static function getWwwRedirect(mixed $value, string $global): string
+    {
+        if (in_array($value, ['www', 'nonwww', 'none'], true)) {
+            return $value;
+        }
+
+        return in_array($global, ['www', 'nonwww'], true) ? $global : 'none';
+    }
+
+    public static function getWwwRedirectHost(string $host, string $mode): string
+    {
+        $hostname = self::getHostname($host);
+
+        if (
+            !str_contains($hostname, '.')
+            || str_contains($hostname, '*')
+            || filter_var(trim($hostname, '[]'), FILTER_VALIDATE_IP)
+        ) {
+            return $host;
+        }
+
+        if ($mode === 'www' && !str_starts_with(strtolower($host), 'www.')) {
+            return 'www.' . $host;
+        }
+
+        if ($mode === 'nonwww' && str_starts_with(strtolower($host), 'www.')) {
+            return substr($host, 4);
+        }
+
+        return $host;
+    }
+
+    /**
+     * Explicit hosts take precedence over HTTPS aliases, WWW variants and wildcards.
+     *
+     * @param array<array-key, mixed> $vhosts
+     */
+    public static function findVhost(string $requestHost, array $vhosts): ?string
+    {
+        foreach ($vhosts as $host => $data) {
+            if (is_string($host) && is_array($data) && strtolower($host) === strtolower($requestHost)) {
+                return $host;
+            }
+        }
+
+        $requestHost = self::getHostname($requestHost);
+
+        if ($requestHost === '') {
+            return null;
+        }
+
+        foreach ($vhosts as $host => $data) {
+            if (is_string($host) && is_array($data) && self::getHostname($host) === $requestHost) {
+                return $host;
+            }
+        }
+
+        foreach ($vhosts as $host => $data) {
+            if (
+                is_string($host)
+                && is_array($data)
+                && is_string($data['httpshost'] ?? null)
+                && self::getHostname($data['httpshost']) === $requestHost
+            ) {
+                return $host;
+            }
+        }
+
+        foreach ($vhosts as $host => $data) {
+            if (!is_string($host) || !is_array($data)) {
+                continue;
+            }
+
+            $hostname = self::getHostname($host);
+            $variant = self::getWwwRedirectHost(
+                $hostname,
+                str_starts_with($hostname, 'www.') ? 'nonwww' : 'www'
+            );
+
+            if ($variant !== $hostname && $variant === $requestHost) {
+                return $host;
+            }
+        }
+
+        foreach ($vhosts as $host => $data) {
+            if (!is_string($host) || !is_array($data)) {
+                continue;
+            }
+
+            foreach ([$host, $data['httpshost'] ?? ''] as $pattern) {
+                if (is_string($pattern) && str_contains($pattern, '*')) {
+                    if (fnmatch(self::getHostname($pattern), $requestHost, FNM_CASEFOLD)) {
+                        return $host;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private static function getHostname(string $host): string
+    {
+        $hostname = parse_url(str_contains($host, '://') ? $host : '//' . $host, PHP_URL_HOST);
+
+        return is_string($hostname) ? strtolower($hostname) : '';
+    }
 
     /**
      * Add a vhost
@@ -193,11 +305,23 @@ class VhostManager
      */
     public function getProjectLanguageRoute(string $projectName, string $projectLang): ?array
     {
-        return self::resolveProjectLanguageRoute(
-            $this->getList(),
+        $vhosts = $this->getList();
+        $route = self::resolveProjectLanguageRoute(
+            $vhosts,
             $projectName,
             $projectLang
         );
+
+        if ($route !== null) {
+            $host = self::findVhost($route['host'], $vhosts);
+            $mode = self::getWwwRedirect(
+                $host === null ? '' : ($vhosts[$host][self::WWW_REDIRECT_CONFIG_KEY] ?? ''),
+                (string)QUI::conf('webserver', 'wwwRedirect')
+            );
+            $route['host'] = self::getWwwRedirectHost($route['host'], $mode);
+        }
+
+        return $route;
     }
 
     /**
@@ -409,6 +533,45 @@ class VhostManager
                     'exception.vhost.not.found'
                 )
             );
+        }
+
+        if (
+            array_key_exists(self::WWW_REDIRECT_CONFIG_KEY, $data)
+            && !in_array($data[self::WWW_REDIRECT_CONFIG_KEY], ['', 'www', 'nonwww', 'none'], true)
+        ) {
+            throw new Exception(['quiqqer/core', 'exception.vhost.invalid.wwwRedirect']);
+        }
+
+        $existing = $Config->getSection($vhost);
+        $data[self::WWW_REDIRECT_CONFIG_KEY] ??= is_array($existing)
+            ? ($existing[self::WWW_REDIRECT_CONFIG_KEY] ?? '')
+            : '';
+
+        $globalWwwRedirect = (string)QUI::conf('webserver', 'wwwRedirect');
+        $targetHost = self::getWwwRedirectHost(
+            $vhost,
+            self::getWwwRedirect($data[self::WWW_REDIRECT_CONFIG_KEY], $globalWwwRedirect)
+        );
+
+        if ($targetHost !== $vhost) {
+            foreach ($Config->toArray() as $otherHost => $otherData) {
+                if (!is_string($otherHost) || self::getHostname($otherHost) !== self::getHostname($targetHost)) {
+                    continue;
+                }
+
+                $otherMode = self::getWwwRedirect(
+                    $otherData[self::WWW_REDIRECT_CONFIG_KEY] ?? '',
+                    $globalWwwRedirect
+                );
+
+                if (self::getWwwRedirectHost($targetHost, $otherMode) !== $targetHost) {
+                    throw new Exception([
+                        'quiqqer/core',
+                        'exception.vhost.conflicting.wwwRedirect',
+                        ['host' => $otherHost]
+                    ]);
+                }
+            }
         }
 
         $result = [];

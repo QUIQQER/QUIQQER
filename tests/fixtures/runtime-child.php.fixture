@@ -1,0 +1,13 @@
+<?php
+
+define('QUIQQER_SYSTEM', true);
+if (getenv('GITLAB_CI') === 'true') {
+    require dirname(__DIR__, 5) . '/bootstrap.php';
+} else {
+    require dirname(__DIR__) . '/runtime-bootstrap.php';
+}
+$Connection = QUI::getDataBaseConnection();
+$attempts = $Connection->fetchOne('SELECT attempts FROM ' . QUI\Security\Throttle::table()
+    . ' WHERE throttleKey = ?', [$argv[1]]);
+$Connection->update(QUI\Security\Throttle::table(), ['attempts' => 2], ['throttleKey' => $argv[1]]);
+echo json_encode(['root' => CMS_DIR, 'attempts' => (int)$attempts], JSON_THROW_ON_ERROR);

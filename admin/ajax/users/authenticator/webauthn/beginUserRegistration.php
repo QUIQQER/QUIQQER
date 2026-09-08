@@ -15,13 +15,6 @@ QUI::getAjax()->registerFunction(
             );
         }
 
-        if (QUI::getUsers()->usernameExists($username)) {
-            throw new QUI\Users\Exception(
-                ['quiqqer/core', 'exception.webauthn.username_exists'],
-                409
-            );
-        }
-
         return (new Server())->getRegistrationOptionsForNewUser($username, $displayName ?: $username, $name);
     },
     ['username', 'displayName', 'name']

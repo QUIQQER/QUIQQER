@@ -1,21 +1,16 @@
 <?php
 
-/**
- * Lock a site
- *
- * @param string $project - Project data; JSON Array
- * @param string $id - Site ID
- * @return array
- */
-
 QUI::getAjax()->registerFunction(
     'ajax_site_lock',
-    static function ($project, $id): void {
+    static function ($project, $id, $token): bool {
+        if (!is_string($token)) {
+            throw new QUI\Exception('Invalid editing lock token.', 400);
+        }
+
         $Project = QUI::getProjectManager()->decode($project);
         $Site = new QUI\Projects\Site\Edit($Project, $id);
-
-        $Site->lock();
+        return $Site->acquireEditingLock($token);
     },
-    ['project', 'id'],
+    ['project', 'id', 'token'],
     'Permission::checkAdminUser'
 );

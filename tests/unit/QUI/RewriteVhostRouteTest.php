@@ -11,6 +11,45 @@ use Symfony\Component\HttpFoundation\Request;
 
 class RewriteVhostRouteTest extends TestCase
 {
+    public function testLanguageRedirectPreservesWwwVariantWhenDisabled(): void
+    {
+        $Method = new ReflectionMethod(Rewrite::class, 'getProjectLanguageRouteHost');
+        $Request = Request::create('https://www.example.com:8443/de/');
+        $route = ['host' => 'example.com', 'httpshost' => ''];
+        $vhosts = ['example.com' => ['wwwRedirect' => 'none']];
+
+        self::assertSame(
+            'www.example.com:8443',
+            $Method->invoke(null, $Request, $route, $vhosts, 'https', 'nonwww')
+        );
+        self::assertSame(
+            'secure.example.com',
+            $Method->invoke(
+                null,
+                $Request,
+                ['host' => 'example.com', 'httpshost' => 'secure.example.com'],
+                $vhosts,
+                'https',
+                'nonwww'
+            )
+        );
+        self::assertSame(
+            'example.com',
+            $Method->invoke(null, $Request, $route, ['example.com' => ['wwwRedirect' => 'nonwww']], 'https', '')
+        );
+        self::assertSame(
+            'example.com',
+            $Method->invoke(
+                null,
+                Request::create('https://attacker.example:8443/de/'),
+                $route,
+                $vhosts,
+                'https',
+                ''
+            )
+        );
+    }
+
     public function testPathLanguageRouteContainsLanguagePrefix(): void
     {
         $buildRoutePath = new ReflectionMethod(

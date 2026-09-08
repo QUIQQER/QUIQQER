@@ -63,6 +63,82 @@ class GroupDbalLifecycleTest extends TestCase
         $this->assertFalse($this->groupRowExists($deletedGroupUuid));
     }
 
+    public function testGroupCannotBeMovedBelowItsDescendant(): void
+    {
+        $Groups = QUI::getGroups();
+        $SystemUser = QUI::getUsers()->getSystemUser();
+        $RootGroup = $Groups->get(QUI::conf('globals', 'root'));
+        $ParentGroup = $RootGroup->createChild(
+            self::TEST_PREFIX . 'parent-' . uniqid(),
+            $SystemUser
+        );
+        $ChildGroup = $ParentGroup->createChild(
+            self::TEST_PREFIX . 'child-' . uniqid(),
+            $SystemUser
+        );
+
+        try {
+            $ParentGroup->setParent($ChildGroup->getUUID());
+            self::fail('A group was moved below its own descendant.');
+        } catch (Exception $Exception) {
+            self::assertSame(400, $Exception->getCode());
+        }
+
+        self::assertSame(
+            $RootGroup->getUUID(),
+            $this->getGroupParentUuid($ParentGroup->getUUID())
+        );
+    }
+
+    public function testGroupCannotBeItsOwnParent(): void
+    {
+        $Groups = QUI::getGroups();
+        $SystemUser = QUI::getUsers()->getSystemUser();
+        $RootGroup = $Groups->get(QUI::conf('globals', 'root'));
+        $Group = $RootGroup->createChild(
+            self::TEST_PREFIX . 'self-parent-' . uniqid(),
+            $SystemUser
+        );
+
+        try {
+            $Group->setParent($Group->getUUID());
+            self::fail('A group was set as its own parent.');
+        } catch (Exception $Exception) {
+            self::assertSame(400, $Exception->getCode());
+        }
+
+        self::assertSame(
+            $RootGroup->getUUID(),
+            $this->getGroupParentUuid($Group->getUUID())
+        );
+    }
+
+    public function testHierarchyTraversalStopsAtExistingCycle(): void
+    {
+        $Groups = QUI::getGroups();
+        $SystemUser = QUI::getUsers()->getSystemUser();
+        $RootGroup = $Groups->get(QUI::conf('globals', 'root'));
+        $ParentGroup = $RootGroup->createChild(
+            self::TEST_PREFIX . 'cycle-parent-' . uniqid(),
+            $SystemUser
+        );
+        $ChildGroup = $ParentGroup->createChild(
+            self::TEST_PREFIX . 'cycle-child-' . uniqid(),
+            $SystemUser
+        );
+
+        $this->setGroupParentUuid($ParentGroup->getUUID(), $ChildGroup->getUUID());
+
+        try {
+            $CyclicGroup = new Group($ParentGroup->getUUID());
+
+            self::assertSame([$ChildGroup->getUUID()], $CyclicGroup->getParentIds());
+            self::assertSame([$ChildGroup->getUUID()], $CyclicGroup->getChildrenIds(true));
+        } finally {
+            $this->setGroupParentUuid($ParentGroup->getUUID(), $RootGroup->getUUID());
+        }
+    }
+
     private static function skipIfDatabaseIsUnavailable(): void
     {
         try {
@@ -110,5 +186,29 @@ class GroupDbalLifecycleTest extends TestCase
             ->fetchAssociative();
 
         return !empty($row);
+    }
+
+    private function getGroupParentUuid(string $uuid): string
+    {
+        $Connection = self::getConnection();
+        $Platform = $Connection->getDatabasePlatform();
+
+        return (string)$Connection->createQueryBuilder()
+            ->select('parent')
+            ->from(QUI\Utils\Doctrine::quoteIdentifier(Manager::table()))
+            ->where($Platform->quoteSingleIdentifier('uuid') . ' = :uuid')
+            ->setParameter('uuid', $uuid)
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchOne();
+    }
+
+    private function setGroupParentUuid(string $uuid, string $parentUuid): void
+    {
+        self::getConnection()->update(
+            QUI\Utils\Doctrine::quoteIdentifier(Manager::table()),
+            ['parent' => $parentUuid],
+            ['uuid' => $uuid]
+        );
     }
 }

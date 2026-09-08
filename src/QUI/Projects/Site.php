@@ -588,7 +588,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             $Platform = $Connection->getDatabasePlatform();
             $dbResult = $Connection->createQueryBuilder()
                 ->select("*")
-                ->from($Platform->quoteSingleIdentifier($Project->getName() . "_multilingual"))
+                ->from($Platform->quoteSingleIdentifier(QUI::getDBTableName($Project->getName() . "_multilingual")))
                 ->where($Platform->quoteSingleIdentifier($Project->getLang()) . " = :siteId")
                 ->setParameter("siteId", $this->getId())
                 ->setMaxResults(1)

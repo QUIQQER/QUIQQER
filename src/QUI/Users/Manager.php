@@ -1232,7 +1232,8 @@ class Manager
             $Exception = new QUI\Users\Exception(
                 QUI::getLocale()->get('quiqqer/core', 'exception.login.expire', [
                     'expire' => $userData['expire']
-                ])
+                ]),
+                401
             );
 
             $Exception->setAttribute('reason', self::AUTH_ERROR_LOGIN_EXPIRED);
@@ -1252,12 +1253,20 @@ class Manager
         // has user permission for a login
         QUI\Permissions\Permission::checkPermission('quiqqer.login', $User);
 
-
         // session
-        QUI::getSession()->remove('inAuthentication');
-        QUI::getSession()->set('auth', 1);
-        QUI::getSession()->set('uid', $userId);
-        QUI::getSession()->set('secHash', $this->getSecHash());
+        $Session = QUI::getSession();
+
+        if (!$Session->regenerate()) {
+            throw new QUI\Users\Exception(
+                ['quiqqer/core', 'exception.login.fail'],
+                500
+            );
+        }
+
+        $Session->remove('inAuthentication');
+        $Session->set('auth', 1);
+        $Session->set('uid', $userId);
+        $Session->set('secHash', $this->getSecHash());
 
         $userAgent = '';
 
@@ -1372,8 +1381,6 @@ class Manager
             }
         }
 
-        QUI::getEvents()->fireEvent('userAuthenticatorLoginStart', [$userId, $authenticator]);
-
         if ($authenticator instanceof AuthenticatorInterface) {
             $Authenticator = $authenticator;
         } else {
@@ -1382,6 +1389,16 @@ class Manager
                 $username
             );
         }
+
+        if ($userId === false) {
+            try {
+                $userId = $Authenticator->getUser()->getUUID();
+            } catch (\Exception) {
+                // The authenticator reports an invalid identity during authentication.
+            }
+        }
+
+        QUI::getEvents()->fireEvent('userAuthenticatorLoginStart', [$userId, $authenticator]);
 
         if (
             $Session->get('auth-' . $Authenticator::class)
@@ -1409,9 +1426,8 @@ class Manager
             QUI::getEvents()->fireEvent('userLoginError', [$userId, $Exception, $authenticator]);
 
             $UserAuthException = new QUI\Users\UserAuthException(
-                $Exception->getMessage(),
-                $Exception->getCode(),
-                $Exception->getContext()
+                ['quiqqer/core', 'exception.login.fail'],
+                401
             );
             $UserAuthException->setAttribute('reason', self::AUTH_ERROR_AUTH_ERROR);
 

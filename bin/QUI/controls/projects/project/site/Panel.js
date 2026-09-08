@@ -103,6 +103,8 @@ define('controls/projects/project/site/Panel', [
             '$onSiteActivate',
             '$onSiteDeactivate',
             '$onSiteSave',
+            '$onSiteUrlChange',
+            '$onProjectSiteMove',
             '$onSiteDelete',
             '$onKeyDown'
         ],
@@ -115,6 +117,11 @@ define('controls/projects/project/site/Panel', [
 
         initialize: function (Site, options) {
             this.$built = false;
+            this.$lockToken = Array.from(crypto.getRandomValues(new Uint8Array(16)), value => value.toString(16).padStart(2, '0')).join('');
+            this.$ownsEditingLock = false;
+            this.$lockDestroyed = false;
+            this.$lockTimer = null;
+            this.$lockExpiryTimer = null;
             this.$Site = null;
             this.$CategoryControl = null;
             this.$Container = null;
@@ -464,13 +471,20 @@ define('controls/projects/project/site/Panel', [
                   Site    = this.getSite(),
                   Project = Site.getProject();
 
-            return new Promise(function (resolve) {
+            return this.$acquireEditingLock().then(acquired => new Promise(function (resolve) {
+                if (self.$lockDestroyed) {
+                    resolve();
+                    return;
+                }
                 Ajax.get([
                     'ajax_site_categories_get',
                     'ajax_site_buttons_get',
-                    'ajax_site_isLockedFromOther',
-                    'ajax_site_lock'
+                    'ajax_site_isLockedFromOther'
                 ], function (categories, buttons, isLocked) {
+                    if (self.$lockDestroyed) {
+                        resolve();
+                        return;
+                    }
                     let i, ev, fn, len, data, events, category, Category;
 
                     self.$built = true;
@@ -552,8 +566,8 @@ define('controls/projects/project/site/Panel', [
                         self.$ButtonOpenWebsite.show();
                     }
 
-                    if (isLocked) {
-                        self.setLocked();
+                    if (!acquired || isLocked) {
+                        self.$loseEditingLock();
                     }
 
                     QUI.fireEvent('quiqqerSitePanelBuild', [self]);
@@ -563,7 +577,7 @@ define('controls/projects/project/site/Panel', [
                     project: Project.encode(),
                     id     : Site.getId()
                 });
-            });
+            }));
         },
 
         /**
@@ -577,8 +591,10 @@ define('controls/projects/project/site/Panel', [
                 onActivate  : this.$onSiteActivate,
                 onDeactivate: this.$onSiteDeactivate,
                 onSave      : this.$onSiteSave,
+                onUrlChange : this.$onSiteUrlChange,
                 onDelete    : this.$onSiteDelete
             });
+            Site.getProject().addEvent('siteMove', this.$onProjectSiteMove);
 
             this.Loader.show();
 
@@ -719,13 +735,14 @@ define('controls/projects/project/site/Panel', [
          * event : on destroy
          */
         $onDestroy: function () {
-            const Site    = this.getSite(),
-                  Project = Site.getProject();
+            const Site = this.getSite();
 
             Site.removeEvent('onLoad', this.load);
             Site.removeEvent('onActivate', this.$onSiteActivate);
             Site.removeEvent('onDeactivate', this.$onSiteDeactivate);
             Site.removeEvent('onSave', this.$onSiteSave);
+            Site.removeEvent('onUrlChange', this.$onSiteUrlChange);
+            Site.getProject().removeEvent('siteMove', this.$onProjectSiteMove);
             Site.removeEvent('onDelete', this.$onSiteDelete);
 
             Site.clearWorkingStorage();
@@ -733,13 +750,10 @@ define('controls/projects/project/site/Panel', [
             window.removeEvent('login', this.$onLogin);
             document.removeEventListener('keydown', this.$onKeyDown);
 
-            // only unlock if the site was not locked from another user
-            if (!this.$Container.getElement('[data-locked]')) {
-                Ajax.get(['ajax_site_unlock'], false, {
-                    project: Project.encode(),
-                    id     : Site.getId()
-                });
-            }
+            this.$lockDestroyed = true;
+            clearTimeout(this.$lockTimer);
+            clearTimeout(this.$lockExpiryTimer);
+            this.$lockRequest('unlock', {token: this.$lockToken, force: 0}).catch(() => {});
         },
 
         /**
@@ -843,14 +857,14 @@ define('controls/projects/project/site/Panel', [
          * @method controls/projects/project/site/Panel#openPermissions
          */
         save: function () {
-            if (this.$isDeleted()) {
+            if (this.$isDeleted() || !this.$ownsEditingLock) {
                 return Promise.resolve();
             }
 
             const self = this;
 
-            this.$onCategoryLeave(this.getActiveCategory()).then(function () {
-                return self.getSite().save();
+            return this.$onCategoryLeave(this.getActiveCategory()).then(function () {
+                return self.getSite().save(null, self.$lockToken);
             }).then(function () {
                 // refresh data
                 const Form = self.$Container.getElement('form');
@@ -865,6 +879,7 @@ define('controls/projects/project/site/Panel', [
                 return self.load();
             }).catch(function (err) {
                 console.error(err);
+                self.$refreshEditingLock();
                 self.Loader.hide();
             });
         },
@@ -1140,8 +1155,7 @@ define('controls/projects/project/site/Panel', [
 
                 return new Promise(function (resolve) {
                     Ajax.get([
-                        'ajax_site_categories_template',
-                        'ajax_site_lock'
+                        'ajax_site_categories_template'
                     ], function (result) {
                         const Body = self.$Container;
 
@@ -1774,13 +1788,13 @@ define('controls/projects/project/site/Panel', [
          * init the name input key events
          */
         $bindNameInputUrlFilter: function () {
-            const Site = this.getSite(),
+            const Panel = this,
+                  Site = this.getSite(),
                   Body = this.$Container;
 
-            const NameInput     = Body.getElement('input[name="site-name"]'),
-                  UrlDisplay    = Body.getElement('.site-url-display'),
-                  UrlEditButton = Body.getElement('.site-url-display-edit'),
-                  siteUrl       = Site.getUrl();
+            const NameInput     = Body.querySelector('[data-name="siteName"]'),
+                  UrlDisplay    = Body.querySelector('[data-name="siteUrl"]'),
+                  UrlEditButton = Body.querySelector('[data-name="siteUrlEdit"]');
 
             if (!NameInput) {
                 return;
@@ -1799,7 +1813,7 @@ define('controls/projects/project/site/Panel', [
                 return;
             }
 
-            UrlDisplay.set("html", Site.getUrl());
+            UrlDisplay.textContent = Site.getUrl();
 
             new QUIButton({
                 icon  : 'fa fa-edit',
@@ -1824,8 +1838,7 @@ define('controls/projects/project/site/Panel', [
             }).inject(UrlEditButton);
 
             // filter
-            let sitePath = siteUrl.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '') + '/',
-                lastPos  = null,
+            let lastPos  = null,
                 hold     = false;
 
             NameInput.set({
@@ -1853,9 +1866,7 @@ define('controls/projects/project/site/Panel', [
                             QUIElmUtils.setCursorPosition(this, lastPos - 1);
                         }
 
-                        if (parseInt(Site.getId(), 10) !== 1) {
-                            UrlDisplay.set('html', sitePath + this.value + QUIQQER.Rewrite.SUFFIX);
-                        }
+                        Panel.$onSiteUrlChange();
                     },
 
                     blur: function () {
@@ -1867,6 +1878,90 @@ define('controls/projects/project/site/Panel', [
                     }
                 }
             });
+        },
+
+        $lockRequest: function (action, values = {}) {
+            const Site = this.getSite();
+            return new Promise((resolve, reject) => {
+                Ajax.post('ajax_site_' + action, resolve, {
+                    project: Site.getProject().encode(), id: Site.getId(),
+                    token: this.$lockToken, ...values, showError: false, onError: reject
+                });
+            });
+        },
+
+        $acquireEditingLock: function () {
+            return this.$lockRequest('lock').then(acquired => {
+                if (this.$lockDestroyed) {
+                    this.$lockRequest('unlock', {force: 0}).catch(() => {});
+                    return false;
+                }
+                this.$ownsEditingLock = acquired === true;
+                if (this.$ownsEditingLock) {
+                    this.$scheduleLockRefresh();
+                }
+                return this.$ownsEditingLock;
+            }).catch(() => false);
+        },
+
+        $scheduleLockRefresh: function () {
+            clearTimeout(this.$lockTimer);
+            clearTimeout(this.$lockExpiryTimer);
+            this.$lockTimer = setTimeout(() => this.$refreshEditingLock(), 30000);
+            // Stop editing even if a heartbeat request never returns.
+            this.$lockExpiryTimer = setTimeout(() => this.$loseEditingLock(), 100000);
+        },
+
+        $refreshEditingLock: function () {
+            if (!this.$ownsEditingLock || this.$lockDestroyed) {
+                return Promise.resolve(false);
+            }
+            return this.$lockRequest('refreshLock').then(refreshed => {
+                if (this.$lockDestroyed || !this.$ownsEditingLock) {
+                    return false;
+                }
+                if (refreshed !== true) {
+                    this.$loseEditingLock();
+                    return false;
+                }
+                this.$scheduleLockRefresh();
+                return true;
+            }).catch(() => {
+                this.$loseEditingLock();
+                return false;
+            });
+        },
+
+        $loseEditingLock: function () {
+            clearTimeout(this.$lockTimer);
+            clearTimeout(this.$lockExpiryTimer);
+            this.$ownsEditingLock = false;
+            if (this.$lockDestroyed) {
+                return;
+            }
+            this.setLocked();
+            if (!this.getContent().querySelector('[data-name="editingLockNotice"]')) {
+                const Notice = document.createElement('div');
+                Notice.dataset.name = 'editingLockNotice';
+                Notice.className = 'messages-message message-attention qui-site-lock-notice';
+                Notice.setAttribute('role', 'alert');
+                const Text = document.createElement('span');
+                Text.dataset.name = 'editingLockText';
+                Text.className = 'qui-site-lock-notice-text';
+                Text.textContent = Locale.get(lg, 'projects.project.site.panel.lockLost');
+                Notice.append(Text);
+                this.$Container.before(Notice);
+
+                if (typeof USER !== 'undefined' && USER.isSU) {
+                    const Unlock = document.createElement('button');
+                    Unlock.type = 'button';
+                    Unlock.dataset.name = 'editingLockUnlock';
+                    Unlock.className = 'btn qui-site-lock-notice-unlock';
+                    Unlock.textContent = Locale.get(lg, 'projects.project.site.panel.unlock');
+                    Unlock.addEventListener('click', () => this.unlockSite());
+                    Notice.append(Unlock);
+                }
+            }
         },
 
         /**
@@ -1886,7 +1981,7 @@ define('controls/projects/project/site/Panel', [
          * Enable the buttons, if the site is unlocked
          */
         setUnlocked: function () {
-            if (this.$isDeleted()) {
+            if (this.$isDeleted() || !this.$ownsEditingLock) {
                 return;
             }
 
@@ -1978,6 +2073,8 @@ define('controls/projects/project/site/Panel', [
 
             Site.unlock(function () {
                 self.$destroyRefresh();
+            }).catch(function () {
+                self.Loader.hide();
             });
         },
 
@@ -2029,6 +2126,43 @@ define('controls/projects/project/site/Panel', [
         /**
          * Site event methods
          */
+
+        $onProjectSiteMove: function (Project, MovedSite) {
+            const Site = this.getSite();
+
+            if (Site !== MovedSite) {
+                // The moved site has already refreshed itself. Other open editors
+                // may belong to descendants, even if their ancestors are not loaded.
+                return Site.refreshUrl().catch(() => {});
+            }
+        },
+
+        $onSiteUrlChange: function (UpdatedSite) {
+            if (UpdatedSite) {
+                this.refresh();
+            }
+
+            if (!this.$Container) {
+                return;
+            }
+
+            const NameInput = this.$Container.querySelector('[data-name="siteName"]');
+            const UrlDisplay = this.$Container.querySelector('[data-name="siteUrl"]');
+
+            if (!NameInput || !UrlDisplay) {
+                return;
+            }
+
+            const Site = this.getSite();
+
+            if (parseInt(Site.getId(), 10) === 1) {
+                UrlDisplay.textContent = '/';
+                return;
+            }
+
+            const sitePath = Site.getUrl().replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '') + '/';
+            UrlDisplay.textContent = sitePath + NameInput.value + QUIQQER.Rewrite.SUFFIX;
+        },
 
         /**
          * event on site save

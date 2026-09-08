@@ -1,0 +1,30 @@
+.quiqqer-process-lock-settings {
+    --_description-padding: var(--quiqqer-core-process-lock-description-padding, 10px);
+    container-type: inline-size;
+}
+
+.quiqqer-process-lock-settings [hidden] {
+    display: none;
+}
+
+.quiqqer-process-lock-settings :focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
+
+@container (max-width: 600px) {
+    .quiqqer-process-lock-settings .field-container {
+        flex-direction: column;
+    }
+
+    .quiqqer-process-lock-settings .field-container-item,
+    .quiqqer-process-lock-settings .field-container-field {
+        flex: auto;
+        min-width: 0;
+        width: 100%;
+    }
+
+    .quiqqer-process-lock-settings .field-container-item-desc {
+        padding-inline-start: var(--_description-padding);
+    }
+}

@@ -90,7 +90,7 @@ class Htaccess extends QUI\System\Console\Tool
 
         $Engine = QUI::getTemplateManager()->getEngine();
         $Engine->assign([
-            'forceHttps' => (bool)QUI::conf("webserver", "forceHttps"),
+            'httpsRedirects' => HttpsRedirects::fromConfig()->apache(),
             'quiqqerBin' => URL_OPT_DIR . 'quiqqer/core/bin',
             'quiqqerLib' => URL_OPT_DIR . 'quiqqer/core/src',
             'quiqqerSys' => URL_OPT_DIR . 'quiqqer/core/admin',

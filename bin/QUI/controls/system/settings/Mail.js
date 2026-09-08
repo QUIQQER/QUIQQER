@@ -221,7 +221,7 @@ define('controls/system/settings/Mail', [
 
             Button.setAttribute('textimage', 'fa fa-spinner fa-spin');
 
-            QUIAjax.get('ajax_system_mailTest', function() {
+            QUIAjax.post('ajax_system_mailTest', function() {
                 Button.setAttribute('textimage', 'fa fa-envelope-o');
             }, {
                 params: JSON.encode(params),

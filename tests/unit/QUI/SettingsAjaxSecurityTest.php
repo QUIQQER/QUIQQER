@@ -16,7 +16,7 @@ final class SettingsAjaxSecurityTest extends TestCase
     {
         \QUI::$Ajax = new Ajax();
 
-        $coreDirectory = dirname(__DIR__, 3);
+        $coreDirectory = OPT_DIR . 'quiqqer/core';
         require $coreDirectory . '/admin/ajax/settings/save.php';
 
         $callable = Ajax::getRegisteredCallables()['ajax_settings_save']['callable'];
@@ -44,7 +44,12 @@ final class SettingsAjaxSecurityTest extends TestCase
     {
         \QUI::$Ajax = new Ajax();
 
-        $coreDirectory = dirname(__DIR__, 3);
+        $Config = \QUI::getConfig('etc/conf.ini.php');
+        $previousLocks = $Config->get('locks');
+        $Config->setValue('locks', 'dsn', 'redis://alice:private-lock-password@localhost/2');
+        $Config->save();
+
+        $coreDirectory = OPT_DIR . 'quiqqer/core';
         require $coreDirectory . '/admin/ajax/settings/get.php';
 
         $callable = Ajax::getRegisteredCallables()['ajax_settings_get']['callable'];
@@ -59,11 +64,18 @@ final class SettingsAjaxSecurityTest extends TestCase
             realpath($aliasedConfigFile)
         );
 
-        $config = $callable(json_encode($aliasedConfigFile, JSON_THROW_ON_ERROR));
+        try {
+            $config = $callable(json_encode($aliasedConfigFile, JSON_THROW_ON_ERROR));
+        } finally {
+            $Config->set('locks', is_array($previousLocks) ? $previousLocks : []);
+            $Config->save();
+        }
 
         self::assertArrayHasKey('globals', $config);
         self::assertArrayNotHasKey('db', $config);
         self::assertArrayNotHasKey('openssl', $config);
+        self::assertArrayNotHasKey('locks', $config);
+        self::assertStringNotContainsString('private-lock-password', json_encode($config));
         self::assertArrayNotHasKey('salt', $config['globals']);
         self::assertArrayNotHasKey('saltlength', $config['globals']);
         self::assertArrayNotHasKey('cms_dir', $config['globals']);

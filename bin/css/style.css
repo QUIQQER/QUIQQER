@@ -300,7 +300,6 @@ select:disabled {
 .field-container .qui-controls-colorpicker .qui-controls-colorpicker-colorContainer {
     border: none;
     border-radius: 0;
-    width: calc(100% - 100px);
 }
 
 .field-container .qui-controls-colorpicker button {

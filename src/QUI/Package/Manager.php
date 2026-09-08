@@ -481,7 +481,6 @@ class Manager extends QUI\QDOM
 
         if (DEVELOPMENT) {
             $composerJson->{'minimum-stability'} = 'dev';
-            $composerJson->config->{'preferred-install'} = 'source';
 
             if (!isset($composerJson->{'prefer-stable'})) {
                 $composerJson->{'prefer-stable'} = false;
@@ -490,10 +489,6 @@ class Manager extends QUI\QDOM
 
         if (!isset($composerJson->{'minimum-stability'})) {
             $composerJson->{'minimum-stability'} = 'stable';
-        }
-
-        if (isset($composerJson->{'prefer-stable'}) && $composerJson->{'prefer-stable'} === false) {
-            $composerJson->{'minimum-stability'} = 'dev';
         }
 
         if (!isset($composerJson->{'prefer-stable'})) {
@@ -1106,6 +1101,16 @@ class Manager extends QUI\QDOM
         }
 
         return $result;
+    }
+
+    /**
+     * Discard installed-package lists before setup reads newly installed packages.
+     */
+    public function clearInstalledPackagesCache(): void
+    {
+        $this->list = [];
+        $this->installedPackages = null;
+        QUI\Cache\LongTermCache::clear(self::CACHE_NAME_TYPES);
     }
 
     /**

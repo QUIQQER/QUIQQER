@@ -24,7 +24,8 @@ class UpdateVHost extends AbstractVHostTool
                 array | null $pathLanguages = null,
                 string | null $template = null,
                 string | null $error = null,
-                string | null $httpsHost = null
+                string | null $httpsHost = null,
+                string | null $wwwRedirect = null
             ): CallToolResult | array {
                 try {
                     self::checkVHostWritePermission();
@@ -41,7 +42,8 @@ class UpdateVHost extends AbstractVHostTool
                             $pathLanguages,
                             $template,
                             $error,
-                            $httpsHost
+                            $httpsHost,
+                            $wwwRedirect
                         )
                     );
 

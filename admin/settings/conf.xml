@@ -131,6 +131,10 @@
             </section>
 
             <section name="auth_settings">
+                <conf name="loginIpLimit">
+                    <type><![CDATA[integer]]></type>
+                    <defaultvalue>60</defaultvalue>
+                </conf>
                 <conf name="showResetPasswordBackend">
                     <type><![CDATA[bool]]></type>
                     <defaultvalue>0</defaultvalue>
@@ -426,6 +430,13 @@
             </params>
 
             <categories>
+                <category name="process_locks" require="controls/system/settings/ProcessLocks" index="10">
+                    <text>
+                        <locale group="quiqqer/core" var="processLocks.title"/>
+                    </text>
+                    <icon>fa fa-lock</icon>
+                </category>
+
                 <category name="settings" require="controls/system/settings/Config" index="1">
                     <text>
                         <locale group="quiqqer/core" var="quiqqer.settings.general.title"/>
@@ -853,6 +864,15 @@
                             <text>
                                 <locale group="quiqqer/core" var="quiqqer.settings.auth.emaillogin"/>
                             </text>
+                        </input>
+
+                        <input conf="auth_settings.loginIpLimit" type="number" min="1" max="1000000" step="1">
+                            <text>
+                                <locale group="quiqqer/core" var="quiqqer.settings.auth.loginIpLimit"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/core" var="quiqqer.settings.auth.loginIpLimit.description"/>
+                            </description>
                         </input>
 
                         <input conf="auth_settings.showResetPasswordBackend" type="checkbox">

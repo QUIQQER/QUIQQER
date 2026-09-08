@@ -50,6 +50,7 @@ define('controls/system/VHost', [
             this.$Content = null;
             this.$ErrorSite = null;
             this.$HttpsHost = null;
+            this.$WwwRedirect = null;
             this.$PathLanguagesTable = null;
             this.$PathLanguagesBody = null;
             this.$ProjectSelect = null;
@@ -125,6 +126,15 @@ define('controls/system/VHost', [
                 labelTemplate: QUILocale.get(lg, 'template'),
                 labelErrorSite: QUILocale.get(lg, 'system.vhost.label.errorsite'),
                 labelHttpsHost: QUILocale.get(lg, 'system.vhost.label.httpshost'),
+                descriptionDomainVariants: QUILocale.get(lg, 'system.vhost.domain.variants'),
+                titleRedirects: QUILocale.get(lg, 'system.vhost.table.redirects'),
+                labelWwwRedirect: QUILocale.get(lg, 'quiqqer.settings.general.webserver.wwwredirect.title'),
+                optionWwwGlobal: QUILocale.get(lg, 'system.vhost.wwwRedirect.global'),
+                optionWww: QUILocale.get(lg, 'quiqqer.settings.general.webserver.wwwredirect.www'),
+                optionNonWww: QUILocale.get(lg, 'quiqqer.settings.general.webserver.wwwredirect.nonwww'),
+                optionWwwNone: QUILocale.get(lg, 'quiqqer.settings.general.webserver.wwwredirect.none'),
+                descriptionWwwRedirect: QUILocale.get(lg, 'system.vhost.wwwRedirect.description'),
+                descriptionHttpsHost: QUILocale.get(lg, 'system.vhost.httpshost.description'),
                 titlePathLanguages: QUILocale.get(lg, 'system.vhost.table.pathLanguages'),
                 descriptionPathLanguages: QUILocale.get(
                     lg,
@@ -137,11 +147,13 @@ define('controls/system/VHost', [
             this.$TemplateSelect = this.$Elm.querySelector('[data-name="template"]');
             this.$ErrorSite = this.$Elm.querySelector('[data-name="error"]');
             this.$HttpsHost = this.$Elm.querySelector('[data-name="https-host"]');
+            this.$WwwRedirect = this.$Elm.querySelector('[data-name="www-redirect"]');
             this.$PathLanguagesTable = this.$Elm.querySelector('[data-name="path-languages-table"]');
             this.$PathLanguagesBody = this.$Elm.querySelector('[data-name="path-languages"]');
 
             this.$Elm.querySelector('[data-name="domain"]').value = this.getAttribute('host');
             this.$HttpsHost.value = this.$VhostData.httpshost || '';
+            this.$WwwRedirect.value = this.$VhostData.wwwRedirect ?? '';
 
             this.$setErrorSiteValue();
             this.$renderProjectOptions();
@@ -470,7 +482,8 @@ define('controls/system/VHost', [
                     path_langs: pathLanguages.join(','),
                     template: this.$TemplateSelect.value,
                     error: errorSite,
-                    httpshost: this.$HttpsHost.value
+                    httpshost: this.$HttpsHost.value,
+                    wwwRedirect: this.$WwwRedirect.value
                 })
             });
 

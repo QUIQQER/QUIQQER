@@ -195,6 +195,33 @@ class RunEntrypointTest extends TestCase
         $this->assertSame(RunState::STATUS_CREATED, $state->getStatus());
     }
 
+    public function testWebSessionFailureDoesNotExposeCliCommand(): void
+    {
+        $repository = new RunRepository($this->root, 600);
+        $run = $repository->create(1000);
+        $entrypoint = new RunEntrypoint();
+
+        ob_start();
+        $entrypoint->execute(
+            $run->getState()->getId(),
+            $this->root,
+            [
+                RunState::PHASE_CREATED => new RecordingUpdateRunAction(RunActionResult::finished())
+            ],
+            ['token' => 'web-session-secret'],
+            [],
+            'cgi-fcgi',
+            1001,
+            false
+        );
+        $payload = json_decode((string)ob_get_clean(), true);
+
+        $this->assertIsArray($payload);
+        $this->assertFalse($payload['success']);
+        $this->assertArrayNotHasKey('cliCommand', $payload);
+        $this->assertStringNotContainsString('web-session-secret', (string)json_encode($payload));
+    }
+
     private function deleteDirectory(string $directory): void
     {
         $items = new \FilesystemIterator($directory, \FilesystemIterator::SKIP_DOTS);

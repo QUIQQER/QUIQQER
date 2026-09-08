@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace QUI\MCP;
 
 use Mcp\Server\Builder;
-use PHPUnit\Framework\Attributes\PreserveGlobalState;
-use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
-use PHPUnit\Framework\TestCase;
 use QUI;
 use QUI\AI\MCP\Server;
+use QUI\Ajax;
 use QUI\Interfaces\Users\User as UserInterface;
 use QUI\MCP\Project\Media\CopyMedia;
 use QUI\Permissions\Manager as PermissionManager;
@@ -19,18 +17,19 @@ use QUI\Projects\Media\Folder;
 use QUI\Projects\Media\Item;
 use QUI\Projects\Project;
 use QUI\Projects\ProjectTestHelper;
+use QUI\Projects\ProjectAuthorizationTestCase;
+use QUI\Security\CsrfToken;
 use QUI\System\Console\Session as ConsoleSession;
 use QUI\Users\Manager as UserManager;
 use QUI\Users\User;
 use ReflectionProperty;
 use Throwable;
 
-#[RunTestsInSeparateProcesses]
-#[PreserveGlobalState(false)]
-final class MediaCopyAuthorizationTest extends TestCase
+final class MediaCopyAuthorizationTest extends ProjectAuthorizationTestCase
 {
     private const TEST_PREFIX = 'media-copy-auth-';
 
+    private Ajax $Ajax;
     private Media $Media;
     private Project $Project;
     private Folder $SourceFolder;
@@ -39,6 +38,7 @@ final class MediaCopyAuthorizationTest extends TestCase
     private Item $RestrictedFile;
     private User $Root;
     private User $User;
+    private mixed $previousAjax;
     private mixed $previousManagerSession;
     private mixed $previousMediaPermissions;
     private mixed $previousPermissionUser;
@@ -60,6 +60,7 @@ final class MediaCopyAuthorizationTest extends TestCase
         $this->mediaPermissionsProperty = new ReflectionProperty(Media::class, 'mediaPermissions');
         $this->permissionUserProperty = new ReflectionProperty(Permission::class, 'User');
         $this->requestUserProperty = new ReflectionProperty(Server::class, 'RequestUser');
+        $this->previousAjax = QUI::$Ajax;
         $this->previousManagerSession = $this->managerSessionProperty->getValue(QUI::getUsers());
         $this->previousMediaPermissions = $this->mediaPermissionsProperty->getValue();
         $this->previousPermissionUser = $this->permissionUserProperty->getValue();
@@ -75,10 +76,19 @@ final class MediaCopyAuthorizationTest extends TestCase
         $this->Media = $this->Project->getMedia();
         $this->User = $this->createBackendUser();
         $this->createMediaFixture();
+
+        $this->Ajax = new Ajax();
+        QUI::$Ajax = $this->Ajax;
+        require dirname(__DIR__, 4) . '/admin/ajax/media/copy.php';
     }
 
     protected function tearDown(): void
     {
+        if (!isset($this->managerSessionProperty)) {
+            parent::tearDown();
+            return;
+        }
+
         $cleanupFailure = null;
 
         try {
@@ -92,9 +102,9 @@ final class MediaCopyAuthorizationTest extends TestCase
             $this->permissionUserProperty->setValue(null, $this->previousPermissionUser);
             $this->requestUserProperty->setValue(null, $this->previousRequestUser);
             QUI::$Session = $this->previousSession;
+            QUI::$Ajax = $this->previousAjax;
+            parent::tearDown();
         }
-
-        parent::tearDown();
 
         if ($cleanupFailure !== null) {
             throw $cleanupFailure;
@@ -129,6 +139,46 @@ final class MediaCopyAuthorizationTest extends TestCase
         self::assertSame('restricted media copy content', file_get_contents($CopiedFile->getFullPath()));
     }
 
+    public function testLegacyFolderCopyRejectsRestrictedSource(): void
+    {
+        $this->setSourceFolderViewPermission($this->Root);
+        $response = $this->copySourceFolderThroughLegacyAjax();
+
+        self::assertArrayNotHasKey('Exception', $response, json_encode($response, JSON_PRETTY_PRINT));
+        self::assertFalse($this->TargetFolder->childWithNameExists($this->SourceFolder->getAttribute('name')));
+    }
+
+    public function testLegacyFolderCopyRejectsMissingTargetUploadPermission(): void
+    {
+        $this->setTargetFolderPermissions($this->Root, $this->User);
+        $response = $this->copySourceFolderThroughLegacyAjax();
+
+        self::assertArrayNotHasKey('Exception', $response, json_encode($response, JSON_PRETTY_PRINT));
+        self::assertFalse($this->TargetFolder->childWithNameExists($this->SourceFolder->getAttribute('name')));
+    }
+
+    public function testLegacyFolderCopyRejectsMissingTargetEditPermission(): void
+    {
+        $this->setTargetFolderPermissions($this->User, $this->Root);
+        $response = $this->copySourceFolderThroughLegacyAjax();
+
+        self::assertArrayNotHasKey('Exception', $response, json_encode($response, JSON_PRETTY_PRINT));
+        self::assertFalse($this->TargetFolder->childWithNameExists($this->SourceFolder->getAttribute('name')));
+    }
+
+    public function testLegacyFolderCopyAllowsAuthorizedSourceAndTarget(): void
+    {
+        $this->setSourceFolderViewPermission($this->User);
+        $this->setTargetFolderPermissions($this->User, $this->User);
+        $response = $this->copySourceFolderThroughLegacyAjax();
+
+        self::assertArrayNotHasKey('Exception', $response, json_encode($response, JSON_PRETTY_PRINT));
+        $CopiedSource = $this->TargetFolder->getChildByName($this->SourceFolder->getAttribute('name'));
+
+        self::assertInstanceOf(Folder::class, $CopiedSource);
+        self::assertSame($this->TargetFolder->getId(), $CopiedSource->getParentId());
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -151,6 +201,21 @@ final class MediaCopyAuthorizationTest extends TestCase
         self::assertIsArray($result);
 
         return $result;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function copySourceFolderThroughLegacyAjax(): array
+    {
+        $this->setActor($this->User);
+
+        return $this->Ajax->callRequestFunction('ajax_media_copy', [
+            '_csrf' => CsrfToken::get(),
+            'project' => $this->Project->getName(),
+            'to' => $this->TargetFolder->getId(),
+            'ids' => json_encode([$this->SourceFolder->getId()], JSON_THROW_ON_ERROR)
+        ]);
     }
 
     private function createBackendUser(): User
@@ -225,6 +290,23 @@ final class MediaCopyAuthorizationTest extends TestCase
         $this->setActor($this->Root);
         QUI::getPermissionManager()->setMediaPermissions($this->RestrictedFile, [
             'quiqqer.projects.media.view' => [$AllowedUser]
+        ], $this->Root);
+    }
+
+    private function setSourceFolderViewPermission(User $AllowedUser): void
+    {
+        $this->setActor($this->Root);
+        QUI::getPermissionManager()->setMediaPermissions($this->SourceFolder, [
+            'quiqqer.projects.media.view' => [$AllowedUser]
+        ], $this->Root);
+    }
+
+    private function setTargetFolderPermissions(User $UploadUser, User $EditUser): void
+    {
+        $this->setActor($this->Root);
+        QUI::getPermissionManager()->setMediaPermissions($this->TargetFolder, [
+            'quiqqer.projects.media.upload' => [$UploadUser],
+            'quiqqer.projects.media.edit' => [$EditUser]
         ], $this->Root);
     }
 

@@ -5,9 +5,27 @@ namespace QUI;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use QUI\Users\Auth\VerifiedMail2FA;
+use ReflectionClass;
+use ReflectionProperty;
+use Symfony\Component\HttpFoundation\Session\Session as SymfonySession;
 
 class SessionTest extends TestCase
 {
+    public function testRegenerateInvalidatesPreviousSession(): void
+    {
+        $SymfonySession = $this->createMock(SymfonySession::class);
+        $SymfonySession->expects(self::once())
+            ->method('migrate')
+            ->with(true)
+            ->willReturn(true);
+
+        $Session = (new ReflectionClass(Session::class))->newInstanceWithoutConstructor();
+        $SessionProperty = new ReflectionProperty(Session::class, 'Session');
+        $SessionProperty->setValue($Session, $SymfonySession);
+
+        self::assertTrue($Session->regenerate());
+    }
+
     #[DataProvider('protectedClientSessionKeyProvider')]
     public function testProtectedClientSessionKeysAreRejected(string $key): void
     {

@@ -172,20 +172,33 @@ define('controls/upload/Manager', [
             }
 
             if (foundPackageFiles) {
-                let list = '<ul style="clear: both; margin-top: 2rem; list-style-type: none; padding-left: 0;">';
+                const List = document.createElement('ul');
+
+                List.style.clear = 'both';
+                List.style.marginTop = '2rem';
+                List.style.listStyleType = 'none';
+                List.style.paddingLeft = '0';
 
                 for (i = 0, len = archiveFiles.length; i < len; i++) {
-                    list = list + '<li>' +
-                        '<input id="upload-file-' + i + '" type="checkbox" value="' + archiveFiles[i].name + '" />' +
-                        '<label for="upload-file-' + i + '" style="line-height: 20px; margin-left: 10px;">' +
-                        Locale.get(lg, 'upload.manager.message.archivfile.label', {
-                            file: archiveFiles[i].name
-                        }) +
-                        '</label>' +
-                        '</li>';
-                }
+                    const Entry = document.createElement('li');
+                    const Input = document.createElement('input');
+                    const Label = document.createElement('label');
 
-                list = list + '</ul>';
+                    Input.id = 'upload-file-' + i;
+                    Input.type = 'checkbox';
+                    Input.value = archiveFiles[i].name;
+
+                    Label.htmlFor = Input.id;
+                    Label.style.lineHeight = '20px';
+                    Label.style.marginLeft = '10px';
+                    Label.textContent = Locale.get(lg, 'upload.manager.message.archivfile.label', {
+                        file: archiveFiles[i].name
+                    });
+
+                    Entry.appendChild(Input);
+                    Entry.appendChild(Label);
+                    List.appendChild(Entry);
+                }
 
                 // ask for extraction
                 new QUIAlert({
@@ -196,7 +209,7 @@ define('controls/upload/Manager', [
                         '<br />' +
                         Locale.get(lg, 'upload.manager.message.archivfile.text') +
                         '</div>' +
-                        list,
+                        List.outerHTML,
                     closeButtonText: Locale.get(lg, 'upload.manager.message.archivfile.btn.start'),
                     maxHeight: 500,
                     maxWidth: 510,

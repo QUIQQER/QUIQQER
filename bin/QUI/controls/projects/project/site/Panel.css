@@ -81,6 +81,54 @@
     font-weight: bold !important;
 }
 
+.messages-message.qui-site-lock-notice {
+    --_background: var(--quiqqer-core-site-lock-notice-background, var(--qui-colors-warning-100));
+    --_border: var(--quiqqer-core-site-lock-notice-border, var(--qui-colors-warning-200));
+    --_color: var(--quiqqer-core-site-lock-notice-color, var(--qui-colors-gray-900));
+    --_action: var(--quiqqer-core-site-lock-notice-action, var(--qui-colors-warning-300));
+    --_action-hover: var(--quiqqer-core-site-lock-notice-action-hover, var(--qui-colors-warning-400));
+    --_radius: var(--quiqqer-core-site-lock-notice-radius, 0.5rem);
+
+    align-items: stretch;
+    background: var(--_background);
+    border: 1px solid var(--_border);
+    border-radius: var(--_radius);
+    color: var(--_color);
+    display: flex;
+    /* A floated notice is covered by the following positioned editor container. */
+    float: none;
+    margin: 0 0 1rem;
+    opacity: 1;
+    overflow: hidden;
+    padding: 0;
+}
+
+.qui-site-lock-notice-text {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    padding: 1rem;
+}
+
+.qui-site-lock-notice-unlock.btn {
+    --qui-btn-bgColor: var(--_action);
+    --qui-btn-bgColor--hover: var(--_action-hover);
+    --qui-btn-color: var(--_color);
+    --qui-btn-color--hover: var(--_color);
+
+    border: 0;
+    border-radius: 0;
+    flex: 0 0 auto;
+    font-weight: 600;
+    max-width: 40%;
+    white-space: normal;
+}
+
+.qui-site-lock-notice-unlock:focus-visible {
+    outline: 2px solid var(--_color);
+    outline-offset: -4px;
+}
+
 .qui-site-panel-deleted {
     margin: 2rem auto;
     max-width: 48rem;

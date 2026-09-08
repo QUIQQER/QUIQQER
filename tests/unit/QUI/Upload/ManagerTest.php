@@ -36,6 +36,7 @@ use function var_export;
 use const DIRECTORY_SEPARATOR;
 
 require_once __DIR__ . '/TestUploadManager.php';
+require_once __DIR__ . '/Fixtures/NonFormUploadCallable.php';
 
 class ManagerTest extends TestCase
 {
@@ -158,6 +159,56 @@ class ManagerTest extends TestCase
 
         $this->expectException(QUI\Exception::class);
         $this->Manager->upload();
+    }
+
+    /**
+     * @return array<string, array{mixed}>
+     */
+    public static function invalidLegacyUploadIdProvider(): array
+    {
+        return [
+            'script string breakout' => ['");window.parent.alert(1);//'],
+            'closing script element' => ['</script><script>alert(1)</script>'],
+            'array value' => [['valid-looking-id']],
+            'empty value' => ['']
+        ];
+    }
+
+    #[DataProvider('invalidLegacyUploadIdProvider')]
+    public function testInvalidLegacyUploadIdIsRejectedBeforeFormUpload(mixed $uploadId): void
+    {
+        $_REQUEST['uploadid'] = $uploadId;
+
+        $this->expectException(QUI\Exception::class);
+        $this->expectExceptionMessage('Invalid legacy upload identifier.');
+        $this->Manager->upload();
+    }
+
+    public function testLegacyUploadIdAcceptsClientGeneratedBase36Value(): void
+    {
+        self::assertSame(
+            'm4abc123',
+            $this->Manager->validateLegacyUploadId('m4abc123')
+        );
+    }
+
+    public function testNonFormCallableIsRejectedBeforeConstruction(): void
+    {
+        NonFormUploadCallable::$constructorCalls = 0;
+        $_REQUEST = [
+            'callable' => NonFormUploadCallable::class,
+            'filename' => 'test.txt',
+            'filetype' => []
+        ];
+
+        try {
+            $this->Manager->upload();
+            self::fail('Invalid MIME type was accepted.');
+        } catch (QUI\Exception $Exception) {
+            self::assertSame('Invalid upload MIME type.', $Exception->getMessage());
+        }
+
+        self::assertSame(0, NonFormUploadCallable::$constructorCalls);
     }
 
     public function testCallbackTraversalCannotIncludePhpOutsideHandlerRoot(): void

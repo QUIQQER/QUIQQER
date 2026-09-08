@@ -16,23 +16,95 @@ define('ETC_DIR', $cmsDir . 'etc/');
 
 require $cmsDir . 'bootstrap.php';
 
-$id = (string)($_GET['id'] ?? '');
-$token = (string)($_GET['token'] ?? '');
+$id = (string)($_GET['id'] ?? $_POST['id'] ?? '');
 $output = (string)($_GET['output'] ?? 'html');
 $action = (string)($_GET['action'] ?? 'run');
 $root = VAR_DIR . 'update/runs/';
+$WebSession = new QUI\System\Update\RunWebSession(
+    new QUI\System\Update\RunRepository($root)
+);
+
+if (!headers_sent()) {
+    header('Referrer-Policy: no-referrer');
+}
+
+if (strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET')) === 'POST') {
+    exchangeWebToken($WebSession, $id, (string)($_POST['token'] ?? ''));
+    exit;
+}
+
+$sessionToken = (string)($_COOKIE[QUI\System\Update\RunWebSession::COOKIE_NAME] ?? '');
+
+try {
+    $WebSession->authenticate($id, $sessionToken);
+} catch (Throwable $Exception) {
+    sendAuthenticationError($Exception, $output);
+    exit;
+}
 
 if ($output === 'json') {
-    handleJsonRequest($id, $token, $root, $action);
+    handleJsonRequest($id, $sessionToken, $root, $action);
     exit;
 }
 
 if ($output === 'sse') {
-    handleSseRequest($id, $token, $root);
+    handleSseRequest($id, $sessionToken, $root);
     exit;
 }
 
-renderHtmlConsole($id, $token);
+renderHtmlConsole($id);
+
+function exchangeWebToken(QUI\System\Update\RunWebSession $WebSession, string $id, string $webToken): void
+{
+    try {
+        $session = $WebSession->exchange($id, $webToken);
+        $requestPath = parse_url((string)($_SERVER['REQUEST_URI'] ?? '/'), PHP_URL_PATH);
+
+        if (!is_string($requestPath) || $requestPath === '') {
+            $requestPath = '/';
+        }
+
+        setcookie(QUI\System\Update\RunWebSession::COOKIE_NAME, $session['token'], [
+            'expires' => $session['expiresAt'],
+            'path' => $requestPath,
+            'secure' => isSecureRequest(),
+            'httponly' => true,
+            'samesite' => 'Strict'
+        ]);
+
+        header('Cache-Control: no-store');
+        header('Location: ?id=' . rawurlencode($id), true, 303);
+    } catch (Throwable $Exception) {
+        sendAuthenticationError($Exception, 'html');
+    }
+}
+
+function isSecureRequest(): bool
+{
+    $https = strtolower((string)($_SERVER['HTTPS'] ?? ''));
+    $forwardedProtocol = strtolower((string)($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ''));
+
+    return ($https !== '' && $https !== 'off') || $forwardedProtocol === 'https';
+}
+
+function sendAuthenticationError(Throwable $Exception, string $output): void
+{
+    if ($output === 'json' || $output === 'sse') {
+        sendJson([
+            'success' => false,
+            'error' => $Exception->getMessage()
+        ], 403);
+        return;
+    }
+
+    if (!headers_sent()) {
+        http_response_code(403);
+        header('Content-Type: text/plain; charset=utf-8');
+        header('Cache-Control: no-store');
+    }
+
+    echo 'Update runner authorization failed.' . PHP_EOL;
+}
 
 function handleJsonRequest(string $id, string $token, string $root, string $action): void
 {
@@ -48,7 +120,11 @@ function handleJsonRequest(string $id, string $token, string $root, string $acti
                 'token' => $token,
                 'foreground' => '1',
                 'yes' => '1'
-            ]
+            ],
+            null,
+            null,
+            null,
+            false
         );
         $output = (string)ob_get_clean();
         $lines = array_values(array_filter(array_map('trim', explode(PHP_EOL, $output))));
@@ -81,7 +157,7 @@ function handleJsonRequest(string $id, string $token, string $root, string $acti
     try {
         $Repository = new QUI\System\Update\RunRepository($root);
         $State = $Repository->load($id);
-        $State->assertToken($token);
+        $State->assertAuthorized($token, time());
 
         sendJson([
             'success' => true,
@@ -138,7 +214,7 @@ function handleSseRequest(string $id, string $token, string $root): void
         try {
             $Repository = new QUI\System\Update\RunRepository($root);
             $State = $Repository->load($id);
-            $State->assertToken($token);
+            $State->assertAuthorized($token, time());
             $log = readRunLog($root, $id);
 
             if ($log !== $lastLog) {
@@ -241,15 +317,14 @@ function cleanRunLog(string $content): string
     return rtrim(implode(PHP_EOL, $lines));
 }
 
-function renderHtmlConsole(string $id, string $token): void
+function renderHtmlConsole(string $id): void
 {
     if (!headers_sent()) {
         header('Content-Type: text/html; charset=utf-8');
         header('Cache-Control: no-store');
     }
 
-    $encodedId = json_encode($id, JSON_UNESCAPED_SLASHES);
-    $encodedToken = json_encode($token, JSON_UNESCAPED_SLASHES);
+    $encodedId = json_encode($id, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
     $title = htmlspecialchars('QUIQQER Update', ENT_QUOTES, 'UTF-8');
     $logo = htmlspecialchars(URL_BIN_DIR . 'quiqqer_logo.svg', ENT_QUOTES, 'UTF-8');
 
@@ -259,6 +334,7 @@ function renderHtmlConsole(string $id, string $token): void
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer">
     <title>{$title}</title>
     <style>
         :root {
@@ -410,7 +486,6 @@ function renderHtmlConsole(string $id, string $token): void
 </div>
 <script>
 const runId = {$encodedId};
-const token = {$encodedToken};
 const consoleNode = document.getElementById('console');
 const statusNode = document.getElementById('status');
 const pulseNode = document.getElementById('pulse');
@@ -428,7 +503,7 @@ function endpoint(action) {
     url.searchParams.set('output', 'json');
     url.searchParams.set('action', action);
     url.searchParams.set('id', runId);
-    url.searchParams.set('token', token);
+    url.searchParams.delete('token');
     return url.toString();
 }
 
@@ -436,7 +511,7 @@ function sseEndpoint() {
     const url = new URL(window.location.href);
     url.searchParams.set('output', 'sse');
     url.searchParams.set('id', runId);
-    url.searchParams.set('token', token);
+    url.searchParams.delete('token');
     return url.toString();
 }
 

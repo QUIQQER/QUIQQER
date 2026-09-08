@@ -1,0 +1,16 @@
+<?php
+
+final class QUI
+{
+    public static function getEvents(): self
+    {
+        return new self();
+    }
+
+    public function fireEvent(string $event): void
+    {
+        if ($GLOBALS['argv'][3] === 'fork') {
+            echo 'cleanup:', getmypid(), "\n";
+        }
+    }
+}

@@ -319,21 +319,39 @@ define('InstallationWizard', [
                     if (saved) {
                         WizardWindow.close();
 
-                        // @todo  open iframe
+                        const iframeName = 'quiqqer-installation-wizard-execute-' + Date.now();
+                        const Iframe = document.createElement('iframe');
+                        const ExecutionForm = document.createElement('form');
+                        const CsrfInput = document.createElement('input');
 
-                        new Element('iframe', {
-                            src   : URL_OPT_DIR + 'quiqqer/core/src/QUI/InstallationWizard/bin/execute.php',
-                            styles: {
-                                background: '#fff',
-                                border    : 0,
-                                height    : '100%',
-                                left      : 0,
-                                position  : 'absolute',
-                                top       : 0,
-                                width     : '100%',
-                                zIndex    : 1000
-                            }
-                        }).inject(document.body);
+                        Iframe.name = iframeName;
+                        Iframe.title = QUILocale.get('quiqqer/core', 'quiqqer.setup.window.title');
+                        Object.assign(Iframe.style, {
+                            background: '#fff',
+                            border    : '0',
+                            height    : '100%',
+                            left      : '0',
+                            position  : 'absolute',
+                            top       : '0',
+                            width     : '100%',
+                            zIndex    : '1000'
+                        });
+                        document.body.appendChild(Iframe);
+
+                        ExecutionForm.action = URL_OPT_DIR
+                            + 'quiqqer/core/src/QUI/InstallationWizard/bin/execute.php';
+                        ExecutionForm.hidden = true;
+                        ExecutionForm.method = 'post';
+                        ExecutionForm.target = iframeName;
+
+                        CsrfInput.name = '_csrf';
+                        CsrfInput.type = 'hidden';
+                        CsrfInput.value = QUIAjax.getBackendCsrfToken();
+
+                        ExecutionForm.appendChild(CsrfInput);
+                        document.body.appendChild(ExecutionForm);
+                        ExecutionForm.submit();
+                        ExecutionForm.remove();
 
                         return;
                     }

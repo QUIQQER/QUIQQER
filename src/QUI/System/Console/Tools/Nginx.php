@@ -100,16 +100,7 @@ class Nginx extends QUI\System\Console\Tool
 
             NGINX;
 
-        // Force redirect to HTTPS if configured
-        if (QUI::conf("webserver", "forceHttps")) {
-            $nginxConfig .= <<<NGINX
-
-                if (\$scheme != "https") {
-                    return 301 https://\$host\$request_uri;
-                }
-
-                NGINX;
-        }
+        $nginxConfig .= HttpsRedirects::fromConfig()->nginx();
 
         $nginxConfig .= <<<NGINX
 

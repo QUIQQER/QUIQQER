@@ -263,6 +263,12 @@ class LongTermCache
     {
         $key = self::generateStorageKey($name);
 
+        foreach (array_keys(self::$runtime) as $runtimeKey) {
+            if ($runtimeKey === $key || str_starts_with($runtimeKey, rtrim($key, '/') . '/')) {
+                unset(self::$runtime[$runtimeKey]);
+            }
+        }
+
         try {
             $Pool = self::getPool();
             $Item = $Pool->getItem($key);

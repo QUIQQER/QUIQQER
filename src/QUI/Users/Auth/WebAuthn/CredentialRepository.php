@@ -112,6 +112,7 @@ class CredentialRepository
     }
 
     /**
+     * @phpstan-impure
      * @return array<int, array<string, mixed>>
      */
     public function findByUserUuid(string $userUuid): array

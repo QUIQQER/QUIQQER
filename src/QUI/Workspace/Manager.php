@@ -203,7 +203,7 @@ class Manager
      * @throws QUI\Database\Exception
      * @throws QUI\Exception
      */
-    public static function getWorkspacesTitlesByUser(QUI\Users\User $User): array
+    public static function getWorkspacesTitlesByUser(User $User): array
     {
         $workspaces = self::getWorkspacesByUser($User);
         $result = [];
@@ -264,7 +264,7 @@ class Manager
      *
      * @throws QUI\Exception
      */
-    public static function saveWorkspace(QUI\Users\User $User, int $id, array $data = []): void
+    public static function saveWorkspace(User $User, int $id, array $data = []): void
     {
         $workspace = self::getWorkspaceById($id, $User);
 
@@ -316,7 +316,7 @@ class Manager
      *
      * @throws QUI\Exception
      */
-    public static function getWorkspaceById(int $id, QUI\Users\User $User): array
+    public static function getWorkspaceById(int $id, User $User): array
     {
         $QueryBuilder = QUI::getQueryBuilder();
         $result = $QueryBuilder

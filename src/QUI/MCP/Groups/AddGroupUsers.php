@@ -18,6 +18,7 @@ class AddGroupUsers extends AbstractGroupTool
                     self::checkMembershipPermission();
 
                     $Group = self::getGroup($group);
+                    self::checkGroupAssignmentPermission($Group);
                     $resolvedUsers = self::resolveUsers($users);
                     $addedUsers = [];
                     $alreadyMembers = [];

@@ -23,7 +23,7 @@ QUI::getAjax()->registerFunction(
             return;
         }
 
-        $Media->replace($fileid, $file);
+        $Media->replace($fileid, $file, QUI::getUserBySession());
     },
     ['project', 'fileid', 'File'],
     'Permission::checkAdminUser'
