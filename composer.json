@@ -74,10 +74,10 @@
     "ramsey/uuid": "^4",
     "report-uri/passkeys-php": "^2.0",
     "seld/jsonlint": "^1",
-    "symfony/cache": "^6.4|^7.4",
+    "symfony/cache": "^6.4|^7.4|^8",
     "symfony/console": "^4|^5|^6|^7|^8",
-    "symfony/http-foundation": "^7.4",
-    "symfony/lock": "^7.4",
+    "symfony/http-foundation": "^7.4|^8",
+    "symfony/lock": "^7.4|^8",
     "symfony/polyfill-php83": "^1",
     "t7systems/blowfish": "1.0.0",
     "tedivm/stash": "^1.2"
